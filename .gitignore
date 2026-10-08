@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# Tests
+coverage/
+.vitest/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Environment files (names only live in .env.example)
+.env
+.env.*
+!.env.example
+
+# Supabase CLI state
+supabase/.branches/
+supabase/.temp/
+
+# Python / uv
+__pycache__/
+*.py[codz]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+engine/dist/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.claude/settings.local.json
+
+# Logs and certificates
+npm-debug.log*
+pnpm-debug.log*
+*.pem
+.vercel
