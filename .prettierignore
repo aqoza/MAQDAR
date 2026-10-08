@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+build
+coverage
+.vitest
+test-results
+playwright-report
+pnpm-lock.yaml
+packages/shared/src/database.types.ts
+apps/web/src/components/ui
+supabase/.temp
+supabase/.branches
+engine/.venv
+engine/uv.lock

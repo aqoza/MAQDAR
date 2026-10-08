@@ -1,0 +1,25 @@
+packages:
+  - apps/*
+  - packages/*
+
+engineStrict: true
+
+# pnpm 12 refuses to run dependency install scripts until they are reviewed.
+# These three ship prebuilt binaries as optional dependencies; their scripts
+# are download fallbacks only, so they stay denied.
+allowBuilds:
+  unrs-resolver: false
+  '@swc/core': false
+  '@parcel/watcher': false
+
+minimumReleaseAgeExclude:
+  - '@playwright/test@1.64.0'
+  - playwright-core@1.64.0
+  - playwright@1.64.0
+  - vite@8.3.4
+
+# @swc/core 1.16 refuses its native-binding cache under %LOCALAPPDATA% on Windows machines with
+# MSIX apps installed (swc-project/swc#12442), which breaks next-intl's plugin at config load.
+# Pin the transitive dependency to the last 1.15 release until upstream fixes it.
+overrides:
+  '@swc/core': 1.15.47

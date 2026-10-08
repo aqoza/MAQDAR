@@ -1,0 +1,38 @@
+{
+  "Common": {
+    "appName": "مقدار",
+    "tagline": "تخطيط قطع الغيار",
+    "signOut": "تسجيل الخروج",
+    "toggleSidebar": "إظهار أو إخفاء القائمة",
+    "signedInAs": "مسجّل الدخول باسم"
+  },
+  "Auth": {
+    "title": "تسجيل الدخول إلى مقدار",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "signIn": "تسجيل الدخول",
+    "sendMagicLink": "أرسل لي رابط الدخول بالبريد",
+    "orDivider": "أو",
+    "magicLinkSent": "تحقق من بريدك. أرسلنا رابط الدخول إلى {email}."
+  },
+  "Nav": {
+    "dashboard": "لوحة التحكم",
+    "items": "الأصناف",
+    "locations": "المواقع",
+    "suppliers": "الموردون",
+    "forecasts": "التنبؤات",
+    "replenishment": "التزويد",
+    "settings": "الإعدادات"
+  },
+  "Settings": {
+    "title": "الإعدادات",
+    "language": {
+      "title": "اللغة",
+      "en": "English",
+      "ar": "العربية"
+    }
+  },
+  "Empty": {
+    "title": "لا يوجد شيء هنا بعد"
+  }
+}

@@ -1,0 +1,2 @@
+-- Local seed data. Runs after all migrations on the first `supabase start` and on every
+-- `supabase db reset`. Data only, never DDL. Step 2 adds the synthetic dataset loader.
