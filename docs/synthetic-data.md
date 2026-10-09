@@ -7,19 +7,21 @@
 ```bash
 pnpm db:start                                   # local stack with the Step 2 migrations
 pnpm synth:small                                # generate + validate + load 1,000 items
-pnpm synth:large                                # 50,000 items, ~20 M demand rows (minutes)
+pnpm synth:large                                # 50,000 items, ~13 M demand rows (about 12 minutes)
 cd engine && uv run maqdar-synth generate --preset medium --out data/medium
 cd engine && uv run maqdar-synth load data/medium --replace --member-email you@company.com
 ```
 
-`load` refuses any host that is not loopback, requires Postgres 17 with the Step 2 migrations and a role that bypasses RLS (the local `postgres`), validates the bundle first, and writes everything in one transaction. `--replace` deletes the synthetic organization before reloading; `pnpm db:reset` is faster for the large preset. `--member-email` makes an existing signed-in user the owner of the synthetic organization so it shows up once the Step 3 switcher exists.
+`load` refuses any host that is not loopback, requires Postgres 17 with the Step 2 migrations and a role that bypasses RLS (the local `postgres`), validates the bundle first, and writes everything in one transaction: codes are checked against the bundle's own parents before each `COPY`, the master-data tables are analyzed (partition statistics are left to autovacuum), and a set-based anti-join over distinct item-location pairs re-checks demand references (the table has no foreign keys) before the commit. `--replace` deletes the synthetic organization before reloading; `pnpm db:reset` is faster for the large preset. `--member-email` makes an existing signed-in user the owner of the synthetic organization so it shows up once the Step 3 switcher exists.
 
-| Preset   | Items  | Locations | Demand rows | Generate | Load    | Use                             |
-| -------- | ------ | --------- | ----------- | -------- | ------- | ------------------------------- |
-| `tiny`   | 24     | 8         | ~14 k       | 2 s      | 3 s     | unit tests, CI load             |
-| `medium` | 300    | 40        | ~200 k      | 3 s      | 10 s    | statistical tests               |
-| `small`  | 1,000  | 40        | ~640 k      | 5 s      | 20 s    | daily development               |
-| `large`  | 50,000 | 40        | ~20 M       | minutes  | ~15 min | performance work, Step 6 target |
+| Preset   | Items  | Locations | Demand rows | Generate | Load   | Use                             |
+| -------- | ------ | --------- | ----------- | -------- | ------ | ------------------------------- |
+| `tiny`   | 24     | 8         | ~14 k       | 2 s      | 3 s    | unit tests, CI load             |
+| `medium` | 300    | 40        | ~200 k      | 3 s      | 10 s   | statistical tests               |
+| `small`  | 1,000  | 40        | ~640 k      | 5 s      | ~25 s  | daily development               |
+| `large`  | 50,000 | 40        | ~13 M       | ~2 min   | ~9 min | performance work, Step 6 target |
+
+Timings are from a Windows laptop running Docker Desktop. The large bundle is 417 MB of CSV and about 2.5 GB in Postgres (heap and indexes of the monthly partitions); the load time is dominated by the `COPY` into `demand_history`'s two indexes.
 
 Options: `--seed`, `--months N` (keeps the window end, trims the start), `--density` (scales occurrence; `large` defaults to 0.5, `1.0` doubles the rows), `--items`, `--force`.
 
@@ -50,7 +52,7 @@ For every stocked pair and day, demand is an occurrence × size process on open 
   - Summer exodus 1 July-25 August: ×0.85 in the UAE, Qatar and Kuwait, ×0.92 in KSA and Oman, for non-heat groups.
   - Working-week shape: first open day after the weekend ×1.15, last one ×0.9.
 - Lifecycle: logistic ramp over 90 days for new items, hard stop at `discontinued_on`, exponential decline for phase-out items outside chains.
-- Supersession: one family series per chain, split between predecessor and successor by a logistic cross-fade (scale 15 days, hard bounds ±45 days around `effective_on`); the predecessor is discontinued 120 days after the switch. `quantity_factor` 2 or 0.5 on about 10 % of links models pack changes.
+- Supersession: one family series per chain, split between predecessor and successor by a logistic cross-fade centred 30 days after `effective_on` (scale 8 days) with hard bounds: the successor sells nothing before `effective_on` and takes everything from 60 days after it; the predecessor is discontinued 120 days after the switch. `quantity_factor` 2 or 0.5 on about 10 % of links models pack changes.
 - Lost sales: 5 % of branch pairs and 2 % of hub pairs get one to three stock-out episodes of 5-20 days during which demand is recorded as `lost_sales_quantity` instead of `quantity`.
 
 The magnitudes are modelling assumptions grounded in press reports (battery service requests rise 25-35 % in Gulf summers; home A/C demand rose 150 % in a June heat spell; tyre and battery checks before Eid road trips) and should be recalibrated from the first customer dataset.
