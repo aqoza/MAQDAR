@@ -1,0 +1,13 @@
+code,name_en,name_ar,brand_type,country_of_origin,share
+FALCON,Falcon Genuine Parts,قطع فالكون الأصلية,oem,JP,0.22
+ORYX,Oryx Motor Company,شركة أوريكس للسيارات,oem,KR,0.14
+MARHABA,Marhaba Motors OEM,مرحبا موتورز,oem,DE,0.10
+GULFTECH,GulfTech Aftermarket,جلف تك,aftermarket,AE,0.12
+SAHARA,Sahara Motive,صحارى موتيف,aftermarket,SA,0.09
+NAKHEEL,Nakheel Components,مكونات النخيل,aftermarket,CN,0.08
+ZENITH,Zenith Filtration,زينيث للفلاتر,aftermarket,DE,0.07
+SAQR,Saqr Batteries,بطاريات صقر,aftermarket,SA,0.05
+AURORA,Aurora Electrics,أورورا للكهرباء,aftermarket,JP,0.05
+NOVA,Nova Brake Systems,نوفا لأنظمة الفرامل,aftermarket,US,0.04
+DUNE,Dune Dynamics,دون دايناميكس,aftermarket,CN,0.03
+ALBAHR,Al Bahr Lubricants,زيوت البحر,aftermarket,AE,0.01

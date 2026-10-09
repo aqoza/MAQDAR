@@ -1,0 +1,506 @@
+{
+  "format_version": 1,
+  "dialect": [
+    "UTF-8 without a byte-order mark; LF line endings.",
+    "RFC 4180 quoting: fields containing commas, quotes or newlines are wrapped in double quotes, inner quotes doubled.",
+    "One header row whose names and order equal the column tables below (the loader validates with COPY ... HEADER MATCH).",
+    "Dates are YYYY-MM-DD. Timestamps (none in v1) would be YYYY-MM-DDTHH:MM:SSZ in UTC.",
+    "Numbers use a dot decimal separator, no thousands separators; money and quantities carry at most 3 fractional digits.",
+    "Booleans are the literals true and false.",
+    "An empty field means NULL; required columns must not be empty.",
+    "Files are loaded in the order listed below so every reference resolves.",
+    "demand_history is split into monthly parts named YYYY-MM.csv under a demand_history/ folder; a single demand_history.csv with the same header is also accepted.",
+    "manifest.json lists every file with its row count and sha256 and records the generator version, seed and window."
+  ],
+  "kinds": {
+    "code": "text (natural key, 1-64 chars, letters, digits, . _ - /)",
+    "text": "text",
+    "integer": "integer",
+    "decimal": "numeric(18,3), at most 3 fractional digits",
+    "money": "numeric(18,3) in the row's currency, at most 3 fractional digits",
+    "currency": "char(3) ISO 4217 code",
+    "country": "char(2) ISO 3166-1 alpha-2 code",
+    "date": "date, YYYY-MM-DD",
+    "boolean": "true or false",
+    "enum": "one of the listed values"
+  },
+  "entities": [
+    {
+      "name": "locations",
+      "table": "public.locations",
+      "file": "locations.csv",
+      "monthly_parts": false,
+      "description": "Warehouses, regional hubs and branches of the network.",
+      "natural_key": [
+        "location_code"
+      ],
+      "columns": [
+        {
+          "name": "location_code",
+          "kind": "code",
+          "required": true,
+          "description": "Unique location code.",
+          "target_column": "code"
+        },
+        {
+          "name": "name_en",
+          "kind": "text",
+          "required": true,
+          "description": "English name (required).",
+          "target_column": "name_en"
+        },
+        {
+          "name": "name_ar",
+          "kind": "text",
+          "required": false,
+          "description": "Arabic name.",
+          "target_column": "name_ar"
+        },
+        {
+          "name": "location_type",
+          "kind": "enum",
+          "required": true,
+          "description": "Role in the network.",
+          "enum": [
+            "central",
+            "hub",
+            "branch"
+          ],
+          "target_column": "location_type"
+        },
+        {
+          "name": "country_code",
+          "kind": "country",
+          "required": true,
+          "description": "Country of the location (drives weekends and holidays).",
+          "references": "countries.code",
+          "target_column": "country_code"
+        },
+        {
+          "name": "city",
+          "kind": "text",
+          "required": false,
+          "description": "City.",
+          "target_column": "city"
+        },
+        {
+          "name": "latitude",
+          "kind": "decimal",
+          "required": false,
+          "description": "Decimal degrees.",
+          "scale": 6,
+          "target_column": "latitude"
+        },
+        {
+          "name": "longitude",
+          "kind": "decimal",
+          "required": false,
+          "description": "Decimal degrees.",
+          "scale": 6,
+          "target_column": "longitude"
+        },
+        {
+          "name": "timezone",
+          "kind": "text",
+          "required": true,
+          "description": "IANA time zone, e.g. Asia/Riyadh.",
+          "target_column": "timezone"
+        },
+        {
+          "name": "parent_location_code",
+          "kind": "code",
+          "required": false,
+          "description": "Default replenishment source; empty for the central warehouse.",
+          "references": "locations.location_code",
+          "target_column": "parent_location_id",
+          "lookup": "locations"
+        },
+        {
+          "name": "is_active",
+          "kind": "boolean",
+          "required": true,
+          "description": "false for closed locations.",
+          "target_column": "is_active"
+        }
+      ]
+    },
+    {
+      "name": "items",
+      "table": "public.items",
+      "file": "items.csv",
+      "monthly_parts": false,
+      "description": "Service parts.",
+      "natural_key": [
+        "item_code"
+      ],
+      "columns": [
+        {
+          "name": "item_code",
+          "kind": "code",
+          "required": true,
+          "description": "Unique part number.",
+          "target_column": "code"
+        },
+        {
+          "name": "name_en",
+          "kind": "text",
+          "required": true,
+          "description": "English name (required).",
+          "target_column": "name_en"
+        },
+        {
+          "name": "name_ar",
+          "kind": "text",
+          "required": false,
+          "description": "Arabic name.",
+          "target_column": "name_ar"
+        },
+        {
+          "name": "brand",
+          "kind": "text",
+          "required": false,
+          "description": "Brand or make.",
+          "target_column": "brand"
+        },
+        {
+          "name": "product_group",
+          "kind": "text",
+          "required": true,
+          "description": "Planning group, e.g. battery, oil_filter.",
+          "target_column": "product_group"
+        },
+        {
+          "name": "unit_of_measure",
+          "kind": "enum",
+          "required": true,
+          "description": "Stocking unit.",
+          "enum": [
+            "EA",
+            "SET",
+            "L",
+            "KG"
+          ],
+          "target_column": "unit_of_measure"
+        },
+        {
+          "name": "unit_cost",
+          "kind": "money",
+          "required": true,
+          "description": "Standard cost per unit.",
+          "scale": 3,
+          "target_column": "unit_cost"
+        },
+        {
+          "name": "currency",
+          "kind": "currency",
+          "required": true,
+          "description": "Currency of unit_cost.",
+          "references": "currencies.code",
+          "target_column": "currency"
+        },
+        {
+          "name": "status",
+          "kind": "enum",
+          "required": true,
+          "description": "Lifecycle status.",
+          "enum": [
+            "new",
+            "active",
+            "phase_out",
+            "discontinued"
+          ],
+          "target_column": "status"
+        },
+        {
+          "name": "introduced_on",
+          "kind": "date",
+          "required": false,
+          "description": "First day the item was available.",
+          "target_column": "introduced_on"
+        },
+        {
+          "name": "discontinued_on",
+          "kind": "date",
+          "required": false,
+          "description": "Last day the item was available.",
+          "target_column": "discontinued_on"
+        }
+      ]
+    },
+    {
+      "name": "item_supersessions",
+      "table": "public.item_supersessions",
+      "file": "item_supersessions.csv",
+      "monthly_parts": false,
+      "description": "Part replacements: demand for the predecessor moves to the successor from effective_on.",
+      "natural_key": [
+        "predecessor_item_code",
+        "successor_item_code"
+      ],
+      "columns": [
+        {
+          "name": "predecessor_item_code",
+          "kind": "code",
+          "required": true,
+          "description": "Replaced item.",
+          "references": "items.item_code",
+          "target_column": "predecessor_item_id",
+          "lookup": "items"
+        },
+        {
+          "name": "successor_item_code",
+          "kind": "code",
+          "required": true,
+          "description": "Replacing item.",
+          "references": "items.item_code",
+          "target_column": "successor_item_id",
+          "lookup": "items"
+        },
+        {
+          "name": "effective_on",
+          "kind": "date",
+          "required": true,
+          "description": "First day the successor replaces the predecessor.",
+          "target_column": "effective_on"
+        },
+        {
+          "name": "quantity_factor",
+          "kind": "decimal",
+          "required": true,
+          "description": "Units of successor per unit of predecessor (1 unless the pack changes).",
+          "scale": 3,
+          "target_column": "quantity_factor"
+        },
+        {
+          "name": "note",
+          "kind": "text",
+          "required": false,
+          "description": "Free text.",
+          "target_column": "note"
+        }
+      ]
+    },
+    {
+      "name": "suppliers",
+      "table": "public.suppliers",
+      "file": "suppliers.csv",
+      "monthly_parts": false,
+      "description": "Suppliers and their typical lead times.",
+      "natural_key": [
+        "supplier_code"
+      ],
+      "columns": [
+        {
+          "name": "supplier_code",
+          "kind": "code",
+          "required": true,
+          "description": "Unique supplier code.",
+          "target_column": "code"
+        },
+        {
+          "name": "name_en",
+          "kind": "text",
+          "required": true,
+          "description": "English name (required).",
+          "target_column": "name_en"
+        },
+        {
+          "name": "name_ar",
+          "kind": "text",
+          "required": false,
+          "description": "Arabic name.",
+          "target_column": "name_ar"
+        },
+        {
+          "name": "country_code",
+          "kind": "country",
+          "required": true,
+          "description": "Country the supplier ships from (any ISO code).",
+          "target_column": "country_code"
+        },
+        {
+          "name": "currency",
+          "kind": "currency",
+          "required": true,
+          "description": "Default price currency.",
+          "references": "currencies.code",
+          "target_column": "currency"
+        },
+        {
+          "name": "lead_time_days_p50",
+          "kind": "integer",
+          "required": true,
+          "description": "Typical lead time in calendar days.",
+          "target_column": "lead_time_days_p50"
+        },
+        {
+          "name": "lead_time_days_p90",
+          "kind": "integer",
+          "required": true,
+          "description": "Slow lead time (90th percentile) in calendar days.",
+          "target_column": "lead_time_days_p90"
+        },
+        {
+          "name": "is_active",
+          "kind": "boolean",
+          "required": true,
+          "description": "false for inactive suppliers.",
+          "target_column": "is_active"
+        }
+      ]
+    },
+    {
+      "name": "supplier_items",
+      "table": "public.supplier_items",
+      "file": "supplier_items.csv",
+      "monthly_parts": false,
+      "description": "What each supplier sells: lead time, minimum order quantity, pack size and price.",
+      "natural_key": [
+        "supplier_code",
+        "item_code"
+      ],
+      "columns": [
+        {
+          "name": "supplier_code",
+          "kind": "code",
+          "required": true,
+          "description": "Supplier.",
+          "references": "suppliers.supplier_code",
+          "target_column": "supplier_id",
+          "lookup": "suppliers"
+        },
+        {
+          "name": "item_code",
+          "kind": "code",
+          "required": true,
+          "description": "Item.",
+          "references": "items.item_code",
+          "target_column": "item_id",
+          "lookup": "items"
+        },
+        {
+          "name": "supplier_part_number",
+          "kind": "text",
+          "required": false,
+          "description": "Supplier's own part number.",
+          "target_column": "supplier_part_number"
+        },
+        {
+          "name": "lead_time_days",
+          "kind": "integer",
+          "required": true,
+          "description": "Planning lead time in calendar days.",
+          "target_column": "lead_time_days"
+        },
+        {
+          "name": "lead_time_days_p90",
+          "kind": "integer",
+          "required": false,
+          "description": "Slow lead time in calendar days.",
+          "target_column": "lead_time_days_p90"
+        },
+        {
+          "name": "min_order_quantity",
+          "kind": "decimal",
+          "required": true,
+          "description": "Minimum order quantity (0 = none).",
+          "scale": 3,
+          "target_column": "min_order_quantity"
+        },
+        {
+          "name": "pack_size",
+          "kind": "decimal",
+          "required": true,
+          "description": "Order multiple.",
+          "scale": 3,
+          "target_column": "pack_size"
+        },
+        {
+          "name": "unit_price",
+          "kind": "money",
+          "required": true,
+          "description": "Purchase price per unit.",
+          "scale": 3,
+          "target_column": "unit_price"
+        },
+        {
+          "name": "currency",
+          "kind": "currency",
+          "required": true,
+          "description": "Currency of unit_price.",
+          "references": "currencies.code",
+          "target_column": "currency"
+        },
+        {
+          "name": "is_preferred",
+          "kind": "boolean",
+          "required": true,
+          "description": "Preferred source for the item (exactly one per item).",
+          "target_column": "is_preferred"
+        },
+        {
+          "name": "valid_from",
+          "kind": "date",
+          "required": false,
+          "description": "Price valid from.",
+          "target_column": "valid_from"
+        }
+      ]
+    },
+    {
+      "name": "demand_history",
+      "table": "public.demand_history",
+      "file": "demand_history/YYYY-MM.csv",
+      "monthly_parts": true,
+      "description": "Daily demand per item and location. Only days with demand or lost sales appear; a missing day means zero.",
+      "natural_key": [
+        "item_code",
+        "location_code",
+        "demand_date"
+      ],
+      "columns": [
+        {
+          "name": "item_code",
+          "kind": "code",
+          "required": true,
+          "description": "Item.",
+          "references": "items.item_code",
+          "target_column": "item_id",
+          "lookup": "items"
+        },
+        {
+          "name": "location_code",
+          "kind": "code",
+          "required": true,
+          "description": "Location where the demand arose.",
+          "references": "locations.location_code",
+          "target_column": "location_id",
+          "lookup": "locations"
+        },
+        {
+          "name": "demand_date",
+          "kind": "date",
+          "required": true,
+          "description": "Business day at the location.",
+          "target_column": "demand_date"
+        },
+        {
+          "name": "quantity",
+          "kind": "decimal",
+          "required": true,
+          "description": "Quantity sold or issued.",
+          "scale": 3,
+          "target_column": "quantity"
+        },
+        {
+          "name": "lost_sales_quantity",
+          "kind": "decimal",
+          "required": true,
+          "description": "Quantity requested but not served (stock-out).",
+          "scale": 3,
+          "target_column": "lost_sales_quantity"
+        }
+      ]
+    }
+  ]
+}

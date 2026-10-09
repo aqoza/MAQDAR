@@ -21,7 +21,11 @@
     "db:reset": "supabase db reset",
     "db:test": "supabase test db --local",
     "db:types": "node scripts/gen-types.mjs",
-    "db:env": "node scripts/write-env.mjs"
+    "db:env": "node scripts/write-env.mjs",
+    "db:diff": "supabase db diff --schema public",
+    "synth": "uv run --project engine maqdar-synth",
+    "synth:small": "uv run --project engine maqdar-synth all --preset small",
+    "synth:large": "uv run --project engine maqdar-synth all --preset large"
   },
   "devDependencies": {
     "prettier": "3.9.9",
