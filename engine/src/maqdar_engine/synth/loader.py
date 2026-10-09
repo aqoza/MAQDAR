@@ -4,6 +4,12 @@ Safety: the DSN must point at a loopback host (no override), the server must be 
 the Step 2 migrations applied, and the role must bypass row-level security (COPY cannot target
 RLS tables otherwise). Natural keys are turned into deterministic uuid5 ids client side, so no
 read-back is needed and reloads are idempotent. Everything happens in one transaction.
+
+demand_history has no foreign keys, so references are checked twice: codes are matched against the
+bundle's own parents before each COPY (fails fast, before minutes of loading), and a set-based
+anti-join over distinct item-location pairs runs at the end, after the parent tables are analyzed.
+Without fresh statistics the planner believed the new organization had one item and nested-looped a
+materialised copy of all 50,000 for each of 13 M demand rows (killed after 2.7 CPU-hours).
 """
 
 from __future__ import annotations
@@ -90,19 +96,32 @@ class LoadReport:
     membership_user_id: uuid.UUID | None = None
 
 
-def _frame_for_table(frame: pl.DataFrame, entity: importformat.Entity, organization_id: uuid.UUID) -> tuple[list[str], pl.DataFrame]:
-    """Maps a CSV frame onto the table's column list (ids resolved client side)."""
+def _frame_for_table(
+    frame: pl.DataFrame,
+    entity: importformat.Entity,
+    organization_id: uuid.UUID,
+    known: dict[str, set[str]],
+    source: str,
+) -> tuple[list[str], pl.DataFrame]:
+    """Maps a CSV frame onto the table's column list (ids resolved client side).
+
+    `known` holds the natural keys already loaded per entity; a lookup column whose code is not in
+    its parent's set raises LoaderRefused before anything is copied.
+    """
     org = str(organization_id)
     columns: dict[str, pl.Series] = {"organization_id": pl.Series([org] * frame.height, dtype=pl.Utf8)}
     if not entity.monthly_parts:
         key_frame = frame.select(list(entity.natural_key))
         keys = ["|".join(str(v) for v in row) for row in key_frame.iter_rows()]
         columns["id"] = pl.Series([str(row_id(organization_id, entity.name, key)) for key in keys], dtype=pl.Utf8)
+        known.setdefault(entity.name, set()).update(keys)
     for column in entity.columns:
         series = frame[column.name]
         series = pl.Series(column.target, [None if v == "" else v for v in series.to_list()], dtype=pl.Utf8)
         if column.lookup:
+            parents = known.get(column.lookup, set())
             cache: dict[str, str] = {}
+            unknown: set[str] = set()
             mapped = []
             for value in series.to_list():
                 if value is None:
@@ -110,8 +129,15 @@ def _frame_for_table(frame: pl.DataFrame, entity: importformat.Entity, organizat
                 elif value in cache:
                     mapped.append(cache[value])
                 else:
+                    if value not in parents:
+                        unknown.add(value)
                     cache[value] = str(row_id(organization_id, column.lookup, value))
                     mapped.append(cache[value])
+            if unknown:
+                sample = ", ".join(sorted(unknown)[:5])
+                raise LoaderRefused(
+                    f"{source}: {len(unknown)} {column.name} value(s) do not exist in {column.lookup} ({sample}); nothing was committed"
+                )
             series = pl.Series(column.target, mapped, dtype=pl.Utf8)
         columns[column.target] = series
     out = pl.DataFrame(columns)
@@ -154,6 +180,8 @@ def load_bundle(
         with conn.transaction(), conn.cursor() as cur:
             cur.execute("set local time zone 'UTC'")
             cur.execute("set local synchronous_commit = off")
+            cur.execute("set local work_mem = '64MB'")
+            known: dict[str, set[str]] = {}
             cur.execute("select 1 from public.organizations where id = %s", (organization_id,))
             if cur.fetchone():
                 if not replace:
@@ -176,11 +204,21 @@ def load_bundle(
                 started = time.perf_counter()
                 for path in entity_files(out_dir, entity):
                     frame = read_csv_text(path)
-                    column_names, mapped = _frame_for_table(frame, entity, organization_id)
+                    source = path.relative_to(out_dir).as_posix()
+                    column_names, mapped = _frame_for_table(frame, entity, organization_id, known, source)
                     total += _copy_frame(cur, entity.table, column_names, mapped)
                 report.rows[entity.name] = total
                 progress(f"loaded {entity.table}: {total:,} rows in {time.perf_counter() - started:.1f}s")
+            started = time.perf_counter()
+            # Fresh statistics on the parents are what keep the reference check linear: the quadratic
+            # plan needs an underestimated inner side. demand_history is left to autovacuum because an
+            # ANALYZE of the partitioned table re-samples every partition (40 s with the large preset
+            # present, for a tiny load). Table names come from the contract, not from input.
+            cur.execute("analyze " + ", ".join(entity.table for entity in importformat.ENTITIES if not entity.monthly_parts))
+            progress(f"analyzed master data in {time.perf_counter() - started:.1f}s")
+            started = time.perf_counter()
             _check_demand_references(cur, organization_id)
+            progress(f"checked demand references in {time.perf_counter() - started:.1f}s")
             if member_email:
                 cur.execute("select id from auth.users where email = %s", (member_email,))
                 row = cur.fetchone()
@@ -197,23 +235,30 @@ def load_bundle(
 
 
 def _check_demand_references(cur: psycopg.Cursor, organization_id: uuid.UUID) -> None:
-    """Set-based replacement for the foreign keys demand_history deliberately lacks."""
+    """Set-based replacement for the foreign keys demand_history deliberately lacks.
+
+    The DISTINCT collapses millions of demand rows to at most items × locations pairs before the
+    anti-joins, so even a badly estimated plan stays cheap (one pass over the organization's rows).
+    """
     cur.execute(
         """
+        with pairs as materialized (
+          select distinct item_id, location_id
+          from public.demand_history
+          where organization_id = %(org)s
+        )
         select
-          count(*) filter (where i.id is null) as missing_items,
-          count(*) filter (where l.id is null) as missing_locations
-        from public.demand_history d
-        left join public.items i on i.organization_id = d.organization_id and i.id = d.item_id
-        left join public.locations l on l.organization_id = d.organization_id and l.id = d.location_id
-        where d.organization_id = %s
+          (select count(*) from pairs p
+           where not exists (select 1 from public.items i where i.organization_id = %(org)s and i.id = p.item_id)),
+          (select count(*) from pairs p
+           where not exists (select 1 from public.locations l where l.organization_id = %(org)s and l.id = p.location_id))
         """,
-        (organization_id,),
+        {"org": organization_id},
     )
     missing_items, missing_locations = cur.fetchone()
     if missing_items or missing_locations:
         raise LoaderRefused(
-            f"demand rows reference unknown items ({missing_items}) or locations ({missing_locations}); nothing was committed"
+            f"demand rows reference {missing_items} unknown item id(s) and {missing_locations} unknown location id(s); nothing was committed"
         )
 
 

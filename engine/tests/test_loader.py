@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 
 import pytest
@@ -94,3 +95,20 @@ def test_loaded_rows_are_consistent(tiny_bundle: Path, dsn: str):
         assert cur.fetchone()[0].count(".") == 1
         cur.execute("select count(*) from public.items where organization_id = %s and name_ar is not null", (org,))
         assert cur.fetchone()[0] > 0
+
+
+@pytest.mark.db
+def test_unknown_reference_is_refused_before_commit(tiny_bundle: Path, dsn: str, tmp_path: Path):
+    """A demand row whose item code is not in items.csv rolls the whole load back."""
+    bundle = tmp_path / "bad"
+    shutil.copytree(tiny_bundle, bundle)
+    location_code = (bundle / "locations.csv").read_text(encoding="utf-8").splitlines()[1].split(",")[0]
+    part = sorted((bundle / "demand_history").glob("*.csv"))[-1]
+    with part.open("a", encoding="utf-8", newline="") as handle:
+        handle.write(f"NOT-A-PART,{location_code},2026-09-15,1,0\n")
+
+    organization_id = PRESETS["tiny"].organization_id
+    before = table_counts(dsn, organization_id)
+    with pytest.raises(LoaderRefused, match="do not exist in items"):
+        load_bundle(bundle, dsn=dsn, replace=True, progress=lambda m: None)
+    assert table_counts(dsn, organization_id) == before
