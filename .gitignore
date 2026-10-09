@@ -49,3 +49,6 @@ npm-debug.log*
 pnpm-debug.log*
 *.pem
 .vercel
+
+# Generated synthetic datasets
+engine/data/
