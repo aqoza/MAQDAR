@@ -4,13 +4,20 @@ version = "0.1.0"
 description = "MAQDAR planning engine: demand classification, forecasting and inventory policy jobs."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "numpy==2.5.3",
+    "polars==1.44.2",
+    "psycopg[binary]==3.3.6",
+]
 
 [project.scripts]
 maqdar-engine = "maqdar_engine:main"
+maqdar-synth = "maqdar_engine.synth.cli:main"
 
 [dependency-groups]
-dev = ["pytest>=8.4"]
+dev = [
+    "pytest==9.1.1",
+]
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]
@@ -18,3 +25,7 @@ build-backend = "uv_build"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "statistical: slower statistical checks on the medium preset",
+    "db: needs the local Supabase stack (set MAQDAR_TEST_DSN); skipped otherwise",
+]

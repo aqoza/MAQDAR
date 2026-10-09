@@ -1,0 +1,13 @@
+code,name_en,name_ar,minor_units
+SAR,Saudi riyal,ريال سعودي,2
+AED,UAE dirham,درهم إماراتي,2
+QAR,Qatari riyal,ريال قطري,2
+KWD,Kuwaiti dinar,دينار كويتي,3
+OMR,Omani rial,ريال عماني,3
+BHD,Bahraini dinar,دينار بحريني,3
+EGP,Egyptian pound,جنيه مصري,2
+JOD,Jordanian dinar,دينار أردني,3
+USD,US dollar,دولار أمريكي,2
+EUR,Euro,يورو,2
+JPY,Japanese yen,ين ياباني,0
+CNY,Chinese yuan,يوان صيني,2
