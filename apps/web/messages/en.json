@@ -1,0 +1,80 @@
+{
+  "Common": {
+    "appName": "MAQDAR",
+    "tagline": "Service parts planning",
+    "signOut": "Sign out",
+    "toggleSidebar": "Toggle sidebar",
+    "signedInAs": "Signed in as"
+  },
+  "Auth": {
+    "title": "Sign in to MAQDAR",
+    "subtitle": "Service parts planning for OEMs, distributors and dealer groups.",
+    "email": "Email",
+    "emailPlaceholder": "you@company.com",
+    "password": "Password",
+    "signIn": "Sign in",
+    "sendMagicLink": "Email me a sign-in link",
+    "orDivider": "or",
+    "magicLinkSent": "Check your inbox. We sent a sign-in link to {email}.",
+    "errors": {
+      "invalidEmail": "Enter a valid email address.",
+      "passwordRequired": "Enter your password.",
+      "invalidCredentials": "Email or password is incorrect.",
+      "rateLimited": "Too many attempts. Wait a moment and try again.",
+      "linkInvalid": "This sign-in link is invalid or has expired. Request a new one.",
+      "generic": "Something went wrong. Try again."
+    }
+  },
+  "Nav": {
+    "dashboard": "Dashboard",
+    "items": "Items",
+    "locations": "Locations",
+    "suppliers": "Suppliers",
+    "forecasts": "Forecasts",
+    "replenishment": "Replenishment",
+    "settings": "Settings"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "description": "Availability, inventory value and demand at a glance.",
+    "empty": "KPIs appear once transactions are loaded (Step 6)."
+  },
+  "Items": {
+    "title": "Items",
+    "description": "Parts, brands, supersessions and interchanges.",
+    "empty": "Item master data arrives in Step 4."
+  },
+  "Locations": {
+    "title": "Locations",
+    "description": "Warehouses, regional hubs and branches across the network.",
+    "empty": "Location master data arrives in Step 4."
+  },
+  "Suppliers": {
+    "title": "Suppliers",
+    "description": "Suppliers, lead times, minimum order quantities and pack sizes.",
+    "empty": "Supplier master data arrives in Step 4."
+  },
+  "Forecasts": {
+    "title": "Forecasts",
+    "description": "Demand classification, forecast models and planner overrides.",
+    "empty": "Forecasting arrives in Phase 2."
+  },
+  "Replenishment": {
+    "title": "Replenishment",
+    "description": "Purchase suggestions, approvals and redistribution.",
+    "empty": "Replenishment arrives in Phase 3."
+  },
+  "Settings": {
+    "title": "Settings",
+    "description": "Organization, users and preferences.",
+    "language": {
+      "title": "Language",
+      "description": "English is the default. Arabic is switched on per organization in Step 3; until then this choice applies to your browser only.",
+      "en": "English",
+      "ar": "العربية"
+    }
+  },
+  "Empty": {
+    "title": "Nothing here yet"
+  }
+}

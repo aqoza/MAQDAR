@@ -1,0 +1,30 @@
+{
+  "name": "maqdar",
+  "private": true,
+  "packageManager": "pnpm@12.10.1",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=12.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "check:logical": "pnpm --filter web check:logical",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:status": "supabase status",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db --local",
+    "db:types": "node scripts/gen-types.mjs",
+    "db:env": "node scripts/write-env.mjs"
+  },
+  "devDependencies": {
+    "prettier": "3.9.9",
+    "supabase": "2.120.0"
+  }
+}
