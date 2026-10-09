@@ -128,10 +128,10 @@ begin
   foreach t in array array['locations', 'items', 'item_supersessions', 'suppliers', 'supplier_items'] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('revoke all on public.%I from anon', t);
-    execute format('create policy "members read" on public.%I for select to authenticated using (app.is_member(organization_id))', t);
-    execute format('create policy "editors insert" on public.%I for insert to authenticated with check (app.can_edit(organization_id))', t);
-    execute format('create policy "editors update" on public.%I for update to authenticated using (app.can_edit(organization_id)) with check (app.can_edit(organization_id))', t);
-    execute format('create policy "editors delete" on public.%I for delete to authenticated using (app.can_edit(organization_id))', t);
+    execute format('create policy "members read" on public.%I for select to authenticated using (organization_id = any (array(select app.member_organizations())))', t);
+    execute format('create policy "editors insert" on public.%I for insert to authenticated with check (organization_id = any (array(select app.editable_organizations())))', t);
+    execute format('create policy "editors update" on public.%I for update to authenticated using (organization_id = any (array(select app.editable_organizations()))) with check (organization_id = any (array(select app.editable_organizations())))', t);
+    execute format('create policy "editors delete" on public.%I for delete to authenticated using (organization_id = any (array(select app.editable_organizations())))', t);
     execute format('create trigger %I before update on public.%I for each row execute function app.set_updated_at()', t || '_set_updated_at', t);
   end loop;
 end

@@ -74,14 +74,14 @@ revoke all on public.demand_history from anon;
 
 create policy "members read"
   on public.demand_history for select to authenticated
-  using (app.is_member(organization_id));
+  using (organization_id = any (array(select app.member_organizations())));
 create policy "editors insert"
   on public.demand_history for insert to authenticated
-  with check (app.can_edit(organization_id));
+  with check (organization_id = any (array(select app.editable_organizations())));
 create policy "editors update"
   on public.demand_history for update to authenticated
-  using (app.can_edit(organization_id))
-  with check (app.can_edit(organization_id));
+  using (organization_id = any (array(select app.editable_organizations())))
+  with check (organization_id = any (array(select app.editable_organizations())));
 create policy "editors delete"
   on public.demand_history for delete to authenticated
-  using (app.can_edit(organization_id));
+  using (organization_id = any (array(select app.editable_organizations())));

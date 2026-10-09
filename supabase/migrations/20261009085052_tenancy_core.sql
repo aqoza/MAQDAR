@@ -47,9 +47,50 @@ create trigger memberships_set_updated_at
   before update on public.memberships
   for each row execute function app.set_updated_at();
 
--- RLS predicates. Security definer (owned by postgres, which bypasses RLS) so the membership
--- lookup never recurses into the memberships policies. Step 3 may switch the bodies to read the
--- organization claims from the JWT; callers do not change.
+-- RLS helpers. Security definer (owned by postgres, which bypasses RLS) so the membership lookup
+-- never recurses into the memberships policies, and an empty search_path so every reference is
+-- schema-qualified. Step 3 may switch the two set-returning bodies to read the organization
+-- claims from the JWT; callers do not change.
+--
+-- Policies are written as `organization_id = any (array(select app.member_organizations()))`, never as a
+-- boolean function call per row. The array subquery is an InitPlan evaluated once per statement
+-- and `= any` on that parameter is an index condition, so a query without an organization filter
+-- reads only the member's rows through the (organization_id, ...) indexes. The plain
+-- `in (select app.member_organizations())` form is a hashed subplan instead: cheap per row but
+-- re-evaluated per partition scan and never pushed into an index (a small tenant's unscoped count
+-- over 648 k demand rows took 250 ms against 13.5 ms). A boolean `app.is_member(organization_id)`
+-- is called once per candidate row (~25 µs each: with the large synthetic preset an unscoped
+-- count over 13.7 M demand rows did not finish in 150 s).
+create or replace function app.member_organizations()
+returns setof uuid
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select m.organization_id
+  from public.memberships m
+  where m.user_id = (select auth.uid());
+$$;
+comment on function app.member_organizations() is 'Organizations the current user belongs to. Use in RLS policies as organization_id = any (array(select app.member_organizations())).';
+
+create or replace function app.editable_organizations()
+returns setof uuid
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select m.organization_id
+  from public.memberships m
+  where m.user_id = (select auth.uid())
+    and m.role in ('owner', 'admin', 'planner');
+$$;
+comment on function app.editable_organizations() is 'Organizations where the current user is owner, admin or planner. Use in RLS policies as organization_id = any (array(select app.editable_organizations())).';
+
+-- Single-organization checks for application code and tests, never for policies. Direct lookups
+-- rather than wrappers over the set helpers: a nested security-definer call costs ~350 µs instead
+-- of ~25 µs. Keep the four bodies in sync when Step 3 changes the source of truth.
 create or replace function app.is_member(org uuid)
 returns boolean
 language sql
@@ -81,8 +122,12 @@ as $$
   );
 $$;
 
+revoke all on function app.member_organizations() from public, anon;
+revoke all on function app.editable_organizations() from public, anon;
 revoke all on function app.is_member(uuid) from public, anon;
 revoke all on function app.can_edit(uuid) from public, anon;
+grant execute on function app.member_organizations() to authenticated, service_role;
+grant execute on function app.editable_organizations() to authenticated, service_role;
 grant execute on function app.is_member(uuid) to authenticated, service_role;
 grant execute on function app.can_edit(uuid) to authenticated, service_role;
 
@@ -93,11 +138,11 @@ revoke all on public.memberships from anon;
 
 create policy "members read their organizations"
   on public.organizations for select to authenticated
-  using (app.is_member(id));
+  using (id = any (array(select app.member_organizations())));
 
 create policy "members read memberships of their organizations"
   on public.memberships for select to authenticated
-  using (app.is_member(organization_id));
+  using (organization_id = any (array(select app.member_organizations())));
 
 -- No insert/update/delete policies yet: organizations and memberships are created by Step 3's
 -- invitation flow through security-definer functions, never directly through the API.
