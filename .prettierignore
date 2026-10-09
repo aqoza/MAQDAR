@@ -13,3 +13,5 @@ supabase/.temp
 supabase/.branches
 engine/.venv
 engine/uv.lock
+docs/import-format.schema.json
+engine/data

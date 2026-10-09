@@ -1,0 +1,22 @@
+code,name_en,name_ar,unit_of_measure,pack_sizes,moq_multipliers,price_median_sar,price_log_sigma,heat_coefficient,dust_coefficient,ramadan_profile,pre_eid_lift,hajj_fleet,share
+battery,Batteries,بطاريات,EA,1,2;4;6,420,0.45,1.00,0.00,battery,1.30,0.20,0.08
+ac_compressor,A/C compressors,ضواغط التكييف,EA,1,1;1;2,1650,0.55,1.00,0.00,workshop,1.20,0.20,0.04
+ac_condenser,A/C condensers and radiators,مكثفات وراديترات,EA,1,1;1;2,780,0.55,0.90,0.00,workshop,1.15,0.20,0.04
+ac_parts,A/C blowers and relays,قطع تكييف متنوعة,EA,1;2;4,1;2;4,165,0.60,0.80,0.00,workshop,1.15,0.20,0.06
+cabin_filter,Cabin filters,فلاتر المقصورة,EA,4;6;12,1;2;4,38,0.40,0.30,1.00,counter,1.00,0.00,0.07
+air_filter,Air filters,فلاتر الهواء,EA,4;6;12,1;2;4,45,0.40,0.30,1.00,counter,1.00,0.10,0.08
+oil_filter,Oil filters,فلاتر الزيت,EA,6;12;24,1;2;4,22,0.35,0.00,0.00,counter,1.10,0.10,0.10
+fuel_filter,Fuel filters,فلاتر الوقود,EA,4;6;12,1;2,65,0.45,0.00,0.20,counter,1.00,0.10,0.04
+coolant,Coolant and additives,سوائل التبريد والإضافات,L,4;12;24,1;2;4,19,0.30,0.70,0.00,counter,1.10,0.10,0.05
+engine_oil,Engine oil,زيت المحرك,L,4;12;24,1;2;4,24,0.30,0.00,0.00,counter,1.10,0.10,0.07
+brake_pad,Brake pads,فحمات الفرامل,SET,1;2;4,1;2;4,145,0.50,0.10,0.00,workshop,1.20,0.20,0.08
+brake_disc,Brake discs,أقراص الفرامل,EA,1;2,1;2,260,0.50,0.00,0.00,workshop,1.10,0.20,0.04
+belt,Belts and tensioners,أحزمة وشدادات,EA,1;2;4,1;2;4,95,0.55,0.50,0.00,workshop,1.00,0.10,0.04
+spark_plug,Spark plugs and ignition,شمعات الإشعال,EA,4;6;8;12,1;2;4,34,0.45,0.10,0.00,counter,1.00,0.00,0.05
+wiper_blade,Wiper blades,مساحات الزجاج,EA,2;4;10,1;2;4,42,0.40,0.00,0.60,counter,1.00,0.00,0.04
+tyre,Tyres,إطارات,EA,1;2;4,1;2;4,520,0.45,0.40,0.00,tyre,1.30,0.20,0.05
+suspension,Suspension and steering,التعليق والتوجيه,EA,1;2,1;1;2,310,0.60,0.00,0.00,workshop,1.00,0.20,0.05
+electrical,Electrical and sensors,الكهرباء والحساسات,EA,1;2;4,1;2;4,210,0.70,0.30,0.00,workshop,1.00,0.10,0.04
+lighting,Lighting,الإنارة,EA,1;2;10,1;2;5,120,0.60,0.00,0.00,counter,1.00,0.00,0.03
+body_panel,Body panels and mirrors,هياكل ومرايا,EA,1,1;1;2,640,0.65,0.00,0.00,workshop,1.00,0.00,0.03
+engine_component,Engine components,مكونات المحرك,EA,1,1;1;2,980,0.75,0.00,0.00,workshop,1.00,0.10,0.02

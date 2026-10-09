@@ -53,6 +53,19 @@ jobs:
         run: |
           node scripts/gen-types.mjs
           git diff --exit-code -- packages/shared/src/database.types.ts
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: '0.12.23'
+          enable-cache: true
+          cache-dependency-glob: engine/uv.lock
+      - name: Synthetic data generates, validates and loads into the stack
+        working-directory: engine
+        run: |
+          uv sync --locked
+          uv run maqdar-synth all --preset tiny --force
+          uv run pytest -m db -q
+        env:
+          MAQDAR_TEST_DSN: postgresql://postgres:postgres@127.0.0.1:54322/postgres
       - name: Build web
         run: pnpm --filter web build
       - name: Install Playwright browser

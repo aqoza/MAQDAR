@@ -6,7 +6,283 @@ export type Database = {
   
   "public": {
           Tables: {
-            [_ in never]: never
+            "countries": {
+                  Row: {
+                    "code": string,"currency_code": string,"holiday_coverage_from": string | null,"holiday_coverage_to": string | null,"name_ar": string | null,"name_en": string,"timezone": string,"utc_offset_minutes": number,"vat_rate": number,"weekend_days": (number)[]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"currency_code": string,"holiday_coverage_from"?: string | null,"holiday_coverage_to"?: string | null,"name_ar"?: string | null,"name_en": string,"timezone": string,"utc_offset_minutes": number,"vat_rate": number,"weekend_days": (number)[]
+                  }
+                  Update: {
+                    "code"?: string,"currency_code"?: string,"holiday_coverage_from"?: string | null,"holiday_coverage_to"?: string | null,"name_ar"?: string | null,"name_en"?: string,"timezone"?: string,"utc_offset_minutes"?: number,"vat_rate"?: number,"weekend_days"?: (number)[]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "countries_currency_code_fkey"
+      columns: ["currency_code"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    }
+                  ]
+                },"currencies": {
+                  Row: {
+                    "code": string,"minor_units": number,"name_ar": string | null,"name_en": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"minor_units": number,"name_ar"?: string | null,"name_en": string
+                  }
+                  Update: {
+                    "code"?: string,"minor_units"?: number,"name_ar"?: string | null,"name_en"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"demand_history": {
+                  Row: {
+                    "demand_date": string,"item_id": string,"location_id": string,"lost_sales_quantity": number,"organization_id": string,"quantity": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "demand_date": string,"item_id": string,"location_id": string,"lost_sales_quantity"?: number,"organization_id": string,"quantity"?: number
+                  }
+                  Update: {
+                    "demand_date"?: string,"item_id"?: string,"location_id"?: string,"lost_sales_quantity"?: number,"organization_id"?: string,"quantity"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"item_supersessions": {
+                  Row: {
+                    "created_at": string,"effective_on": string,"id": string,"note": string | null,"organization_id": string,"predecessor_item_id": string,"quantity_factor": number,"successor_item_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"effective_on": string,"id"?: string,"note"?: string | null,"organization_id": string,"predecessor_item_id": string,"quantity_factor"?: number,"successor_item_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"effective_on"?: string,"id"?: string,"note"?: string | null,"organization_id"?: string,"predecessor_item_id"?: string,"quantity_factor"?: number,"successor_item_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "item_supersessions_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "item_supersessions_organization_id_predecessor_item_id_fkey"
+      columns: ["organization_id","predecessor_item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "item_supersessions_organization_id_successor_item_id_fkey"
+      columns: ["organization_id","successor_item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"items": {
+                  Row: {
+                    "brand": string | null,"code": string,"created_at": string,"currency": string,"discontinued_on": string | null,"id": string,"introduced_on": string | null,"name_ar": string | null,"name_en": string,"organization_id": string,"product_group": string,"status": string,"unit_cost": number,"unit_of_measure": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "brand"?: string | null,"code": string,"created_at"?: string,"currency": string,"discontinued_on"?: string | null,"id"?: string,"introduced_on"?: string | null,"name_ar"?: string | null,"name_en": string,"organization_id": string,"product_group": string,"status"?: string,"unit_cost": number,"unit_of_measure": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "brand"?: string | null,"code"?: string,"created_at"?: string,"currency"?: string,"discontinued_on"?: string | null,"id"?: string,"introduced_on"?: string | null,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"product_group"?: string,"status"?: string,"unit_cost"?: number,"unit_of_measure"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "items_currency_fkey"
+      columns: ["currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "items_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"locations": {
+                  Row: {
+                    "city": string | null,"code": string,"country_code": string,"created_at": string,"id": string,"is_active": boolean,"latitude": number | null,"location_type": string,"longitude": number | null,"name_ar": string | null,"name_en": string,"organization_id": string,"parent_location_id": string | null,"timezone": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "city"?: string | null,"code": string,"country_code": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"latitude"?: number | null,"location_type": string,"longitude"?: number | null,"name_ar"?: string | null,"name_en": string,"organization_id": string,"parent_location_id"?: string | null,"timezone": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "city"?: string | null,"code"?: string,"country_code"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"latitude"?: number | null,"location_type"?: string,"longitude"?: number | null,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"parent_location_id"?: string | null,"timezone"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "locations_country_code_fkey"
+      columns: ["country_code"]
+isOneToOne: false
+      referencedRelation: "countries"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "locations_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "locations_organization_id_parent_location_id_fkey"
+      columns: ["organization_id","parent_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"memberships": {
+                  Row: {
+                    "created_at": string,"organization_id": string,"role": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"organization_id": string,"role": string,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"organization_id"?: string,"role"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "memberships_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"organizations": {
+                  Row: {
+                    "arabic_enabled": boolean,"base_currency": string,"created_at": string,"home_country": string,"id": string,"name": string,"slug": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"home_country"?: string,"id"?: string,"name": string,"slug": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"home_country"?: string,"id"?: string,"name"?: string,"slug"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"public_holidays": {
+                  Row: {
+                    "country_code": string,"holiday_date": string,"id": number,"kind": string,"name_en": string,"note": string | null,"sector": string,"shifted_from": string | null,"source": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "country_code": string,"holiday_date": string,"id"?: never,"kind": string,"name_en": string,"note"?: string | null,"sector": string,"shifted_from"?: string | null,"source": string
+                  }
+                  Update: {
+                    "country_code"?: string,"holiday_date"?: string,"id"?: never,"kind"?: string,"name_en"?: string,"note"?: string | null,"sector"?: string,"shifted_from"?: string | null,"source"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "public_holidays_country_code_fkey"
+      columns: ["country_code"]
+isOneToOne: false
+      referencedRelation: "countries"
+      referencedColumns: ["code"]
+    }
+                  ]
+                },"ramadan_windows": {
+                  Row: {
+                    "arafat_day": string,"country_code": string,"eid_al_adha": string,"eid_al_fitr": string,"hijri_year": number,"ramadan_end": string,"ramadan_start": string,"source": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "arafat_day": string,"country_code": string,"eid_al_adha": string,"eid_al_fitr": string,"hijri_year": number,"ramadan_end": string,"ramadan_start": string,"source": string
+                  }
+                  Update: {
+                    "arafat_day"?: string,"country_code"?: string,"eid_al_adha"?: string,"eid_al_fitr"?: string,"hijri_year"?: number,"ramadan_end"?: string,"ramadan_start"?: string,"source"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "ramadan_windows_country_code_fkey"
+      columns: ["country_code"]
+isOneToOne: false
+      referencedRelation: "countries"
+      referencedColumns: ["code"]
+    }
+                  ]
+                },"supplier_items": {
+                  Row: {
+                    "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"supplier_id": string,"supplier_part_number": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"currency": string,"id"?: string,"is_preferred"?: boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id": string,"pack_size"?: number,"supplier_id": string,"supplier_part_number"?: string | null,"unit_price": number,"updated_at"?: string,"valid_from"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"currency"?: string,"id"?: string,"is_preferred"?: boolean,"item_id"?: string,"lead_time_days"?: number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id"?: string,"pack_size"?: number,"supplier_id"?: string,"supplier_part_number"?: string | null,"unit_price"?: number,"updated_at"?: string,"valid_from"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "supplier_items_currency_fkey"
+      columns: ["currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "supplier_items_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "supplier_items_organization_id_item_id_fkey"
+      columns: ["organization_id","item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_items_organization_id_supplier_id_fkey"
+      columns: ["organization_id","supplier_id"]
+isOneToOne: false
+      referencedRelation: "suppliers"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"suppliers": {
+                  Row: {
+                    "code": string,"country_code": string,"created_at": string,"currency": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"name_ar": string | null,"name_en": string,"organization_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"country_code": string,"created_at"?: string,"currency": string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"name_ar"?: string | null,"name_en": string,"organization_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "code"?: string,"country_code"?: string,"created_at"?: string,"currency"?: string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50"?: number,"lead_time_days_p90"?: number,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "suppliers_currency_fkey"
+      columns: ["currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "suppliers_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                }
           }
           Views: {
             [_ in never]: never

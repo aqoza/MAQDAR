@@ -1,0 +1,9 @@
+code,name_en,name_ar,currency_code,weekend_days,vat_rate,timezone,utc_offset_minutes,holiday_coverage_from,holiday_coverage_to
+SA,Saudi Arabia,المملكة العربية السعودية,SAR,5;6,15.00,Asia/Riyadh,180,2023-10-01,2026-09-30
+AE,United Arab Emirates,الإمارات العربية المتحدة,AED,6;7,5.00,Asia/Dubai,240,2023-10-01,2026-09-30
+QA,Qatar,قطر,QAR,5;6,0.00,Asia/Qatar,180,2023-10-01,2026-09-30
+KW,Kuwait,الكويت,KWD,5;6,0.00,Asia/Kuwait,180,2023-10-01,2026-09-30
+OM,Oman,عُمان,OMR,5;6,5.00,Asia/Muscat,240,2023-10-01,2026-09-30
+BH,Bahrain,البحرين,BHD,5;6,10.00,Asia/Bahrain,180,,
+EG,Egypt,مصر,EGP,5;6,14.00,Africa/Cairo,120,,
+JO,Jordan,الأردن,JOD,5;6,16.00,Asia/Amman,180,,

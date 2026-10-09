@@ -1,2 +1,3 @@
 -- Local seed data. Runs after all migrations on the first `supabase start` and on every
--- `supabase db reset`. Data only, never DDL. Step 2 adds the synthetic dataset loader.
+-- `supabase db reset`. Data only, never DDL. Reference data is seeded by migrations; synthetic
+-- datasets are loaded with `pnpm synth:small` (see docs/synthetic-data.md), not from this file.

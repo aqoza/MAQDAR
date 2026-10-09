@@ -1,0 +1,41 @@
+location_code,name_en,name_ar,location_type,country_code,city,latitude,longitude,timezone,parent_location_code,region_tag,size_factor
+RUH-DC,Riyadh Central Distribution Centre,مركز التوزيع الرئيسي بالرياض,central,SA,Riyadh,24.924700,46.776400,Asia/Riyadh,,central,1.00
+DXB-HUB,Dubai Regional Hub,مستودع دبي الإقليمي,hub,AE,Dubai,25.018800,55.063400,Asia/Dubai,RUH-DC,gulf,1.00
+DOH-HUB,Doha Regional Hub,مستودع الدوحة الإقليمي,hub,QA,Doha,25.188500,51.471100,Asia/Qatar,RUH-DC,gulf,0.70
+KWI-HUB,Kuwait Regional Hub,مستودع الكويت الإقليمي,hub,KW,Kuwait City,29.339000,47.925900,Asia/Kuwait,RUH-DC,gulf,0.70
+MCT-HUB,Muscat Regional Hub,مستودع مسقط الإقليمي,hub,OM,Muscat,23.600400,58.191100,Asia/Muscat,RUH-DC,gulf,0.60
+SA-RUH-N,Riyadh North Branch,فرع شمال الرياض,branch,SA,Riyadh,24.820300,46.643800,Asia/Riyadh,RUH-DC,central,1.30
+SA-RUH-S,Riyadh South Branch,فرع جنوب الرياض,branch,SA,Riyadh,24.579100,46.746200,Asia/Riyadh,RUH-DC,central,1.10
+SA-JED,Jeddah Branch,فرع جدة,branch,SA,Jeddah,21.543300,39.172800,Asia/Riyadh,RUH-DC,western,1.30
+SA-JED-N,Jeddah North Branch,فرع شمال جدة,branch,SA,Jeddah,21.730700,39.139900,Asia/Riyadh,RUH-DC,western,0.90
+SA-MAK,Makkah Branch,فرع مكة المكرمة,branch,SA,Makkah,21.389100,39.857900,Asia/Riyadh,RUH-DC,western,0.90
+SA-MED,Madinah Branch,فرع المدينة المنورة,branch,SA,Madinah,24.524700,39.569200,Asia/Riyadh,RUH-DC,western,0.80
+SA-TIF,Taif Branch,فرع الطائف,branch,SA,Taif,21.270300,40.415800,Asia/Riyadh,RUH-DC,western,0.60
+SA-DMM,Dammam Branch,فرع الدمام,branch,SA,Dammam,26.434400,50.103300,Asia/Riyadh,RUH-DC,eastern,1.00
+SA-KHB,Khobar Branch,فرع الخبر,branch,SA,Al Khobar,26.217200,50.197100,Asia/Riyadh,RUH-DC,eastern,0.80
+SA-JUB,Jubail Branch,فرع الجبيل,branch,SA,Jubail,27.004600,49.646000,Asia/Riyadh,RUH-DC,eastern,0.60
+SA-QSM,Buraydah Branch,فرع بريدة,branch,SA,Buraydah,26.325900,43.975000,Asia/Riyadh,RUH-DC,central,0.60
+SA-HAL,Hail Branch,فرع حائل,branch,SA,Hail,27.511400,41.720800,Asia/Riyadh,RUH-DC,central,0.50
+SA-TUU,Tabuk Branch,فرع تبوك,branch,SA,Tabuk,28.383800,36.566200,Asia/Riyadh,RUH-DC,western,0.50
+SA-AHB,Abha Branch,فرع أبها,branch,SA,Abha,18.216400,42.505300,Asia/Riyadh,RUH-DC,southern,0.50
+AE-DXB-DEI,Dubai Deira Branch,فرع ديرة دبي,branch,AE,Dubai,25.271800,55.325000,Asia/Dubai,DXB-HUB,gulf,1.20
+AE-DXB-QUZ,Dubai Al Quoz Branch,فرع القوز دبي,branch,AE,Dubai,25.138600,55.234900,Asia/Dubai,DXB-HUB,gulf,1.10
+AE-AUH,Abu Dhabi Branch,فرع أبوظبي,branch,AE,Abu Dhabi,24.453800,54.377300,Asia/Dubai,DXB-HUB,gulf,1.00
+AE-AUH-MUS,Abu Dhabi Mussafah Branch,فرع مصفح أبوظبي,branch,AE,Abu Dhabi,24.351200,54.503700,Asia/Dubai,DXB-HUB,gulf,0.90
+AE-SHJ,Sharjah Branch,فرع الشارقة,branch,AE,Sharjah,25.329400,55.418500,Asia/Dubai,DXB-HUB,gulf,0.90
+AE-AJM,Ajman Branch,فرع عجمان,branch,AE,Ajman,25.404600,55.503000,Asia/Dubai,DXB-HUB,gulf,0.60
+AE-AAN,Al Ain Branch,فرع العين,branch,AE,Al Ain,24.207500,55.744700,Asia/Dubai,DXB-HUB,gulf,0.60
+AE-RAK,Ras Al Khaimah Branch,فرع رأس الخيمة,branch,AE,Ras Al Khaimah,25.789500,55.942900,Asia/Dubai,DXB-HUB,gulf,0.50
+QA-DOH-IND,Doha Industrial Area Branch,فرع المنطقة الصناعية بالدوحة,branch,QA,Doha,25.187300,51.448800,Asia/Qatar,DOH-HUB,gulf,1.00
+QA-RYN,Al Rayyan Branch,فرع الريان,branch,QA,Al Rayyan,25.287600,51.421100,Asia/Qatar,DOH-HUB,gulf,0.70
+QA-WAK,Al Wakrah Branch,فرع الوكرة,branch,QA,Al Wakrah,25.171000,51.603500,Asia/Qatar,DOH-HUB,gulf,0.60
+QA-KHR,Al Khor Branch,فرع الخور,branch,QA,Al Khor,25.684000,51.497900,Asia/Qatar,DOH-HUB,gulf,0.40
+KW-SHU,Shuwaikh Branch,فرع الشويخ,branch,KW,Kuwait City,29.343700,47.930500,Asia/Kuwait,KWI-HUB,gulf,1.00
+KW-AHM,Al Ahmadi Branch,فرع الأحمدي,branch,KW,Al Ahmadi,29.076900,48.083700,Asia/Kuwait,KWI-HUB,gulf,0.70
+KW-FAR,Farwaniya Branch,فرع الفروانية,branch,KW,Al Farwaniyah,29.277500,47.958700,Asia/Kuwait,KWI-HUB,gulf,0.70
+KW-JAH,Jahra Branch,فرع الجهراء,branch,KW,Al Jahra,29.337500,47.658100,Asia/Kuwait,KWI-HUB,gulf,0.50
+OM-RUW,Muscat Ruwi Branch,فرع روي مسقط,branch,OM,Muscat,23.597600,58.541300,Asia/Muscat,MCT-HUB,gulf,0.90
+OM-SEB,Seeb Branch,فرع السيب,branch,OM,Seeb,23.670300,58.189100,Asia/Muscat,MCT-HUB,gulf,0.70
+OM-SOH,Sohar Branch,فرع صحار,branch,OM,Sohar,24.347100,56.709500,Asia/Muscat,MCT-HUB,gulf,0.60
+OM-NZW,Nizwa Branch,فرع نزوى,branch,OM,Nizwa,22.933300,57.529900,Asia/Muscat,MCT-HUB,gulf,0.40
+OM-SLL,Salalah Branch,فرع صلالة,branch,OM,Salalah,17.015100,54.092400,Asia/Muscat,MCT-HUB,dhofar,0.50
