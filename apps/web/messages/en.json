@@ -4,7 +4,14 @@
     "tagline": "Service parts planning",
     "signOut": "Sign out",
     "toggleSidebar": "Toggle sidebar",
-    "signedInAs": "Signed in as"
+    "signedInAs": "Signed in as",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "back": "Back",
+    "saving": "Saving…",
+    "pendingInvitations": "{count, plural, one {You have # pending invitation.} other {You have # pending invitations.}}",
+    "viewInvitations": "View invitations"
   },
   "Auth": {
     "title": "Sign in to MAQDAR",
@@ -15,14 +22,31 @@
     "signIn": "Sign in",
     "sendMagicLink": "Email me a sign-in link",
     "orDivider": "or",
-    "magicLinkSent": "Check your inbox. We sent a sign-in link to {email}.",
+    "magicLinkSent": "If {email} has a MAQDAR account, we sent it a sign-in link. Check your inbox.",
+    "invitationOnly": "MAQDAR is invitation-only. Ask an administrator of your organization to invite you.",
     "errors": {
       "invalidEmail": "Enter a valid email address.",
       "passwordRequired": "Enter your password.",
       "invalidCredentials": "Email or password is incorrect.",
       "rateLimited": "Too many attempts. Wait a moment and try again.",
       "linkInvalid": "This sign-in link is invalid or has expired. Request a new one.",
+      "inviteExpired": "This invitation link is invalid, already used or expired. Ask for a new invitation.",
+      "passwordTooShort": "Use at least 8 characters.",
       "generic": "Something went wrong. Try again."
+    },
+    "invite": {
+      "title": "Accept your invitation",
+      "description": "Click the button to verify your email address and continue to MAQDAR.",
+      "accept": "Accept invitation",
+      "missingToken": "This link is incomplete. Open the link from your invitation email again."
+    },
+    "setPassword": {
+      "title": "Set a password",
+      "description": "You can also keep signing in with email links.",
+      "password": "New password",
+      "hint": "At least 8 characters.",
+      "submit": "Save password",
+      "skip": "Skip for now"
     }
   },
   "Nav": {
@@ -64,15 +88,157 @@
     "description": "Purchase suggestions, approvals and redistribution.",
     "empty": "Replenishment arrives in Phase 3."
   },
+  "Organizations": {
+    "title": "Your organizations",
+    "description": "Open an organization to continue, or create a new one.",
+    "open": "Open",
+    "active": "Active",
+    "create": "Create organization",
+    "empty": "You do not belong to an organization yet.",
+    "emptyHint": "Create one, or ask a colleague to invite you.",
+    "pendingTitle": "Pending invitations",
+    "pendingDescription": "Invitations sent to {email}.",
+    "noPending": "No pending invitations.",
+    "invitedAs": "Invited as {role} by {inviter}",
+    "expires": "Expires {date}",
+    "accept": "Accept",
+    "new": {
+      "title": "Create an organization",
+      "description": "An organization is a tenant: its items, locations, suppliers and demand are isolated from every other organization.",
+      "name": "Name",
+      "namePlaceholder": "Gulf Auto Parts",
+      "slug": "URL identifier",
+      "slugHint": "Lower-case letters, digits and hyphens. Derived from the name; it cannot be changed later.",
+      "baseCurrency": "Base currency",
+      "homeCountry": "Home country",
+      "arabicEnabled": "Enable Arabic for this organization",
+      "submit": "Create organization"
+    },
+    "switcher": {
+      "label": "Organization",
+      "create": "Create organization",
+      "invitations": "Pending invitations ({count})"
+    },
+    "errors": {
+      "slugTaken": "This identifier is already taken.",
+      "tooMany": "You created too many organizations today. Try again tomorrow.",
+      "notFound": "Organization not found."
+    }
+  },
+  "Invitations": {
+    "acceptTitle": "Join {organization}",
+    "acceptDescription": "You were invited as {role}.",
+    "accept": "Accept and continue",
+    "mismatchTitle": "This invitation is for someone else",
+    "mismatchDescription": "It was sent to a different email address, or it is no longer valid. Sign out and sign in with the invited address, or ask for a new invitation.",
+    "accepted": "Welcome to {organization}."
+  },
+  "Members": {
+    "title": "Members",
+    "description": "People with access to this organization.",
+    "email": "Email",
+    "role": "Role",
+    "since": "Member since",
+    "locations": "Locations",
+    "allLocations": "All locations",
+    "noLocations": "No locations assigned",
+    "assignLocations": "Assign locations",
+    "you": "You",
+    "remove": "Remove",
+    "leave": "Leave organization",
+    "removeConfirmTitle": "Remove {email}?",
+    "removeConfirmDescription": "They lose access immediately. You can invite them again later.",
+    "leaveConfirmTitle": "Leave {organization}?",
+    "leaveConfirmDescription": "You lose access to this organization immediately. An administrator can invite you again later.",
+    "saved": "Saved."
+  },
+  "InviteMembers": {
+    "title": "Invitations",
+    "description": "Invite colleagues by email. Invitations stay open for 7 days; each emailed link works for one hour and can be resent.",
+    "email": "Email",
+    "role": "Role",
+    "send": "Send invitation",
+    "resend": "Resend",
+    "revoke": "Revoke",
+    "pending": "Pending invitations",
+    "none": "No pending invitations.",
+    "sentTo": "Invitation sent to {email}.",
+    "resentTo": "Invitation re-sent to {email}.",
+    "sentAt": "Sent {date}",
+    "expiresAt": "Expires {date}",
+    "errors": {
+      "alreadyMember": "{email} is already a member.",
+      "cooldown": "An invitation to this address was sent less than two minutes ago.",
+      "tooMany": "This invitation has been sent too many times.",
+      "emailRateLimited": "The email service is rate-limited right now. Try again in a few minutes.",
+      "emailNotAuthorized": "This address cannot receive email from the current email service.",
+      "roleCeiling": "Only owners can invite owners."
+    }
+  },
+  "Roles": {
+    "owner": "Owner",
+    "admin": "Administrator",
+    "planner": "Planner",
+    "approver": "Approver",
+    "branch_user": "Branch user",
+    "viewer": "Viewer"
+  },
   "Settings": {
     "title": "Settings",
-    "description": "Organization, users and preferences.",
+    "description": "Organization, members and preferences.",
+    "organization": {
+      "title": "Organization",
+      "description": "Name, currency, country and language options.",
+      "name": "Name",
+      "slug": "URL identifier",
+      "baseCurrency": "Base currency",
+      "homeCountry": "Home country",
+      "arabicEnabled": "Arabic enabled",
+      "arabicEnabledHint": "Members may switch the interface to Arabic.",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "saved": "Settings saved.",
+      "readOnly": "Only owners and administrators can change these settings."
+    },
     "language": {
       "title": "Language",
-      "description": "English is the default. Arabic is switched on per organization in Step 3; until then this choice applies to your browser only.",
+      "description": "English is the default. Arabic is available when your organization enables it.",
       "en": "English",
-      "ar": "العربية"
-    }
+      "ar": "العربية",
+      "disabled": "Arabic is switched off for this organization. An administrator can enable it under Organization."
+    },
+    "account": {
+      "title": "Account",
+      "description": "Signed in as {email}.",
+      "setPassword": "Set password",
+      "setPasswordDescription": "Use a password in addition to email links.",
+      "password": "New password",
+      "save": "Save password",
+      "saved": "Password saved."
+    },
+    "staleOrganization": "The active organization changed in another tab or window. Reload this page and try again."
+  },
+  "Validation": {
+    "required": "This field is required.",
+    "invalidEmail": "Enter a valid email address.",
+    "slugFormat": "Use lower-case letters, digits and hyphens.",
+    "tooLong": "Too long (maximum {max} characters).",
+    "tooShort": "Too short (minimum {min} characters).",
+    "currency": "Use a three-letter currency code.",
+    "country": "Use a two-letter country code.",
+    "invalidRole": "Choose a role.",
+    "generic": "Check the highlighted fields."
+  },
+  "RpcErrors": {
+    "23503": "This refers to something that does not exist.",
+    "23505": "This already exists.",
+    "MQ401": "Sign in again to continue.",
+    "MQ403": "You are not allowed to do that in this organization.",
+    "MQ404": "Not found, or no longer valid.",
+    "MQ409": "That conflicts with the current state. An organization keeps at least one owner.",
+    "MQ422": "That input is not valid for this organization.",
+    "MQ429": "Too many requests. Wait a while and try again.",
+    "generic": "Something went wrong. Try again."
   },
   "Empty": {
     "title": "Nothing here yet"

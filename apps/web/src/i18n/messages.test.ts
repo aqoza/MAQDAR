@@ -10,8 +10,10 @@ function flatten(value: unknown, prefix = ''): Record<string, string> {
   }, {})
 }
 
+// Argument names are followed by `}` or `,` (`{email}`, `{count, plural, …}`); the text inside
+// plural or select cases (`one {You have # …}`) is not an argument and may be in any script.
 const icuArguments = (message: string) =>
-  [...message.matchAll(/\{\s*([A-Za-z0-9_]+)/g)].map((m) => m[1]).sort()
+  [...message.matchAll(/\{\s*([A-Za-z0-9_]+)\s*[,}]/g)].map((m) => m[1]).sort()
 
 const flatEn = flatten(en)
 const flatAr = flatten(ar)

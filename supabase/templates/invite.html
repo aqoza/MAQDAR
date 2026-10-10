@@ -1,0 +1,14 @@
+<h2>You are invited to MAQDAR</h2>
+<p>Someone invited you to plan service parts with them in MAQDAR.</p>
+<p>
+  <a
+    href="{{ .SiteURL }}/auth/invite?token_hash={{ .TokenHash }}&type=invite&next={{ .RedirectTo }}"
+  >
+    Accept the invitation
+  </a>
+</p>
+<p>
+  This link works once and expires in one hour. The invitation itself stays open for 7 days: if the
+  link has expired, ask the person who invited you to resend it.
+</p>
+<p>If you were not expecting this invitation, you can ignore this email.</p>

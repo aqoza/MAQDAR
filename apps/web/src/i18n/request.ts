@@ -1,9 +1,11 @@
 import type { Formats } from 'next-intl'
 import { getRequestConfig } from 'next-intl/server'
 import { cookies } from 'next/headers'
-import { LOCALE_COOKIE, defaultLocale, intlLocales, isAppLocale } from './config'
+import { getActiveContext } from '@/lib/organizations/context'
+import { LOCALE_COOKIE, defaultLocale, intlLocales } from './config'
 import { getMessageFallback, onIntlError } from './errors'
 import { messagesFor } from './messages'
+import { resolveLocale } from './resolve'
 
 export const formats = {
   number: {
@@ -17,12 +19,21 @@ export const formats = {
   },
 } satisfies Formats
 
-// No URL prefix: the locale is a per-user/per-organization setting read from a cookie.
-// Step 3 replaces the cookie source with the organization's Arabic toggle.
+/**
+ * No URL prefix: the locale is a per-user preference (the `locale` cookie) gated by the active
+ * organization's Arabic toggle. This runs for every route, /login included, so the English path
+ * never touches the database: only a cookie asking for Arabic costs the (request-memoised)
+ * organization lookup.
+ */
 export default getRequestConfig(async () => {
   const store = await cookies()
-  const candidate = store.get(LOCALE_COOKIE)?.value
-  const appLocale = isAppLocale(candidate) ? candidate : defaultLocale
+  const cookie = store.get(LOCALE_COOKIE)?.value
+
+  let appLocale = defaultLocale
+  if (cookie === 'ar') {
+    const context = await getActiveContext()
+    appLocale = resolveLocale({ cookie, arabicEnabled: context?.active?.arabic_enabled ?? false })
+  }
 
   return {
     locale: intlLocales[appLocale],
