@@ -4,7 +4,13 @@
     "tagline": "تخطيط قطع الغيار",
     "signOut": "تسجيل الخروج",
     "toggleSidebar": "إظهار أو إخفاء القائمة",
-    "signedInAs": "مسجّل الدخول باسم"
+    "signedInAs": "مسجّل الدخول باسم",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "remove": "إزالة",
+    "back": "رجوع",
+    "pendingInvitations": "{count, plural, one {لديك دعوة واحدة معلّقة.} other {لديك # دعوات معلّقة.}}",
+    "viewInvitations": "عرض الدعوات"
   },
   "Auth": {
     "title": "تسجيل الدخول إلى مقدار",
@@ -13,7 +19,7 @@
     "signIn": "تسجيل الدخول",
     "sendMagicLink": "أرسل لي رابط الدخول بالبريد",
     "orDivider": "أو",
-    "magicLinkSent": "تحقق من بريدك. أرسلنا رابط الدخول إلى {email}."
+    "magicLinkSent": "إذا كان لدى {email} حساب في مقدار، فقد أرسلنا إليه رابط تسجيل الدخول. تحقق من بريدك الوارد."
   },
   "Nav": {
     "dashboard": "لوحة التحكم",
@@ -24,8 +30,25 @@
     "replenishment": "التزويد",
     "settings": "الإعدادات"
   },
+  "Organizations": {
+    "title": "منظماتك",
+    "description": "افتح منظمة للمتابعة، أو أنشئ منظمة جديدة.",
+    "open": "فتح",
+    "create": "إنشاء منظمة"
+  },
+  "Roles": {
+    "owner": "مالك",
+    "admin": "مسؤول",
+    "planner": "مخطّط",
+    "approver": "معتمِد",
+    "branch_user": "مستخدم فرع",
+    "viewer": "مشاهد"
+  },
   "Settings": {
     "title": "الإعدادات",
+    "organization": {
+      "title": "المنظمة"
+    },
     "language": {
       "title": "اللغة",
       "en": "English",

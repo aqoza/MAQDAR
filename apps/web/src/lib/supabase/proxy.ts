@@ -4,6 +4,11 @@ import { env } from '@/lib/env'
 
 const PUBLIC_PREFIXES = ['/login', '/auth']
 
+/** `/auth` matches `/auth` and `/auth/…`, never `/authors`. */
+function matchesPrefix(pathname: string, prefix: string): boolean {
+  return pathname === prefix || pathname.startsWith(`${prefix}/`)
+}
+
 /**
  * Refreshes the Supabase session cookie on every request and guards the app routes.
  * Follows the official @supabase/ssr pattern: nothing runs between createServerClient and
@@ -38,12 +43,12 @@ export async function updateSession(request: NextRequest) {
   const user = data?.claims
 
   const { pathname } = request.nextUrl
-  const isPublic = PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+  const isPublic = PUBLIC_PREFIXES.some((prefix) => matchesPrefix(pathname, prefix))
 
   if (!user && !isPublic) {
     return redirectWithCookies(request, '/login', supabaseResponse)
   }
-  if (user && pathname.startsWith('/login')) {
+  if (user && matchesPrefix(pathname, '/login')) {
     return redirectWithCookies(request, '/dashboard', supabaseResponse)
   }
 
