@@ -25,3 +25,9 @@ minimumReleaseAgeExclude:
 # Pin the transitive dependency to the last 1.15 release until upstream fixes it.
 overrides:
   '@swc/core': 1.15.47
+
+# Next.js 16.4 loads .next/server/preview-props.json, which @opennextjs/cloudflare 1.20.10 does not
+# inline, so every server-rendered route crashes on Workers (opennextjs/opennextjs-cloudflare#1355).
+# This adds the file to the inlined manifests, as upstream PR #1356 does. Drop it once released.
+patchedDependencies:
+  '@opennextjs/cloudflare@1.20.10': patches/@opennextjs__cloudflare@1.20.10.patch
