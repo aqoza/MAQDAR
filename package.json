@@ -22,7 +22,8 @@
     "db:test": "supabase test db --local",
     "db:types": "node scripts/gen-types.mjs",
     "db:env": "node scripts/write-env.mjs",
-    "db:diff": "supabase db diff --schema public",
+    "db:diff": "supabase db diff --schema public,app",
+    "db:user": "node scripts/create-local-user.mjs",
     "synth": "uv run --project engine maqdar-synth",
     "synth:small": "uv run --project engine maqdar-synth all --preset small",
     "synth:large": "uv run --project engine maqdar-synth all --preset large"

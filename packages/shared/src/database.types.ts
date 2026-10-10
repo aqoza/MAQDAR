@@ -144,6 +144,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"membership_locations": {
+                  Row: {
+                    "created_at": string,"location_id": string,"organization_id": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"location_id": string,"organization_id": string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"location_id"?: string,"organization_id"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "membership_locations_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "membership_locations_organization_id_user_id_fkey"
+      columns: ["organization_id","user_id"]
+isOneToOne: false
+      referencedRelation: "memberships"
+      referencedColumns: ["organization_id","user_id"]
+    }
+                  ]
                 },"memberships": {
                   Row: {
                     "created_at": string,"organization_id": string,"role": string,"updated_at": string,"user_id": string
@@ -164,19 +190,51 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"organizations": {
+                },"organization_invitations": {
                   Row: {
-                    "arabic_enabled": boolean,"base_currency": string,"created_at": string,"home_country": string,"id": string,"name": string,"slug": string,"updated_at": string
+                    "accepted_at": string | null,"accepted_by": string | null,"created_at": string,"email": string,"expires_at": string,"id": string,"invited_by": string | null,"last_sent_at": string,"organization_id": string,"revoked_at": string | null,"revoked_by": string | null,"role": string,"send_count": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"home_country"?: string,"id"?: string,"name": string,"slug": string,"updated_at"?: string
+                    "accepted_at"?: string | null,"accepted_by"?: string | null,"created_at"?: string,"email": string,"expires_at"?: string,"id"?: string,"invited_by"?: string | null,"last_sent_at"?: string,"organization_id": string,"revoked_at"?: string | null,"revoked_by"?: string | null,"role": string,"send_count"?: number
                   }
                   Update: {
-                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"home_country"?: string,"id"?: string,"name"?: string,"slug"?: string,"updated_at"?: string
+                    "accepted_at"?: string | null,"accepted_by"?: string | null,"created_at"?: string,"email"?: string,"expires_at"?: string,"id"?: string,"invited_by"?: string | null,"last_sent_at"?: string,"organization_id"?: string,"revoked_at"?: string | null,"revoked_by"?: string | null,"role"?: string,"send_count"?: number
                   }
                   Relationships: [
-                    
+                    {
+      foreignKeyName: "organization_invitations_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"organizations": {
+                  Row: {
+                    "arabic_enabled": boolean,"base_currency": string,"created_at": string,"created_by": string | null,"home_country": string,"id": string,"name": string,"slug": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"created_by"?: string | null,"home_country"?: string,"id"?: string,"name": string,"slug": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"created_by"?: string | null,"home_country"?: string,"id"?: string,"name"?: string,"slug"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "organizations_base_currency_fkey"
+      columns: ["base_currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "organizations_home_country_fkey"
+      columns: ["home_country"]
+isOneToOne: false
+      referencedRelation: "countries"
+      referencedColumns: ["code"]
+    }
                   ]
                 },"public_holidays": {
                   Row: {
@@ -282,13 +340,76 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"user_settings": {
+                  Row: {
+                    "active_organization_id": string | null,"created_at": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active_organization_id"?: string | null,"created_at"?: string,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "active_organization_id"?: string | null,"created_at"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "user_settings_active_organization_id_fkey"
+      columns: ["active_organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
                 }
           }
           Views: {
             [_ in never]: never
           }
           Functions: {
-            [_ in never]: never
+            "accept_invitation":
+{ Args: { "p_invitation_id": string }; Returns: string
+                           },
+"create_organization":
+{ Args: { "p_arabic_enabled"?: boolean,"p_base_currency"?: string,"p_home_country"?: string,"p_name": string,"p_slug": string }; Returns: string
+                           },
+"invite_member":
+{ Args: { "p_email": string,"p_organization_id": string,"p_role": string }; Returns: {
+              "email": string,"id": string,"resend": boolean
+            }[]
+                           },
+"my_invitations":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "expires_at": string,"id": string,"invited_by_email": string,"organization_id": string,"organization_name": string,"role": string
+            }[]
+                           },
+"my_organizations":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "arabic_enabled": boolean,"base_currency": string,"home_country": string,"id": string,"is_active": boolean,"name": string,"role": string,"slug": string
+            }[]
+                           },
+"organization_members":
+{ Args: { "p_organization_id": string }; Returns: {
+              "created_at": string,"email": string,"location_ids": (string)[],"role": string,"user_id": string
+            }[]
+                           },
+"remove_member":
+{ Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined
+                           },
+"revoke_invitation":
+{ Args: { "p_invitation_id": string }; Returns: undefined
+                           },
+"set_active_organization":
+{ Args: { "p_organization_id": string }; Returns: undefined
+                           },
+"set_member_locations":
+{ Args: { "p_location_ids": (string)[],"p_organization_id": string,"p_user_id": string }; Returns: undefined
+                           },
+"set_member_role":
+{ Args: { "p_organization_id": string,"p_role": string,"p_user_id": string }; Returns: undefined
+                           },
+"update_organization_settings":
+{ Args: { "p_arabic_enabled": boolean,"p_base_currency": string,"p_home_country": string,"p_name": string,"p_organization_id": string }; Returns: undefined
+                           }
           }
           Enums: {
             [_ in never]: never
