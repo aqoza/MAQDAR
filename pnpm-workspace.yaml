@@ -5,12 +5,14 @@ packages:
 engineStrict: true
 
 # pnpm 12 refuses to run dependency install scripts until they are reviewed.
-# These three ship prebuilt binaries as optional dependencies; their scripts
+# These ship prebuilt binaries as optional dependencies; their scripts
 # are download fallbacks only, so they stay denied.
 allowBuilds:
   unrs-resolver: false
   '@swc/core': false
   '@parcel/watcher': false
+  esbuild: false
+  workerd: false
 
 minimumReleaseAgeExclude:
   - '@playwright/test@1.64.0'
