@@ -5,12 +5,14 @@ packages:
 engineStrict: true
 
 # pnpm 12 refuses to run dependency install scripts until they are reviewed.
-# These three ship prebuilt binaries as optional dependencies; their scripts
+# These ship prebuilt binaries as optional dependencies; their scripts
 # are download fallbacks only, so they stay denied.
 allowBuilds:
   unrs-resolver: false
   '@swc/core': false
   '@parcel/watcher': false
+  esbuild: false
+  workerd: false
 
 minimumReleaseAgeExclude:
   - '@playwright/test@1.64.0'
@@ -23,3 +25,9 @@ minimumReleaseAgeExclude:
 # Pin the transitive dependency to the last 1.15 release until upstream fixes it.
 overrides:
   '@swc/core': 1.15.47
+
+# Next.js 16.4 loads .next/server/preview-props.json, which @opennextjs/cloudflare 1.20.10 does not
+# inline, so every server-rendered route crashes on Workers (opennextjs/opennextjs-cloudflare#1355).
+# This adds the file to the inlined manifests, as upstream PR #1356 does. Drop it once released.
+patchedDependencies:
+  '@opennextjs/cloudflare@1.20.10': patches/@opennextjs__cloudflare@1.20.10.patch

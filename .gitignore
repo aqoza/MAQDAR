@@ -52,3 +52,7 @@ pnpm-debug.log*
 
 # Generated synthetic datasets
 engine/data/
+
+# Cloudflare (OpenNext build output, wrangler state)
+.open-next/
+.wrangler/

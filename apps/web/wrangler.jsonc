@@ -1,0 +1,26 @@
+// Cloudflare Worker that serves the Next.js app through the OpenNext adapter.
+// Build: pnpm --filter web cf:build   Deploy: pnpm --filter web cf:deploy
+// NEXT_PUBLIC_* values are inlined at build time (apps/web/.env.production.local, gitignored).
+// SUPABASE_SECRET_KEY is a Worker secret set by the owner: pnpm --filter web exec wrangler secret put SUPABASE_SECRET_KEY
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "maqdar-web",
+  "main": ".open-next/worker.js",
+  // Keeps the gzipped Worker under the free plan limit (3 MiB): 3.17 MiB unminified, 2.71 MiB minified.
+  "minify": true,
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "maqdar-web",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+  },
+}
