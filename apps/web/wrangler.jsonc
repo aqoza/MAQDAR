@@ -1,6 +1,7 @@
 // Cloudflare Worker that serves the Next.js app through the OpenNext adapter.
 // Build: pnpm --filter web cf:build   Deploy: pnpm --filter web cf:deploy
-// NEXT_PUBLIC_* values are inlined at build time (apps/web/.env.production.local, gitignored).
+// NEXT_PUBLIC_* values are inlined at build time: Workers Builds build variables (dashboard).
+// Do not create apps/web/.env.production.local: `next build` would then point local e2e at that project.
 // SUPABASE_SECRET_KEY is a Worker secret set by the owner: pnpm --filter web exec wrangler secret put SUPABASE_SECRET_KEY
 {
   "$schema": "node_modules/wrangler/config-schema.json",

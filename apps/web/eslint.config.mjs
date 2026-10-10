@@ -7,6 +7,9 @@ export default defineConfig([
   ...nextTs,
   globalIgnores([
     '.next/**',
+    // Cloudflare: OpenNext build output and wrangler state.
+    '.open-next/**',
+    '.wrangler/**',
     'out/**',
     'build/**',
     'next-env.d.ts',
