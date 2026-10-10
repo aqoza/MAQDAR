@@ -6,6 +6,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "maqdar-web",
   "main": ".open-next/worker.js",
+  // Keeps the gzipped Worker under the free plan limit (3 MiB): 3.17 MiB unminified, 2.71 MiB minified.
+  "minify": true,
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
