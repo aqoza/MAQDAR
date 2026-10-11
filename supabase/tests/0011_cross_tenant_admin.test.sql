@@ -58,6 +58,7 @@ select is(
    from unnest(array[
      'public.create_organization(text, text, char, char, boolean)',
      'public.update_organization_settings(uuid, text, char, char, boolean)',
+     'public.update_organization_preferences(uuid, text, text, text)',
      'public.set_active_organization(uuid)', 'public.my_organizations()',
      'public.organization_members(uuid)', 'public.set_member_role(uuid, uuid, text)',
      'public.remove_member(uuid, uuid)', 'public.set_member_locations(uuid, uuid, uuid[])',
