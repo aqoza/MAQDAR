@@ -7,7 +7,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "maqdar-web",
   "main": ".open-next/worker.js",
-  // Keeps the gzipped Worker under the free plan limit (3 MiB): 3.17 MiB unminified, 2.71 MiB minified.
+  // Cloudflare dropped the compressed Worker size limit on 2026-09-04. Minify stays because a smaller
+  // script parses and starts faster (gzipped 3.17 MiB unminified, 2.71 MiB minified at Step 3).
   "minify": true,
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
