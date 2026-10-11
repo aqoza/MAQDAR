@@ -78,3 +78,42 @@ export async function signedInClient(email: string, password: string) {
   if (error) throw new Error(`Could not sign in ${email}: ${error.message}`)
   return client
 }
+
+/** The id of the organization with this slug, read with the service role. */
+export async function organizationIdBySlug(slug: string): Promise<string> {
+  const { data, error } = await adminClient()
+    .from('organizations')
+    .select('id')
+    .eq('slug', slug)
+    .single()
+  if (error || !data) throw new Error(`No organization ${slug}: ${error?.message ?? 'not found'}`)
+  return data.id as string
+}
+
+/**
+ * Inserts fixture rows with the service role on the LOCAL stack (RLS does not apply), in batches
+ * of `batchSize`, for volumes the UI cannot create in a test (the 50,000 items of the scale spec).
+ * Rows must carry their own organization_id.
+ */
+export async function seedRows(
+  table: string,
+  rows: readonly Record<string, unknown>[],
+  batchSize = 1_000,
+): Promise<void> {
+  const client = adminClient()
+  for (let start = 0; start < rows.length; start += batchSize) {
+    const batch = rows.slice(start, start + batchSize)
+    const { error } = await client.from(table).insert(batch)
+    if (error) {
+      throw new Error(
+        `Could not seed ${table} rows ${start + 1}-${start + batch.length}: ${error.message}`,
+      )
+    }
+  }
+}
+
+/** Deletes every row of `table` that belongs to the organization (service role, local stack). */
+export async function deleteOrganizationRows(table: string, organizationId: string): Promise<void> {
+  const { error } = await adminClient().from(table).delete().eq('organization_id', organizationId)
+  if (error) throw new Error(`Could not delete ${table} rows: ${error.message}`)
+}
