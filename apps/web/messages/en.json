@@ -11,7 +11,8 @@
     "back": "Back",
     "saving": "Saving…",
     "pendingInvitations": "{count, plural, one {You have # pending invitation.} other {You have # pending invitations.}}",
-    "viewInvitations": "View invitations"
+    "viewInvitations": "View invitations",
+    "staleOrganization": "The active organization changed in another tab or window. Reload this page and try again."
   },
   "Auth": {
     "title": "Sign in to MAQDAR",
@@ -66,17 +67,456 @@
   "Items": {
     "title": "Items",
     "description": "Parts, brands, supersessions and interchanges.",
-    "empty": "Item master data arrives in Step 4."
+    "newTitle": "New item",
+    "searchPlaceholder": "Search part code or name",
+    "columns": {
+      "code": "Part code",
+      "name": "Name",
+      "brand": "Brand",
+      "product_group": "Product group",
+      "status": "Status",
+      "unit_cost": "Unit cost"
+    },
+    "fields": {
+      "code": "Part code",
+      "name_en": "Name (English)",
+      "name_ar": "Name (Arabic)",
+      "brand_id": "Brand",
+      "product_group": "Product group",
+      "unit_of_measure": "Unit of measure",
+      "unit_cost": "Unit cost",
+      "currency": "Currency",
+      "status": "Status",
+      "introduced_on": "Introduced on",
+      "discontinued_on": "Discontinued on"
+    },
+    "filters": {
+      "status": "Status",
+      "brand": "Brand"
+    },
+    "hints": {
+      "code": "Letters, digits and . _ - /, up to 64 characters.",
+      "unit_cost": "In the item currency, with up to 3 decimals."
+    },
+    "options": {
+      "status": {
+        "new": "New",
+        "active": "Active",
+        "phase_out": "Phasing out",
+        "discontinued": "Discontinued"
+      },
+      "unit_of_measure": {
+        "EA": "Each (EA)",
+        "SET": "Set (SET)",
+        "L": "Litre (L)",
+        "KG": "Kilogram (KG)"
+      }
+    },
+    "deleteWarning": "Its supersessions, interchanges and supplier items are deleted with it. An item with demand history cannot be deleted; set its status to Discontinued instead."
+  },
+  "Brands": {
+    "title": "Brands",
+    "description": "Makes and aftermarket brands that items belong to.",
+    "newTitle": "New brand",
+    "searchPlaceholder": "Search brand code or name",
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "brand_type": "Type",
+      "country_of_origin": "Origin",
+      "is_active": "Active"
+    },
+    "fields": {
+      "code": "Code",
+      "name_en": "Name (English)",
+      "name_ar": "Name (Arabic)",
+      "brand_type": "Type",
+      "country_of_origin": "Country of origin",
+      "is_active": "Active"
+    },
+    "filters": {
+      "brand_type": "Type",
+      "active": "Status"
+    },
+    "hints": {
+      "code": "Letters, digits and . _ -, up to 64 characters.",
+      "country_of_origin": "Two-letter ISO code, for example JP or DE.",
+      "is_active": "Inactive brands stay on the items that use them."
+    },
+    "options": {
+      "brand_type": {
+        "oem": "OEM",
+        "aftermarket": "Aftermarket"
+      },
+      "is_active": {
+        "true": "Active",
+        "false": "Inactive"
+      }
+    },
+    "deleteWarning": "A brand that items still use cannot be deleted; mark it inactive instead."
+  },
+  "Supersessions": {
+    "title": "Supersessions",
+    "description": "Part replacements: from the effective date, demand for the replaced part moves to its successor.",
+    "newTitle": "New supersession",
+    "searchPlaceholder": "Search part code or name",
+    "columns": {
+      "predecessor": "Replaced part",
+      "predecessor_name": "Replaced part name",
+      "successor": "Successor",
+      "successor_name": "Successor name",
+      "effective_on": "Effective from",
+      "quantity_factor": "Quantity factor"
+    },
+    "fields": {
+      "predecessor_item_code": "Replaced part code",
+      "successor_item_code": "Successor part code",
+      "effective_on": "Effective from",
+      "quantity_factor": "Quantity factor",
+      "note": "Note"
+    },
+    "hints": {
+      "predecessor_item_code": "Type part of a code or name to see matching items. A part can have only one successor.",
+      "successor_item_code": "Chains are allowed (A → B → C); a part cannot end up replacing itself.",
+      "quantity_factor": "Units of the successor per unit of the replaced part, usually 1."
+    },
+    "deleteWarning": "Demand history stays with the parts; only the replacement link is removed."
+  },
+  "Interchanges": {
+    "title": "Interchanges",
+    "description": "Parts that may be issued for each other, one way or both ways.",
+    "newTitle": "New interchange",
+    "searchPlaceholder": "Search part code or name",
+    "columns": {
+      "item": "Part",
+      "item_name": "Part name",
+      "alternate": "Alternate",
+      "alternate_name": "Alternate name",
+      "direction": "Direction",
+      "priority": "Priority"
+    },
+    "fields": {
+      "item_code": "Part code",
+      "alternate_item_code": "Alternate part code",
+      "direction": "Direction",
+      "priority": "Priority",
+      "note": "Note"
+    },
+    "filters": {
+      "direction": "Direction"
+    },
+    "hints": {
+      "alternate_item_code": "Type part of a code or name to see matching items. A pair is entered once, in either order.",
+      "direction": "One way: the alternate may be issued when the part is requested, never the reverse.",
+      "priority": "1 to 99; alternates with priority 1 are tried first."
+    },
+    "options": {
+      "direction": {
+        "one_way": "One way",
+        "two_way": "Both ways"
+      }
+    }
+  },
+  "SupplierItems": {
+    "title": "Supplier items",
+    "description": "What each supplier sells: lead time, minimum order quantity, pack size and price.",
+    "newTitle": "New supplier item",
+    "searchPlaceholder": "Search part code or name",
+    "columns": {
+      "supplier": "Supplier",
+      "item": "Part code",
+      "name": "Part name",
+      "supplier_part_number": "Supplier part no.",
+      "lead_time_days": "Lead time (days)",
+      "min_order_quantity": "Min. order qty",
+      "pack_size": "Pack size",
+      "unit_price": "Unit price",
+      "is_preferred": "Preferred"
+    },
+    "fields": {
+      "supplier_id": "Supplier",
+      "item_code": "Part code",
+      "supplier_part_number": "Supplier part number",
+      "valid_from": "Price valid from",
+      "lead_time_days": "Lead time (days)",
+      "lead_time_days_p90": "Slow lead time, p90 (days)",
+      "min_order_quantity": "Minimum order quantity",
+      "pack_size": "Pack size",
+      "unit_price": "Unit price",
+      "currency": "Currency",
+      "is_preferred": "Preferred supplier for this part"
+    },
+    "filters": {
+      "supplier": "Supplier",
+      "preferred": "Preferred"
+    },
+    "hints": {
+      "valid_from": "Optional. The date the price applies from.",
+      "lead_time_days": "Planning lead time in calendar days.",
+      "lead_time_days_p90": "Optional. At least the lead time.",
+      "min_order_quantity": "0 means no minimum.",
+      "pack_size": "Orders are placed in multiples of this quantity.",
+      "unit_price": "In the price currency, with up to 3 decimals.",
+      "is_preferred": "A part has one preferred supplier. Choosing this one clears the previous choice."
+    }
   },
   "Locations": {
     "title": "Locations",
     "description": "Warehouses, regional hubs and branches across the network.",
-    "empty": "Location master data arrives in Step 4."
+    "newTitle": "New location",
+    "searchPlaceholder": "Search location code, name or city",
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "location_type": "Type",
+      "country_code": "Country",
+      "city": "City",
+      "parent": "Parent",
+      "calendar": "Calendar",
+      "is_active": "Active"
+    },
+    "fields": {
+      "code": "Code",
+      "name_en": "Name (English)",
+      "name_ar": "Name (Arabic)",
+      "location_type": "Type",
+      "country_code": "Country",
+      "city": "City",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "timezone": "Time zone",
+      "parent_location_id": "Parent location",
+      "work_calendar_id": "Work calendar",
+      "is_active": "Active"
+    },
+    "filters": {
+      "type": "Type",
+      "country": "Country",
+      "active": "Status"
+    },
+    "hints": {
+      "code": "Letters, digits and . _ -, up to 64 characters.",
+      "latitude": "Decimal degrees from -90 to 90, with up to 6 decimals.",
+      "longitude": "Decimal degrees from -180 to 180, with up to 6 decimals.",
+      "timezone": "IANA name, for example Asia/Riyadh. Leave empty to use the country's time zone.",
+      "parent_location_id": "The location that normally replenishes this one.",
+      "work_calendar_id": "Leave empty to use the country's weekend and public holidays.",
+      "is_active": "Mark a closed location inactive instead of deleting it."
+    },
+    "options": {
+      "location_type": {
+        "central": "Central warehouse",
+        "hub": "Regional hub",
+        "branch": "Branch"
+      },
+      "is_active": {
+        "true": "Active",
+        "false": "Inactive"
+      }
+    },
+    "deleteWarning": "Its network links and branch-user assignments are deleted with it, and the locations it replenishes lose their parent. A location with demand history cannot be deleted; mark it inactive instead."
+  },
+  "NetworkLinks": {
+    "title": "Network links",
+    "description": "Transfer lanes between locations, with lead times and freight cost.",
+    "newTitle": "New network link",
+    "columns": {
+      "from": "From",
+      "to": "To",
+      "lead_time_days_p50": "Lead time p50 (days)",
+      "lead_time_days_p90": "Lead time p90 (days)",
+      "freight_basis": "Freight basis",
+      "freight_cost": "Freight cost",
+      "is_active": "Active"
+    },
+    "fields": {
+      "from_location_id": "From location",
+      "to_location_id": "To location",
+      "lead_time_days_p50": "Typical lead time (p50, days)",
+      "lead_time_days_p90": "Slow lead time (p90, days)",
+      "freight_basis": "Freight basis",
+      "freight_cost": "Freight cost",
+      "currency": "Freight currency",
+      "is_active": "Active"
+    },
+    "filters": {
+      "from": "From",
+      "to": "To",
+      "active": "Status"
+    },
+    "hints": {
+      "lead_time_days_p50": "Calendar days a typical transfer takes, from 0 to 3650.",
+      "lead_time_days_p90": "Calendar days that 9 in 10 transfers stay within; at least the typical lead time.",
+      "freight_cost": "Required unless the basis is None, with up to 3 decimals. Ignored when the basis is None.",
+      "currency": "Required unless the basis is None."
+    },
+    "options": {
+      "freight_basis": {
+        "none": "None",
+        "per_unit": "Per unit",
+        "per_shipment": "Per shipment"
+      },
+      "is_active": {
+        "true": "Active",
+        "false": "Inactive"
+      }
+    },
+    "deleteWarning": "Only the lane is removed; both locations and their parent links stay as they are."
+  },
+  "WorkCalendars": {
+    "title": "Work calendars",
+    "description": "Weekend days and public holidays that locations and suppliers work by.",
+    "newTitle": "New work calendar",
+    "searchPlaceholder": "Search calendar code or name",
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "country_code": "Country",
+      "weekend_days": "Weekend",
+      "observe_public_holidays": "Public holidays",
+      "is_active": "Active"
+    },
+    "fields": {
+      "code": "Code",
+      "name_en": "Name (English)",
+      "name_ar": "Name (Arabic)",
+      "country_code": "Country",
+      "weekend_days": "Weekend days",
+      "observe_public_holidays": "Observe public holidays",
+      "is_active": "Active"
+    },
+    "filters": {
+      "country": "Country",
+      "active": "Status"
+    },
+    "hints": {
+      "code": "Letters, digits and . _ -, up to 64 characters.",
+      "country_code": "The country whose public holidays apply.",
+      "weekend_days": "Tick the days that are not worked; at least one day of the week stays a working day.",
+      "observe_public_holidays": "Closed on the country's public holidays. Needs a country.",
+      "is_active": "Inactive calendars stay on the locations and suppliers that use them."
+    },
+    "options": {
+      "observe_public_holidays": {
+        "true": "Observed",
+        "false": "Not observed"
+      },
+      "is_active": {
+        "true": "Active",
+        "false": "Inactive"
+      }
+    },
+    "deleteWarning": "Its holiday overrides are deleted with it. A calendar that locations or suppliers use cannot be deleted; mark it inactive instead."
+  },
+  "HolidayOverrides": {
+    "title": "Holiday overrides",
+    "description": "Extra closures and working days for a country or a work calendar.",
+    "newTitle": "New holiday override",
+    "columns": {
+      "name": "Name",
+      "scope": "Applies to",
+      "starts_on": "From",
+      "ends_on": "To",
+      "kind": "Kind"
+    },
+    "fields": {
+      "scope": "Applies to",
+      "starts_on": "From",
+      "ends_on": "To",
+      "kind": "Kind",
+      "name_en": "Name (English)",
+      "name_ar": "Name (Arabic)",
+      "note": "Note"
+    },
+    "filters": {
+      "scope": "Applies to",
+      "kind": "Kind"
+    },
+    "hints": {
+      "scope": "A country covers every location and supplier there without a calendar of its own; a calendar covers the locations and suppliers that use it.",
+      "ends_on": "The last day included: the same as From for a single day, and at most 366 days in all.",
+      "kind": "A closure adds days off; a working day cancels a public holiday or weekend day."
+    },
+    "options": {
+      "kind": {
+        "closure": "Closure",
+        "working_day": "Working day"
+      }
+    },
+    "deleteWarning": "These days go back to the weekly pattern and public holidays."
   },
   "Suppliers": {
     "title": "Suppliers",
-    "description": "Suppliers, lead times, minimum order quantities and pack sizes.",
-    "empty": "Supplier master data arrives in Step 4."
+    "description": "Who parts are bought from: currency, lead times and work calendar.",
+    "newTitle": "New supplier",
+    "searchPlaceholder": "Search supplier code or name",
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "country_code": "Country",
+      "currency": "Currency",
+      "lead_time_days_p50": "Lead time p50",
+      "lead_time_days_p90": "Lead time p90",
+      "calendar": "Calendar",
+      "is_active": "Active"
+    },
+    "fields": {
+      "code": "Code",
+      "name_en": "Name (English)",
+      "name_ar": "Name (Arabic)",
+      "country_code": "Country",
+      "currency": "Currency",
+      "work_calendar_id": "Work calendar",
+      "lead_time_days_p50": "Typical lead time (p50, days)",
+      "lead_time_days_p90": "Slow lead time (p90, days)",
+      "is_active": "Active"
+    },
+    "filters": {
+      "currency": "Currency",
+      "active": "Status"
+    },
+    "hints": {
+      "code": "Letters, digits and . _ -, up to 64 characters.",
+      "country_code": "Two-letter ISO code of the country it ships from, for example CN or DE.",
+      "work_calendar_id": "Leave empty to use the weekend days and public holidays of its country.",
+      "lead_time_days_p50": "Calendar days from order to receipt in a typical case.",
+      "lead_time_days_p90": "Calendar days within which 9 in 10 orders arrive; at least the typical lead time.",
+      "is_active": "Inactive suppliers keep their supplier items."
+    },
+    "options": {
+      "is_active": {
+        "true": "Active",
+        "false": "Inactive"
+      }
+    },
+    "deleteWarning": "Its supplier items are deleted with it. To keep them, mark the supplier inactive instead."
+  },
+  "FxRates": {
+    "title": "Exchange rates",
+    "description": "Conversion rates between currencies, each valid from its date until the next rate of the same pair. Enter a pair in one direction only.",
+    "newTitle": "New exchange rate",
+    "columns": {
+      "from_currency": "From",
+      "to_currency": "To",
+      "valid_from": "Valid from",
+      "rate": "Rate",
+      "note": "Note"
+    },
+    "fields": {
+      "from_currency": "From currency",
+      "to_currency": "To currency",
+      "valid_from": "Valid from",
+      "rate": "Rate",
+      "note": "Note"
+    },
+    "filters": {
+      "from": "From",
+      "to": "To"
+    },
+    "hints": {
+      "valid_from": "Applies from this date until the next rate of the same pair.",
+      "rate": "Units of the To currency that one unit of the From currency buys, with up to 10 decimals."
+    }
   },
   "Forecasts": {
     "title": "Forecasts",
@@ -194,11 +634,40 @@
       "baseCurrency": "Base currency",
       "homeCountry": "Home country",
       "arabicEnabled": "Arabic enabled",
-      "arabicEnabledHint": "Members may switch the interface to Arabic.",
+      "arabicEnabledHint": "Members may switch the interface to Arabic. Turning it off makes English the default language again.",
       "enabled": "Enabled",
       "disabled": "Disabled",
       "saved": "Settings saved.",
       "readOnly": "Only owners and administrators can change these settings."
+    },
+    "preferences": {
+      "title": "Preferences",
+      "description": "Default language, time zone and digits for everyone in the organization.",
+      "defaultLocale": "Default language",
+      "defaultLocaleHint": "Used by members who have not chosen a language themselves.",
+      "defaultLocaleArabicOff": "Turn on Arabic under Organization to make it the default language.",
+      "locales": {
+        "en": "English",
+        "ar": "العربية"
+      },
+      "timeZone": "Time zone",
+      "timeZoneHint": "Dates and times are shown in this time zone.",
+      "timeZoneHome": "Follow home country ({zone})",
+      "numberingSystem": "Numbering",
+      "numberingSystemHint": "Digits in the Arabic interface. English always uses Latin digits.",
+      "numbering": {
+        "latn": "Latin (123)",
+        "arab": "Arabic-Indic (١٢٣)"
+      },
+      "save": "Save preferences",
+      "saved": "Preferences saved.",
+      "readOnly": "Only owners and administrators can change these preferences.",
+      "errors": {
+        "defaultLocale": "Choose English or Arabic.",
+        "arabicRequired": "Turn on Arabic under Organization before making it the default language.",
+        "timeZone": "Choose a time zone from the list.",
+        "numberingSystem": "Choose Latin or Arabic-Indic digits."
+      }
     },
     "language": {
       "title": "Language",
@@ -215,8 +684,7 @@
       "password": "New password",
       "save": "Save password",
       "saved": "Password saved."
-    },
-    "staleOrganization": "The active organization changed in another tab or window. Reload this page and try again."
+    }
   },
   "Validation": {
     "required": "This field is required.",
@@ -227,20 +695,112 @@
     "currency": "Use a three-letter currency code.",
     "country": "Use a two-letter country code.",
     "invalidRole": "Choose a role.",
-    "generic": "Check the highlighted fields."
+    "generic": "Check the highlighted fields.",
+    "invalidChoice": "Choose one of the options.",
+    "minValue": "Must be at least {min}.",
+    "maxValue": "Must be at most {max}.",
+    "greaterThan": "Must be greater than {min}.",
+    "number": "Enter a number, for example 1250.5 or 1,250.5.",
+    "integer": "Enter a whole number.",
+    "decimal": "Use at most {scale} decimal places.",
+    "tooManyDigits": "Use at most {max} digits before the decimal point.",
+    "precision": "Use at most {max} significant digits.",
+    "tooMany": "Choose at most {max}.",
+    "date": "Enter a valid date.",
+    "codeFormat": "Use letters, digits, dots, underscores and hyphens, starting with a letter or digit (up to 64 characters).",
+    "itemCodeFormat": "Use letters, digits, dots, underscores, hyphens and slashes, starting with a letter or digit (up to 64 characters).",
+    "timeZone": "Choose a valid time zone.",
+    "endBeforeStart": "Must be on or after the start date.",
+    "p90BelowP50": "Must be at least the typical (p50) lead time.",
+    "mustDiffer": "Choose two different values.",
+    "countryRequired": "Choose a country to observe its public holidays.",
+    "rangeTooLong": "Use a range of at most {max} days."
   },
   "RpcErrors": {
     "23503": "This refers to something that does not exist.",
     "23505": "This already exists.",
+    "23514": "Some values are not allowed. Check the fields and try again.",
+    "42501": "You are not allowed to change this in this organization.",
     "MQ401": "Sign in again to continue.",
     "MQ403": "You are not allowed to do that in this organization.",
     "MQ404": "Not found, or no longer valid.",
     "MQ409": "That conflicts with the current state. An organization keeps at least one owner.",
     "MQ422": "That input is not valid for this organization.",
     "MQ429": "Too many requests. Wait a while and try again.",
-    "generic": "Something went wrong. Try again."
+    "generic": "Something went wrong. Try again.",
+    "23P01": "This overlaps an existing entry."
   },
   "Empty": {
     "title": "Nothing here yet"
+  },
+  "MasterData": {
+    "tabs": {
+      "label": "Sections",
+      "items": "Items",
+      "brands": "Brands",
+      "supersessions": "Supersessions",
+      "interchanges": "Interchanges",
+      "locations": "Locations",
+      "network": "Network links",
+      "calendars": "Work calendars",
+      "holidays": "Holiday overrides",
+      "suppliers": "Suppliers",
+      "supplierItems": "Supplier items",
+      "fxRates": "Exchange rates"
+    },
+    "list": {
+      "new": "New",
+      "total": "{count, plural, one {# row} other {# rows}}",
+      "page": "Page {page, number} of {pages, number}",
+      "pagination": "Pages",
+      "first": "First page",
+      "previous": "Previous page",
+      "next": "Next page",
+      "last": "Last page",
+      "rowsPerPage": "Rows per page",
+      "empty": "Nothing has been added yet.",
+      "noMatches": "Nothing matches the search or filters.",
+      "clear": "Clear search and filters",
+      "yes": "Yes",
+      "no": "No",
+      "loadFailed": "The list could not be loaded. Reload the page to try again.",
+      "noMatchesHint": "Try other words, or clear the search and filters."
+    },
+    "form": {
+      "backToList": "Back to the list",
+      "readOnly": "You can view this record but not change it.",
+      "deleteTitle": "Delete {name}?",
+      "deleteWarning": "This cannot be undone.",
+      "created": "Created.",
+      "saved": "Saved.",
+      "deleted": "Deleted."
+    },
+    "errors": {
+      "codeTaken": "This code is already used in this organization.",
+      "duplicate": "This already exists.",
+      "missingReference": "The selected record no longer exists. Reload the page and choose again.",
+      "invalid": "This value is not allowed.",
+      "inUse": "This is still in use and cannot be deleted. Mark it inactive instead.",
+      "hasDemand": "This has demand history and cannot be deleted. Mark it inactive or discontinued instead.",
+      "unknownItem": "No item has this code.",
+      "overlap": "This overlaps an existing entry.",
+      "cycle": "This would create a cycle.",
+      "conflict": "Someone else changed this record after you opened it. Reload the page to see their changes, then try again.",
+      "notFound": "This record no longer exists.",
+      "reverseRateExists": "The reverse rate for this date already exists."
+    }
+  },
+  "MasterDataClient": {
+    "search": "Search",
+    "searchPlaceholder": "Search code or name",
+    "all": "All",
+    "none": "—",
+    "create": "Create",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "cancel": "Cancel",
+    "itemCodeHint": "Type part of a code or name to see matching items."
   }
 }

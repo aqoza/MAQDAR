@@ -54,9 +54,85 @@ describe('validationKeyFor', () => {
     expect(validationKeyFor(issue!)).toEqual({ key: 'invalidEmail' })
   })
 
-  it('maps invalid_value to invalidRole', () => {
-    const [issue] = issuesOf(z.enum(['owner', 'viewer']), 'god').issues
-    expect(validationKeyFor(issue!)).toEqual({ key: 'invalidRole' })
+  it('maps invalid_value to invalidRole for roles and invalidChoice otherwise', () => {
+    const schema = z.object({ role: z.enum(['owner', 'viewer']), status: z.enum(['a', 'b']) })
+    const error = issuesOf(schema, { role: 'god', status: 'c' })
+    const byField = Object.fromEntries(
+      error.issues.map((issue) => [issue.path.join('.'), validationKeyFor(issue).key]),
+    )
+    expect(byField).toEqual({ role: 'invalidRole', status: 'invalidChoice' })
+    const [root] = issuesOf(z.enum(['a']), 'b').issues
+    expect(validationKeyFor(root!)).toEqual({ key: 'invalidChoice' })
+  })
+
+  it('reads the origin of size issues', () => {
+    const [min] = issuesOf(z.number().min(0), -1).issues
+    const [gt] = issuesOf(z.number().gt(0), 0).issues
+    const [max] = issuesOf(z.number().max(99), 100).issues
+    const [emptyList] = issuesOf(z.array(z.string()).min(1), []).issues
+    const [longList] = issuesOf(z.array(z.string()).max(2), ['a', 'b', 'c']).issues
+    expect(validationKeyFor(min!)).toEqual({ key: 'minValue', values: { min: 0 } })
+    expect(validationKeyFor(gt!)).toEqual({ key: 'greaterThan', values: { min: 0 } })
+    expect(validationKeyFor(max!)).toEqual({ key: 'maxValue', values: { max: 99 } })
+    expect(validationKeyFor(emptyList!)).toEqual({ key: 'required' })
+    expect(validationKeyFor(longList!)).toEqual({ key: 'tooMany', values: { max: 2 } })
+  })
+
+  it('maps date, uuid and new field formats', () => {
+    const schema = z.object({
+      day: z.iso.date(),
+      brand_id: z.uuid(),
+      code: z.string().regex(/^[A-Z]+$/),
+      country_of_origin: z.string().regex(/^[A-Z]{2}$/),
+      to_currency: z.string().regex(/^[A-Z]{3}$/),
+      time_zone: z.string().regex(/^x$/),
+    })
+    const error = issuesOf(schema, {
+      day: '2026-02-30x',
+      brand_id: 'x',
+      code: '1',
+      country_of_origin: 'x',
+      to_currency: 'x',
+      time_zone: 'y',
+    })
+    const byField = Object.fromEntries(
+      error.issues.map((issue) => [issue.path.join('.'), validationKeyFor(issue).key]),
+    )
+    expect(byField).toEqual({
+      day: 'date',
+      brand_id: 'invalidChoice',
+      code: 'codeFormat',
+      country_of_origin: 'country',
+      to_currency: 'currency',
+      time_zone: 'timeZone',
+    })
+  })
+
+  it('uses the Validation key named by custom issues', () => {
+    const schema = z
+      .object({ a: z.string(), b: z.string() })
+      .refine((value) => value.a !== value.b, { path: ['b'], params: { key: 'mustDiffer' } })
+    const [issue] = issuesOf(schema, { a: 'x', b: 'x' }).issues
+    expect(validationKeyFor(issue!)).toEqual({ key: 'mustDiffer' })
+
+    const withValues = issuesOf(
+      z.string().refine(() => false, { params: { key: 'decimal', values: { scale: 3 } } }),
+      'x',
+    ).issues[0]
+    expect(validationKeyFor(withValues!)).toEqual({ key: 'decimal', values: { scale: 3 } })
+  })
+
+  it('falls back to generic for custom issues without a known key', () => {
+    const [plain] = issuesOf(
+      z.string().refine(() => false),
+      'x',
+    ).issues
+    const [unknown] = issuesOf(
+      z.string().refine(() => false, { params: { key: 'notAKey' } }),
+      'x',
+    ).issues
+    expect(validationKeyFor(plain!)).toEqual({ key: 'generic' })
+    expect(validationKeyFor(unknown!)).toEqual({ key: 'generic' })
   })
 
   it('maps invalid_type (a field absent from the form data) to required', () => {

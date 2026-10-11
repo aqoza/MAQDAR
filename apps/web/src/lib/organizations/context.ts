@@ -1,12 +1,35 @@
 import type { Database } from '@maqdar/shared/database.types'
 import { cache } from 'react'
+import {
+  type AppLocale,
+  type NumberingSystem,
+  defaultLocale,
+  defaultNumberingSystem,
+  isAppLocale,
+  isNumberingSystem,
+} from '@/i18n/config'
 import type { MaqdarClaims } from '@/lib/auth/claims'
 import { isRole, type Role } from '@/lib/auth/roles'
 import { getSessionClaims } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 
-export type OrganizationSummary =
-  Database['public']['Functions']['my_organizations']['Returns'][number]
+type OrganizationRow = Database['public']['Functions']['my_organizations']['Returns'][number]
+
+/**
+ * One row of my_organizations(), with the display preferences typed as the database constrains
+ * them (the generated types cannot express check constraints or nullable function columns).
+ */
+export type OrganizationSummary = Omit<
+  OrganizationRow,
+  'default_locale' | 'numbering_system' | 'time_zone'
+> & {
+  /** Language for members without a locale cookie; `ar` only while Arabic is enabled. */
+  default_locale: AppLocale
+  /** Digits in the Arabic interface. */
+  numbering_system: NumberingSystem
+  /** The chosen IANA zone; null follows the home country (see effective_time_zone). */
+  time_zone: string | null
+}
 export type PendingInvitation = Database['public']['Functions']['my_invitations']['Returns'][number]
 
 export type ActiveContext = {
@@ -20,6 +43,17 @@ export type ActiveContext = {
   /** Role in the active organization, read from the database rather than the token. */
   role: Role | null
   invitations: PendingInvitation[]
+}
+
+function toSummary(row: OrganizationRow): OrganizationSummary {
+  return {
+    ...row,
+    default_locale: isAppLocale(row.default_locale) ? row.default_locale : defaultLocale,
+    numbering_system: isNumberingSystem(row.numbering_system)
+      ? row.numbering_system
+      : defaultNumberingSystem,
+    time_zone: row.time_zone || null,
+  }
 }
 
 /**
@@ -37,7 +71,7 @@ export const getActiveContext = cache(async (): Promise<ActiveContext | null> =>
     supabase.rpc('my_organizations'),
     supabase.rpc('my_invitations'),
   ])
-  const organizations = organizationsResult.data ?? []
+  const organizations = (organizationsResult.data ?? []).map(toSummary)
   const active = claims.org_id
     ? (organizations.find((organization) => organization.id === claims.org_id) ?? null)
     : null

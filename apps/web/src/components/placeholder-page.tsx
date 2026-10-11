@@ -2,8 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { EmptyState } from '@/components/empty-state'
 import { PageHeader } from '@/components/page-header'
 
-export type PlaceholderNamespace =
-  'Dashboard' | 'Items' | 'Locations' | 'Suppliers' | 'Forecasts' | 'Replenishment'
+export type PlaceholderNamespace = 'Dashboard' | 'Forecasts' | 'Replenishment'
 
 /** Shell page for areas that are built in a later step. */
 export async function PlaceholderPage({ namespace }: { namespace: PlaceholderNamespace }) {

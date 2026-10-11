@@ -4,12 +4,21 @@ import { getTranslations } from 'next-intl/server'
 import { LocaleSwitcher } from '@/components/locale-switcher'
 import { PageHeader } from '@/components/page-header'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { fallbackTimeZone } from '@/i18n/config'
 import { assignableRoles, isAdminRole } from '@/lib/auth/roles'
-import { getActiveContext } from '@/lib/organizations/context'
+import {
+  getActiveContext,
+  type OrganizationSummary as Organization,
+} from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { InvitationsCard, type InvitationRow } from './invitations-card'
 import { MembersCard, type LocationOption, type MemberRow } from './members-card'
-import { OrganizationSettingsForm, type ReferenceOption } from './organization-settings-form'
+import {
+  OrganizationPreferencesForm,
+  OrganizationSettingsForm,
+  type ReferenceOption,
+  type TimeZoneOption,
+} from './organization-settings-form'
 import { SetPasswordCard } from './set-password-card'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,10 +38,14 @@ export default async function SettingsPage() {
 
   const [currenciesResult, countriesResult] = await Promise.all([
     supabase.from('currencies').select('code, name_en').order('code'),
-    supabase.from('countries').select('code, name_en').order('name_en'),
+    supabase.from('countries').select('code, name_en, timezone').order('name_en'),
   ])
   const currencies: ReferenceOption[] = currenciesResult.data ?? []
-  const countries: ReferenceOption[] = countriesResult.data ?? []
+  const countries: CountryOption[] = countriesResult.data ?? []
+  const homeTimeZone =
+    countries.find((country) => country.code === organization.home_country)?.timezone ??
+    fallbackTimeZone
+  const timeZones = timeZoneOptions(countries, organization.time_zone)
 
   let members: MemberRow[] = []
   let locations: LocationOption[] = []
@@ -80,6 +93,24 @@ export default async function SettingsPage() {
               currencies={currencies}
               countries={countries}
             />
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('preferences.title')}</CardTitle>
+          <CardDescription>{t('preferences.description')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {admin ? (
+            <OrganizationPreferencesForm
+              organization={organization}
+              homeTimeZone={homeTimeZone}
+              timeZones={timeZones}
+            />
+          ) : (
+            <PreferencesSummary organization={organization} homeTimeZone={homeTimeZone} />
           )}
         </CardContent>
       </Card>
@@ -144,6 +175,58 @@ async function OrganizationSummary({
     ],
     [t('homeCountry'), country ? country.name_en : organization.home_country],
     [t('arabicEnabled'), organization.arabic_enabled ? t('enabled') : t('disabled')],
+  ]
+
+  return (
+    <div className="flex flex-col gap-4">
+      <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[max-content_1fr]">
+        {rows.map(([label, value]) => (
+          <div key={label} className="contents">
+            <dt className="text-muted-foreground">{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="text-muted-foreground text-sm">{t('readOnly')}</p>
+    </div>
+  )
+}
+
+type CountryOption = ReferenceOption & { timezone: string }
+
+/**
+ * The zones update_organization_preferences accepts: every distinct countries.timezone (labelled
+ * with the countries that use it), then UTC. The current zone is kept even if it left the list.
+ */
+function timeZoneOptions(countries: CountryOption[], current: string | null): TimeZoneOption[] {
+  const byZone = new Map<string, string[]>()
+  for (const country of countries) {
+    if (country.timezone === fallbackTimeZone) continue
+    byZone.set(country.timezone, [...(byZone.get(country.timezone) ?? []), country.name_en])
+  }
+  const options = [...byZone.entries()]
+    .sort(([a], [b]) => a.localeCompare(b, 'en'))
+    .map(([zone, names]) => ({ value: zone, label: `${zone} · ${names.join(', ')}` }))
+  options.push({ value: fallbackTimeZone, label: fallbackTimeZone })
+  if (current && !options.some((option) => option.value === current)) {
+    options.push({ value: current, label: current })
+  }
+  return options
+}
+
+/** Read-only view of the display preferences for members who cannot change them. */
+async function PreferencesSummary({
+  organization,
+  homeTimeZone,
+}: {
+  organization: Pick<Organization, 'default_locale' | 'time_zone' | 'numbering_system'>
+  homeTimeZone: string
+}) {
+  const t = await getTranslations('Settings.preferences')
+  const rows: Array<[string, string]> = [
+    [t('defaultLocale'), t(`locales.${organization.default_locale}`)],
+    [t('timeZone'), organization.time_zone ?? t('timeZoneHome', { zone: homeTimeZone })],
+    [t('numberingSystem'), t(`numbering.${organization.numbering_system}`)],
   ]
 
   return (

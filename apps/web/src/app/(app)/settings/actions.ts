@@ -9,14 +9,15 @@ import { siteOrigin } from '@/lib/auth/origin'
 import { requireClaims } from '@/lib/auth/session'
 import { env } from '@/lib/env'
 import { checkboxValue, fieldValues, type ActionState } from '@/lib/forms'
-import { getActiveContext, type ActiveContext } from '@/lib/organizations/context'
+import { invalidState, requireActiveOrganization, rpcErrorState } from '@/lib/organizations/guard'
 import {
   emailSchema,
   inviteSchema,
+  organizationPreferencesSchema,
   organizationSettingsSchema,
   roleSchema,
 } from '@/lib/organizations/schemas'
-import { isRpcCode, rpcErrorKey, type RpcErrorLike } from '@/lib/rpc-errors'
+import { isRpcCode, type RpcErrorLike } from '@/lib/rpc-errors'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { fieldErrorsFrom } from '@/lib/validation'
@@ -29,39 +30,6 @@ import { fieldErrorsFrom } from '@/lib/validation'
 const uuidSchema = z.uuid()
 const locationIdsSchema = z.array(uuidSchema).max(1000)
 const passwordSchema = z.string().min(8).max(72)
-
-type ActiveOrganization =
-  { ok: true; context: ActiveContext; organizationId: string } | { ok: false; state: ActionState }
-
-/**
- * The organization comes from the session (the token's active organization), never from the form.
- * The form's hidden `organization_id` only detects a stale page: if the user switched organizations
- * in another tab or window, the action refuses instead of acting on a different organization.
- */
-async function requireActiveOrganization(formData: FormData): Promise<ActiveOrganization> {
-  await requireClaims()
-  const context = await getActiveContext()
-  if (!context?.active) redirect('/organizations')
-  if (formData.get('organization_id') !== context.active.id) {
-    const t = await getTranslations('Settings')
-    return {
-      ok: false,
-      state: { status: 'error', message: t('staleOrganization'), code: 'stale_organization' },
-    }
-  }
-  return { ok: true, context, organizationId: context.active.id }
-}
-
-async function rpcErrorState(error: RpcErrorLike): Promise<ActionState> {
-  const t = await getTranslations('RpcErrors')
-  const key = rpcErrorKey(error)
-  return { status: 'error', message: t(key), code: error?.code ?? key }
-}
-
-async function invalidState(code: string): Promise<ActionState> {
-  const t = await getTranslations('Validation')
-  return { status: 'error', message: t('generic'), code }
-}
 
 /* ------------------------------------------------------------------------------------------ */
 /* Organization                                                                                */
@@ -99,6 +67,84 @@ export async function updateOrganizationSettings(
   revalidatePath('/', 'layout')
   const t = await getTranslations('Settings.organization')
   return { status: 'success', message: t('saved'), values }
+}
+
+/* ------------------------------------------------------------------------------------------ */
+/* Preferences                                                                                 */
+/* ------------------------------------------------------------------------------------------ */
+
+const PREFERENCE_FIELDS = ['default_locale', 'time_zone', 'numbering_system'] as const
+type PreferenceField = (typeof PREFERENCE_FIELDS)[number]
+
+function isPreferenceField(value: unknown): value is PreferenceField {
+  return typeof value === 'string' && (PREFERENCE_FIELDS as readonly string[]).includes(value)
+}
+
+/**
+ * Field errors for the preference selects. Values only fail through a tampered form or a stale
+ * page (Arabic switched off meanwhile), so each field gets one message naming the valid choices.
+ */
+async function preferenceErrorState(
+  fields: Iterable<PreferenceField>,
+  defaultLocale: string,
+  code: string,
+): Promise<ActionState> {
+  const t = await getTranslations('Settings.preferences.errors')
+  const fieldErrors: Record<string, string> = {}
+  for (const field of fields) {
+    if (field === 'default_locale') {
+      fieldErrors[field] = defaultLocale === 'ar' ? t('arabicRequired') : t('defaultLocale')
+    } else if (field === 'time_zone') {
+      fieldErrors[field] = t('timeZone')
+    } else {
+      fieldErrors[field] = t('numberingSystem')
+    }
+  }
+  return { status: 'error', fieldErrors, code }
+}
+
+export async function updatePreferences(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const guard = await requireActiveOrganization(formData)
+  if (!guard.ok) return guard.state
+  const { organizationId } = guard
+  const values = fieldValues(formData, PREFERENCE_FIELDS)
+
+  const parsed = organizationPreferencesSchema.safeParse(values)
+  if (!parsed.success) {
+    const fields = new Set(
+      parsed.error.issues.map((issue) => issue.path[0]).filter(isPreferenceField),
+    )
+    return { ...(await preferenceErrorState(fields, values.default_locale, 'validation')), values }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('update_organization_preferences', {
+    p_organization_id: organizationId,
+    p_default_locale: parsed.data.default_locale,
+    // Empty follows the home country's zone; the RPC stores it as null.
+    p_time_zone: parsed.data.time_zone,
+    p_numbering_system: parsed.data.numbering_system,
+  })
+  if (error) {
+    // MQ422 names the offending parameter in the hint (default_locale, time_zone, numbering_system).
+    if (isRpcCode(error, 'MQ422') && isPreferenceField(error.hint)) {
+      return {
+        ...(await preferenceErrorState([error.hint], parsed.data.default_locale, 'MQ422')),
+        values,
+      }
+    }
+    return { ...(await rpcErrorState(error)), values }
+  }
+
+  // Locale, digits and time zone are read by the i18n request config for every page.
+  revalidatePath('/', 'layout')
+  const t = await getTranslations('Settings.preferences')
+  // No values: the form re-fills from the refreshed organization, so a later change made elsewhere
+  // (turning Arabic off resets the default language) is not masked by this submission.
+  return { status: 'success', message: t('saved') }
 }
 
 /* ------------------------------------------------------------------------------------------ */
