@@ -125,6 +125,64 @@
       ]
     },
     {
+      "name": "brands",
+      "table": "public.brands",
+      "file": "brands.csv",
+      "monthly_parts": false,
+      "description": "Makes and aftermarket brands that items belong to.",
+      "natural_key": [
+        "brand_code"
+      ],
+      "columns": [
+        {
+          "name": "brand_code",
+          "kind": "code",
+          "required": true,
+          "description": "Unique brand code.",
+          "target_column": "code"
+        },
+        {
+          "name": "name_en",
+          "kind": "text",
+          "required": true,
+          "description": "English name (required).",
+          "target_column": "name_en"
+        },
+        {
+          "name": "name_ar",
+          "kind": "text",
+          "required": false,
+          "description": "Arabic name.",
+          "target_column": "name_ar"
+        },
+        {
+          "name": "brand_type",
+          "kind": "enum",
+          "required": false,
+          "description": "Genuine (OEM) or aftermarket.",
+          "enum": [
+            "oem",
+            "aftermarket"
+          ],
+          "target_column": "brand_type"
+        },
+        {
+          "name": "country_of_origin",
+          "kind": "country",
+          "required": false,
+          "description": "Country of origin (any ISO code).",
+          "target_column": "country_of_origin"
+        },
+        {
+          "name": "is_active",
+          "kind": "boolean",
+          "required": true,
+          "description": "false for brands no longer sold.",
+          "target_column": "is_active"
+        }
+      ]
+    },
+    {
       "name": "items",
       "table": "public.items",
       "file": "items.csv",
@@ -156,11 +214,13 @@
           "target_column": "name_ar"
         },
         {
-          "name": "brand",
-          "kind": "text",
+          "name": "brand_code",
+          "kind": "code",
           "required": false,
           "description": "Brand or make.",
-          "target_column": "brand"
+          "references": "brands.brand_code",
+          "target_column": "brand_id",
+          "lookup": "brands"
         },
         {
           "name": "product_group",

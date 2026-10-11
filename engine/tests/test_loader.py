@@ -1,3 +1,4 @@
+import csv
 import shutil
 from pathlib import Path
 
@@ -95,6 +96,23 @@ def test_loaded_rows_are_consistent(tiny_bundle: Path, dsn: str):
         assert cur.fetchone()[0].count(".") == 1
         cur.execute("select count(*) from public.items where organization_id = %s and name_ar is not null", (org,))
         assert cur.fetchone()[0] > 0
+        brand_rows = sum(e["rows"] for e in read_manifest(tiny_bundle)["files"] if e["path"] == "brands.csv")
+        cur.execute("select count(*) from public.brands where organization_id = %s", (org,))
+        assert cur.fetchone()[0] == brand_rows > 0
+        cur.execute("select count(*) from public.items where organization_id = %s and brand_id is null", (org,))
+        assert cur.fetchone()[0] == 0
+        # The brand id resolves to the brand the bundle names for the item.
+        with (tiny_bundle / "items.csv").open(encoding="utf-8", newline="") as handle:
+            first_item = next(csv.DictReader(handle))
+        cur.execute(
+            """
+            select b.code from public.items i
+            join public.brands b on (b.organization_id, b.id) = (i.organization_id, i.brand_id)
+            where i.organization_id = %s and i.code = %s
+            """,
+            (org, first_item["item_code"]),
+        )
+        assert cur.fetchone()[0] == first_item["brand_code"]
 
 
 @pytest.mark.db

@@ -5,21 +5,21 @@
 ## Running it
 
 ```bash
-pnpm db:start                                   # local stack with the Step 2 migrations
+pnpm db:start                                   # local stack with the migrations through Step 4
 pnpm synth:small                                # generate + validate + load 1,000 items
-pnpm synth:large                                # 50,000 items, ~13 M demand rows (about 12 minutes)
+pnpm synth:large                                # 50,000 items, ~13 M demand rows (about 13 minutes)
 cd engine && uv run maqdar-synth generate --preset medium --out data/medium
 cd engine && uv run maqdar-synth load data/medium --replace --member-email you@company.com
 ```
 
-`load` refuses any host that is not loopback, requires Postgres 17 with the Step 2 migrations and a role that bypasses RLS (the local `postgres`), validates the bundle first, and writes everything in one transaction: codes are checked against the bundle's own parents before each `COPY`, the master-data tables are analyzed (partition statistics are left to autovacuum), and a set-based anti-join over distinct item-location pairs re-checks demand references (the table has no foreign keys) before the commit. `--replace` deletes the synthetic organization before reloading; `pnpm db:reset` is faster for the large preset. `--member-email` makes an existing user the owner of the synthetic organization so it appears in the organization switcher; sign-up is invitation-only, so create that user first with `pnpm db:user you@company.com` (or sign in once after being invited).
+`load` refuses any host that is not loopback, requires Postgres 17 with the migrations through Step 4 (it checks their versions) and a role that bypasses RLS (the local `postgres`), validates the bundle first, and writes everything in one transaction: codes are checked against the bundle's own parents before each `COPY`, each master-data table is analyzed right after its `COPY` so the next table's foreign-key checks plan against real row counts (partition statistics are left to autovacuum), and a set-based anti-join over distinct item-location pairs re-checks demand references (the table has no foreign keys) before the commit. `--replace` deletes the synthetic organization before reloading (its demand rows first, then the organization with the Step 4 delete guard on items and locations switched off for that transaction, since the demand it protects is already gone); `pnpm db:reset` is faster for the large preset. `--member-email` makes an existing user the owner of the synthetic organization so it appears in the organization switcher; sign-up is invitation-only, so create that user first with `pnpm db:user you@company.com` (or sign in once after being invited).
 
-| Preset   | Items  | Locations | Demand rows | Generate | Load   | Use                             |
-| -------- | ------ | --------- | ----------- | -------- | ------ | ------------------------------- |
-| `tiny`   | 24     | 8         | ~14 k       | 2 s      | 3 s    | unit tests, CI load             |
-| `medium` | 300    | 40        | ~200 k      | 3 s      | 10 s   | statistical tests               |
-| `small`  | 1,000  | 40        | ~640 k      | 5 s      | ~25 s  | daily development               |
-| `large`  | 50,000 | 40        | ~13 M       | ~2 min   | ~9 min | performance work, Step 6 target |
+| Preset   | Items  | Locations | Demand rows | Generate | Load    | Use                             |
+| -------- | ------ | --------- | ----------- | -------- | ------- | ------------------------------- |
+| `tiny`   | 24     | 8         | ~14 k       | 2 s      | 3 s     | unit tests, CI load             |
+| `medium` | 300    | 40        | ~200 k      | 3 s      | 10 s    | statistical tests               |
+| `small`  | 1,000  | 40        | ~640 k      | 5 s      | ~25 s   | daily development               |
+| `large`  | 50,000 | 40        | ~13 M       | ~2 min   | ~11 min | performance work, Step 6 target |
 
 Timings are from a Windows laptop running Docker Desktop. The large bundle is 417 MB of CSV and about 2.5 GB in Postgres (heap and indexes of the monthly partitions); the load time is dominated by the `COPY` into `demand_history`'s two indexes.
 
@@ -33,7 +33,7 @@ The central warehouse stocks every item; hubs stock `hub_share` and branches `br
 
 ## Items and suppliers
 
-21 product groups (`product_groups.csv`) with pack sizes, MOQ multipliers, a lognormal cost distribution in SAR and the seasonal coefficients below; 12 fictional brands. Each item gets a Syntetos-Boylan archetype (20 % smooth, 10 % erratic, 40 % intermittent, 30 % lumpy), a velocity (lognormal), a lifecycle (85 % active, 7 % introduced inside the window with a 90-day ramp, 5 % declining, 3 % discontinued inside the window) and, for about 6 % of items, a place in a supersession chain of two to four parts.
+21 product groups (`product_groups.csv`) with pack sizes, MOQ multipliers, a lognormal cost distribution in SAR and the seasonal coefficients below; 12 fictional brands (`brands.csv`, OEM and aftermarket, with Arabic names and a country of origin). Every bundle carries all 12 in its own `brands.csv`, and `items.csv` names each item's brand by `brand_code`. Each item gets a Syntetos-Boylan archetype (20 % smooth, 10 % erratic, 40 % intermittent, 30 % lumpy), a velocity (lognormal), a lifecycle (85 % active, 7 % introduced inside the window with a 90-day ramp, 5 % declining, 3 % discontinued inside the window) and, for about 6 % of items, a place in a supersession chain of two to four parts.
 
 Suppliers sit in four regions (local KSA/UAE, regional UAE distributors, Asia, Europe/US) with typical (p50) and slow (p90) lead times. Every item has exactly one preferred supplier; 30 % have a second source. Prices are quoted in the supplier's currency (SAR, AED, USD, EUR, JPY) and rounded to that currency's minor units; MOQ is always a multiple of the pack size.
 
@@ -65,7 +65,7 @@ The same files seed the `countries`, `currencies`, `ramadan_windows` and `public
 
 ## Determinism
 
-Every family draws from `numpy.random.default_rng([family_index, seed])`, so output does not depend on batch size or on other families, and the same preset and seed reproduce byte-identical CSVs on the same platform. numpy does not guarantee identical streams across versions, so `numpy==2.5.3` is pinned and the manifest records the versions used.
+Every family draws from `numpy.random.default_rng([family_index, seed])`, so output does not depend on batch size or on other families, and the same preset and seed reproduce byte-identical CSVs on the same platform. numpy does not guarantee identical streams across versions, so `numpy==2.5.3` is pinned and the manifest records the versions used. Generator 1.1.0 (Step 4) added `brands.csv` and changed the items column from the brand name (`brand`) to `brand_code`; every other file is byte-identical to 1.0.0 for the same preset and seed.
 
 ## Ground truth
 
