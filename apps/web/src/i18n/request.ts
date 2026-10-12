@@ -1,8 +1,9 @@
 import type { Formats } from 'next-intl'
 import { getRequestConfig } from 'next-intl/server'
 import { cookies } from 'next/headers'
+import { getSessionClaims } from '@/lib/auth/session'
 import { getActiveContext } from '@/lib/organizations/context'
-import { LOCALE_COOKIE, defaultLocale, intlLocales } from './config'
+import { LOCALE_COOKIE, intlLocaleFor, timeZoneOrFallback } from './config'
 import { getMessageFallback, onIntlError } from './errors'
 import { messagesFor } from './messages'
 import { resolveLocale } from './resolve'
@@ -21,24 +22,34 @@ export const formats = {
 
 /**
  * No URL prefix: the locale is a per-user preference (the `locale` cookie) gated by the active
- * organization's Arabic toggle. This runs for every route, /login included, so the English path
- * never touches the database: only a cookie asking for Arabic costs the (request-memoised)
- * organization lookup.
+ * organization's Arabic toggle, with the organization's default language for members who have not
+ * chosen one. The organization also supplies the numbering system (Arabic only) and the time zone.
+ *
+ * This runs for every route, /login included, so anonymous requests stay database-free:
+ * getSessionClaims() only verifies the session token (memoised per request; without a session
+ * cookie it returns at once), and only a signed-in request reads the active organization through
+ * getActiveContext(), which is memoised too and already loaded by the app layout. Anonymous and
+ * organization-less requests render English, Latin digits and UTC.
  */
 export default getRequestConfig(async () => {
   const store = await cookies()
   const cookie = store.get(LOCALE_COOKIE)?.value
 
-  let appLocale = defaultLocale
-  if (cookie === 'ar') {
-    const context = await getActiveContext()
-    appLocale = resolveLocale({ cookie, arabicEnabled: context?.active?.arabic_enabled ?? false })
-  }
+  const claims = await getSessionClaims()
+  const active = claims ? ((await getActiveContext())?.active ?? null) : null
+
+  const appLocale = resolveLocale({
+    cookie,
+    arabicEnabled: active?.arabic_enabled ?? null,
+    organizationDefault: active?.default_locale ?? null,
+  })
 
   return {
-    locale: intlLocales[appLocale],
+    locale: intlLocaleFor(appLocale, active?.numbering_system),
     messages: messagesFor(appLocale),
-    timeZone: 'UTC',
+    // Timestamps render in the organization's zone (its own, else its home country's). Date-only
+    // columns must be formatted with timeZone 'UTC' explicitly so they never shift a day.
+    timeZone: timeZoneOrFallback(active?.effective_time_zone),
     formats,
     onError: onIntlError,
     getMessageFallback,

@@ -7,7 +7,7 @@ import pytest
 from maqdar_engine import importformat
 from maqdar_engine.synth.calendar import Calendar
 from maqdar_engine.synth.generate import generate
-from maqdar_engine.synth.network import countries
+from maqdar_engine.synth.network import brands, countries
 from maqdar_engine.synth.presets import N_DAYS, PRESETS, WINDOW_END, WINDOW_START
 from maqdar_engine.synth.validate import entity_files, validate_bundle
 from maqdar_engine.synth.writer import read_manifest, sha256_of
@@ -92,6 +92,19 @@ def test_lost_sales_only_at_hubs_and_branches(tiny):
     locs = tiny["locations"].select("location_code", "location_type")
     lost = tiny["demand"].filter(pl.col("lost_sales_quantity") > 0).join(locs, on="location_code")
     assert lost.filter(pl.col("location_type") == "central").height == 0
+
+
+def test_brands_cover_every_item(tiny_bundle: Path, tiny):
+    first = (tiny_bundle / "brands.csv").read_text(encoding="utf-8").splitlines()[0]
+    assert first.split(",") == ["brand_code", "name_en", "name_ar", "brand_type", "country_of_origin", "is_active"]
+    brand_rows = tiny["brands"]
+    assert brand_rows["brand_code"].to_list() == [b.code for b in brands()]
+    assert brand_rows["name_en"].str.len_chars().min() > 0
+    assert set(brand_rows["brand_type"].to_list()) <= {"oem", "aftermarket"}
+    assert brand_rows["is_active"].all()
+    item_brands = tiny["items"]["brand_code"]
+    assert item_brands.null_count() == 0
+    assert set(item_brands.to_list()) <= set(brand_rows["brand_code"].to_list())
 
 
 def test_items_master_data(tiny):

@@ -12,7 +12,7 @@ from .. import importformat
 from .calendar import Calendar
 from .catalog import Catalog, build_catalog
 from .demand import FamilyDemand, simulate_family
-from .network import Location, select_locations
+from .network import Brand, Location, brands, select_locations
 from .presets import Preset
 from .suppliers import build_supplier_items, build_suppliers
 from .writer import DemandPartWriter, Manifest, build_manifest, format_bool, format_decimal, write_manifest, write_table
@@ -46,6 +46,7 @@ def generate(preset: Preset, out_dir: Path, force: bool = False, progress: Progr
 
     files: list[Path] = []
     files.append(_write_locations(out_dir, locations, location_codes, central))
+    files.append(_write_brands(out_dir, brands()))
     files.append(_write_items(out_dir, catalog))
     files.append(_write_supersessions(out_dir, catalog))
     files.append(_write_suppliers(out_dir, suppliers))
@@ -84,6 +85,25 @@ def _write_locations(out_dir: Path, locations: list[Location], codes: set[str], 
     return path
 
 
+def _write_brands(out_dir: Path, brand_list: tuple[Brand, ...]) -> Path:
+    """Every package brand, used or not, so items in any preset resolve their brand_code."""
+    entity = importformat.ENTITY_BY_NAME["brands"]
+    path = out_dir / entity.file
+    rows = (
+        (
+            brand.code,
+            brand.name_en,
+            brand.name_ar or None,
+            brand.brand_type or None,
+            brand.country_of_origin or None,
+            format_bool(True),
+        )
+        for brand in brand_list
+    )
+    write_table(path, entity.header, rows)
+    return path
+
+
 def _write_items(out_dir: Path, catalog: Catalog) -> Path:
     entity = importformat.ENTITY_BY_NAME["items"]
     path = out_dir / entity.file
@@ -92,7 +112,7 @@ def _write_items(out_dir: Path, catalog: Catalog) -> Path:
             item.code,
             item.name_en,
             item.name_ar,
-            item.brand.name_en,
+            item.brand.code,
             item.group.code,
             item.group.unit_of_measure,
             format_decimal(item.unit_cost),

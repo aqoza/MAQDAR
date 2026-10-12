@@ -1,0 +1,12 @@
+[
+  { "input": "FALCON-123", "output": "falcon 123" },
+  { "input": "قِطَعُ فالكون", "output": "قطع فالكون" },
+  { "input": "الأصلية", "output": "الاصليه" },
+  { "input": "مستشفى", "output": "مستشفي" },
+  { "input": "٤٥ ۶۷", "output": "45 67" },
+  { "input": "كـــتاب", "output": "كتاب" },
+  { "input": "  A/B__c  ", "output": "a b c" },
+  { "input": "ＦＡＬＣＯＮ　٧", "output": "falcon 7" },
+  { "input": "ﻻمبة", "output": "لامبه" },
+  { "input": "إطار آمن", "output": "اطار امن" }
+]

@@ -6,7 +6,7 @@ The CSV bundle MAQDAR imports master data and demand history from. The synthetic
 
 - A bundle belongs to one organization. No file carries an organization id: the importing user's organization is applied on load.
 - Rows are identified by natural keys (codes), never by database ids. The loader derives ids deterministically from the organization and the code, so reloading a bundle is idempotent.
-- Files are loaded in the order of the tables below so every reference resolves: locations, items, item supersessions, suppliers, supplier items, demand history.
+- Files are loaded in the order of the tables below so every reference resolves: locations, brands, items, item supersessions, suppliers, supplier items, demand history.
 - `manifest.json` lists every file with its row count and sha256 and records the generator version, seed, window and organization. The loader verifies it before writing anything.
 - `_truth/` (generator ground truth) is not part of the format and is never loaded.
 
@@ -45,6 +45,21 @@ Natural key: `location_code`.
 | `parent_location_code` | text (natural key, 1-64 chars, letters, digits, . _ - /) | no       | Default replenishment source; empty for the central warehouse. References `locations.location_code`. |
 | `is_active`            | true or false                                            | yes      | false for closed locations.                                                                          |
 
+### `brands.csv` → `public.brands`
+
+Makes and aftermarket brands that items belong to.
+
+Natural key: `brand_code`.
+
+| Column              | Type                                                     | Required | Description                       |
+| ------------------- | -------------------------------------------------------- | -------- | --------------------------------- |
+| `brand_code`        | text (natural key, 1-64 chars, letters, digits, . _ - /) | yes      | Unique brand code.                |
+| `name_en`           | text                                                     | yes      | English name (required).          |
+| `name_ar`           | text                                                     | no       | Arabic name.                      |
+| `brand_type`        | one of `oem`, `aftermarket`                              | no       | Genuine (OEM) or aftermarket.     |
+| `country_of_origin` | char(2) ISO 3166-1 alpha-2 code                          | no       | Country of origin (any ISO code). |
+| `is_active`         | true or false                                            | yes      | false for brands no longer sold.  |
+
 ### `items.csv` → `public.items`
 
 Service parts.
@@ -56,7 +71,7 @@ Natural key: `item_code`.
 | `item_code`       | text (natural key, 1-64 chars, letters, digits, . _ - /)         | yes      | Unique part number.                                  |
 | `name_en`         | text                                                             | yes      | English name (required).                             |
 | `name_ar`         | text                                                             | no       | Arabic name.                                         |
-| `brand`           | text                                                             | no       | Brand or make.                                       |
+| `brand_code`      | text (natural key, 1-64 chars, letters, digits, . _ - /)         | no       | Brand or make. References `brands.brand_code`.       |
 | `product_group`   | text                                                             | yes      | Planning group, e.g. battery, oil_filter.            |
 | `unit_of_measure` | one of `EA`, `SET`, `L`, `KG`                                    | yes      | Stocking unit.                                       |
 | `unit_cost`       | numeric(18,3) in the row's currency, at most 3 fractional digits | yes      | Standard cost per unit.                              |
@@ -134,6 +149,6 @@ Natural key: `item_code`, `location_code`, `demand_date`.
 
 ## How later steps use it
 
-- Step 4 adds brands, interchanges, network links, fx rates and work calendars as further files with the same conventions.
+- Step 4 added `brands.csv` and replaced the free-text `brand` column of `items.csv` with `brand_code`, a reference to `brands.csv` (generator 1.1.0; the format version stays 1 because no customer bundles exist yet). Interchanges, network links, fx rates, work calendars and holiday overrides join the format in Step 5 with the same conventions.
 - Step 5's import wizard uploads these files to Storage, maps customer columns onto this contract, validates with the same rules as `maqdar-synth validate`, stages the rows and applies them to the tables above under the user's organization.
 - Step 6 adds stock snapshots, open orders and receipts.

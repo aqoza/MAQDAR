@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { appLocales, numberingSystems } from '../../i18n/config'
 import { ROLES } from '../auth/roles'
 import { SLUG_MAX_LENGTH, SLUG_PATTERN } from './slug'
 
@@ -49,6 +50,26 @@ export const createOrganizationSchema = organizationSettingsSchema.extend({
   slug: slugSchema,
 })
 
+export const TIME_ZONE_MAX_LENGTH = 64
+
+/**
+ * The shape of an IANA zone name (Asia/Riyadh, Etc/GMT+3, UTC) or empty, which means "follow the
+ * home country" and is stored as null. update_organization_preferences checks the allow-list
+ * (public.countries zones plus UTC).
+ */
+export const timeZoneSchema = z
+  .string()
+  .trim()
+  .max(TIME_ZONE_MAX_LENGTH)
+  .regex(/^(?:[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+)*)?$/)
+
+/** Display preferences, written through update_organization_preferences (owner or admin). */
+export const organizationPreferencesSchema = z.object({
+  default_locale: z.enum(appLocales),
+  time_zone: timeZoneSchema,
+  numbering_system: z.enum(numberingSystems),
+})
+
 export const inviteSchema = z.object({
   email: emailSchema,
   role: roleSchema,
@@ -57,3 +78,4 @@ export const inviteSchema = z.object({
 export type OrganizationSettingsInput = z.infer<typeof organizationSettingsSchema>
 export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>
 export type InviteInput = z.infer<typeof inviteSchema>
+export type OrganizationPreferencesInput = z.infer<typeof organizationPreferencesSchema>

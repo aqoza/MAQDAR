@@ -6,9 +6,11 @@ import {
   emailSchema,
   inviteSchema,
   organizationNameSchema,
+  organizationPreferencesSchema,
   organizationSettingsSchema,
   roleSchema,
   slugSchema,
+  timeZoneSchema,
 } from './schemas'
 
 describe('organizationNameSchema', () => {
@@ -127,5 +129,60 @@ describe('object schemas', () => {
     if (!result.success) {
       expect(result.error.issues.map((issue) => issue.path[0]).sort()).toEqual(['email', 'role'])
     }
+  })
+})
+
+describe('timeZoneSchema', () => {
+  it('accepts IANA zone names and the empty "follow the home country" value', () => {
+    for (const zone of ['Asia/Riyadh', 'UTC', 'Etc/GMT+3', 'America/Argentina/Buenos_Aires', '']) {
+      expect(timeZoneSchema.safeParse(zone).success, zone).toBe(true)
+    }
+    expect(timeZoneSchema.parse('  Asia/Dubai ')).toBe('Asia/Dubai')
+    expect(timeZoneSchema.parse('   ')).toBe('')
+  })
+
+  it('rejects other shapes and over-long names', () => {
+    for (const zone of ['/Asia', 'Asia/', 'Asia//Riyadh', 'Asia Riyadh', "UTC'", 'آسيا/الرياض']) {
+      expect(timeZoneSchema.safeParse(zone).success, zone).toBe(false)
+    }
+    expect(timeZoneSchema.safeParse(`A/${'x'.repeat(63)}`).success).toBe(false)
+  })
+})
+
+describe('organizationPreferencesSchema', () => {
+  const preferences = { default_locale: 'ar', time_zone: 'Asia/Riyadh', numbering_system: 'arab' }
+
+  it('accepts the allowed values', () => {
+    expect(organizationPreferencesSchema.parse(preferences)).toEqual(preferences)
+    expect(
+      organizationPreferencesSchema.parse({
+        default_locale: 'en',
+        time_zone: '',
+        numbering_system: 'latn',
+      }),
+    ).toEqual({ default_locale: 'en', time_zone: '', numbering_system: 'latn' })
+  })
+
+  it('rejects unknown languages and numbering systems, reporting each field', () => {
+    const result = organizationPreferencesSchema.safeParse({
+      default_locale: 'fr',
+      time_zone: 'not a zone',
+      numbering_system: 'arabext',
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues.map((issue) => issue.path[0]).sort()).toEqual([
+        'default_locale',
+        'numbering_system',
+        'time_zone',
+      ])
+    }
+  })
+
+  it('rejects missing fields', () => {
+    expect(organizationPreferencesSchema.safeParse({}).success).toBe(false)
+    expect(
+      organizationPreferencesSchema.safeParse({ ...preferences, default_locale: '' }).success,
+    ).toBe(false)
   })
 })

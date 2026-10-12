@@ -26,7 +26,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         role={context.role}
         pendingInvitationCount={pendingInvitationCount}
       />
-      <SidebarInset>
+      {/* min-w-0 lets wide tables scroll inside their container instead of widening the page. */}
+      <SidebarInset className="min-w-0">
         <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger aria-label={t('toggleSidebar')} />
           <Separator orientation="vertical" className="h-4" />

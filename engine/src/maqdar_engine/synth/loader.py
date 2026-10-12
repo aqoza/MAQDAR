@@ -1,15 +1,18 @@
 """Loads a validated bundle into the LOCAL Supabase stack's application tables.
 
 Safety: the DSN must point at a loopback host (no override), the server must be Postgres 17 with
-the Step 2 migrations applied, and the role must bypass row-level security (COPY cannot target
-RLS tables otherwise). Natural keys are turned into deterministic uuid5 ids client side, so no
-read-back is needed and reloads are idempotent. Everything happens in one transaction.
+the migrations through Step 4 applied, and the role must bypass row-level security (COPY cannot
+target RLS tables otherwise). Natural keys are turned into deterministic uuid5 ids client side, so
+no read-back is needed and reloads are idempotent. Everything happens in one transaction.
 
 demand_history has no foreign keys, so references are checked twice: codes are matched against the
 bundle's own parents before each COPY (fails fast, before minutes of loading), and a set-based
-anti-join over distinct item-location pairs runs at the end, after the parent tables are analyzed.
-Without fresh statistics the planner believed the new organization had one item and nested-looped a
-materialised copy of all 50,000 for each of 13 M demand rows (killed after 2.7 CPU-hours).
+anti-join over distinct item-location pairs runs at the end. Every master table is analyzed right
+after its COPY (ANALYZE counts this transaction's own rows), because stale statistics make the next
+step quadratic: the demand check nested-looped a materialised copy of all 50,000 items for each of
+13 M demand rows (killed after 2.7 CPU-hours), and with statistics claiming zero rows over the pages
+of a deleted or rolled-back load, each foreign-key check of 65,000 supplier items scanned items
+(12 minutes instead of 18 seconds).
 """
 
 from __future__ import annotations
@@ -34,7 +37,14 @@ from .writer import read_manifest
 
 DEFAULT_DSN = "postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 LOOPBACK_HOSTS = {"localhost", "127.0.0.1", "::1"}
-REQUIRED_MIGRATIONS = ("20261009085052", "20261009085056", "20261009085100", "20261009085104")
+REQUIRED_MIGRATIONS = (
+    "20261009085052",
+    "20261009085056",
+    "20261009085100",
+    "20261009085104",
+    "20261010081342",
+    "20261011074315",
+)
 COPY_BATCH_ROWS = 250_000
 
 Progress = Callable[[str], None]
@@ -187,8 +197,11 @@ def load_bundle(
                 if not replace:
                     raise LoaderRefused(f"organization {org['slug']} already exists; pass --replace to reload")
                 started = time.perf_counter()
-                # demand_history has no foreign keys, so its rows go first; the rest cascades.
+                # demand_history has no foreign keys, so its rows go first; the rest cascades. The demand
+                # is gone, so the items/locations delete guard (Step 4) is switched off for this
+                # transaction: otherwise it would walk the dead demand index entries just deleted.
                 cur.execute("delete from public.demand_history where organization_id = %s", (organization_id,))
+                cur.execute("set local maqdar.demand_guard = 'off'")
                 cur.execute("delete from public.organizations where id = %s", (organization_id,))
                 progress(f"replaced organization {org['slug']} (deleted in {time.perf_counter() - started:.1f}s)")
             cur.execute(
@@ -208,14 +221,14 @@ def load_bundle(
                     column_names, mapped = _frame_for_table(frame, entity, organization_id, known, source)
                     total += _copy_frame(cur, entity.table, column_names, mapped)
                 report.rows[entity.name] = total
+                if not entity.monthly_parts:
+                    # Fresh statistics before the children's foreign-key checks and the demand
+                    # reference check (see the module docstring). demand_history is left to
+                    # autovacuum: an ANALYZE of the partitioned table re-samples every partition
+                    # (40 s with the large preset present, for a tiny load).
+                    schema, name = entity.table.split(".")
+                    cur.execute(sql.SQL("analyze {}.{}").format(sql.Identifier(schema), sql.Identifier(name)))
                 progress(f"loaded {entity.table}: {total:,} rows in {time.perf_counter() - started:.1f}s")
-            started = time.perf_counter()
-            # Fresh statistics on the parents are what keep the reference check linear: the quadratic
-            # plan needs an underestimated inner side. demand_history is left to autovacuum because an
-            # ANALYZE of the partitioned table re-samples every partition (40 s with the large preset
-            # present, for a tiny load). Table names come from the contract, not from input.
-            cur.execute("analyze " + ", ".join(entity.table for entity in importformat.ENTITIES if not entity.monthly_parts))
-            progress(f"analyzed master data in {time.perf_counter() - started:.1f}s")
             started = time.perf_counter()
             _check_demand_references(cur, organization_id)
             progress(f"checked demand references in {time.perf_counter() - started:.1f}s")

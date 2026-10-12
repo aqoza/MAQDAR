@@ -36,6 +36,7 @@ def read_bundle(bundle: Path) -> dict[str, pl.DataFrame]:
     demand = pl.concat([pl.read_csv(p, schema_overrides={"demand_date": pl.Date}) for p in parts])
     return {
         "locations": pl.read_csv(bundle / "locations.csv"),
+        "brands": pl.read_csv(bundle / "brands.csv"),
         "items": pl.read_csv(bundle / "items.csv", schema_overrides={"introduced_on": pl.Date, "discontinued_on": pl.Date}),
         "item_supersessions": pl.read_csv(bundle / "item_supersessions.csv", schema_overrides={"effective_on": pl.Date}),
         "suppliers": pl.read_csv(bundle / "suppliers.csv"),

@@ -1,12 +1,8 @@
-import type { Metadata } from 'next'
-import { getTranslations } from 'next-intl/server'
-import { PlaceholderPage } from '@/components/placeholder-page'
+import { ListScreen } from '@/components/master-data/list-screen'
+import { entityMetadata } from '@/lib/master-data/metadata'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Locations')
-  return { title: t('title') }
-}
+export const generateMetadata = () => entityMetadata('locations')
 
-export default function LocationsPage() {
-  return <PlaceholderPage namespace="Locations" />
+export default function LocationsPage({ searchParams }: PageProps<'/locations'>) {
+  return <ListScreen entity="locations" searchParams={searchParams} />
 }

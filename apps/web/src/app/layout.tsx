@@ -3,10 +3,10 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter, Noto_Sans_Arabic } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
-import { getLocale, getTranslations } from 'next-intl/server'
+import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { DirectionProvider } from '@/components/ui/direction'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { directionOf, toAppLocale } from '@/i18n/config'
+import { clientNamespaces, directionOf, pickNamespaces, toAppLocale } from '@/i18n/config'
 import { IntlErrorHandlingProvider } from '@/i18n/IntlErrorHandlingProvider'
 import { cn } from '@/lib/utils'
 
@@ -29,6 +29,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = toAppLocale(await getLocale())
   const dir = directionOf(locale)
+  // Only the namespaces Client Components use are serialized into the page; Server Components
+  // still read every namespace from the request config.
+  const messages = pickNamespaces(await getMessages(), clientNamespaces)
 
   return (
     <html
@@ -37,7 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={cn('font-sans antialiased', inter.variable, notoSansArabic.variable)}
     >
       <body>
-        <NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
           <IntlErrorHandlingProvider>
             <DirectionProvider direction={dir}>
               <TooltipProvider>{children}</TooltipProvider>

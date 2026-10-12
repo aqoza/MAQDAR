@@ -6,7 +6,27 @@ export type Database = {
   
   "public": {
           Tables: {
-            "countries": {
+            "brands": {
+                  Row: {
+                    "brand_type": string | null,"code": string,"country_of_origin": string | null,"created_at": string,"id": string,"is_active": boolean,"name_ar": string | null,"name_en": string,"organization_id": string,"search_text": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "brand_type"?: string | null,"code": string,"country_of_origin"?: string | null,"created_at"?: string,"id"?: string,"is_active"?: boolean,"name_ar"?: string | null,"name_en": string,"organization_id": string,"search_text"?: never,"updated_at"?: string
+                  }
+                  Update: {
+                    "brand_type"?: string | null,"code"?: string,"country_of_origin"?: string | null,"created_at"?: string,"id"?: string,"is_active"?: boolean,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"search_text"?: never,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "brands_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"countries": {
                   Row: {
                     "code": string,"currency_code": string,"holiday_coverage_from": string | null,"holiday_coverage_to": string | null,"name_ar": string | null,"name_en": string,"timezone": string,"utc_offset_minutes": number,"vat_rate": number,"weekend_days": (number)[]
                   }
@@ -54,6 +74,102 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"fx_rates": {
+                  Row: {
+                    "created_at": string,"from_currency": string,"id": string,"note": string | null,"organization_id": string,"rate": number,"to_currency": string,"updated_at": string,"valid_from": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"from_currency": string,"id"?: string,"note"?: string | null,"organization_id": string,"rate": number,"to_currency": string,"updated_at"?: string,"valid_from": string
+                  }
+                  Update: {
+                    "created_at"?: string,"from_currency"?: string,"id"?: string,"note"?: string | null,"organization_id"?: string,"rate"?: number,"to_currency"?: string,"updated_at"?: string,"valid_from"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "fx_rates_from_currency_fkey"
+      columns: ["from_currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "fx_rates_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "fx_rates_to_currency_fkey"
+      columns: ["to_currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    }
+                  ]
+                },"holiday_overrides": {
+                  Row: {
+                    "country_code": string | null,"created_at": string,"ends_on": string,"id": string,"kind": string,"name_ar": string | null,"name_en": string,"note": string | null,"organization_id": string,"scope_key": string | null,"starts_on": string,"updated_at": string,"work_calendar_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "country_code"?: string | null,"created_at"?: string,"ends_on": string,"id"?: string,"kind": string,"name_ar"?: string | null,"name_en": string,"note"?: string | null,"organization_id": string,"scope_key"?: never,"starts_on": string,"updated_at"?: string,"work_calendar_id"?: string | null
+                  }
+                  Update: {
+                    "country_code"?: string | null,"created_at"?: string,"ends_on"?: string,"id"?: string,"kind"?: string,"name_ar"?: string | null,"name_en"?: string,"note"?: string | null,"organization_id"?: string,"scope_key"?: never,"starts_on"?: string,"updated_at"?: string,"work_calendar_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "holiday_overrides_calendar_fkey"
+      columns: ["organization_id","work_calendar_id"]
+isOneToOne: false
+      referencedRelation: "work_calendars"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "holiday_overrides_country_code_fkey"
+      columns: ["country_code"]
+isOneToOne: false
+      referencedRelation: "countries"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "holiday_overrides_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"item_interchanges": {
+                  Row: {
+                    "alternate_item_id": string,"created_at": string,"direction": string,"id": string,"item_id": string,"note": string | null,"organization_id": string,"priority": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "alternate_item_id": string,"created_at"?: string,"direction"?: string,"id"?: string,"item_id": string,"note"?: string | null,"organization_id": string,"priority"?: number,"updated_at"?: string
+                  }
+                  Update: {
+                    "alternate_item_id"?: string,"created_at"?: string,"direction"?: string,"id"?: string,"item_id"?: string,"note"?: string | null,"organization_id"?: string,"priority"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "item_interchanges_alternate_item_fkey"
+      columns: ["organization_id","alternate_item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "item_interchanges_item_fkey"
+      columns: ["organization_id","item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "item_interchanges_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"item_supersessions": {
                   Row: {
                     "created_at": string,"effective_on": string,"id": string,"note": string | null,"organization_id": string,"predecessor_item_id": string,"quantity_factor": number,"successor_item_id": string,"updated_at": string
@@ -75,7 +191,7 @@ isOneToOne: false
     },{
       foreignKeyName: "item_supersessions_organization_id_predecessor_item_id_fkey"
       columns: ["organization_id","predecessor_item_id"]
-isOneToOne: false
+isOneToOne: true
       referencedRelation: "items"
       referencedColumns: ["organization_id","id"]
     },{
@@ -88,17 +204,23 @@ isOneToOne: false
                   ]
                 },"items": {
                   Row: {
-                    "brand": string | null,"code": string,"created_at": string,"currency": string,"discontinued_on": string | null,"id": string,"introduced_on": string | null,"name_ar": string | null,"name_en": string,"organization_id": string,"product_group": string,"status": string,"unit_cost": number,"unit_of_measure": string,"updated_at": string
+                    "brand_id": string | null,"code": string,"created_at": string,"currency": string,"discontinued_on": string | null,"id": string,"introduced_on": string | null,"name_ar": string | null,"name_en": string,"organization_id": string,"product_group": string,"search_text": string | null,"status": string,"unit_cost": number,"unit_of_measure": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "brand"?: string | null,"code": string,"created_at"?: string,"currency": string,"discontinued_on"?: string | null,"id"?: string,"introduced_on"?: string | null,"name_ar"?: string | null,"name_en": string,"organization_id": string,"product_group": string,"status"?: string,"unit_cost": number,"unit_of_measure": string,"updated_at"?: string
+                    "brand_id"?: string | null,"code": string,"created_at"?: string,"currency": string,"discontinued_on"?: string | null,"id"?: string,"introduced_on"?: string | null,"name_ar"?: string | null,"name_en": string,"organization_id": string,"product_group": string,"search_text"?: never,"status"?: string,"unit_cost": number,"unit_of_measure": string,"updated_at"?: string
                   }
                   Update: {
-                    "brand"?: string | null,"code"?: string,"created_at"?: string,"currency"?: string,"discontinued_on"?: string | null,"id"?: string,"introduced_on"?: string | null,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"product_group"?: string,"status"?: string,"unit_cost"?: number,"unit_of_measure"?: string,"updated_at"?: string
+                    "brand_id"?: string | null,"code"?: string,"created_at"?: string,"currency"?: string,"discontinued_on"?: string | null,"id"?: string,"introduced_on"?: string | null,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"product_group"?: string,"search_text"?: never,"status"?: string,"unit_cost"?: number,"unit_of_measure"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "items_brand_fkey"
+      columns: ["organization_id","brand_id"]
+isOneToOne: false
+      referencedRelation: "brands"
+      referencedColumns: ["organization_id","id"]
+    },{
       foreignKeyName: "items_currency_fkey"
       columns: ["currency"]
 isOneToOne: false
@@ -114,14 +236,14 @@ isOneToOne: false
                   ]
                 },"locations": {
                   Row: {
-                    "city": string | null,"code": string,"country_code": string,"created_at": string,"id": string,"is_active": boolean,"latitude": number | null,"location_type": string,"longitude": number | null,"name_ar": string | null,"name_en": string,"organization_id": string,"parent_location_id": string | null,"timezone": string,"updated_at": string
+                    "city": string | null,"code": string,"country_code": string,"created_at": string,"id": string,"is_active": boolean,"latitude": number | null,"location_type": string,"longitude": number | null,"name_ar": string | null,"name_en": string,"organization_id": string,"parent_location_id": string | null,"search_text": string | null,"timezone": string,"updated_at": string,"work_calendar_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "city"?: string | null,"code": string,"country_code": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"latitude"?: number | null,"location_type": string,"longitude"?: number | null,"name_ar"?: string | null,"name_en": string,"organization_id": string,"parent_location_id"?: string | null,"timezone": string,"updated_at"?: string
+                    "city"?: string | null,"code": string,"country_code": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"latitude"?: number | null,"location_type": string,"longitude"?: number | null,"name_ar"?: string | null,"name_en": string,"organization_id": string,"parent_location_id"?: string | null,"search_text"?: never,"timezone": string,"updated_at"?: string,"work_calendar_id"?: string | null
                   }
                   Update: {
-                    "city"?: string | null,"code"?: string,"country_code"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"latitude"?: number | null,"location_type"?: string,"longitude"?: number | null,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"parent_location_id"?: string | null,"timezone"?: string,"updated_at"?: string
+                    "city"?: string | null,"code"?: string,"country_code"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"latitude"?: number | null,"location_type"?: string,"longitude"?: number | null,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"parent_location_id"?: string | null,"search_text"?: never,"timezone"?: string,"updated_at"?: string,"work_calendar_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -141,6 +263,12 @@ isOneToOne: false
       columns: ["organization_id","parent_location_id"]
 isOneToOne: false
       referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "locations_work_calendar_fkey"
+      columns: ["organization_id","work_calendar_id"]
+isOneToOne: false
+      referencedRelation: "work_calendars"
       referencedColumns: ["organization_id","id"]
     }
                   ]
@@ -190,6 +318,44 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"network_links": {
+                  Row: {
+                    "created_at": string,"currency": string | null,"freight_basis": string,"freight_cost": number | null,"from_location_id": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"from_location_id": string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"from_location_id"?: string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50"?: number,"lead_time_days_p90"?: number,"organization_id"?: string,"to_location_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "network_links_currency_fkey"
+      columns: ["currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "network_links_from_location_fkey"
+      columns: ["organization_id","from_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "network_links_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "network_links_to_location_fkey"
+      columns: ["organization_id","to_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"organization_invitations": {
                   Row: {
                     "accepted_at": string | null,"accepted_by": string | null,"created_at": string,"email": string,"expires_at": string,"id": string,"invited_by": string | null,"last_sent_at": string,"organization_id": string,"revoked_at": string | null,"revoked_by": string | null,"role": string,"send_count": number
@@ -212,14 +378,14 @@ isOneToOne: false
                   ]
                 },"organizations": {
                   Row: {
-                    "arabic_enabled": boolean,"base_currency": string,"created_at": string,"created_by": string | null,"home_country": string,"id": string,"name": string,"slug": string,"updated_at": string
+                    "arabic_enabled": boolean,"base_currency": string,"created_at": string,"created_by": string | null,"default_locale": string,"home_country": string,"id": string,"name": string,"numbering_system": string,"slug": string,"time_zone": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"created_by"?: string | null,"home_country"?: string,"id"?: string,"name": string,"slug": string,"updated_at"?: string
+                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"created_by"?: string | null,"default_locale"?: string,"home_country"?: string,"id"?: string,"name": string,"numbering_system"?: string,"slug": string,"time_zone"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"created_by"?: string | null,"home_country"?: string,"id"?: string,"name"?: string,"slug"?: string,"updated_at"?: string
+                    "arabic_enabled"?: boolean,"base_currency"?: string,"created_at"?: string,"created_by"?: string | null,"default_locale"?: string,"home_country"?: string,"id"?: string,"name"?: string,"numbering_system"?: string,"slug"?: string,"time_zone"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -316,14 +482,14 @@ isOneToOne: false
                   ]
                 },"suppliers": {
                   Row: {
-                    "code": string,"country_code": string,"created_at": string,"currency": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"name_ar": string | null,"name_en": string,"organization_id": string,"updated_at": string
+                    "code": string,"country_code": string,"created_at": string,"currency": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"name_ar": string | null,"name_en": string,"organization_id": string,"search_text": string | null,"updated_at": string,"work_calendar_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "code": string,"country_code": string,"created_at"?: string,"currency": string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"name_ar"?: string | null,"name_en": string,"organization_id": string,"updated_at"?: string
+                    "code": string,"country_code": string,"created_at"?: string,"currency": string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"name_ar"?: string | null,"name_en": string,"organization_id": string,"search_text"?: never,"updated_at"?: string,"work_calendar_id"?: string | null
                   }
                   Update: {
-                    "code"?: string,"country_code"?: string,"created_at"?: string,"currency"?: string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50"?: number,"lead_time_days_p90"?: number,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"updated_at"?: string
+                    "code"?: string,"country_code"?: string,"created_at"?: string,"currency"?: string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50"?: number,"lead_time_days_p90"?: number,"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"search_text"?: never,"updated_at"?: string,"work_calendar_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -338,6 +504,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "organizations"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "suppliers_work_calendar_fkey"
+      columns: ["organization_id","work_calendar_id"]
+isOneToOne: false
+      referencedRelation: "work_calendars"
+      referencedColumns: ["organization_id","id"]
     }
                   ]
                 },"user_settings": {
@@ -355,6 +527,32 @@ isOneToOne: false
                     {
       foreignKeyName: "user_settings_active_organization_id_fkey"
       columns: ["active_organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"work_calendars": {
+                  Row: {
+                    "code": string,"country_code": string | null,"created_at": string,"id": string,"is_active": boolean,"name_ar": string | null,"name_en": string,"observe_public_holidays": boolean,"organization_id": string,"search_text": string | null,"updated_at": string,"weekend_days": (number)[]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"country_code"?: string | null,"created_at"?: string,"id"?: string,"is_active"?: boolean,"name_ar"?: string | null,"name_en": string,"observe_public_holidays"?: boolean,"organization_id": string,"search_text"?: never,"updated_at"?: string,"weekend_days"?: (number)[]
+                  }
+                  Update: {
+                    "code"?: string,"country_code"?: string | null,"created_at"?: string,"id"?: string,"is_active"?: boolean,"name_ar"?: string | null,"name_en"?: string,"observe_public_holidays"?: boolean,"organization_id"?: string,"search_text"?: never,"updated_at"?: string,"weekend_days"?: (number)[]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "work_calendars_country_code_fkey"
+      columns: ["country_code"]
+isOneToOne: false
+      referencedRelation: "countries"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "work_calendars_organization_id_fkey"
+      columns: ["organization_id"]
 isOneToOne: false
       referencedRelation: "organizations"
       referencedColumns: ["id"]
@@ -384,7 +582,7 @@ isOneToOne: false
                            },
 "my_organizations":
 { Args: Record<PropertyKey, never>; Returns: {
-              "arabic_enabled": boolean,"base_currency": string,"home_country": string,"id": string,"is_active": boolean,"name": string,"role": string,"slug": string
+              "arabic_enabled": boolean,"base_currency": string,"default_locale": string,"effective_time_zone": string,"home_country": string,"id": string,"is_active": boolean,"name": string,"numbering_system": string,"role": string,"slug": string,"time_zone": string
             }[]
                            },
 "organization_members":
@@ -406,6 +604,9 @@ isOneToOne: false
                            },
 "set_member_role":
 { Args: { "p_organization_id": string,"p_role": string,"p_user_id": string }; Returns: undefined
+                           },
+"update_organization_preferences":
+{ Args: { "p_default_locale": string,"p_numbering_system": string,"p_organization_id": string,"p_time_zone": string }; Returns: undefined
                            },
 "update_organization_settings":
 { Args: { "p_arabic_enabled": boolean,"p_base_currency": string,"p_home_country": string,"p_name": string,"p_organization_id": string }; Returns: undefined
