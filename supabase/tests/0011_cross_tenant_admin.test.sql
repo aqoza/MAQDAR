@@ -4,12 +4,13 @@
 -- * only owners manage owner invitations; admins neither re-arm nor revoke them;
 -- * invitation throttles count revoked rows, so revoking and re-inviting cannot reset them, and the
 --   daily caps per address, per organization and per inviter hold;
--- * internal helpers and the hook are not executable by API roles; anon cannot call any RPC;
+-- * internal helpers and the hook are not executable by API roles; anon cannot call any RPC,
+--   including the Step 5a import RPCs;
 -- * a confirmed account without an e-mail address cannot accept an invitation;
 -- * a branch user of A who is a viewer of B sees exactly the right locations with and without a claim.
 begin;
 
-select plan(40);
+select plan(41);
 
 -- Fixture --------------------------------------------------------------------------------------
 insert into auth.users (id, email, email_confirmed_at) values
@@ -67,6 +68,16 @@ select is(
    where has_function_privilege('anon', f::regprocedure, 'execute')),
   0,
   'anon cannot execute any tenancy RPC'
+);
+select is(
+  (select count(*)::int
+   from unnest(array[
+     'public.import_create_batch(uuid, uuid, jsonb)', 'public.import_stage_chunk(uuid, smallint, integer, text)',
+     'public.import_seal_file(uuid, smallint, integer)', 'public.import_commit_step(uuid, integer)',
+     'public.import_resume(uuid)', 'public.import_cancel_step(uuid)', 'public.import_delete(uuid)']) as f
+   where has_function_privilege('anon', f::regprocedure, 'execute')),
+  0,
+  'anon cannot execute any import RPC'
 );
 
 -- Admin of B against organization A ------------------------------------------------------------

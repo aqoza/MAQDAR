@@ -1,0 +1,1149 @@
+{
+  "description": "Validation fixtures of the import pipeline, run by supabase/tests/0017_import_validation.test.sql. Each case is one import as the planner of organization A: the parent files (optional) are staged and sealed first, then the case file; expected lists every error and warning of the import as (file_no, row_no, column_name, code, level), where file_no defaults to the case file (the last one) and row_no 0 means the whole file. value, value_length and detail are compared when given. The source_missing warning that every sealed file gets (no originals are uploaded) is left out. columns are the contract columns the file maps; each row has one cell per column, a string, or {\"repeat\": s, \"times\": n}, or {\"today_plus\": n} (YYYY-MM-DD; current_date + n while the demand partitions reach past tomorrow, otherwise counted back from their end, so 1 is always the last accepted day).",
+  "seed": "Organization A: calendars CAL-A (SA, observes public holidays) and CAL-NOCTRY (no country, does not observe); a SA closure 2026-03-20..2026-03-22; locations LOC-A1 (central) and LOC-A2 (branch, parent LOC-A1); brand BR-A; items P-1 (introduced 2024-01-01), P-2 (discontinued 2025-01-01), P-3 and P/4; supersession P-2 -> P-3; supplier SUP-A (lead times 10/20); supplier items SUP-A/P-1 (lead 10, p90 20) and SUP-A/P-2 (lead 10, no p90); demand P-1/LOC-A1 on 2024-07-15. Organization B: brand BR-B-ONLY, item P-B-ONLY, location LOC-B-ONLY.",
+  "cases": [
+    {
+      "name": "items: required, too_long and invalid_item_code (a slash is allowed in part numbers)",
+      "entity": "items",
+      "columns": [
+        "item_code",
+        "name_en",
+        "product_group",
+        "unit_of_measure",
+        "unit_cost",
+        "currency"
+      ],
+      "rows": [
+        ["P/NEW-1", "Slash part", "battery", "EA", "1", "SAR"],
+        ["P-NEW-2", "", "battery", "EA", "1", "SAR"],
+        ["P-NEW-3", { "repeat": "x", "times": 201 }, "battery", "EA", "1", "SAR"],
+        ["-P5", "Leading dash", "battery", "EA", "1", "SAR"],
+        ["P 6", "Space", "battery", "EA", "1", "SAR"],
+        ["", "No code", "battery", "EA", "1", "SAR"],
+        ["P-NEW-7", "Long group", { "repeat": "g", "times": 65 }, "EA", "1", "SAR"],
+        [{ "repeat": "P", "times": 65 }, "Long code", "battery", "EA", "1", "SAR"]
+      ],
+      "expected": [
+        {
+          "row_no": 2,
+          "column_name": "name_en",
+          "code": "required",
+          "level": "error",
+          "value": ""
+        },
+        {
+          "row_no": 3,
+          "column_name": "name_en",
+          "code": "too_long",
+          "level": "error",
+          "value_length": 200
+        },
+        {
+          "row_no": 4,
+          "column_name": "item_code",
+          "code": "invalid_item_code",
+          "level": "error",
+          "value": "-P5"
+        },
+        { "row_no": 5, "column_name": "item_code", "code": "invalid_item_code", "level": "error" },
+        { "row_no": 6, "column_name": "item_code", "code": "required", "level": "error" },
+        { "row_no": 7, "column_name": "product_group", "code": "too_long", "level": "error" },
+        { "row_no": 8, "column_name": "item_code", "code": "too_long", "level": "error" }
+      ]
+    },
+    {
+      "name": "locations: invalid_code (a slash outside part numbers), unknown_country, invalid_enum, invalid_timezone, coordinates",
+      "entity": "locations",
+      "columns": [
+        "location_code",
+        "name_en",
+        "location_type",
+        "country_code",
+        "latitude",
+        "longitude",
+        "timezone"
+      ],
+      "rows": [
+        ["RUH/DC", "Slash", "branch", "SA", "24.7", "46.7", "Asia/Riyadh"],
+        ["LOC-N2", "Unknown country", "branch", "ZZ", "", "", "Asia/Riyadh"],
+        ["LOC-N3", "Lower-case country", "branch", "sa", "", "", "Asia/Riyadh"],
+        ["LOC-N4", "Unknown type", "warehouse", "SA", "", "", "Asia/Riyadh"],
+        ["LOC-N5", "Unknown zone", "branch", "SA", "", "", "Mars/Phobos"],
+        ["LOC-N6", "Zone with a space", "branch", "SA", "", "", "Asia Riyadh"],
+        ["LOC-N7", "Excluded zone", "branch", "SA", "", "", "Factory"],
+        ["LOC-N8", "North of the pole", "branch", "SA", "91", "46.7", "Asia/Riyadh"],
+        ["LOC-N9", "Seven decimals", "branch", "SA", "24.1234567", "46.7", "Asia/Riyadh"],
+        ["LOC-N10", "Trailing zeros", "branch", "SA", "24.1234560000", "-46.700", "Asia/Riyadh"],
+        ["LOC-N11", "Four integer digits", "branch", "SA", "1000", "46.7", "Asia/Riyadh"],
+        ["LOC-N12", "Decimal comma", "branch", "SA", "24,7", "46.7", "Asia/Riyadh"],
+        ["LOC-N13", "UTC", "hub", "AE", "", "", "UTC"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "location_code",
+          "code": "invalid_code",
+          "level": "error",
+          "value": "RUH/DC"
+        },
+        {
+          "row_no": 2,
+          "column_name": "country_code",
+          "code": "unknown_country",
+          "level": "error",
+          "value": "ZZ"
+        },
+        { "row_no": 3, "column_name": "country_code", "code": "unknown_country", "level": "error" },
+        { "row_no": 4, "column_name": "location_type", "code": "invalid_enum", "level": "error" },
+        { "row_no": 5, "column_name": "timezone", "code": "invalid_timezone", "level": "error" },
+        { "row_no": 6, "column_name": "timezone", "code": "invalid_timezone", "level": "error" },
+        { "row_no": 7, "column_name": "timezone", "code": "invalid_timezone", "level": "error" },
+        { "row_no": 8, "column_name": "latitude", "code": "out_of_range", "level": "error" },
+        { "row_no": 9, "column_name": "latitude", "code": "too_many_decimals", "level": "error" },
+        { "row_no": 11, "column_name": "latitude", "code": "too_many_digits", "level": "error" },
+        { "row_no": 12, "column_name": "latitude", "code": "invalid_decimal", "level": "error" }
+      ]
+    },
+    {
+      "name": "items: money and enums (invalid_decimal incl. Arabic-Indic digits, scale and digit overflow, trailing and leading zeros accepted, unknown_currency, invalid_enum, required)",
+      "entity": "items",
+      "columns": [
+        "item_code",
+        "name_en",
+        "product_group",
+        "unit_of_measure",
+        "unit_cost",
+        "currency",
+        "status"
+      ],
+      "rows": [
+        ["M-1", "Decimal comma", "g", "EA", "1,5", "SAR", "active"],
+        ["M-2", "No integer part", "g", "EA", ".5", "SAR", "active"],
+        ["M-3", "Exponent", "g", "EA", "1e3", "SAR", "active"],
+        ["M-4", "Arabic-Indic digits", "g", "EA", "٤٥", "SAR", "active"],
+        ["M-5", "Four decimals", "g", "EA", "1.2345", "SAR", "active"],
+        ["M-6", "Trailing zeros", "g", "EA", "1.2340000", "SAR", "active"],
+        ["M-7", "Thirteen digits", "g", "EA", "1234567890123", "SAR", "active"],
+        ["M-8", "Leading zeros", "g", "EA", "000123456789012.5", "SAR", "active"],
+        ["M-9", "Negative", "g", "EA", "-1", "SAR", "active"],
+        ["M-10", "Unknown currency", "g", "EA", "1", "XYZ", "active"],
+        ["M-11", "Lower-case currency", "g", "EA", "1", "sar", "active"],
+        ["M-12", "Lower-case unit", "g", "ea", "1", "SAR", "active"],
+        ["M-13", "Unknown status", "g", "EA", "1", "SAR", "retired"],
+        ["M-14", "Plus sign", "g", "EA", "+1", "SAR", "active"],
+        ["M-15", "Empty status", "g", "EA", "1", "SAR", ""],
+        ["M-16", "Free part", "g", "EA", "0", "JOD", "new"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "unit_cost",
+          "code": "invalid_decimal",
+          "level": "error",
+          "value": "1,5"
+        },
+        { "row_no": 2, "column_name": "unit_cost", "code": "invalid_decimal", "level": "error" },
+        { "row_no": 3, "column_name": "unit_cost", "code": "invalid_decimal", "level": "error" },
+        {
+          "row_no": 4,
+          "column_name": "unit_cost",
+          "code": "invalid_decimal",
+          "level": "error",
+          "value": "٤٥"
+        },
+        { "row_no": 5, "column_name": "unit_cost", "code": "too_many_decimals", "level": "error" },
+        { "row_no": 7, "column_name": "unit_cost", "code": "too_many_digits", "level": "error" },
+        { "row_no": 9, "column_name": "unit_cost", "code": "out_of_range", "level": "error" },
+        { "row_no": 10, "column_name": "currency", "code": "unknown_currency", "level": "error" },
+        { "row_no": 11, "column_name": "currency", "code": "unknown_currency", "level": "error" },
+        {
+          "row_no": 12,
+          "column_name": "unit_of_measure",
+          "code": "invalid_enum",
+          "level": "error"
+        },
+        { "row_no": 13, "column_name": "status", "code": "invalid_enum", "level": "error" },
+        { "row_no": 14, "column_name": "unit_cost", "code": "invalid_decimal", "level": "error" },
+        { "row_no": 15, "column_name": "status", "code": "required", "level": "error" }
+      ]
+    },
+    {
+      "name": "work_calendars: invalid_weekdays, invalid_boolean, unknown_country and country_required",
+      "entity": "work_calendars",
+      "columns": [
+        "work_calendar_code",
+        "name_en",
+        "country_code",
+        "weekend_days",
+        "observe_public_holidays"
+      ],
+      "rows": [
+        ["CAL-N1", "Repeated day", "SA", "5;5", "true"],
+        ["CAL-N2", "Day eight", "SA", "8", "true"],
+        ["CAL-N3", "Comma list", "SA", "5,6", "true"],
+        ["CAL-N4", "Reversed days", "SA", "6;5", "true"],
+        ["CAL-N5", "No weekend", "SA", "", "true"],
+        ["CAL-N6", "Yes", "SA", "5;6", "yes"],
+        ["CAL-N7", "Upper case", "SA", "5;6", "TRUE"],
+        ["CAL-N8", "Observing without a country", "", "5;6", "true"],
+        ["CAL-N9", "Not observing, no country", "", "5;6", "false"],
+        ["CAL-N10", "Seven days", "SA", "1;2;3;4;5;6;7", "true"],
+        ["CAL-N11", "Unknown country", "ZZ", "6;7", "true"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "weekend_days",
+          "code": "invalid_weekdays",
+          "level": "error",
+          "value": "5;5"
+        },
+        {
+          "row_no": 2,
+          "column_name": "weekend_days",
+          "code": "invalid_weekdays",
+          "level": "error"
+        },
+        {
+          "row_no": 3,
+          "column_name": "weekend_days",
+          "code": "invalid_weekdays",
+          "level": "error"
+        },
+        {
+          "row_no": 6,
+          "column_name": "observe_public_holidays",
+          "code": "invalid_boolean",
+          "level": "error",
+          "value": "yes"
+        },
+        {
+          "row_no": 7,
+          "column_name": "observe_public_holidays",
+          "code": "invalid_boolean",
+          "level": "error"
+        },
+        {
+          "row_no": 8,
+          "column_name": "country_code",
+          "code": "country_required",
+          "level": "error",
+          "value": "",
+          "detail": null
+        },
+        {
+          "row_no": 10,
+          "column_name": "weekend_days",
+          "code": "invalid_weekdays",
+          "level": "error"
+        },
+        { "row_no": 11, "column_name": "country_code", "code": "unknown_country", "level": "error" }
+      ]
+    },
+    {
+      "name": "work_calendars: country_required on effective values (only observe_public_holidays mapped: the stored country decides)",
+      "entity": "work_calendars",
+      "columns": ["work_calendar_code", "observe_public_holidays"],
+      "rows": [
+        ["CAL-NOCTRY", "true"],
+        ["CAL-A", "true"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "observe_public_holidays",
+          "code": "country_required",
+          "level": "error",
+          "value": "true",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "work_calendars: country_required on effective values (only country_code mapped: the stored observe_public_holidays decides)",
+      "entity": "work_calendars",
+      "columns": ["work_calendar_code", "country_code"],
+      "rows": [
+        ["CAL-A", ""],
+        ["CAL-NOCTRY", ""]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "country_code",
+          "code": "country_required",
+          "level": "error",
+          "value": "",
+          "detail": { "stored": { "observe_public_holidays": true } }
+        }
+      ]
+    },
+    {
+      "name": "work_calendars: a new calendar without either column gets the default observe_public_holidays (true) and needs a country",
+      "entity": "work_calendars",
+      "columns": ["work_calendar_code", "name_en"],
+      "rows": [
+        ["CAL-NEW", "New calendar"],
+        ["CAL-A", "Renamed"],
+        ["CAL-NOCTRY", "Renamed"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "country_code",
+          "code": "country_required",
+          "level": "error",
+          "value": null,
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "holiday_overrides: scope_exactly_one, end_before_start, holiday_too_long (366 days; 365 pass), invalid_date, invalid_enum, unknown calendar",
+      "entity": "holiday_overrides",
+      "columns": ["country_code", "work_calendar_code", "starts_on", "ends_on", "kind", "name_en"],
+      "rows": [
+        ["SA", "CAL-A", "2026-05-01", "2026-05-01", "closure", "Both scopes"],
+        ["", "", "2026-05-02", "2026-05-02", "closure", "No scope"],
+        ["SA", "", "2026-05-10", "2026-05-09", "closure", "Ends before it starts"],
+        ["SA", "", "2026-06-01", "2027-06-02", "closure", "366 days"],
+        ["SA", "", "2026-02-30", "2026-03-01", "closure", "No such day"],
+        ["", "CAL-NOPE", "2026-05-03", "2026-05-03", "closure", "Unknown calendar"],
+        ["", "CAL-A", "2025-01-01", "2025-12-31", "working_day", "Long but fine"],
+        ["SA", "", "2025-07-01", "2025-07-01", "holiday", "Unknown kind"],
+        ["", "CAL-A", "2026-05-01", "2026-05-01", "closure", "Calendar day"],
+        ["", "CAL-A", "2027-01-01", "2028-01-01", "closure", "365 days"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "country_code",
+          "code": "scope_exactly_one",
+          "level": "error",
+          "value": "SA"
+        },
+        {
+          "row_no": 2,
+          "column_name": "country_code",
+          "code": "scope_exactly_one",
+          "level": "error",
+          "value": ""
+        },
+        {
+          "row_no": 3,
+          "column_name": "ends_on",
+          "code": "end_before_start",
+          "level": "error",
+          "value": "2026-05-09"
+        },
+        {
+          "row_no": 4,
+          "column_name": "ends_on",
+          "code": "holiday_too_long",
+          "level": "error",
+          "value": "2027-06-02"
+        },
+        {
+          "row_no": 5,
+          "column_name": "starts_on",
+          "code": "invalid_date",
+          "level": "error",
+          "value": "2026-02-30"
+        },
+        {
+          "row_no": 6,
+          "column_name": "work_calendar_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "CAL-NOPE"
+        },
+        { "row_no": 8, "column_name": "kind", "code": "invalid_enum", "level": "error" }
+      ]
+    },
+    {
+      "name": "holiday_overrides: holiday_overlap within the file and with a stored override the file does not replace",
+      "entity": "holiday_overrides",
+      "columns": ["country_code", "work_calendar_code", "starts_on", "ends_on", "kind", "name_en"],
+      "rows": [
+        ["SA", "", "2026-08-01", "2026-08-05", "closure", "First"],
+        ["SA", "", "2026-08-04", "2026-08-06", "closure", "Overlaps the first"],
+        ["SA", "", "2026-03-21", "2026-03-21", "closure", "Inside the stored closure"],
+        ["", "CAL-A", "2026-08-02", "2026-08-02", "closure", "Another scope"]
+      ],
+      "expected": [
+        {
+          "row_no": 2,
+          "column_name": "starts_on",
+          "code": "holiday_overlap",
+          "level": "error",
+          "value": "2026-08-04"
+        },
+        {
+          "row_no": 3,
+          "column_name": "starts_on",
+          "code": "holiday_overlap",
+          "level": "error",
+          "value": "2026-03-21"
+        }
+      ]
+    },
+    {
+      "name": "holiday_overrides: a row with the scope and start of a stored override replaces it and does not overlap it",
+      "entity": "holiday_overrides",
+      "columns": ["country_code", "work_calendar_code", "starts_on", "ends_on", "kind", "name_en"],
+      "rows": [["SA", "", "2026-03-20", "2026-03-23", "closure", "Longer stored closure"]],
+      "expected": []
+    },
+    {
+      "name": "locations: must_differ, location_cycle (with a stored edge, within the file, self), parents within the file, unknown parents",
+      "entity": "locations",
+      "columns": [
+        "location_code",
+        "name_en",
+        "location_type",
+        "country_code",
+        "timezone",
+        "parent_location_code"
+      ],
+      "rows": [
+        ["LOC-A1", "Riyadh DC", "central", "SA", "Asia/Riyadh", "LOC-A2"],
+        ["LOC-X", "X", "hub", "SA", "Asia/Riyadh", "LOC-Y"],
+        ["LOC-Y", "Y", "hub", "SA", "Asia/Riyadh", "LOC-X"],
+        ["LOC-SELF", "Self", "branch", "SA", "Asia/Riyadh", "LOC-SELF"],
+        ["LOC-Z", "Z", "branch", "SA", "Asia/Riyadh", "LOC-NOPE"],
+        ["LOC-W", "W", "branch", "SA", "Asia/Riyadh", "LOC-Z"],
+        ["LOC-V", "V", "branch", "SA", "Asia/Riyadh", "LOC-B-ONLY"],
+        ["LOC-U", "Under a cycle", "branch", "SA", "Asia/Riyadh", "LOC-A1"],
+        ["LOC-T", "Slash parent", "branch", "SA", "Asia/Riyadh", "LOC/BAD"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "parent_location_code",
+          "code": "location_cycle",
+          "level": "error",
+          "value": "LOC-A2"
+        },
+        {
+          "row_no": 2,
+          "column_name": "parent_location_code",
+          "code": "location_cycle",
+          "level": "error"
+        },
+        {
+          "row_no": 3,
+          "column_name": "parent_location_code",
+          "code": "location_cycle",
+          "level": "error"
+        },
+        {
+          "row_no": 4,
+          "column_name": "parent_location_code",
+          "code": "must_differ",
+          "level": "error",
+          "value": "LOC-SELF"
+        },
+        {
+          "row_no": 4,
+          "column_name": "parent_location_code",
+          "code": "location_cycle",
+          "level": "error"
+        },
+        {
+          "row_no": 5,
+          "column_name": "parent_location_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "LOC-NOPE"
+        },
+        {
+          "row_no": 7,
+          "column_name": "parent_location_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "LOC-B-ONLY"
+        },
+        {
+          "row_no": 9,
+          "column_name": "parent_location_code",
+          "code": "invalid_code",
+          "level": "error"
+        }
+      ]
+    },
+    {
+      "name": "network_links: must_differ, p90_below_p50, freight_mismatch, out_of_range, unknown locations",
+      "entity": "network_links",
+      "columns": [
+        "from_location_code",
+        "to_location_code",
+        "lead_time_days_p50",
+        "lead_time_days_p90",
+        "freight_basis",
+        "freight_cost",
+        "currency"
+      ],
+      "rows": [
+        ["LOC-A1", "LOC-A1", "1", "2", "none", "", ""],
+        ["LOC-A1", "LOC-A2", "5", "3", "none", "", ""],
+        ["LOC-A2", "LOC-A1", "1", "2", "none", "5", "SAR"],
+        ["LOC-A1", "LOC-B-ONLY", "1", "2", "per_unit", "", ""],
+        ["LOC-A2", "LOC-NOPE", "1", "3651", "per_shipment", "10", "SAR"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "to_location_code",
+          "code": "must_differ",
+          "level": "error",
+          "value": "LOC-A1"
+        },
+        {
+          "row_no": 2,
+          "column_name": "lead_time_days_p90",
+          "code": "p90_below_p50",
+          "level": "error",
+          "value": "3"
+        },
+        {
+          "row_no": 3,
+          "column_name": "freight_cost",
+          "code": "freight_mismatch",
+          "level": "error",
+          "value": "5"
+        },
+        {
+          "row_no": 4,
+          "column_name": "to_location_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "LOC-B-ONLY"
+        },
+        {
+          "row_no": 4,
+          "column_name": "freight_cost",
+          "code": "freight_mismatch",
+          "level": "error",
+          "value": ""
+        },
+        {
+          "row_no": 5,
+          "column_name": "to_location_code",
+          "code": "unknown_reference",
+          "level": "error"
+        },
+        {
+          "row_no": 5,
+          "column_name": "lead_time_days_p90",
+          "code": "out_of_range",
+          "level": "error"
+        }
+      ]
+    },
+    {
+      "name": "items: a brand from the import's sealed brands file resolves, a brand only organization B has is unknown_reference, end_before_start with both dates, invalid_date",
+      "parents": [
+        {
+          "entity": "brands",
+          "columns": ["brand_code", "name_en"],
+          "rows": [["BR-FILE", "Brand from the file"]]
+        }
+      ],
+      "entity": "items",
+      "columns": [
+        "item_code",
+        "name_en",
+        "brand_code",
+        "product_group",
+        "unit_of_measure",
+        "unit_cost",
+        "currency",
+        "introduced_on",
+        "discontinued_on"
+      ],
+      "rows": [
+        ["N-1", "Brand from the file", "BR-FILE", "g", "EA", "1", "SAR", "", ""],
+        ["N-2", "Stored brand", "BR-A", "g", "EA", "1", "SAR", "", ""],
+        ["N-3", "Brand of organization B", "BR-B-ONLY", "g", "EA", "1", "SAR", "", ""],
+        ["N-4", "No such brand", "BR-NOPE", "g", "EA", "1", "SAR", "", ""],
+        [
+          "N-5",
+          "Discontinued before introduced",
+          "",
+          "g",
+          "EA",
+          "1",
+          "SAR",
+          "2025-06-01",
+          "2025-01-01"
+        ],
+        ["N-6", "Same day", "", "g", "EA", "1", "SAR", "2025-06-01", "2025-06-01"],
+        ["N-7", "Month 13", "", "g", "EA", "1", "SAR", "2025-13-01", "2025-01-01"],
+        ["N-8", "Day first", "", "g", "EA", "1", "SAR", "31/12/2025", ""]
+      ],
+      "expected": [
+        {
+          "row_no": 3,
+          "column_name": "brand_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "BR-B-ONLY"
+        },
+        {
+          "row_no": 4,
+          "column_name": "brand_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "BR-NOPE"
+        },
+        {
+          "row_no": 5,
+          "column_name": "discontinued_on",
+          "code": "end_before_start",
+          "level": "error",
+          "value": "2025-01-01",
+          "detail": null
+        },
+        { "row_no": 7, "column_name": "introduced_on", "code": "invalid_date", "level": "error" },
+        {
+          "row_no": 8,
+          "column_name": "introduced_on",
+          "code": "invalid_date",
+          "level": "error",
+          "value": "31/12/2025"
+        }
+      ]
+    },
+    {
+      "name": "items: end_before_start on effective values (only discontinued_on mapped, against the stored introduced_on)",
+      "entity": "items",
+      "columns": ["item_code", "discontinued_on"],
+      "rows": [
+        ["P-1", "2023-12-31"],
+        ["P-3", "2023-12-31"],
+        ["P-2", ""]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "discontinued_on",
+          "code": "end_before_start",
+          "level": "error",
+          "value": "2023-12-31",
+          "detail": { "stored": { "introduced_on": "2024-01-01" } }
+        }
+      ]
+    },
+    {
+      "name": "items: end_before_start on effective values (only introduced_on mapped, against the stored discontinued_on)",
+      "entity": "items",
+      "columns": ["item_code", "introduced_on"],
+      "rows": [
+        ["P-2", "2025-06-01"],
+        ["P-1", "2023-01-01"],
+        ["P-3", ""]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "introduced_on",
+          "code": "end_before_start",
+          "level": "error",
+          "value": "2025-06-01",
+          "detail": { "stored": { "discontinued_on": "2025-01-01" } }
+        }
+      ]
+    },
+    {
+      "name": "supplier_items: p90_below_p50 on effective values (only lead_time_days mapped, against the stored p90) and required_for_new",
+      "entity": "supplier_items",
+      "columns": ["supplier_code", "item_code", "lead_time_days"],
+      "rows": [
+        ["SUP-A", "P-1", "25"],
+        ["SUP-A", "P-2", "50"],
+        ["SUP-A", "P-3", "5"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "lead_time_days",
+          "code": "p90_below_p50",
+          "level": "error",
+          "value": "25",
+          "detail": { "stored": { "lead_time_days_p90": 20 } }
+        },
+        {
+          "row_no": 3,
+          "column_name": "unit_price",
+          "code": "required_for_new",
+          "level": "error",
+          "value": null
+        },
+        {
+          "row_no": 3,
+          "column_name": "currency",
+          "code": "required_for_new",
+          "level": "error",
+          "value": null
+        }
+      ]
+    },
+    {
+      "name": "supplier_items: p90_below_p50 with both columns, preferred_conflict, unknown supplier and item, invalid_integer, too_many_digits, invalid_boolean",
+      "entity": "supplier_items",
+      "columns": [
+        "supplier_code",
+        "item_code",
+        "lead_time_days",
+        "lead_time_days_p90",
+        "unit_price",
+        "currency",
+        "is_preferred"
+      ],
+      "rows": [
+        ["SUP-A", "P-3", "10", "5", "1", "SAR", "true"],
+        ["SUP-A", "P/4", "10", "", "1", "SAR", "true"],
+        ["SUP-NOPE", "P-3", "10", "", "1", "SAR", "true"],
+        ["SUP-A", "P-B-ONLY", "10", "", "1", "SAR", "false"],
+        ["SUP-A", "P-1", "1.5", "", "1", "SAR", "false"],
+        ["SUP-A", "P-2", "1234567890", "", "1", "SAR", "maybe"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "lead_time_days_p90",
+          "code": "p90_below_p50",
+          "level": "error",
+          "value": "5",
+          "detail": null
+        },
+        {
+          "row_no": 3,
+          "column_name": "supplier_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "SUP-NOPE"
+        },
+        {
+          "row_no": 3,
+          "column_name": "is_preferred",
+          "code": "preferred_conflict",
+          "level": "error",
+          "detail": { "first_row": 1 }
+        },
+        {
+          "row_no": 4,
+          "column_name": "item_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "P-B-ONLY"
+        },
+        {
+          "row_no": 5,
+          "column_name": "lead_time_days",
+          "code": "invalid_integer",
+          "level": "error"
+        },
+        {
+          "row_no": 6,
+          "column_name": "lead_time_days",
+          "code": "too_many_digits",
+          "level": "error"
+        },
+        { "row_no": 6, "column_name": "is_preferred", "code": "invalid_boolean", "level": "error" }
+      ]
+    },
+    {
+      "name": "suppliers: p90_below_p50, any two capitals as country (no reference), unknown_country, invalid_integer, out_of_range",
+      "entity": "suppliers",
+      "columns": [
+        "supplier_code",
+        "name_en",
+        "country_code",
+        "currency",
+        "lead_time_days_p50",
+        "lead_time_days_p90"
+      ],
+      "rows": [
+        ["SUP-N1", "Reversed lead times", "JP", "JPY", "10", "5"],
+        ["SUP-N2", "Any country", "ZZ", "USD", "10", "20"],
+        ["SUP-N3", "Lower-case country", "jp", "USD", "10", "20"],
+        ["SUP-N4", "Fraction", "JP", "USD", "1.5", "20"],
+        ["SUP-N5", "Negative", "JP", "USD", "-1", "20"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "lead_time_days_p90",
+          "code": "p90_below_p50",
+          "level": "error",
+          "value": "5"
+        },
+        { "row_no": 3, "column_name": "country_code", "code": "unknown_country", "level": "error" },
+        {
+          "row_no": 4,
+          "column_name": "lead_time_days_p50",
+          "code": "invalid_integer",
+          "level": "error"
+        },
+        {
+          "row_no": 5,
+          "column_name": "lead_time_days_p50",
+          "code": "out_of_range",
+          "level": "error"
+        }
+      ]
+    },
+    {
+      "name": "brands: injection-shaped values are reported as errors and stored verbatim; free text is just text",
+      "entity": "brands",
+      "columns": ["brand_code", "name_en", "brand_type", "country_of_origin", "is_active"],
+      "rows": [
+        ["'); drop table x; --", "Injection in a code", "oem", "DE", "true"],
+        ["BR-INJ-2", "Format %I %s", "%I", "DE", "true"],
+        ["BR-INJ-3", "Dollar quotes", "oem", "$$", "true"],
+        ["BR-.*", "Regex", "oem", "DE", ".*"],
+        ["^(a+)+$", "Regex anchors", "aftermarket", "DE", "true"],
+        ["BR-INJ-6", "'); drop table brands; --", "oem", "ZZ", "false"],
+        ["BR-INJ-7", "Backslash \\ and quote '", "oem", "D\\E", "true"],
+        ["BR-INJ-8", "Brackets", "[oem]", "DE", "true"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "brand_code",
+          "code": "invalid_code",
+          "level": "error",
+          "value": "'); drop table x; --"
+        },
+        {
+          "row_no": 2,
+          "column_name": "brand_type",
+          "code": "invalid_enum",
+          "level": "error",
+          "value": "%I"
+        },
+        {
+          "row_no": 3,
+          "column_name": "country_of_origin",
+          "code": "unknown_country",
+          "level": "error",
+          "value": "$$"
+        },
+        {
+          "row_no": 4,
+          "column_name": "brand_code",
+          "code": "invalid_code",
+          "level": "error",
+          "value": "BR-.*"
+        },
+        {
+          "row_no": 4,
+          "column_name": "is_active",
+          "code": "invalid_boolean",
+          "level": "error",
+          "value": ".*"
+        },
+        {
+          "row_no": 5,
+          "column_name": "brand_code",
+          "code": "invalid_code",
+          "level": "error",
+          "value": "^(a+)+$"
+        },
+        {
+          "row_no": 7,
+          "column_name": "country_of_origin",
+          "code": "unknown_country",
+          "level": "error",
+          "value": "D\\E"
+        },
+        {
+          "row_no": 8,
+          "column_name": "brand_type",
+          "code": "invalid_enum",
+          "level": "error",
+          "value": "[oem]"
+        }
+      ]
+    },
+    {
+      "name": "items: references are compared as text (a quote is an invalid code, a dot is no wildcard)",
+      "entity": "items",
+      "columns": ["item_code", "brand_code"],
+      "rows": [
+        ["P-1", "BR-A' or '1'='1"],
+        ["P-3", "BR-."],
+        ["P/4", "BR-A"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "brand_code",
+          "code": "invalid_code",
+          "level": "error",
+          "value": "BR-A' or '1'='1"
+        },
+        {
+          "row_no": 2,
+          "column_name": "brand_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "BR-."
+        }
+      ]
+    },
+    {
+      "name": "item_supersessions: must_differ, supersession_cycle (with a stored edge, self), out_of_range quantity_factor, unknown and invalid predecessors",
+      "entity": "item_supersessions",
+      "columns": [
+        "predecessor_item_code",
+        "successor_item_code",
+        "effective_on",
+        "quantity_factor"
+      ],
+      "rows": [
+        ["P-3", "P-2", "2026-01-01", "1"],
+        ["P-1", "P-1", "2026-01-01", "1"],
+        ["P/4", "P-1", "2026-01-01", "0"],
+        ["P-NOPE", "P-1", "2026-01-01", "1"],
+        ["P-B-ONLY", "P-3", "2026-01-01", "1"],
+        ["P 7", "P-3", "2026-01-01", "1"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "successor_item_code",
+          "code": "supersession_cycle",
+          "level": "error",
+          "value": "P-2"
+        },
+        {
+          "row_no": 2,
+          "column_name": "successor_item_code",
+          "code": "must_differ",
+          "level": "error",
+          "value": "P-1"
+        },
+        {
+          "row_no": 2,
+          "column_name": "successor_item_code",
+          "code": "supersession_cycle",
+          "level": "error"
+        },
+        {
+          "row_no": 3,
+          "column_name": "quantity_factor",
+          "code": "out_of_range",
+          "level": "error",
+          "value": "0"
+        },
+        {
+          "row_no": 4,
+          "column_name": "predecessor_item_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "P-NOPE"
+        },
+        {
+          "row_no": 5,
+          "column_name": "predecessor_item_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "P-B-ONLY"
+        },
+        {
+          "row_no": 6,
+          "column_name": "predecessor_item_code",
+          "code": "invalid_item_code",
+          "level": "error"
+        }
+      ]
+    },
+    {
+      "name": "item_interchanges: must_differ, a reversed pair is a duplicate_key, invalid_enum, out_of_range priority",
+      "entity": "item_interchanges",
+      "columns": ["item_code", "alternate_item_code", "direction", "priority"],
+      "rows": [
+        ["P-1", "P-1", "two_way", "1"],
+        ["P-1", "P-3", "one_way", "1"],
+        ["P-3", "P-1", "two_way", "2"],
+        ["P-1", "P/4", "sideways", "100"],
+        ["P-1", "P-2", "two_way", "0"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "alternate_item_code",
+          "code": "must_differ",
+          "level": "error",
+          "value": "P-1"
+        },
+        {
+          "row_no": 3,
+          "column_name": "",
+          "code": "duplicate_key",
+          "level": "error",
+          "value": "P-1 | P-3",
+          "detail": { "first_row": 2, "first_file_no": 1 }
+        },
+        { "row_no": 4, "column_name": "direction", "code": "invalid_enum", "level": "error" },
+        { "row_no": 4, "column_name": "priority", "code": "out_of_range", "level": "error" },
+        { "row_no": 5, "column_name": "priority", "code": "out_of_range", "level": "error" }
+      ]
+    },
+    {
+      "name": "item_interchanges: notes up to 1,000 characters; longer cells (up to 4,000) are too_long with 200 characters kept",
+      "entity": "item_interchanges",
+      "columns": ["item_code", "alternate_item_code", "note"],
+      "rows": [
+        ["P-1", "P-2", { "repeat": "ن", "times": 1001 }],
+        ["P-1", "P-3", { "repeat": "n", "times": 1000 }],
+        ["P-2", "P-3", { "repeat": "x", "times": 4000 }]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "note",
+          "code": "too_long",
+          "level": "error",
+          "value_length": 200
+        },
+        {
+          "row_no": 3,
+          "column_name": "note",
+          "code": "too_long",
+          "level": "error",
+          "value_length": 200
+        }
+      ]
+    },
+    {
+      "name": "fx_rates: must_differ, a reversed pair on the same day is a duplicate_key, scale 10 and 10 integer digits, out_of_range, unknown_currency",
+      "entity": "fx_rates",
+      "columns": ["from_currency", "to_currency", "valid_from", "rate"],
+      "rows": [
+        ["SAR", "SAR", "2026-01-01", "1"],
+        ["USD", "SAR", "2026-01-01", "3.7500000000"],
+        ["SAR", "USD", "2026-01-01", "0.2666666667"],
+        ["EUR", "SAR", "2026-01-01", "4.12345678901"],
+        ["EUR", "USD", "2026-01-01", "0"],
+        ["JPY", "SAR", "2026-01-01", "12345678901"],
+        ["XYZ", "SAR", "2026-01-01", "1"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "to_currency",
+          "code": "must_differ",
+          "level": "error",
+          "value": "SAR"
+        },
+        {
+          "row_no": 3,
+          "column_name": "",
+          "code": "duplicate_key",
+          "level": "error",
+          "value": "SAR | USD | 2026-01-01",
+          "detail": { "first_row": 2, "first_file_no": 1 }
+        },
+        { "row_no": 4, "column_name": "rate", "code": "too_many_decimals", "level": "error" },
+        { "row_no": 5, "column_name": "rate", "code": "out_of_range", "level": "error" },
+        { "row_no": 6, "column_name": "rate", "code": "too_many_digits", "level": "error" },
+        {
+          "row_no": 7,
+          "column_name": "from_currency",
+          "code": "unknown_currency",
+          "level": "error",
+          "value": "XYZ"
+        }
+      ]
+    },
+    {
+      "name": "demand_history: the history window (2020-01-01 to today + 1), zero_row_new_key, unknown item and location, quantities",
+      "entity": "demand_history",
+      "columns": ["item_code", "location_code", "demand_date", "quantity", "lost_sales_quantity"],
+      "rows": [
+        ["P-1", "LOC-A1", "2019-12-31", "1", "0"],
+        ["P-1", "LOC-A1", "2020-01-01", "1", "0"],
+        ["P-1", "LOC-A1", { "today_plus": 1 }, "1", "0"],
+        ["P-1", "LOC-A1", { "today_plus": 2 }, "1", "0"],
+        ["P-3", "LOC-A2", "2024-07-15", "0", "0"],
+        ["P-1", "LOC-A1", "2024-07-15", "0", "0"],
+        ["P-B-ONLY", "LOC-A1", "2024-07-16", "1", "0"],
+        ["P-1", "LOC-B-ONLY", "2024-07-16", "1", "0"],
+        ["P/4", "LOC-A1", "2024-07-16", "2.5", "0"],
+        ["P-1", "LOC-A1", "2024-07-17", "-1", "0"],
+        ["P-1", "LOC-A1", "2024-07-18", "1.2345", "0"],
+        ["P-1", "LOC-A1", "2026-02-30", "1", "0"],
+        ["P-1", "LOC-A1", "2024-07-19", "", "1"]
+      ],
+      "expected": [
+        {
+          "row_no": 1,
+          "column_name": "demand_date",
+          "code": "date_outside_history_window",
+          "level": "error",
+          "value": "2019-12-31"
+        },
+        {
+          "row_no": 4,
+          "column_name": "demand_date",
+          "code": "date_outside_history_window",
+          "level": "error"
+        },
+        {
+          "row_no": 5,
+          "column_name": "",
+          "code": "zero_row_new_key",
+          "level": "warning",
+          "value": null
+        },
+        {
+          "row_no": 7,
+          "column_name": "item_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "P-B-ONLY"
+        },
+        {
+          "row_no": 8,
+          "column_name": "location_code",
+          "code": "unknown_reference",
+          "level": "error",
+          "value": "LOC-B-ONLY"
+        },
+        { "row_no": 10, "column_name": "quantity", "code": "out_of_range", "level": "error" },
+        { "row_no": 11, "column_name": "quantity", "code": "too_many_decimals", "level": "error" },
+        { "row_no": 12, "column_name": "demand_date", "code": "invalid_date", "level": "error" },
+        { "row_no": 13, "column_name": "quantity", "code": "required", "level": "error" }
+      ]
+    },
+    {
+      "name": "items: a file without the columns new rows need updates existing items and reports required_for_new on new keys",
+      "entity": "items",
+      "columns": ["item_code", "status"],
+      "rows": [
+        ["P-1", "phase_out"],
+        ["P-NEW-RFN", "new"]
+      ],
+      "expected": [
+        { "row_no": 2, "column_name": "name_en", "code": "required_for_new", "level": "error" },
+        {
+          "row_no": 2,
+          "column_name": "product_group",
+          "code": "required_for_new",
+          "level": "error"
+        },
+        {
+          "row_no": 2,
+          "column_name": "unit_of_measure",
+          "code": "required_for_new",
+          "level": "error"
+        },
+        { "row_no": 2, "column_name": "unit_cost", "code": "required_for_new", "level": "error" },
+        { "row_no": 2, "column_name": "currency", "code": "required_for_new", "level": "error" }
+      ]
+    }
+  ]
+}
