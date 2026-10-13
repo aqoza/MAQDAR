@@ -138,6 +138,78 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"import_batches": {
+                  Row: {
+                    "commit_mode": string | null,"commit_started_at": string | null,"counts": NonNullable<Json>,"created_at": string,"created_by": string | null,"error_count": number,"expires_at": string | null,"failure_code": string | null,"failure_detail": string | null,"file_count": number,"files_sha256": string | null,"finished_at": string | null,"id": string,"last_step_at": string | null,"organization_id": string,"progress": NonNullable<Json>,"rows_staged": number,"rows_total": number,"source": string,"staging_cleared_at": string | null,"status": string,"updated_at": string,"validated_at": string | null,"warning_count": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "commit_mode"?: string | null,"commit_started_at"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"created_by"?: string | null,"error_count"?: number,"expires_at"?: string | null,"failure_code"?: string | null,"failure_detail"?: string | null,"file_count"?: number,"files_sha256"?: string | null,"finished_at"?: string | null,"id": string,"last_step_at"?: string | null,"organization_id": string,"progress"?: NonNullable<Json>,"rows_staged"?: number,"rows_total"?: number,"source"?: string,"staging_cleared_at"?: string | null,"status"?: string,"updated_at"?: string,"validated_at"?: string | null,"warning_count"?: number
+                  }
+                  Update: {
+                    "commit_mode"?: string | null,"commit_started_at"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"created_by"?: string | null,"error_count"?: number,"expires_at"?: string | null,"failure_code"?: string | null,"failure_detail"?: string | null,"file_count"?: number,"files_sha256"?: string | null,"finished_at"?: string | null,"id"?: string,"last_step_at"?: string | null,"organization_id"?: string,"progress"?: NonNullable<Json>,"rows_staged"?: number,"rows_total"?: number,"source"?: string,"staging_cleared_at"?: string | null,"status"?: string,"updated_at"?: string,"validated_at"?: string | null,"warning_count"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "import_batches_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"import_errors": {
+                  Row: {
+                    "batch_id": string,"code": string,"column_name": string,"created_at": string,"detail": Json | null,"file_no": number,"id": number,"level": string,"organization_id": string,"row_no": number,"value": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "batch_id": string,"code": string,"column_name"?: string,"created_at"?: string,"detail"?: Json | null,"file_no": number,"id"?: never,"level": string,"organization_id": string,"row_no": number,"value"?: string | null
+                  }
+                  Update: {
+                    "batch_id"?: string,"code"?: string,"column_name"?: string,"created_at"?: string,"detail"?: Json | null,"file_no"?: number,"id"?: never,"level"?: string,"organization_id"?: string,"row_no"?: number,"value"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "import_errors_batch_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "import_batches"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "import_errors_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"import_files": {
+                  Row: {
+                    "batch_id": string,"columns": (string)[],"content_type": string | null,"counts": NonNullable<Json>,"created_at": string,"entity": string,"error_count": number,"error_counts": NonNullable<Json>,"errors_stored": number,"extension": string,"file_no": number,"header": (string)[],"id": string,"mapping": NonNullable<Json>,"merged_through_row": number,"organization_id": string,"original_name": string,"parse": NonNullable<Json>,"rows_existing": number,"rows_new": number,"rows_staged": number,"rows_total": number,"sealed_at": string | null,"sha256": string,"size_bytes": number,"source_stored": boolean,"status": string,"storage_path": string,"updated_at": string,"warning_count": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "batch_id": string,"columns": (string)[],"content_type"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"entity": string,"error_count"?: number,"error_counts"?: NonNullable<Json>,"errors_stored"?: number,"extension": string,"file_no": number,"header"?: (string)[],"id"?: string,"mapping"?: NonNullable<Json>,"merged_through_row"?: number,"organization_id": string,"original_name": string,"parse"?: NonNullable<Json>,"rows_existing"?: number,"rows_new"?: number,"rows_staged"?: number,"rows_total": number,"sealed_at"?: string | null,"sha256": string,"size_bytes": number,"source_stored"?: boolean,"status"?: string,"storage_path": string,"updated_at"?: string,"warning_count"?: number
+                  }
+                  Update: {
+                    "batch_id"?: string,"columns"?: (string)[],"content_type"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"entity"?: string,"error_count"?: number,"error_counts"?: NonNullable<Json>,"errors_stored"?: number,"extension"?: string,"file_no"?: number,"header"?: (string)[],"id"?: string,"mapping"?: NonNullable<Json>,"merged_through_row"?: number,"organization_id"?: string,"original_name"?: string,"parse"?: NonNullable<Json>,"rows_existing"?: number,"rows_new"?: number,"rows_staged"?: number,"rows_total"?: number,"sealed_at"?: string | null,"sha256"?: string,"size_bytes"?: number,"source_stored"?: boolean,"status"?: string,"storage_path"?: string,"updated_at"?: string,"warning_count"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "import_files_batch_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "import_batches"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "import_files_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"item_interchanges": {
                   Row: {
                     "alternate_item_id": string,"created_at": string,"direction": string,"id": string,"item_id": string,"note": string | null,"organization_id": string,"priority": number,"updated_at": string
@@ -569,6 +641,27 @@ isOneToOne: false
                            },
 "create_organization":
 { Args: { "p_arabic_enabled"?: boolean,"p_base_currency"?: string,"p_home_country"?: string,"p_name": string,"p_slug": string }; Returns: string
+                           },
+"import_cancel_step":
+{ Args: { "p_batch_id": string }; Returns: Json
+                           },
+"import_commit_step":
+{ Args: { "p_batch_id": string,"p_max_rows"?: number }; Returns: Json
+                           },
+"import_create_batch":
+{ Args: { "p_batch_id": string,"p_files": Json,"p_organization_id": string }; Returns: Json
+                           },
+"import_delete":
+{ Args: { "p_batch_id": string }; Returns: undefined
+                           },
+"import_resume":
+{ Args: { "p_batch_id": string }; Returns: Json
+                           },
+"import_seal_file":
+{ Args: { "p_batch_id": string,"p_file_no": number,"p_rows_total": number }; Returns: Json
+                           },
+"import_stage_chunk":
+{ Args: { "p_batch_id": string,"p_file_no": number,"p_first_row": number,"p_rows": string }; Returns: Json
                            },
 "invite_member":
 { Args: { "p_email": string,"p_organization_id": string,"p_role": string }; Returns: {
