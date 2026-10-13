@@ -8,6 +8,9 @@ uv run pytest                             # fast suite (statistical tests includ
 MAQDAR_TEST_DSN=postgresql://postgres:postgres@127.0.0.1:54322/postgres uv run pytest -m db
 uv run maqdar-synth all --preset small    # generate, validate and load into the local stack
 uv run tools/synth.py --help              # same CLI through the script path
+uv run maqdar-synth format --markdown --write  # regenerate the tables in docs/import-format.md (then run prettier on it)
+uv run maqdar-synth format --json --write      # docs/import-format.schema.json and its packages/shared copy
+uv run maqdar-synth format --sql               # ingest.contract_* seed, pasted into the import wizard migration
 ```
 
 Layout: `src/maqdar_engine` (package: `importformat.py` is the CSV contract, `synth/` the generator and loader, `synth/data/` the curated reference tables), `tests` (pytest), `tools` (command-line entry points), `data/` (generated bundles, gitignored).

@@ -16,10 +16,15 @@ from maqdar_engine.synth.writer import read_manifest, sha256_of
 def test_bundle_has_every_file_with_the_contract_header(tiny_bundle: Path):
     for entity in importformat.ENTITIES:
         files = entity_files(tiny_bundle, entity)
+        if not entity.required_in_bundle:
+            # The generator writes the required entities only; the optional ones stay absent.
+            assert files == [], entity.name
+            continue
         assert files, entity.name
         for path in files:
             first = path.read_text(encoding="utf-8").splitlines()[0]
-            assert first.split(",") == entity.header, path
+            # Optional trailing columns (work_calendar_code) are left out: generator output is unchanged.
+            assert first.split(",") == entity.minimal_header, path
     assert len(entity_files(tiny_bundle, importformat.ENTITY_BY_NAME["demand_history"])) == 36
 
 
@@ -198,11 +203,13 @@ def test_validator_catches_tampering(tmp_path: Path):
     generate(PRESETS["tiny"], out, progress=lambda m: None)
     items = out / "items.csv"
     lines = items.read_text(encoding="utf-8").splitlines()
+    first_code = lines[1].split(",")[0]
     lines[1] = lines[1].replace("SAR", "sar", 1)
-    lines[2] = ",".join(["P-000002"] + lines[2].split(",")[1:]) + ""
+    # The second item takes the first item's code: a duplicate natural key.
+    lines[2] = ",".join([first_code] + lines[2].split(",")[1:])
     items.write_text("\n".join(lines) + "\n", encoding="utf-8")
     findings = validate_bundle(out)
     messages = "\n".join(str(f) for f in findings)
-    assert "currency" in messages
+    assert "items.csv:currency" in messages
     assert "sha256" in messages
-    assert "duplicate natural keys" in messages or "P-000002" in messages or findings
+    assert "items.csv: duplicate natural keys (item_code) (1 rows)" in messages

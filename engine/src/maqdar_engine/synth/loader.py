@@ -2,7 +2,8 @@
 
 Safety: the DSN must point at a loopback host (no override), the server must be Postgres 17 with
 the migrations through Step 4 applied, and the role must bypass row-level security (COPY cannot
-target RLS tables otherwise). Natural keys are turned into deterministic uuid5 ids client side, so
+target RLS tables otherwise). Files of optional entities may be absent (their tables are left
+empty), and a file that leaves out optional trailing columns gets the table default (NULL) there. Natural keys are turned into deterministic uuid5 ids client side, so
 no read-back is needed and reloads are idempotent. Everything happens in one transaction.
 
 demand_history has no foreign keys, so references are checked twice: codes are matched against the
@@ -44,6 +45,7 @@ REQUIRED_MIGRATIONS = (
     "20261009085104",
     "20261010081342",
     "20261011074315",
+    "20261012171124",
 )
 COPY_BATCH_ROWS = 250_000
 
@@ -126,8 +128,14 @@ def _frame_for_table(
         columns["id"] = pl.Series([str(row_id(organization_id, entity.name, key)) for key in keys], dtype=pl.Utf8)
         known.setdefault(entity.name, set()).update(keys)
     for column in entity.columns:
+        if column.name not in frame.columns:
+            # An optional trailing column the file leaves out: the table default (NULL) applies.
+            continue
         series = frame[column.name]
-        series = pl.Series(column.target, [None if v == "" else v for v in series.to_list()], dtype=pl.Utf8)
+        if column.kind == "weekdays":
+            series = pl.Series(column.target, [_weekdays_literal(v) for v in series.to_list()], dtype=pl.Utf8)
+        else:
+            series = pl.Series(column.target, [None if v == "" else v for v in series.to_list()], dtype=pl.Utf8)
         if column.lookup:
             parents = known.get(column.lookup, set())
             cache: dict[str, str] = {}
@@ -152,6 +160,13 @@ def _frame_for_table(
         columns[column.target] = series
     out = pl.DataFrame(columns)
     return list(out.columns), out
+
+
+def _weekdays_literal(value: str | None) -> str:
+    """`5;6` as the smallint[] literal `{5,6}`; an empty cell means no weekend days."""
+    if value is None or value == "":
+        return "{}"
+    return "{" + ",".join(part.strip() for part in value.split(";")) + "}"
 
 
 def _copy_frame(cur: psycopg.Cursor, table: str, column_names: list[str], frame: pl.DataFrame) -> int:
@@ -215,7 +230,13 @@ def load_bundle(
             for entity in importformat.ENTITIES:
                 total = 0
                 started = time.perf_counter()
-                for path in entity_files(out_dir, entity):
+                files = entity_files(out_dir, entity)
+                if not files:
+                    if entity.required_in_bundle:
+                        raise LoaderRefused(f"{entity.file} is missing from the bundle; nothing was committed")
+                    report.rows[entity.name] = 0
+                    continue
+                for path in files:
                     frame = read_csv_text(path)
                     source = path.relative_to(out_dir).as_posix()
                     column_names, mapped = _frame_for_table(frame, entity, organization_id, known, source)
