@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   clientNamespaces,
+  importClientNamespaces,
   directionOf,
   intlLocaleFor,
   intlLocales,
@@ -95,6 +96,13 @@ describe('pickNamespaces', () => {
   it('lists the namespaces used by Client Components', () => {
     for (const namespace of ['Common', 'Auth', 'Nav', 'Organizations', 'Roles', 'Settings']) {
       expect(clientNamespaces).toContain(namespace)
+    }
+  })
+
+  it('keeps the import wizard namespaces out of every page but the import pages', () => {
+    for (const namespace of ['ImportsClient', 'ImportErrors']) {
+      expect(clientNamespaces).not.toContain(namespace)
+      expect(importClientNamespaces).toContain(namespace)
     }
   })
 })

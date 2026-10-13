@@ -24,6 +24,33 @@ describe('rpcErrorKey', () => {
     }
   })
 
+  it('maps lock conflicts to busy and statement timeouts to timeout', () => {
+    expect(rpcErrorKey({ code: '55P03', message: 'canceling statement due to lock timeout' })).toBe(
+      'busy',
+    )
+    expect(rpcErrorKey({ code: '40P01', message: 'deadlock detected' })).toBe('busy')
+    expect(rpcErrorKey({ code: '40001' })).toBe('busy')
+    expect(
+      rpcErrorKey({ code: '57014', message: 'canceling statement due to statement timeout' }),
+    ).toBe('timeout')
+    // The import routes answer with these keys as their error code.
+    expect(rpcErrorKey({ code: 'busy' })).toBe('busy')
+    expect(rpcErrorKey({ code: 'timeout' })).toBe('timeout')
+  })
+
+  it('names the import lock conflict and keeps other MQ409 hints generic', () => {
+    expect(rpcErrorKey({ code: 'MQ409', hint: 'import_in_progress' })).toBe('importInProgress')
+    expect(rpcErrorKey({ code: 'MQ409', hint: 'another_commit' })).toBe('MQ409')
+    expect(rpcErrorKey({ code: 'MQ409' })).toBe('MQ409')
+    expect(rpcErrorKey({ code: 'MQ422', hint: 'import_in_progress' })).toBe('MQ422')
+  })
+
+  it('ignores inherited object keys', () => {
+    expect(rpcErrorKey({ code: 'constructor' })).toBe('generic')
+    expect(rpcErrorKey({ code: '__proto__' })).toBe('generic')
+    expect(rpcErrorKey({ code: 'toString' })).toBe('generic')
+  })
+
   it('falls back to generic for unknown, empty or missing codes', () => {
     expect(rpcErrorKey({ code: 'P0001', message: 'raise' })).toBe('generic')
     expect(rpcErrorKey({ code: '' })).toBe('generic')

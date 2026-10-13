@@ -25,6 +25,10 @@ minimumReleaseAgeExclude:
 # Pin the transitive dependency to the last 1.15 release until upstream fixes it.
 overrides:
   '@swc/core': 1.15.47
+  # SheetJS stopped publishing to npm at 0.18.5, which has unfixed CVEs (prototype pollution,
+  # ReDoS). The web app takes 0.20.3 from the official CDN tarball; this keeps any registry `xlsx`
+  # from resolving, directly or transitively. Bump both together (apps/web/package.json).
+  xlsx: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
 
 # Next.js 16.4 loads .next/server/preview-props.json, which @opennextjs/cloudflare 1.20.10 does not
 # inline, so every server-rendered route crashes on Workers (opennextjs/opennextjs-cloudflare#1355).

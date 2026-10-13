@@ -43,8 +43,8 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Start local Supabase (Postgres, Auth, REST, Mailpit)
-        run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,realtime,storage-api
+      - name: Start local Supabase (Postgres, Auth, REST, Storage, Mailpit)
+        run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,realtime
       - name: pgTAP
         run: pnpm exec supabase test db --local
       - name: Export local stack variables for the build and tests

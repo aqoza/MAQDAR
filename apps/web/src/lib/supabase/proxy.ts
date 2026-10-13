@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { describeRejectedClaims, parseClaims } from '@/lib/auth/claims'
+import { isDocumentNavigation } from '@/lib/auth/document-request'
 import { env } from '@/lib/env'
 
 const PUBLIC_PREFIXES = ['/login', '/auth']
@@ -57,6 +58,12 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isPublic = PUBLIC_PREFIXES.some((prefix) => matchesPrefix(pathname, prefix))
 
+  if (!user && matchesPrefix(pathname, '/api') && !isDocumentNavigation(request.headers)) {
+    // A fetch would follow a redirect and receive the login page as 200 HTML; API callers get
+    // the same 401 body as the route handlers' own session check instead. A followed link to an
+    // API download (error report, original) is a page view: it goes to sign in below.
+    return unauthorizedWithCookies(supabaseResponse)
+  }
   if (!user && !isPublic) {
     return redirectWithCookies(request, '/login', supabaseResponse)
   }
@@ -65,6 +72,15 @@ export async function updateSession(request: NextRequest) {
   }
 
   return supabaseResponse
+}
+
+function unauthorizedWithCookies(from: NextResponse) {
+  const response = NextResponse.json(
+    { code: 'MQ401' },
+    { status: 401, headers: { 'Cache-Control': 'private, no-store' } },
+  )
+  for (const cookie of from.cookies.getAll()) response.cookies.set(cookie)
+  return response
 }
 
 function redirectWithCookies(request: NextRequest, pathname: string, from: NextResponse) {
