@@ -74,3 +74,42 @@ The loader now analyzes every master table right after its `COPY` (`ANALYZE` cou
 On 2026-10-11 the Workers dashboard showed a median CPU time of about 86 ms per request over 24 hours for the active deployment (5ade8824, the Step 3 build). The Workers Free plan allows 10 ms of CPU per request, so the app needs Workers Paid ($5 per month) whatever Step 4 adds. That is an owner decision.
 
 The planned local CPU profile of the Step 4 pages (`cf:preview`) was not run, because the production median already decides the plan. Profile the list and edit pages if CPU cost becomes a concern on the paid plan.
+
+## Import wizard (Step 5a)
+
+### Through the wizard at scale
+
+`apps/web/e2e/imports-scale.spec.ts` (`SCALE=1`) drives the wizard in Chromium against `next start` and the local stack, with the files the `large` synthetic preset generates (written to disk, never loaded by `maqdar-synth`), into a fresh organization. Times are wall clock on the same Windows laptop as above; RPC figures come from the browser's requests and from `import_batches.progress`.
+
+| Run                                                                                                             | Rows                          | Parse in the browser | Stage and check | Commit          | End to end | Target |
+| --------------------------------------------------------------------------------------------------------------- | ----------------------------- | -------------------- | --------------- | --------------- | ---------- | ------ |
+| Master bundle: 50,000 items, 64,843 supplier items, 1,812 supersessions, 120 suppliers, 40 locations, 12 brands | 116,827 in 6 files            | 1.8 s                | 30.2 s          | 61.5 s, stepped | 94 s       | 4 min  |
+| Demand history, 3 months of the large preset                                                                    | 1,000,000 in 1 file (31.8 MB) | 7.9 s                | 182.9 s         | 97.0 s, stepped | 289 s      | 8 min  |
+
+| Request or unit                | p50      | p95      | Max                                     |
+| ------------------------------ | -------- | -------- | --------------------------------------- |
+| Master chunk (5,000 rows)      | 850 ms   | 1,268 ms | 1,276 ms                                |
+| Master seal                    | 524 ms   | 2,535 ms | 2,535 ms                                |
+| Master commit unit (35 units)  | 2,143 ms | 3,395 ms | 4,345 ms (supplier items 50,001-55,000) |
+| Demand chunk (10,000 rows)     | 1,614 ms | 2,391 ms | 2,926 ms                                |
+| Demand commit unit (122 units) | 726 ms   | 1,164 ms | 1,449 ms (cleanup)                      |
+
+Every unit stays well inside the 8 s statement timeout, and this run needed no retry (earlier runs, before the unit sizes were lowered, recovered from timeouts by halving). Two figures are slightly above the plan's aims: master commit units reach a p95 of 3.4 s against an aim of 3 s, and demand staging took 183 s against 180 s. Hosted compute may be slower: units then take longer and the client halves a unit that times out, so imports slow down rather than fail. Re-importing the same bundle unchanged was checked functionally (no updates, `updated_at` unchanged) in `imports.spec.ts`, not timed at this scale.
+
+### Fixes found by measuring
+
+Measured on the local stack (Docker, one transaction per experiment, rolled back).
+
+| What                                                        | Before                                               | After                        |
+| ----------------------------------------------------------- | ---------------------------------------------------- | ---------------------------- |
+| 20,000 supersessions in one statement (cycle guard per row) | over 5 minutes (quadratic)                           | 4.2 s                        |
+| Stepped commit of 20,000 supersessions                      | first 5,000-row unit 30.3 s, the others 3.2 to 4.2 s | whole file in one unit 5.3 s |
+| Chunk route body handling, 5,000 items (680 KB), Node       | 21.1 ms                                              | 7.7 ms                       |
+
+The cycle guards used a recursive CTE planned from the table's statistics; while one statement inserted thousands of rows into a table whose statistics said empty, each row's check scanned the rows inserted so far. They now walk the chain with one primary-key probe per step. A merge of 20,000 supersessions spends about 3.2 s in the insert and its three foreign-key checks and 1.6 s in the guard; stepped commits therefore merge supersession, holiday-override and location-parent files in one unit only up to 10,000 rows (about 2.7 s), well inside the 8 s statement timeout.
+
+The chunk route no longer parses the `{"rows": "…"}` body and serializes the megabyte again for supabase-js: one scan checks that the body is exactly the client's envelope, and its JSON string literal becomes `p_rows` of the RPC body (old path: parse 3.5 ms, byte count 4 ms, stringify and encode 13 ms; medians of 25 in Node 24). Not yet measured in `cf:preview`.
+
+Demand merges in units of 10,000 rows: in end-to-end runs the first 20,000-row unit of a fresh 100,000-row import hit the 8 s statement timeout every time, while 10,000-row units take 0.6 to 1.5 s.
+
+For demand, a single `MERGE` (insert, update and the delete of days whose quantities are both 0) was faster than `DELETE` plus `INSERT … ON CONFLICT` for 20,000 rows: 1.1 to 1.8 s against 2.4 to 2.9 s on the insert path, and 0.7 s against 1.6 to 2.4 s when nothing changed, so `MERGE` ships. Merge targets whose statistics are far behind (zero rows over many pages, or more than twice the pages they record) are analyzed before a unit, the same trap the loader hit; demand leaf partitions are analyzed when stale, the 96-partition parent never.

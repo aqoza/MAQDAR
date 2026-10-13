@@ -63,7 +63,7 @@ class DemandPartWriter:
         self.location_codes = np.asarray(location_codes, dtype=object)
         self._handles: dict[str, IO[bytes]] = {}
         self.rows_per_part: dict[str, int] = {}
-        self.header = importformat.ENTITY_BY_NAME["demand_history"].header
+        self.header = importformat.ENTITY_BY_NAME["demand_history"].minimal_header
 
     def _handle(self, part: str) -> IO[bytes]:
         if part not in self._handles:

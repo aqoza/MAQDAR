@@ -4,14 +4,15 @@
 -- * location parents: no cycles (MQ422, hint parent_location_id);
 -- * the demand delete guard: items and locations with demand_history cannot be deleted (MQ409) by
 --   an editor or by postgres, unless the session sets maqdar.demand_guard = 'off' (the loader);
---   rows without demand delete fine and an item delete cascades its interchanges;
+--   rows without demand delete fine and an item delete cascades its interchanges; the guard takes
+--   the shared import lock maqdar.import:<organization> (Step 5a), held until the transaction ends;
 -- * brands and calendars in use cannot be deleted (23503);
 -- * one preferred supplier per item (23505);
 -- * deleting an organization that still has demand is MQ409; after its demand is deleted the
 --   organization delete cascades through every master-data table.
 begin;
 
-select plan(55);
+select plan(58);
 
 -- Reports "<sqlstate> <hint>" for a statement that is expected to fail (run as postgres).
 create function pg_temp.sqlstate_and_hint(statement text)
@@ -28,6 +29,23 @@ exception when others then
   get stacked diagnostics v_state = returned_sqlstate, v_hint = pg_exception_hint;
   return v_state || ' ' || coalesce(v_hint, '');
 end;
+$$;
+
+-- The advisory locks this session holds on maqdar.import:<organization> (the key the import commit
+-- steps take exclusively), as "mode:granted" ('-' when none).
+create function pg_temp.import_locks(p_organization_id uuid)
+returns text
+language sql
+as $$
+  select coalesce(string_agg(l.mode || ':' || l.granted::text, ',' order by l.mode), '-')
+  from pg_locks l
+  cross join (select hashtextextended('maqdar.import:' || p_organization_id::text, 0) as key) as k
+  where l.locktype = 'advisory'
+    and l.pid = pg_backend_pid()
+    and l.database = (select oid from pg_database where datname = current_database())
+    and l.classid::bigint = (k.key >> 32) & 4294967295
+    and l.objid::bigint = k.key & 4294967295
+    and l.objsubid = 1;
 $$;
 
 ------------------------------------------------------------------------------------------------
@@ -178,6 +196,7 @@ select lives_ok(
 );
 
 -- Delete guard: rows with demand cannot be deleted; rows without demand can.
+select is(pg_temp.import_locks('00000000-0000-4000-8000-a15000000000'), '-', 'no import lock is held before the first delete');
 select throws_ok(
   $$delete from public.items where id = '00000000-0000-4000-8000-a15020000004'$$,
   'MQ409', null, 'an editor cannot delete an item with demand history'
@@ -203,6 +222,16 @@ select is(
 select lives_ok(
   $$delete from public.items where id = '00000000-0000-4000-8000-a15020000005'$$,
   'an editor deletes an item without demand history'
+);
+select is(
+  pg_temp.import_locks('00000000-0000-4000-8000-a15000000000'),
+  'ShareLock:true',
+  'the delete guard took maqdar.import:<organization> in share mode and holds it until the transaction ends'
+);
+select is(
+  pg_temp.import_locks('00000000-0000-4000-8000-b15000000000'),
+  '-',
+  'the guard locks only the organizations of the deleted rows'
 );
 select is(
   (select count(*)::int from public.item_interchanges

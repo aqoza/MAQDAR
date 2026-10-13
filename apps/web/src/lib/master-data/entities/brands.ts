@@ -9,6 +9,7 @@ export const brands = defineEntity({
   area: 'items',
   tab: 'brands',
   basePath: '/items/brands',
+  importEntity: 'brands',
   listSelect: 'id, code, name_en, name_ar, brand_type, country_of_origin, is_active',
   editSelect: 'id, code, name_en, name_ar, brand_type, country_of_origin, is_active, updated_at',
   list: {

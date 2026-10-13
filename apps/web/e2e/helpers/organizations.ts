@@ -9,6 +9,8 @@ export const NAV_LABELS = [
   'Items',
   'Locations',
   'Suppliers',
+  // Editors only (owner, admin, planner); the smoke test signs in as an organization's owner.
+  'Imports',
   'Forecasts',
   'Replenishment',
   'Settings',

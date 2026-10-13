@@ -43,6 +43,7 @@ export const workCalendars = defineEntity({
   area: 'locations',
   tab: 'calendars',
   basePath: '/locations/calendars',
+  importEntity: 'work_calendars',
   listSelect:
     'id, code, name_en, name_ar, country_code, weekend_days, observe_public_holidays, is_active',
   editSelect:

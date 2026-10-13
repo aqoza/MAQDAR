@@ -12,6 +12,14 @@ from .presets import PRESETS, Preset
 
 ENGINE_DIR = Path(__file__).resolve().parents[3]
 DEFAULT_DATA_DIR = ENGINE_DIR / "data"
+REPO_ROOT = ENGINE_DIR.parent
+FORMAT_DOC = REPO_ROOT / "docs" / "import-format.md"
+SCHEMA_FILES = (
+    REPO_ROOT / "docs" / "import-format.schema.json",
+    REPO_ROOT / "packages" / "shared" / "src" / "import-format.schema.json",
+)
+DOC_BEGIN = "<!-- import-format:begin -->"
+DOC_END = "<!-- import-format:end -->"
 
 
 def resolve_preset(args: argparse.Namespace) -> Preset:
@@ -72,8 +80,16 @@ def build_parser() -> argparse.ArgumentParser:
     both.add_argument("--no-load", action="store_true", help="generate and validate only")
 
     fmt = sub.add_parser("format", help="print the import format")
-    fmt.add_argument("--markdown", action="store_true", help="print the column tables as Markdown (default)")
-    fmt.add_argument("--json", action="store_true", help="print the machine-readable contract as JSON")
+    output = fmt.add_mutually_exclusive_group()
+    output.add_argument("--markdown", action="store_true", help="print the column tables as Markdown (default)")
+    output.add_argument("--json", action="store_true", help="print the machine-readable contract as JSON")
+    output.add_argument("--sql", action="store_true", help="print the ingest.contract_* seed for the import wizard migration, with its markers")
+    fmt.add_argument(
+        "--write",
+        action="store_true",
+        help="write instead of print: --markdown replaces the generated block of docs/import-format.md, "
+        "--json writes docs/import-format.schema.json and packages/shared/src/import-format.schema.json",
+    )
 
     sub.add_parser("emit-reference-sql", help="print the reference-data INSERT block for the migration")
     return parser
@@ -121,6 +137,43 @@ def cmd_load(path: Path, args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_format(args: argparse.Namespace) -> int:
+    if args.sql:
+        if args.write:
+            print("--write does not apply to --sql: paste the output into the migration", file=sys.stderr)
+            return 2
+        sys.stdout.write(importformat.to_sql_with_marks())
+        return 0
+    if args.json:
+        if args.write:
+            for path in SCHEMA_FILES:
+                write_text(path, importformat.to_json())
+                _log(f"wrote {path.relative_to(REPO_ROOT).as_posix()}")
+            return 0
+        sys.stdout.write(importformat.to_json())
+        return 0
+    if args.write:
+        write_text(FORMAT_DOC, replace_doc_block(FORMAT_DOC.read_text(encoding="utf-8"), importformat.to_markdown()))
+        _log(f"wrote {FORMAT_DOC.relative_to(REPO_ROOT).as_posix()}")
+        return 0
+    sys.stdout.write(importformat.to_markdown())
+    return 0
+
+
+def replace_doc_block(doc: str, block: str) -> str:
+    """Replaces the text between the import-format markers of docs/import-format.md."""
+    start = doc.index(DOC_BEGIN) + len(DOC_BEGIN)
+    end = doc.index(DOC_END)
+    return doc[:start] + "\n\n" + block + "\n" + doc[end:]
+
+
+def write_text(path: Path, text: str) -> None:
+    """UTF-8 with LF line endings on every platform (the repository stores text as LF)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text)
+
+
 def _log(message: str) -> None:
     print(message, flush=True)
 
@@ -145,8 +198,7 @@ def main(argv: list[str] | None = None) -> int:
         args.skip_validate = True
         return cmd_load(out, args)
     if args.command == "format":
-        sys.stdout.write(importformat.to_json() if args.json else importformat.to_markdown())
-        return 0
+        return cmd_format(args)
     if args.command == "emit-reference-sql":
         from .reference_sql import render_with_marks
 

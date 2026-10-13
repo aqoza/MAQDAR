@@ -9,6 +9,7 @@ export const items = defineEntity({
   area: 'items',
   tab: 'items',
   basePath: '/items',
+  importEntity: 'items',
   listSelect:
     'id, code, name_en, name_ar, product_group, status, unit_cost, currency, brand:brands!items_brand_fkey(code, name_en)',
   editSelect:

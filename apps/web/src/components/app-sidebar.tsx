@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  FileUp,
   LayoutDashboard,
   LogOut,
   MapPin,
@@ -30,17 +31,19 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { signOut } from '@/lib/auth/actions'
-import type { Role } from '@/lib/auth/roles'
+import { isEditorRole, type Role } from '@/lib/auth/roles'
 import type { OrganizationSummary } from '@/lib/organizations/context'
 
+// `editorsOnly` items are hidden from approvers, branch users and viewers (the pages 404 for them).
 const NAV_ITEMS = [
-  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { key: 'items', href: '/items', icon: Package },
-  { key: 'locations', href: '/locations', icon: MapPin },
-  { key: 'suppliers', href: '/suppliers', icon: Truck },
-  { key: 'forecasts', href: '/forecasts', icon: TrendingUp },
-  { key: 'replenishment', href: '/replenishment', icon: ShoppingCart },
-  { key: 'settings', href: '/settings', icon: Settings },
+  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard, editorsOnly: false },
+  { key: 'items', href: '/items', icon: Package, editorsOnly: false },
+  { key: 'locations', href: '/locations', icon: MapPin, editorsOnly: false },
+  { key: 'suppliers', href: '/suppliers', icon: Truck, editorsOnly: false },
+  { key: 'imports', href: '/imports', icon: FileUp, editorsOnly: true },
+  { key: 'forecasts', href: '/forecasts', icon: TrendingUp, editorsOnly: false },
+  { key: 'replenishment', href: '/replenishment', icon: ShoppingCart, editorsOnly: false },
+  { key: 'settings', href: '/settings', icon: Settings, editorsOnly: false },
 ] as const
 
 export type AppSidebarProps = {
@@ -62,6 +65,8 @@ export function AppSidebar({
   const tCommon = useTranslations('Common')
   const pathname = usePathname()
   const dir = useDirection()
+  const canEdit = isEditorRole(role)
+  const navItems = NAV_ITEMS.filter((item) => canEdit || !item.editorsOnly)
 
   return (
     // The sidebar's `side` is physical by design; it follows the text direction.
@@ -84,7 +89,7 @@ export function AppSidebar({
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {NAV_ITEMS.map(({ key, href, icon: Icon }) => {
+              {navItems.map(({ key, href, icon: Icon }) => {
                 const isActive = pathname === href || pathname.startsWith(`${href}/`)
                 return (
                   <SidebarMenuItem key={key}>

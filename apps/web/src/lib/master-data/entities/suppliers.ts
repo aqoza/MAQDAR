@@ -50,6 +50,7 @@ export const suppliers = defineEntity({
   area: 'suppliers',
   tab: 'suppliers',
   basePath: '/suppliers',
+  importEntity: 'suppliers',
   listSelect:
     'id, code, name_en, name_ar, country_code, currency, lead_time_days_p50, lead_time_days_p90, is_active, calendar:work_calendars!suppliers_work_calendar_fkey(code, name_en)',
   editSelect:

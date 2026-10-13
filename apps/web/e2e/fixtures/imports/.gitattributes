@@ -1,0 +1,4 @@
+# Byte-exact fixtures (encodings, byte-order marks, CRLF line endings): never normalize them.
+*.csv -text
+*.txt -text
+*.xlsx binary

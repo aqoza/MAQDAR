@@ -64,7 +64,7 @@ def generate(preset: Preset, out_dir: Path, force: bool = False, progress: Progr
 
 def _write_locations(out_dir: Path, locations: list[Location], codes: set[str], central: str) -> Path:
     path = out_dir / importformat.ENTITY_BY_NAME["locations"].file
-    header = importformat.ENTITY_BY_NAME["locations"].header
+    header = importformat.ENTITY_BY_NAME["locations"].minimal_header
     rows = (
         (
             loc.code,
@@ -100,7 +100,7 @@ def _write_brands(out_dir: Path, brand_list: tuple[Brand, ...]) -> Path:
         )
         for brand in brand_list
     )
-    write_table(path, entity.header, rows)
+    write_table(path, entity.minimal_header, rows)
     return path
 
 
@@ -123,7 +123,7 @@ def _write_items(out_dir: Path, catalog: Catalog) -> Path:
         )
         for item in catalog.items
     )
-    write_table(path, entity.header, rows)
+    write_table(path, entity.minimal_header, rows)
     return path
 
 
@@ -141,7 +141,7 @@ def _write_supersessions(out_dir: Path, catalog: Catalog) -> Path:
         )
         for link in links
     )
-    write_table(path, entity.header, rows)
+    write_table(path, entity.minimal_header, rows)
     return path
 
 
@@ -161,7 +161,7 @@ def _write_suppliers(out_dir: Path, suppliers) -> Path:
         )
         for s in suppliers
     )
-    write_table(path, entity.header, rows)
+    write_table(path, entity.minimal_header, rows)
     return path
 
 
@@ -185,7 +185,7 @@ def _write_supplier_items(out_dir: Path, supplier_items) -> Path:
         )
         for si in ordered
     )
-    write_table(path, entity.header, rows)
+    write_table(path, entity.minimal_header, rows)
     return path
 
 

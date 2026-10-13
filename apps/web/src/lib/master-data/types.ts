@@ -20,6 +20,8 @@
  *   of `uuid` / `pattern` filters. Search matches `search_text`, or for tables that reference
  *   items without one, `itemSearchColumns` (rows pointing at matching items). `enrichRows`
  *   (optional) adds what no embed can express to a page's rows (a location's parent).
+ *   `importEntity` (optional) names the table's import-format entity, which gives editors an
+ *   "Import" link to `/imports/new?entity=<entity>` on the list.
  * - Form: `fields` declare inputs in display order; `schema` (zod, server-only use) parses the
  *   submitted strings; `toRow` turns the parsed input into the row to insert or update. Part-code
  *   fields (kind `itemCode`) resolve with `resolveItemCodeFields(ctx, {...})` from item-codes.ts,
@@ -39,6 +41,7 @@ import type { Database } from '@maqdar/shared/database.types'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { z } from 'zod'
 import type { Messages } from '../../i18n/messages'
+import type { EntityName as ImportEntityName } from '../imports/contract'
 import type { ListSpec } from './list-params'
 
 export type TableName = keyof Database['public']['Tables'] & string
@@ -153,6 +156,8 @@ export type EntityDefinition<TInput = unknown> = {
   area: AreaKey
   tab: string
   basePath: string
+  /** The import-format entity of this table: the list shows editors an "Import" link. */
+  importEntity?: ImportEntityName
   listSelect: string
   editSelect: string
   list: ListSpec

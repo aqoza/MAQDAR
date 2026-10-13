@@ -30,11 +30,12 @@ select format(
 ) as predicate
 from unnest(array['id', 'location_id']) as column_name;
 
--- Tables written only through the security-definer RPCs.
+-- Tables written only through the security-definer RPCs (Step 3 tenancy, Step 5a imports).
 create temporary table rpc_only_tables on commit drop as
-select unnest(array['organizations', 'memberships', 'membership_locations', 'organization_invitations', 'user_settings']) as table_name;
+select unnest(array['organizations', 'memberships', 'membership_locations', 'organization_invitations', 'user_settings',
+                    'import_batches', 'import_files', 'import_errors']) as table_name;
 
-select plan((select count(*)::int * 7 from tenant_tables) + 6);
+select plan((select count(*)::int * 7 from tenant_tables) + 7);
 
 select cmp_ok((select count(*)::int from tenant_tables), '>=', 9, 'at least the Step 2 and Step 3 tenant tables exist');
 
@@ -143,6 +144,22 @@ select is(
      and p.cmd <> 'SELECT'),
   0,
   'the RPC-only tenancy tables have read policies only'
+);
+
+-- Default privileges no longer grant new public tables to the API roles (Step 5a), so the read
+-- access of every RPC-only table must be an explicit grant in its migration.
+select is(
+  (select array_agg(t.table_name order by t.table_name)
+   from rpc_only_tables t
+   where not exists (
+     select 1
+     from pg_class c
+     cross join lateral aclexplode(c.relacl) as a
+     where c.oid = ('public.' || t.table_name)::regclass
+       and a.grantee = 'authenticated'::regrole
+       and a.privilege_type = 'SELECT')),
+  null,
+  'every RPC-only table grants SELECT to authenticated explicitly'
 );
 
 select * from finish();

@@ -86,6 +86,7 @@ export const locations = defineEntity({
   area: 'locations',
   tab: 'locations',
   basePath: '/locations',
+  importEntity: 'locations',
   // The parent is added by enrichRows: PostgREST does not embed the self-referencing composite
   // foreign key many-to-one.
   listSelect:

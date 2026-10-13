@@ -62,6 +62,16 @@ export const clientNamespaces = [
   'MasterDataClient',
 ] as const satisfies ReadonlyArray<keyof Messages>
 
+/**
+ * Namespaces only the import pages' Client Components use (about 15 KB): serialized by the
+ * provider of `/imports/*` (src/app/(app)/imports/layout.tsx) on top of clientNamespaces, so other
+ * pages, /login included, never carry the wizard's vocabulary.
+ */
+export const importClientNamespaces = [
+  'ImportsClient',
+  'ImportErrors',
+] as const satisfies ReadonlyArray<keyof Messages>
+
 export function isAppLocale(value: unknown): value is AppLocale {
   return typeof value === 'string' && (appLocales as readonly string[]).includes(value)
 }
