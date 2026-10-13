@@ -116,6 +116,7 @@ export const holidayOverrides = defineEntity({
   area: 'locations',
   tab: 'holidays',
   basePath: '/locations/holidays',
+  importEntity: 'holiday_overrides',
   listSelect:
     'id, name_en, name_ar, starts_on, ends_on, kind, country_code, ...countries!holiday_overrides_country_code_fkey(country_name:name_en), calendar:work_calendars!holiday_overrides_calendar_fkey(code, name_en)',
   editSelect: 'id, scope_key, starts_on, ends_on, kind, name_en, name_ar, note, updated_at',

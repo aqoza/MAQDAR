@@ -59,6 +59,7 @@ export const fxRates = defineEntity({
   area: 'suppliers',
   tab: 'fxRates',
   basePath: '/suppliers/fx-rates',
+  importEntity: 'fx_rates',
   // The list shows the rate as a number with at most 10 decimals (the `rate` cell), which is exact
   // for every rate the form accepts (15 significant digits at most).
   listSelect: 'id, from_currency, to_currency, valid_from, rate, note',

@@ -36,6 +36,7 @@ export const supersessions = defineEntity({
   area: 'items',
   tab: 'supersessions',
   basePath: '/items/supersessions',
+  importEntity: 'item_supersessions',
   listSelect: `id, effective_on, quantity_factor, ...${PREDECESSOR}(predecessor_code:code, predecessor_name:name_en), ...${SUCCESSOR}(successor_code:code, successor_name:name_en)`,
   editSelect: `id, effective_on, quantity_factor, note, updated_at, ...${PREDECESSOR}(predecessor_item_code:code), ...${SUCCESSOR}(successor_item_code:code)`,
   list: {

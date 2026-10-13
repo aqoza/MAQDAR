@@ -109,6 +109,7 @@ export const supplierItems = defineEntity({
   area: 'suppliers',
   tab: 'supplierItems',
   basePath: '/suppliers/supplier-items',
+  importEntity: 'supplier_items',
   listSelect: `id, supplier_part_number, lead_time_days, min_order_quantity, pack_size, unit_price, currency, is_preferred, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code, name_en, name_ar)`,
   editSelect: `id, supplier_id, supplier_part_number, lead_time_days, lead_time_days_p90, min_order_quantity, pack_size, unit_price, currency, is_preferred, valid_from, updated_at, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code)`,
   list: {

@@ -38,6 +38,7 @@ export const interchanges = defineEntity({
   area: 'items',
   tab: 'interchanges',
   basePath: '/items/interchanges',
+  importEntity: 'item_interchanges',
   // Spread through the foreign-key names (two spreads of `items` would collide in PostgREST).
   listSelect: `id, direction, priority, ...${ITEM}(item_code:code, item_name:name_en), ...${ALTERNATE}(alternate_code:code, alternate_name:name_en)`,
   editSelect: `id, direction, priority, note, updated_at, ...${ITEM}(item_code:code), ...${ALTERNATE}(alternate_item_code:code)`,

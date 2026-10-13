@@ -1,4 +1,4 @@
-import { PlusIcon } from 'lucide-react'
+import { FileUpIcon, PlusIcon } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
@@ -90,7 +90,8 @@ function toolbarFilters(
 }
 
 /**
- * A server-rendered master-data list: header (with "New" for editors), area tabs, a GET toolbar,
+ * A server-rendered master-data list: header (with "New", and "Import" when the entity has an
+ * import-format entity, for editors), area tabs, a GET toolbar,
  * then the rows and pager in a Suspense boundary keyed by the URL state, so a new search or page
  * shows the skeleton instead of stale rows. One count-exact query per render.
  */
@@ -135,14 +136,26 @@ export async function ListScreen({ entity, searchParams }: ListScreenProps) {
         description={t('description')}
         actions={
           canEdit ? (
-            <Link
-              href={`${definition.basePath}/new`}
-              prefetch={false}
-              className={buttonVariants({ size: 'sm' })}
-            >
-              <PlusIcon aria-hidden="true" />
-              {tList('new')}
-            </Link>
+            <>
+              {definition.importEntity ? (
+                <Link
+                  href={`/imports/new?entity=${definition.importEntity}`}
+                  prefetch={false}
+                  className={buttonVariants({ size: 'sm', variant: 'outline' })}
+                >
+                  <FileUpIcon aria-hidden="true" />
+                  {tList('import')}
+                </Link>
+              ) : null}
+              <Link
+                href={`${definition.basePath}/new`}
+                prefetch={false}
+                className={buttonVariants({ size: 'sm' })}
+              >
+                <PlusIcon aria-hidden="true" />
+                {tList('new')}
+              </Link>
+            </>
           ) : null
         }
       />

@@ -95,6 +95,7 @@ export const networkLinks = defineEntity({
   area: 'locations',
   tab: 'network',
   basePath: '/locations/network',
+  importEntity: 'network_links',
   listSelect: `id, lead_time_days_p50, lead_time_days_p90, freight_basis, freight_cost, currency, is_active, ${FROM_CODE}, to_location:locations!network_links_to_location_fkey(code, name_en)`,
   editSelect: `id, from_location_id, to_location_id, lead_time_days_p50, lead_time_days_p90, freight_basis, freight_cost, currency, is_active, updated_at, ${FROM_CODE}, to_location:locations!network_links_to_location_fkey(code)`,
   list: {
