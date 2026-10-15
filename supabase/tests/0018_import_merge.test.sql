@@ -963,6 +963,10 @@ select is(
 insert into public.suppliers (organization_id, code, name_en, country_code, currency, lead_time_days_p50, lead_time_days_p90)
 select '00000000-0000-4000-8000-a18000000000', 'ST-' || lpad(g::text, 5, '0'), 'Statistics supplier ' || g, 'SA', 'SAR', 1, 2
 from generate_series(1, 3000) as g;
+-- Step 6 transaction feeds may already exist in a seeded local stack. This
+-- statistics fixture empties suppliers only within this rolled-back transaction.
+delete from public.open_orders;
+delete from public.receipts;
 delete from public.suppliers;
 analyze public.suppliers;
 

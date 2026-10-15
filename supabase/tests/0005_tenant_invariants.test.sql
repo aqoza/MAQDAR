@@ -34,7 +34,7 @@ from unnest(array['id', 'location_id']) as column_name;
 -- API keys).
 create temporary table rpc_only_tables on commit drop as
 select unnest(array['organizations', 'memberships', 'membership_locations', 'organization_invitations', 'user_settings',
-                    'import_batches', 'import_files', 'import_errors', 'api_keys']) as table_name;
+                    'import_batches', 'import_files', 'import_errors', 'api_keys', 'planning_runs']) as table_name;
 
 -- Columns no API role may read or write in any way (Step 5b: the SHA-256 of every API key).
 create temporary table secret_columns on commit drop as

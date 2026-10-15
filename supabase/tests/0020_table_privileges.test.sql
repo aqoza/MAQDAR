@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('planning_runs', 'anon', 'r', ''),
+    ('planning_runs', 'authenticated', 'r', 'SELECT'),
+    ('planning_runs', 'service_role', 'r', ''),
     ('stock_snapshots', 'anon', 'r', ''),
     ('stock_snapshots', 'authenticated', 'r', 'SELECT,INSERT,UPDATE,DELETE'),
     ('stock_snapshots', 'service_role', 'r', 'SELECT,INSERT,UPDATE,DELETE'),
@@ -204,6 +207,11 @@ select set_eq(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname in ('public', 'app') and p.prokind in ('f', 'p')$$,
   $$values
+    ('app.planning_claim()', ''),
+    ('app.planning_execute(uuid, uuid)', ''),
+    ('app.planning_fail(uuid, uuid)', ''),
+    ('public.planning_enqueue(uuid, text, date, date, uuid)', 'authenticated'),
+    ('public.planning_cancel(uuid, uuid)', 'authenticated'),
     ('app.audit_business_row()', ''),
     ('app.audit_demand_statement()', ''),
     ('app.import_housekeeping()', ''),

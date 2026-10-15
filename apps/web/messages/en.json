@@ -1413,5 +1413,45 @@
     "INSERT": "Inserted",
     "UPDATE": "Updated",
     "DELETE": "Deleted"
+  },
+  "Planning": {
+    "title": "Forecasts and planning runs",
+    "description": "Check demand data before building a forecast.",
+    "scope": "Each check covers one active location and up to 1,096 days for non-discontinued items. Missing days in the sparse demand feed are not evidence of zero demand. This check does not produce forecasts or change inventory.",
+    "location": "Location code",
+    "from": "From date",
+    "to": "To date",
+    "submit": "Check demand data",
+    "pending": "Queuing…",
+    "refresh": "Refresh runs",
+    "cancel": "Cancel run",
+    "empty": "No planning runs yet. A planner can start a demand-data check.",
+    "recent": "Latest 20 runs",
+    "activeNote": "A run is queued or processing. This page refreshes every five seconds while visible. If it remains queued, ask your administrator to check the planning worker.",
+    "busy": "A run is already active, or this request was already used. Refresh the page before trying again.",
+    "limit": "This organization has reached the technical limit of 20 runs in 24 hours. Try again later.",
+    "invalid": "Choose an active location code and a valid date range of no more than 1,096 days.",
+    "created": "Requested {time} · Attempts: {attempts}",
+    "failedNote": "The run could not finish after three attempts. Ask your administrator to check the worker, then start a new run.",
+    "unavailable": "This result cannot be displayed. Please refresh or contact your administrator.",
+    "range": "Stored history spans {from} to {to}.",
+    "noHistory": "No stored demand records were found in this window.",
+    "computed": "Data checked at {time}. Later imports are not included in this result.",
+    "status": {
+      "queued": "Queued",
+      "running": "Processing",
+      "succeeded": "Completed",
+      "failed": "Failed",
+      "canceled": "Canceled"
+    },
+    "metrics": {
+      "active_items": "Eligible items",
+      "items_with_history": "Items with stored history",
+      "stored_rows": "Stored demand rows",
+      "days_with_records": "Days with records",
+      "positive_demand_rows": "Rows with sales",
+      "quantity": "Sold quantity",
+      "lost_sales_quantity": "Lost-sales quantity"
+    }
   }
 }
