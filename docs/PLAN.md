@@ -32,7 +32,7 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 ## Phase 2 build steps
 
-Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
+Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 2026-10-15. Step 12b was scoped and approved on 2026-10-16. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
 | Step | Scope                                                                                                                                                                                      | Status    |
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
@@ -43,8 +43,9 @@ Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 
 | 10   | **Demand preparation:** saved related-part groups, source contributions, exact daily sold/lost totals and verified calendar evidence.                                                      | Merged    |
 | 10b  | **Prepared-group forecasts:** fixed saved groups, bounded learned weekday/verified holiday/Ramadan candidate, rolling comparisons, daily bands and independent coverage.                   | Merged    |
 | 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Merged    |
-| 12a  | **Policy review workbench:** searchable saved recommendations, reasoned manual thresholds and independent approval history.                                                                | In review |
-| 12b  | **KPI expansion:** availability, forecast accuracy and excess views with explicit definitions and data coverage.                                                                           | Proposed  |
+| 12a  | **Policy review workbench:** searchable saved recommendations, reasoned manual thresholds and independent approval history.                                                                | Merged    |
+| 12b  | **KPI foundation:** observed availability, inventory value by currency, snapshot freshness/coverage and searchable saved forecast quality.                                                 | In review |
+| 12c  | **Excess-stock comparison:** unit provenance and explicit policy/date selection before calculating excess.                                                                                 | Proposed  |
 
 Step 7 criteria, operational limits and owner-run rollout are in [planning-runs.md](planning-runs.md).
 
@@ -168,3 +169,7 @@ PR #16 was reviewed and merged as `71bfcc8` before this work. The owner approved
 ### Step 12a approved decisions (2026-10-15)
 
 PR #17 was reviewed and merged as `2d282dc`. The owner approved the policy review workbench first, with KPI expansion following separately. Planners, owners and admins submit reasoned threshold overrides; a different approver, owner or admin approves/rejects; authors may withdraw pending proposals. Reasons are required and nonnegative reorder references cannot exceed periodic maxima. Calculated results remain immutable, and approved overrides remain attached to the exact saved policy without carry-forward or order execution. See [policy-workbench.md](policy-workbench.md) for acceptance, concurrency, numeric precision and rollout.
+
+### Step 12b approved decisions (2026-10-16)
+
+PR #18 was reviewed and merged as `c16d915`. The owner approved a read-only KPI foundation: observed stock availability, inventory value by currency, snapshot freshness/coverage, and searchable saved forecast metrics. Availability is the fraction of observed pairs with positive stock after allocations; missing snapshots remain unknown and observations older than seven days are flagged. Saved RMSE, MAE and signed bias remain historical model-selection scores, while held-out coverage is labeled separately with its own model and window. There is no cross-item error average or claim of realized future performance. Excess comparisons follow after trustworthy unit provenance and explicit policy/date selection. See [planning-kpis.md](planning-kpis.md) for acceptance, exact definitions, limits and rollout.

@@ -81,7 +81,18 @@
     "sold": "Units sold",
     "lost": "Lost sales units",
     "table": "View daily data",
-    "date": "Business date"
+    "date": "Business date",
+    "quality": "Saved forecast quality",
+    "reportingDate": "Reporting date",
+    "locationFilter": "Location code (blank for all visible)",
+    "filter": "Apply filters",
+    "reset": "Reset",
+    "availability": "Observed stock availability",
+    "unavailable": "Unavailable",
+    "availabilityCounts": "{available, number} of {observed, number} observed item/location pairs have positive available stock.",
+    "availabilityNote": "Latest quantity minus allocations is positive. Stale observations remain included and flagged; missing snapshots are unknown. This is not order fill rate or achieved cycle service.",
+    "cohort": "Stock metrics use the current non-discontinued item catalog and active visible locations, with the latest snapshots on or before the reporting date. This does not reconstruct the historical catalog. Blank location includes all visible locations; the demand trend includes their recorded history, including inactive items and locations.",
+    "freshness": "Snapshots older than seven days: {stale, number}. Oldest included snapshot: {oldest}."
   },
   "Items": {
     "title": "Items",
@@ -1467,7 +1478,8 @@
     "prepare": "Prepare demand",
     "preparationResults": "View prepared demand",
     "policyResults": "View inventory policy",
-    "workbench": "Policy review workbench"
+    "workbench": "Policy review workbench",
+    "quality": "Saved forecast quality"
   },
   "Classification": {
     "title": "Classify demand",
@@ -1851,5 +1863,59 @@
       "rejected": "Rejected",
       "withdrawn": "Withdrawn"
     }
+  },
+  "ForecastQuality": {
+    "title": "Saved forecast quality",
+    "dashboard": "Dashboard",
+    "planning": "Planning runs",
+    "description": "Inspect saved model-selection scores for each item or prepared group. These are historical comparisons, not realized future forecast performance.",
+    "scoreNote": "RMSE and MAE measure error in the saved demand units. Signed bias is forecast minus sold actuals: positive means overforecast. Scores are not averaged across items or groups. A dash means evidence is unavailable, not zero.",
+    "search": "Search item code or name",
+    "location": "Location code",
+    "result": "Result",
+    "all": "All",
+    "model": "Selected model",
+    "method": "Forecast method",
+    "size": "Rows per page",
+    "order": "Completion order",
+    "newest": "Newest first",
+    "oldest": "Oldest first",
+    "filter": "Apply filters",
+    "reset": "Reset",
+    "count": "{total, number} saved results",
+    "item": "Item / group",
+    "window": "History and horizon",
+    "rmse": "RMSE",
+    "mae": "MAE",
+    "bias": "Signed bias",
+    "evidence": "Comparison evidence",
+    "horizon": "Forecast horizon: {days} calendar days",
+    "inspect": "Inspect {item}",
+    "fixedGroup": "Fixed saved-group comparison in {unit}. Relationships and conversions are held fixed across all windows; this does not reconstruct historical planning decisions.",
+    "individual": "Individual item comparison in its captured demand quantities. A unit label was not saved.",
+    "folds": "Rolling model-selection windows",
+    "fold": "Train: {train_from} – {train_to}. Test: {test_from} – {test_to}.",
+    "unavailable": "Unavailable",
+    "coverage": "Separate held-out interval coverage",
+    "coverageNote": "A historical exercise selected and calibrated its own model before its held-out window. That model may differ from the final selected model. Coverage does not establish future service levels; sparse demand and short windows limit interpretation.",
+    "evaluationModel": "Evaluation model: {model}",
+    "evaluationWindow": "Training cutoff: {train}. Held-out window: {from} – {to} ({count} days).",
+    "coverageValues": "Observed coverage of 80% bands: {lower}. Of 95% bands: {upper}.",
+    "coverageStatuses": {
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "insufficient_history": "Insufficient history for held-out coverage",
+      "insufficient_residuals": "Insufficient residuals for held-out coverage"
+    },
+    "methods": {
+      "baseline-v1": "Seven baselines",
+      "expanded-v1": "Baselines, ETS and ARIMA",
+      "regional-v1": "Prepared group with calendar candidate"
+    },
+    "empty": "No saved forecast results match these filters.",
+    "pagination": "Forecast quality pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}"
   }
 }

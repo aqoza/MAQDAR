@@ -21,6 +21,8 @@ $env:DASHBOARD_SCALE='1'
 pnpm --filter web exec playwright test dashboard.spec.ts
 ```
 
+Step 12b adds reporting-date and location filters, observed availability and saved forecast-quality browsing. See [planning KPIs](planning-kpis.md) for their definitions and rollout.
+
 ## Audit and maintenance
 
 Business master data and the three new transaction tables record before/after values, actor user ID, record ID and UTC time in `audit_log`. Timestamp-only updates are ignored. Demand writes record a per-organization statement summary (row count and date range) to avoid copying bulk history. API/system writes have no user actor. Owners and admins can view the latest 100 events at `/audit`; other roles cannot read the organization-wide audit data. API roles cannot insert, update or delete audit rows. Audit records survive deletion of their source rows and organizations. Credentials and key hashes are excluded by an explicit trigger-table allow-list.
