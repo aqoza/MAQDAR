@@ -216,6 +216,9 @@ select set_eq(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname in ('public', 'app') and p.prokind in ('f', 'p')$$,
   $$values
+    ('app.forecast_task_individual(uuid, uuid)', ''),
+    ('app.forecast_finish_individual(uuid, uuid, jsonb)', ''),
+    ('public.forecast_prepared_enqueue(uuid, uuid, uuid, integer, boolean)', 'authenticated'),
     ('app.preparation_task(uuid, uuid)', ''),
     ('app.preparation_finish(uuid, uuid, jsonb)', ''),
     ('app.preparation_input_cleanup()', ''),

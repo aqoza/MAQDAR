@@ -6,6 +6,7 @@ vi.mock('@/lib/planning', () => import('../../../lib/planning'))
 vi.mock('@/lib/classification', () => import('../../../lib/classification'))
 vi.mock('@/lib/forecasting', () => import('../../../lib/forecasting'))
 vi.mock('@/lib/preparation', () => import('../../../lib/preparation'))
+vi.mock('@/lib/prepared-forecast', () => import('../../../lib/prepared-forecast'))
 vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidate }))
 vi.mock('next/navigation', () => ({
   redirect: () => {
@@ -24,6 +25,7 @@ import { cancelRun, enqueueRun } from './actions'
 import { enqueueClassification } from './classify/actions'
 import { enqueueForecast } from './new/actions'
 import { enqueuePreparation } from './prepare/actions'
+import { enqueuePreparedForecast } from './prepared/actions'
 import { CLASSIFICATION_DEFAULTS } from '../../../lib/classification'
 import { idleState } from '../../../lib/forms'
 
@@ -118,6 +120,46 @@ function forecastForm() {
   data.set('history_complete', 'on')
   return data
 }
+function preparedForm() {
+  const data = forecastForm()
+  data.set('preparation_id', '70000000-0000-4000-8000-000000000002')
+  data.set('fixed_group_confirmed', 'on')
+  return data
+}
+it('prepared forecast requires fixed-group confirmation and valid saved identity/horizon', async () => {
+  const data = preparedForm()
+  data.delete('fixed_group_confirmed')
+  expect((await enqueuePreparedForecast(idleState, data)).message).toBe('confirmationRequired')
+  data.set('fixed_group_confirmed', 'on')
+  data.set('preparation_id', 'malformed')
+  expect((await enqueuePreparedForecast(idleState, data)).code).toBe('validation')
+  data.set('preparation_id', '70000000-0000-4000-8000-000000000002')
+  data.set('horizon', '91')
+  expect((await enqueuePreparedForecast(idleState, data)).code).toBe('validation')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('prepared forecast uses session organization, saved identity and explicit confirmation', async () => {
+  await expect(enqueuePreparedForecast(idleState, preparedForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith('forecast_prepared_enqueue', {
+    p_organization_id: 'session-org',
+    p_preparation_id: '70000000-0000-4000-8000-000000000002',
+    p_request_id: '70000000-0000-4000-8000-000000000001',
+    p_horizon: 28,
+    p_fixed_group_confirmed: true,
+  })
+})
+it('prepared forecast respects the shared editor guard and safe RPC errors', async () => {
+  mocks.guard.mockResolvedValueOnce({
+    ok: false,
+    state: { status: 'error', code: 'stale_organization' },
+  })
+  expect((await enqueuePreparedForecast(idleState, preparedForm())).code).toBe('stale_organization')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+  mocks.rpc.mockResolvedValue({ error: { code: 'MQ422', message: 'private internals' } })
+  const result = await enqueuePreparedForecast(idleState, preparedForm())
+  expect(result.code).toBe('MQ422')
+  expect(JSON.stringify(result)).not.toContain('private internals')
+})
 it('preparation requires complete-history confirmation and bounded related-source selection', async () => {
   const data = forecastForm()
   data.delete('history_complete')

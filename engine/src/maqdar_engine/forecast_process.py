@@ -5,7 +5,10 @@ import multiprocessing
 def _run(sender, task):
     try:
         from threadpoolctl import threadpool_limits
-        from maqdar_engine.expanded_forecasting import forecast
+        if task.get('method') == 'regional-v1':
+            from maqdar_engine.regional_forecasting import forecast
+        else:
+            from maqdar_engine.expanded_forecasting import forecast
         with threadpool_limits(limits=1):
             sender.send(forecast(task))
     except Exception:

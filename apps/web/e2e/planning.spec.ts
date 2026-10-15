@@ -11,7 +11,7 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
-test('preparation preserves source contributions, blocks unit conflicts and shows unknown calendar dates', async ({
+test('preparation preserves contributions and forecasts a saved group with fixed-group evidence', async ({
   page,
 }) => {
   test.setTimeout(120_000)
@@ -84,7 +84,7 @@ test('preparation preserves source contributions, blocks unit conflicts and show
   await page.getByRole('link', { name: 'Prepare demand', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Prepare demand', exact: true })).toBeVisible()
   await page.getByLabel('Location code', { exact: true }).fill('PREP')
-  await page.getByLabel('From date', { exact: true }).fill('2026-09-29')
+  await page.getByLabel('From date', { exact: true }).fill('2026-07-01')
   await page.getByLabel('History through date', { exact: true }).fill('2026-10-01')
   await page.getByLabel('Item codes (one per line)', { exact: true }).fill('NEW\nBAD')
   await page.getByRole('button', { name: 'Queue preparation', exact: true }).click()
@@ -108,6 +108,8 @@ test('preparation preserves source contributions, blocks unit conflicts and show
     page.getByText('Two-way interchanges have different units.', { exact: true }),
   ).toBeVisible()
   await expect(page.getByRole('cell', { name: '5.246', exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Inspect Unresolved group', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Queue prepared-group forecast' })).toHaveCount(0)
   await page.getByRole('link', { name: 'Inspect NEW', exact: true }).click()
   const sources = page.getByRole('table', { name: 'Source contributions', exact: true })
   await expect(sources.getByRole('row')).toHaveCount(4)
@@ -115,9 +117,50 @@ test('preparation preserves source contributions, blocks unit conflicts and show
     sources.getByRole('row').filter({ has: page.getByRole('cell', { name: 'OLD', exact: true }) }),
   ).toContainText('2.246')
   const daily = page.getByRole('table', { name: 'Daily prepared demand and calendar', exact: true })
-  await expect(daily.getByRole('row')).toHaveCount(4)
+  await expect(daily.getByRole('row')).toHaveCount(94)
   await expect(daily.getByRole('row').filter({ hasText: '2026-10-01' })).toContainText('Unknown')
   await expect(daily.getByRole('row').filter({ hasText: '2026-10-01' })).toContainText('2.246')
+  await page.getByLabel('Forecast horizon (days)', { exact: true }).fill('7')
+  await page.getByRole('button', { name: 'Queue prepared-group forecast', exact: true }).click()
+  await expect(page).toHaveURL(/\/forecasts\/prepared\/.+/)
+  await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: 'Queue prepared-group forecast', exact: true }).click()
+  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+    cwd: resolve(process.cwd(), '../../engine'),
+    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    timeout: 100_000,
+  })
+  await page.getByRole('button', { name: 'Refresh runs' }).click()
+  await page.getByRole('link', { name: 'View forecast results', exact: true }).click()
+  await expect(page.getByText(/^Fixed-group comparisons:/)).toBeVisible()
+  await page.getByRole('link', { name: 'Inspect NEW', exact: true }).click()
+  await expect(
+    page.getByText('Quantities and adjustments use the saved group unit: EA.', { exact: true }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'Calendar candidate evidence', exact: true }),
+  ).toBeVisible()
+  await expect(
+    page.getByText(/Unknown event dates: 1 in training and 7 in the forecast horizon/),
+  ).toBeVisible()
+  const comparison = page.getByRole('table', { name: 'Model comparison', exact: true })
+  await expect(comparison.getByRole('cell', { name: /^Weekday and regional events/ })).toBeVisible()
+  expect(await comparison.getByRole('row').count()).toBeGreaterThanOrEqual(9)
+  const forecast = page.getByRole('table', { name: 'Daily forecast', exact: true })
+  await expect(forecast.getByRole('row')).toHaveCount(8)
+  await expect(forecast.getByRole('columnheader', { name: '95% upper', exact: true })).toBeVisible()
+  await expect(page.getByText(/Held-out window: 2026-09-25 – 2026-10-01/)).toBeVisible()
+  await page.getByText('Captured forecast calendar', { exact: true }).first().click()
+  const future = page.getByRole('table', { name: 'Captured forecast calendar', exact: true })
+  await expect(future.getByRole('row').nth(1)).toContainText('2026-10-02')
+  await expect(future.getByRole('row').nth(1)).toContainText('Unknown')
+  await page
+    .getByRole('link', { name: 'Inspect saved preparation and source contributions', exact: true })
+    .click()
+  await expect(
+    page.getByRole('table', { name: 'Source contributions', exact: true }).getByRole('row'),
+  ).toHaveCount(4)
 })
 
 for (const method of ['baseline-v1', 'expanded-v1']) {

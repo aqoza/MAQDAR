@@ -32,7 +32,7 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 ## Phase 2 build steps
 
-Steps 7, 8, 9, 9b and the first Step 10 release were scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
+Steps 7, 8, 9, 9b, 10 and 10b were scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
 | Step | Scope                                                                                                                                                                                      | Status    |
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
@@ -40,8 +40,8 @@ Steps 7, 8, 9, 9b and the first Step 10 release were scoped and approved by the 
 | 8    | **Demand classification:** define observation windows and missing-data semantics, ADI/CV squared, ABC-XYZ and lifecycle evidence, with persisted versioned classifications.                | Merged    |
 | 9    | **Forecast baselines and selection:** mean, naive, weekly seasonal naive, SES, Croston, SBA and TSB; three rolling backtests, versioned daily forecasts and inspectable model comparisons. | Merged    |
 | 9b   | **Forecast model expansion:** bounded automatic ETS/ARIMA, seeded daily bootstrap bands and an independent historical coverage check.                                                      | Merged    |
-| 10   | **Demand preparation:** saved related-part groups, source contributions, exact daily sold/lost totals and verified calendar evidence.                                                      | In review |
-| 10b  | **Regional forecast integration:** define and validate learned calendar adjustments and prepared-demand use in forecasts and backtests.                                                    | Proposed  |
+| 10   | **Demand preparation:** saved related-part groups, source contributions, exact daily sold/lost totals and verified calendar evidence.                                                      | Merged    |
+| 10b  | **Prepared-group forecasts:** fixed saved groups, bounded learned weekday/verified holiday/Ramadan candidate, rolling comparisons, daily bands and independent coverage.                   | In review |
 | 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Proposed  |
 | 12   | **Planner workbench and KPIs:** reviewed overrides, forecast/policy inspection and availability/accuracy/excess views.                                                                     | Proposed  |
 
@@ -50,6 +50,8 @@ Step 7 criteria, operational limits and owner-run rollout are in [planning-runs.
 Step 9b acceptance, numerical definitions and rollout are in [forecast-expansion.md](forecast-expansion.md).
 
 Step 10 acceptance, grouping/calendar semantics, bounds and rollout are in [demand-preparation.md](demand-preparation.md).
+
+Step 10b acceptance, fixed-group comparison interpretation, calendar model and rollout are in [prepared-forecasts.md](prepared-forecasts.md).
 
 ## Decision log
 
@@ -151,3 +153,9 @@ The owner approved automatic ETS/ARIMA alongside the seven baselines, retaining 
 PR #14 (Step 9b) was reviewed and merged before this work. The owner approved a saved demand-preparation release: related-part groups, each source contribution, combined daily sold demand, separate lost sales and daily calendar flags. Dates outside verified regional coverage remain unknown. Learned regional forecast adjustments follow separately.
 
 Grouping uses relationships effective at the history cutoff: predecessors roll into terminal successors with recorded quantity factors; two-way interchanges pool only at 1:1 with matching units; one-way substitutes remain separate. Conflicting conversion paths block their group and every source contributes once. Complete-history confirmation covers automatically included related sources. See [demand-preparation.md](demand-preparation.md) for exact lifecycle, calendar and cutoff semantics.
+
+### Step 10b approved decisions (2026-10-15)
+
+PR #15 (Step 10) was reviewed and merged before this work. The owner approved forecasting saved valid groups with a bounded weekday/verified holiday/Ramadan candidate alongside the nine existing models, daily forecasts, rolling RMSE comparisons, 80%/95% bands and separate coverage. Unknown dates receive no event adjustment.
+
+The owner also approved holding saved relationships and conversions fixed across all comparison windows. These are clearly labeled conditional model comparisons rather than reconstructed historical planning decisions. Demand fits use only each training prefix. See [prepared-forecasts.md](prepared-forecasts.md) for the numerical contract, limits and evidence.

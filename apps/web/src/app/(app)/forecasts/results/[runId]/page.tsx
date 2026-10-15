@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
+import { PreparedForecastDetails } from '@/components/prepared-forecast-details'
 import {
   forecastEvidenceSchema,
   forecastSummarySchema,
@@ -38,6 +39,8 @@ export default async function ForecastResults({
   if (!run || run.kind !== 'forecast') notFound()
   if (run.status !== 'succeeded') redirect('/forecasts')
   const expanded = z.object({ method: z.literal('expanded-v1') }).safeParse(run.options).success
+  const regional = z.object({ method: z.literal('regional-v1') }).safeParse(run.options).success
+  const prepared = await getTranslations('PreparedForecast')
   const { data: rows, error } = await db
     .from('forecast_results')
     .select('item_id,item_code,item_name,status,model,summary')
@@ -75,7 +78,10 @@ export default async function ForecastResults({
       <p>
         {run.locations?.code} · {run.from_date} – {run.to_date}
       </p>
-      <p className="text-sm text-muted-foreground">{t(expanded ? 'expandedMethod' : 'method')}</p>
+      <p className="text-sm text-muted-foreground">
+        {regional ? prepared('method') : t(expanded ? 'expandedMethod' : 'method')}
+      </p>
+      {regional && <p>{prepared('comparisonNote')}</p>}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('results')}</caption>
@@ -137,15 +143,20 @@ export default async function ForecastResults({
             {t('details')} · {rows?.find((r) => r.item_id === item)?.item_code}
           </h2>
           <p>{t('observed', { from: detail.source.start_day, to: detail.source.end_day })}</p>
-          <p>
-            {t('lifecycle', {
-              from: detail.source.introduced_on ?? '—',
-              to: detail.source.discontinued_on ?? '—',
-            })}
-          </p>
+          {detail.source.preparation ? (
+            <PreparedForecastDetails detail={detail} locale={locale} />
+          ) : (
+            <p>
+              {t('lifecycle', {
+                from: detail.source.introduced_on ?? '—',
+                to: detail.source.discontinued_on ?? '—',
+              })}
+            </p>
+          )}
           {detail.output.status !== 'selected' && (
             <p>
-              {t(`statuses.${detail.output.status}`)}. {t('insufficientNote')}
+              {t(`statuses.${detail.output.status}`)}.{' '}
+              {detail.output.status === 'insufficient' && t('insufficientNote')}
             </p>
           )}
           {!!detail.output.scores.length && (
@@ -287,7 +298,7 @@ export default async function ForecastResults({
           )}
           <details>
             <summary className="cursor-pointer">{t('source')}</summary>
-            <p className="my-2 text-sm">{t('sourceNote')}</p>
+            <p className="my-2 text-sm">{regional ? prepared('sourceNote') : t('sourceNote')}</p>
             <table className="w-full text-sm">
               <caption className="sr-only">{t('source')}</caption>
               <thead>

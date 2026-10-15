@@ -1589,12 +1589,14 @@
       "sba": "SBA",
       "tsb": "TSB",
       "auto_ets": "Automatic ETS",
-      "auto_arima": "Automatic ARIMA"
+      "auto_arima": "Automatic ARIMA",
+      "calendar": "Weekday and regional events"
     },
     "statuses": {
       "selected": "Model selected",
       "insufficient": "Insufficient history",
-      "outside_lifecycle": "Outside recorded lifecycle"
+      "outside_lifecycle": "Outside recorded lifecycle",
+      "unsupported_scale": "Converted demand exceeds supported scale"
     },
     "methodLabel": "Forecast method",
     "expandedChoice": "Automatic models and uncertainty (up to 10 items)",
@@ -1690,5 +1692,54 @@
       "public_holiday": "Public holiday"
     },
     "from": "From date"
+  },
+  "PreparedForecast": {
+    "title": "Forecast this prepared group",
+    "description": "Compare ten candidates using the saved combined sold demand and units. This includes a bounded weekday, holiday and Ramadan model. Lost sales remain separate.",
+    "horizon": "Forecast horizon (days)",
+    "confirmation": "I understand that these comparisons hold the saved group and unit conversions fixed across all windows. They do not reconstruct historical planning decisions.",
+    "confirmationRequired": "Confirm the fixed-group comparison before queuing the forecast.",
+    "submit": "Queue prepared-group forecast",
+    "pending": "Queuing forecast…",
+    "method": "Prepared-group forecast · regional-v1. Ten candidates compete on lowest RMSE across three rolling windows. A separate held-out window checks empirical daily band coverage when enough history exists.",
+    "comparisonNote": "Fixed-group comparisons: the saved relationships, conversions and calendar assumptions apply across every window. Scores and coverage compare models for that saved group; they do not reconstruct historical planning decisions. Demand fitting uses only each training window.",
+    "units": "Quantities and adjustments use the saved group unit: {unit}.",
+    "window": "Saved window starts {from}. Training uses the contiguous eligible history from {used} through {to}. Days with no eligible source are excluded; forecasts are zero when every saved member is outside its lifecycle. Partial membership changes are not scaled.",
+    "preparationLink": "Inspect saved preparation and source contributions",
+    "sourceNote": "Combined sold demand in saved group units is the model input. Lost sales are reported separately. Eligible missing days were set to zero under the preparation’s confirmed-history assumption. Live demand and relationship edits do not change this saved run.",
+    "effectsTitle": "Calendar candidate evidence",
+    "effectsNote": "Weekday means use training demand. Verified holiday and Ramadan residual differences are shrunk toward zero using 14 support days and bounded by the largest training quantity. An effect needs at least two event days and 28 ordinary days. Holiday takes precedence over Ramadan. Support counts are days, not repeated annual events; this is not a causal estimate.",
+    "candidateSelected": "The calendar candidate was selected; these effects are used where the future event is verified.",
+    "candidateNotSelected": "Another model was selected. These calendar candidate effects are shown for inspection and are not applied to the selected forecast.",
+    "unknownCounts": "Unknown event dates: {history} in training and {future} in the forecast horizon. Unknown dates receive no event adjustment.",
+    "event": "Event",
+    "days": "Training days",
+    "ordinaryDays": "Ordinary training days",
+    "support": "Support",
+    "adjustment": "Daily adjustment",
+    "holiday": "Public holiday",
+    "ramadan": "Ramadan",
+    "available": "Available",
+    "insufficient_support": "Insufficient support; no adjustment",
+    "weekdays": "Learned weekday means",
+    "weekday": "Weekday",
+    "mean": "Mean sold demand",
+    "dayNames": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
+    },
+    "futureCalendar": "Captured forecast calendar",
+    "futureNote": "Future reference dates and overrides were captured at the first processing attempt. Dates outside verified coverage remain unknown. Working-day flags are evidence only and do not force demand to zero.",
+    "date": "Date",
+    "verified": "Verified event coverage",
+    "working": "Working day",
+    "unknown": "Unknown",
+    "yes": "Yes",
+    "no": "No"
   }
 }
