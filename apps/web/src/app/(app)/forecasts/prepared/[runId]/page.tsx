@@ -1,9 +1,12 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { getLocale, getTranslations } from 'next-intl/server'
+import { NextIntlClientProvider } from 'next-intl'
+import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
+import { isEditorRole } from '@/lib/auth/roles'
+import { PreparedForecastForm } from '@/components/prepared-forecast-form'
 import {
   preparationSummarySchema,
   preparationOutputSchema,
@@ -39,7 +42,7 @@ export default async function PreparedResults({
   if (run.status !== 'succeeded') redirect('/forecasts')
   const { data: rows, error } = await db
     .from('demand_preparations')
-    .select('group_id,status,summary')
+    .select('id,group_id,status,summary')
     .eq('organization_id', context.active.id)
     .eq('run_id', runId)
     .order('group_id')
@@ -51,6 +54,8 @@ export default async function PreparedResults({
   const flag = (value: boolean | null) => t(value === null ? 'unknown' : value ? 'yes' : 'no')
   let detail: z.infer<typeof preparationOutputSchema> | null = null
   let calendar: z.infer<typeof preparationCalendarSchema> | null = null
+  const selected = rows?.find((row) => row.group_id === group)
+  const messages = await getMessages()
   if (group) {
     // Project only computed output and the small calendar header, not raw source demand.
     const { data, error } = await db
@@ -120,6 +125,16 @@ export default async function PreparedResults({
       </div>
       {detail && (
         <section className="space-y-4" aria-label={t('details')}>
+          {selected?.status === 'ready' && isEditorRole(context.role) && (
+            <NextIntlClientProvider messages={{ PreparedForecast: messages.PreparedForecast }}>
+              <PreparedForecastForm
+                key={selected.id}
+                organizationId={context.active.id}
+                preparationId={selected.id}
+                requestId={crypto.randomUUID()}
+              />
+            </NextIntlClientProvider>
+          )}
           <h2 className="text-xl font-semibold">{t('contributions')}</h2>
           <p className="text-sm">{t('contributionNote')}</p>
           <div className="overflow-x-auto">

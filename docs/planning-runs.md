@@ -46,6 +46,6 @@ Use the web form to enqueue a check first. `--once` processes at most one availa
 
 Step 8 adds [demand classification](demand-classification.md) as an explicit run kind with versioned inputs/results. Step 9 adds [forecast baselines](forecast-baselines.md). This foundation intentionally has no automatic schedule, no ERP export and no forecasting-model choice.
 
-Expanded forecast runs (`expanded-v1`) use a 900-second visibility/lease and a 720-second isolated computation limit for up to 10 items. Other run kinds retain the 120-second lease. See [forecast-expansion.md](forecast-expansion.md) for the versioned numerical contract and owner-run rollout.
+Expanded forecast runs (`expanded-v1`) use a 900-second visibility/lease and a 720-second isolated computation limit for up to 10 items. Prepared-group forecasts (`regional-v1`) reuse these limits for one saved group. Other run kinds retain the 120-second lease. See [forecast-expansion.md](forecast-expansion.md) and [prepared-forecasts.md](prepared-forecasts.md) for versioned numerical contracts and owner-run rollout.
 
 Step 10 adds [demand preparation](demand-preparation.md): immutable related-part contributions and calendar evidence, with up to 25 selected codes expanding to 100 sources. It uses the existing 120-second lease and a guarded publication RPC; it does not alter forecasts.

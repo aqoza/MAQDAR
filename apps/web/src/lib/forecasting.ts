@@ -1,4 +1,9 @@
 import { z } from 'zod'
+import {
+  calendarModelSchema,
+  preparedSourceSchema,
+  futureCalendarSchema,
+} from './prepared-forecast'
 
 export const FORECAST_MODELS = [
   'mean',
@@ -10,8 +15,14 @@ export const FORECAST_MODELS = [
   'tsb',
   'auto_ets',
   'auto_arima',
+  'calendar',
 ] as const
-export const FORECAST_STATUSES = ['selected', 'insufficient', 'outside_lifecycle'] as const
+export const FORECAST_STATUSES = [
+  'selected',
+  'insufficient',
+  'outside_lifecycle',
+  'unsupported_scale',
+] as const
 export const forecastOptionsSchema = z
   .object({
     method: z.enum(['baseline-v1', 'expanded-v1']).default('baseline-v1'),
@@ -45,8 +56,12 @@ export const forecastEvidenceSchema = z.object({
     introduced_on: z.string().nullable(),
     discontinued_on: z.string().nullable(),
     demand: z.array(z.tuple([z.string(), decimal, decimal])),
+    preparation: preparedSourceSchema.optional(),
   }),
   output: forecastSummarySchema.extend({
+    comparison: z.literal('fixed-group-v1').optional(),
+    calendar_model: calendarModelSchema.nullable().optional(),
+    future_calendar: futureCalendarSchema.optional(),
     unavailable_models: z
       .array(
         z.object({
