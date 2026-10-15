@@ -320,13 +320,14 @@ Rules:
 
 - `date_outside_history_window`: `demand_date` falls in a month the database keeps demand for and is at most tomorrow.
 
-| Column                | Type                                                            | Required | Default for new rows | Description                                                            |
-| --------------------- | --------------------------------------------------------------- | -------- | -------------------- | ---------------------------------------------------------------------- |
-| `item_code`           | part number (1-64 characters: letters, digits, `.` `_` `-` `/`) | yes      | key                  | Item. References `items.item_code`.                                    |
-| `location_code`       | code (1-64 characters: letters, digits, `.` `_` `-`)            | yes      | key                  | Location where the demand arose. References `locations.location_code`. |
-| `demand_date`         | date, `YYYY-MM-DD`                                              | yes      | key                  | Business day at the location.                                          |
-| `quantity`            | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0            | yes      | `0`                  | Quantity sold or issued.                                               |
-| `lost_sales_quantity` | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0            | yes      | `0`                  | Quantity requested but not served (stock-out).                         |
+| Column                | Type                                                            | Required | Default for new rows | Description                                                                                                        |
+| --------------------- | --------------------------------------------------------------- | -------- | -------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `item_code`           | part number (1-64 characters: letters, digits, `.` `_` `-` `/`) | yes      | key                  | Item. References `items.item_code`.                                                                                |
+| `location_code`       | code (1-64 characters: letters, digits, `.` `_` `-`)            | yes      | key                  | Location where the demand arose. References `locations.location_code`.                                             |
+| `demand_date`         | date, `YYYY-MM-DD`                                              | yes      | key                  | Business day at the location.                                                                                      |
+| `quantity`            | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0            | yes      | `0`                  | Quantity sold or issued.                                                                                           |
+| `lost_sales_quantity` | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0            | yes      | `0`                  | Quantity requested but not served (stock-out).                                                                     |
+| `unit_of_measure`     | one of `EA`, `SET`, `L`, `KG`                                   | no       | empty                | Source unit for sold and lost quantities; absent means unknown. Optional trailing column: a file may leave it out. |
 
 ### `stock_snapshots.csv` → `public.stock_snapshots`
 
@@ -336,15 +337,16 @@ Natural key: `item_code` + `location_code` + `snapshot_date`. Load order 13. Opt
 
 Provided together: `unit_cost` + `currency`.
 
-| Column               | Type                                                             | Required | Default for new rows | Description                                           |
-| -------------------- | ---------------------------------------------------------------- | -------- | -------------------- | ----------------------------------------------------- |
-| `item_code`          | part number (1-64 characters: letters, digits, `.` `_` `-` `/`)  | yes      | key                  | Item. References `items.item_code`.                   |
-| `location_code`      | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | Stock location. References `locations.location_code`. |
-| `snapshot_date`      | date, `YYYY-MM-DD`                                               | yes      | key                  | Business date of the observation.                     |
-| `quantity`           | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | —                    | Physical units on hand.                               |
-| `allocated_quantity` | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | `0`                  | Units already allocated.                              |
-| `unit_cost`          | money in `currency`, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0 | yes      | —                    | Inventory cost per physical unit.                     |
-| `currency`           | ISO 4217 currency code                                           | yes      | —                    | Cost currency. References `currencies.code`.          |
+| Column               | Type                                                             | Required | Default for new rows | Description                                                                                                                         |
+| -------------------- | ---------------------------------------------------------------- | -------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `item_code`          | part number (1-64 characters: letters, digits, `.` `_` `-` `/`)  | yes      | key                  | Item. References `items.item_code`.                                                                                                 |
+| `location_code`      | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | Stock location. References `locations.location_code`.                                                                               |
+| `snapshot_date`      | date, `YYYY-MM-DD`                                               | yes      | key                  | Business date of the observation.                                                                                                   |
+| `quantity`           | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | —                    | Physical units on hand.                                                                                                             |
+| `allocated_quantity` | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | `0`                  | Units already allocated.                                                                                                            |
+| `unit_cost`          | money in `currency`, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0 | yes      | —                    | Inventory cost per physical unit.                                                                                                   |
+| `currency`           | ISO 4217 currency code                                           | yes      | —                    | Cost currency. References `currencies.code`.                                                                                        |
+| `unit_of_measure`    | one of `EA`, `SET`, `L`, `KG`                                    | no       | empty                | Source unit for physical/allocated quantity and unit cost; absent means unknown. Optional trailing column: a file may leave it out. |
 
 ### `open_orders.csv` → `public.open_orders`
 

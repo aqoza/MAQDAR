@@ -1146,6 +1146,7 @@
         "manual": "Chosen by you"
       },
       "leftUnchanged": "Not imported: existing rows keep their value.",
+      "unitNotImported": "No supplied unit: new rows have an unknown unit. Updating quantities or stock cost/currency clears any previous unit label.",
       "leftUnchangedDefault": "Not imported: existing rows keep their value; new rows get {value}.",
       "emptyDefault": "empty",
       "preview": "Preview after conversion",
@@ -1611,7 +1612,8 @@
       "selected": "Model selected",
       "insufficient": "Insufficient history",
       "outside_lifecycle": "Outside recorded lifecycle",
-      "unsupported_scale": "Converted demand exceeds supported scale"
+      "unsupported_scale": "Converted demand exceeds supported scale",
+      "incompatible_units": "Conflicting demand units — normalize the supplied history units and run a new forecast."
     },
     "methodLabel": "Forecast method",
     "expandedChoice": "Automatic models and uncertainty (up to 10 items)",
@@ -1862,7 +1864,9 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "withdrawn": "Withdrawn"
-    }
+    },
+    "compareStock": "Compare stock with calculated maximum",
+    "compareRevision": "Compare stock using revision {revision}"
   },
   "ForecastQuality": {
     "title": "Saved forecast quality",
@@ -1916,6 +1920,52 @@
     "pagination": "Forecast quality pagination",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {page} of {pages}"
+    "page": "Page {page} of {pages}",
+    "individualUnit": "Individual-item comparison in saved source unit {unit}."
+  },
+  "StockComparison": {
+    "title": "Available stock above selected policy maximum",
+    "description": "A snapshot-based scenario at the saved forecast cutoff. This excludes inbound orders and backorders and does not recommend purchasing or disposal. Current recorded snapshots and explicitly chosen thresholds do not reconstruct past planning decisions.",
+    "back": "Back to policy review",
+    "cutoff": "Policy forecast cutoff: {date}. Only this comparison date is eligible.",
+    "day": "Comparison date",
+    "basis": "Threshold basis",
+    "choose": "Choose a threshold basis to compare.",
+    "calculated": "Calculated periodic maximum",
+    "approved": "Approved override revision {revision}",
+    "compare": "Compare stock",
+    "chooseRevision": "Choose a calculated maximum or approved revision in policy review",
+    "invalid": "Select a valid date and threshold basis. Approved comparisons require a specific revision.",
+    "result": "Stock comparison result",
+    "formula": "Quantity above maximum = max(on-hand − allocations − selected periodic maximum, 0).",
+    "value": "Value above maximum: {value} {currency}",
+    "snapshot": "Snapshot: {date} · {age} days old · unit: {unit}",
+    "quantity": "Physical stock",
+    "allocated": "Allocated stock",
+    "available": "Available stock",
+    "unit_cost": "Cost per physical unit",
+    "identity": "Inspect source identities",
+    "snapshotId": "Snapshot {id}, last updated {time}",
+    "policyId": "Saved policy {id}",
+    "overrideId": "Approved override {id}",
+    "evidence": "Inspect policy and forecast evidence",
+    "legacyUnits": "No source unit provenance was captured. Stock comparison is unavailable.",
+    "provenance": "Demand units: {status}. Unit: {unit}. Recorded rows: {rows}; rows without units: {unknown}; supplied units: {supplied}.",
+    "units": {
+      "consistent": "consistent supplied units",
+      "unknown": "unknown",
+      "conflicting": "conflicting supplied units"
+    },
+    "statuses": {
+      "available": "Comparison available",
+      "policy_unavailable": "Unavailable: this policy has no usable maximum.",
+      "prepared_group": "Unavailable: prepared-group stock pooling is not supported in this release.",
+      "date_mismatch": "Unavailable: choose the policy forecast cutoff as the comparison date.",
+      "policy_unit_unknown": "Unavailable: this policy has no consistent source-unit evidence.",
+      "stock_missing": "Unavailable: no stock snapshot exists on or before this date.",
+      "stock_stale": "Unavailable: the latest snapshot is more than seven days old.",
+      "stock_unit_unknown": "Unavailable: the stock snapshot has no supplied unit.",
+      "unit_mismatch": "Unavailable: snapshot and policy units differ."
+    }
   }
 }

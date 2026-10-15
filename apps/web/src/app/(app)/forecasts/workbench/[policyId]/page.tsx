@@ -65,6 +65,12 @@ export default async function PolicyReview({
       <p>
         {row.location_code} · {row.to_date} · {row.unit ?? policy('itemUnits')}
       </p>
+      <Link
+        href={`/forecasts/workbench/${policyId}/stock?basis=calculated&day=${row.to_date}`}
+        className="inline-block underline"
+      >
+        {t('compareStock')}
+      </Link>
       <p>{t('manualNote')}</p>
       <p role="status">{policy(`statuses.${row.status}`)}</p>
       <table className="w-full text-sm">
@@ -128,6 +134,14 @@ export default async function PolicyReview({
             <p className="whitespace-pre-wrap break-words">
               {t('reason')}: {proposal.reason}
             </p>
+            {proposal.status === 'approved' && (
+              <Link
+                href={`/forecasts/workbench/${policyId}/stock?basis=approved&day=${row.to_date}&override=${proposal.id}`}
+                className="inline-block underline"
+              >
+                {t('compareRevision', { revision: proposal.revision! })}
+              </Link>
+            )}
             {proposal.decided_at && (
               <>
                 <p>

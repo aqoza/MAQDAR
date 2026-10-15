@@ -121,8 +121,17 @@ def test_generator_headers_are_unchanged():
         column = entity.column("work_calendar_code")
         assert column.omittable and column.nullable and column.lookup == "work_calendars"
     for entity in importformat.ENTITIES:
-        if entity.name not in ("locations", "suppliers"):
+        if entity.name not in ("locations", "suppliers", "demand_history", "stock_snapshots"):
             assert entity.minimal_header == entity.header, entity.name
+    for name, legacy in (
+        ('demand_history', ['item_code','location_code','demand_date','quantity','lost_sales_quantity']),
+        ('stock_snapshots', ['item_code','location_code','snapshot_date','quantity','allocated_quantity','unit_cost','currency']),
+    ):
+        entity = importformat.ENTITY_BY_NAME[name]
+        assert entity.minimal_header == legacy
+        assert entity.header == legacy + ['unit_of_measure']
+        assert entity.accepted_headers == [legacy, entity.header]
+        assert entity.column('unit_of_measure').nullable
 
 
 def test_supersession_key_is_the_predecessor():

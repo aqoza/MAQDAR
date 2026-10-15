@@ -116,14 +116,14 @@ isOneToOne: false
                   ]
                 },"demand_history": {
                   Row: {
-                    "demand_date": string,"item_id": string,"location_id": string,"lost_sales_quantity": number,"organization_id": string,"quantity": number
+                    "demand_date": string,"item_id": string,"location_id": string,"lost_sales_quantity": number,"organization_id": string,"quantity": number,"unit_of_measure": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "demand_date": string,"item_id": string,"location_id": string,"lost_sales_quantity"?: number,"organization_id": string,"quantity"?: number
+                    "demand_date": string,"item_id": string,"location_id": string,"lost_sales_quantity"?: number,"organization_id": string,"quantity"?: number,"unit_of_measure"?: string | null
                   }
                   Update: {
-                    "demand_date"?: string,"item_id"?: string,"location_id"?: string,"lost_sales_quantity"?: number,"organization_id"?: string,"quantity"?: number
+                    "demand_date"?: string,"item_id"?: string,"location_id"?: string,"lost_sales_quantity"?: number,"organization_id"?: string,"quantity"?: number,"unit_of_measure"?: string | null
                   }
                   Relationships: [
 
@@ -776,14 +776,14 @@ isOneToOne: false
                   ]
                 },"stock_snapshots": {
                   Row: {
-                    "allocated_quantity": number,"created_at": string,"currency": string,"id": string,"item_id": string,"location_id": string,"organization_id": string,"quantity": number,"snapshot_date": string,"unit_cost": number,"updated_at": string
+                    "allocated_quantity": number,"created_at": string,"currency": string,"id": string,"item_id": string,"location_id": string,"organization_id": string,"quantity": number,"snapshot_date": string,"unit_cost": number,"unit_of_measure": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "allocated_quantity"?: number,"created_at"?: string,"currency": string,"id"?: string,"item_id": string,"location_id": string,"organization_id": string,"quantity": number,"snapshot_date": string,"unit_cost": number,"updated_at"?: string
+                    "allocated_quantity"?: number,"created_at"?: string,"currency": string,"id"?: string,"item_id": string,"location_id": string,"organization_id": string,"quantity": number,"snapshot_date": string,"unit_cost": number,"unit_of_measure"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "allocated_quantity"?: number,"created_at"?: string,"currency"?: string,"id"?: string,"item_id"?: string,"location_id"?: string,"organization_id"?: string,"quantity"?: number,"snapshot_date"?: string,"unit_cost"?: number,"updated_at"?: string
+                    "allocated_quantity"?: number,"created_at"?: string,"currency"?: string,"id"?: string,"item_id"?: string,"location_id"?: string,"organization_id"?: string,"quantity"?: number,"snapshot_date"?: string,"unit_cost"?: number,"unit_of_measure"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -1090,6 +1090,9 @@ isOneToOne: false
                            },
 "policy_override_submit":
 { Args: { "p_order_up_to": string,"p_organization_id": string,"p_policy_id": string,"p_reason": string,"p_reorder_point": string,"p_request_id": string }; Returns: string
+                           },
+"policy_stock_comparison":
+{ Args: { "p_basis": string,"p_day": string,"p_organization_id": string,"p_override_id"?: string,"p_policy_id": string }; Returns: Json
                            },
 "preparation_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string

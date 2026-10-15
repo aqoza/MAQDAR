@@ -448,8 +448,9 @@ export const COLUMN_LABEL_PATHS: {
   },
   demand_history: {
     item_code: ['Items.fields.code'],
+    unit_of_measure: ['Items.fields.unit_of_measure'],
   },
-  stock_snapshots: {},
+  stock_snapshots: { unit_of_measure: ['Items.fields.unit_of_measure'] },
   open_orders: {},
   receipts: {},
 }

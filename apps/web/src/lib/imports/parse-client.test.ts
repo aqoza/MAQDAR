@@ -116,6 +116,7 @@ describe('createImportParser with a worker', () => {
       '2024-01-05',
       '1',
       null,
+      null,
     ])
     // Taking chunk 1 asked for chunk 2 only.
     expect(worker.sent.map((message) => message.type)).toEqual(['parse', 'pull'])

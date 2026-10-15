@@ -345,11 +345,11 @@ select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list
   {"from_currency": "SAR", "to_currency": "BHD", "valid_from": "2026-01-01", "rate": "0.1", "note": null}]$$),
   'fx_rates: 20-digit rates survive as strings, pairs keep their stored orientation');
 select is(pg_temp.records((select body from lists where k = 'list:demand:both')), $$[
-  {"item_code": "P-1", "location_code": "RUH-B1", "demand_date": "2026-01-30", "quantity": "1.5", "lost_sales_quantity": "0.125"},
-  {"item_code": "P-1", "location_code": "RUH-B1", "demand_date": "2026-01-31", "quantity": "2", "lost_sales_quantity": "0.125"},
-  {"item_code": "P-1", "location_code": "RUH-B1", "demand_date": "2026-02-01", "quantity": "0.25", "lost_sales_quantity": "0.125"},
-  {"item_code": "P-1", "location_code": "RUH-B1", "demand_date": "2026-02-02", "quantity": "10", "lost_sales_quantity": "0.125"}]$$::jsonb,
-  'demand_history: the five contract fields, quantities as canonical strings, in date order');
+  {"item_code": "P-1", "location_code": "RUH-B1", "demand_date": "2026-01-30", "quantity": "1.5", "lost_sales_quantity": "0.125", "unit_of_measure": null},
+  {"item_code": "P-1", "location_code": "RUH-B1", "demand_date": "2026-01-31", "quantity": "2", "lost_sales_quantity": "0.125", "unit_of_measure": null},
+  {"item_code": "P-1", "location_code": "RUH-B1", "demand_date": "2026-02-01", "quantity": "0.25", "lost_sales_quantity": "0.125", "unit_of_measure": null},
+  {"item_code": "P-1", "location_code": "RUH-B1", "demand_date": "2026-02-02", "quantity": "10", "lost_sales_quantity": "0.125", "unit_of_measure": null}]$$::jsonb,
+  'demand_history: the contract fields including unknown source unit, quantities as canonical strings, in date order');
 select is(
   (select count(*)::int
    from lists l
@@ -690,7 +690,7 @@ select is(
 create temporary table demand_expected on commit drop as
 select m.mode, array(
   select jsonb_build_object('item_code', i.code, 'location_code', l.code, 'demand_date', d.demand_date,
-                            'quantity', trim_scale(d.quantity)::text, 'lost_sales_quantity', trim_scale(d.lost_sales_quantity)::text)
+                            'quantity', trim_scale(d.quantity)::text, 'lost_sales_quantity', trim_scale(d.lost_sales_quantity)::text, 'unit_of_measure', d.unit_of_measure)
   from public.demand_history d
   join public.items i on i.organization_id = d.organization_id and i.id = d.item_id
   join public.locations l on l.organization_id = d.organization_id and l.id = d.location_id
@@ -782,7 +782,7 @@ select is(
    from lists l cross join json_array_elements(l.body -> 'data') with ordinality as y (r, o)
    where l.k = p.list),
   (select array_agg(jsonb_build_object('item_code', i.code, 'location_code', lo.code, 'demand_date', d.demand_date,
-                                       'quantity', trim_scale(d.quantity)::text, 'lost_sales_quantity', trim_scale(d.lost_sales_quantity)::text)
+                                       'quantity', trim_scale(d.quantity)::text, 'lost_sales_quantity', trim_scale(d.lost_sales_quantity)::text, 'unit_of_measure', d.unit_of_measure)
                     order by d.item_id, d.location_id, d.demand_date)
    from public.demand_history d
    join public.items i on i.organization_id = d.organization_id and i.id = d.item_id
@@ -808,7 +808,7 @@ select is(
    from lists l cross join json_array_elements(l.body -> 'data') with ordinality as x (r, o)
    where l.k = 'list:demand:b-with-a-cursor'),
   (select array_agg(jsonb_build_object('item_code', i.code, 'location_code', lo.code, 'demand_date', d.demand_date,
-                                       'quantity', '9', 'lost_sales_quantity', '0')
+                                       'quantity', '9', 'lost_sales_quantity', '0', 'unit_of_measure', null)
                     order by d.item_id, d.location_id, d.demand_date)
    from public.demand_history d
    join public.items i on i.organization_id = d.organization_id and i.id = d.item_id

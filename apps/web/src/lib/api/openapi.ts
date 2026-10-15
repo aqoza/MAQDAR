@@ -300,7 +300,7 @@ function upsertSchema(entity: ContractEntity): Schema {
   }
   if (Object.keys(dependent).length > 0) schema.dependentRequired = dependent
   if (entity.monthly_parts) {
-    const values = entity.columns.filter((column) => !column.natural_key).map((c) => c.name)
+    const values = ['quantity', 'lost_sales_quantity']
     schema.anyOf = values.map((column) => ({ required: [column] }))
   }
   if (always.size > 0) {

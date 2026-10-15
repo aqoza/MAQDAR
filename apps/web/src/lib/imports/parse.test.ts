@@ -220,11 +220,11 @@ describe('parseChunks', () => {
       [5, 5],
     ])
     expect(rowsOf(events)).toEqual([
-      [1, 'P-1', 'RUH', '2024-01-05', '1234.5', null],
-      [2, 'P-2', 'RUH', '2024-01-06', '2.5', null],
-      [3, '', '', '', '', null],
-      [4, 'P-3', 'JED', '2024-01-07', '0', null],
-      [5, 'P-4', 'JED', '2024-01-08', '3', null],
+      [1, 'P-1', 'RUH', '2024-01-05', '1234.5', null, null],
+      [2, 'P-2', 'RUH', '2024-01-06', '2.5', null, null],
+      [3, '', '', '', '', null, null],
+      [4, 'P-3', 'JED', '2024-01-07', '0', null, null],
+      [5, 'P-4', 'JED', '2024-01-08', '3', null, null],
     ])
     expect(summary).toEqual({ rowsTotal: 5, trailingBlankRows: 2, issues: {} })
     expect(events.at(-1)?.progress).toBe(1)
@@ -256,6 +256,7 @@ describe('parseChunks', () => {
       'RUH-01',
       '2024-01-05',
       String(60_000 % 7),
+      null,
       null,
     ])
   })

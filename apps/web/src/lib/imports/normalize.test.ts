@@ -416,8 +416,8 @@ describe('normalizeRow', () => {
     const entity = getEntity('demand_history')
     const plan: RowPlan = {
       columns: entity.columns,
-      // item_code, location_code, demand_date from columns 2, 0, 1; quantity from 3; no lost sales.
-      sources: [2, 0, 1, 3, null],
+      // No lost sales or source unit in this legacy file.
+      sources: [2, 0, 1, 3, null, null],
       options: options({ dateOrder: 'DD/MM/YYYY', decimalSeparator: ',' }),
     }
     expect(normalizeRow(plan, ['RUH-01', '05/01/2024', 'P-1', '1.234,5'])).toEqual([
@@ -426,12 +426,14 @@ describe('normalizeRow', () => {
       '2024-01-05',
       '1234.5',
       null,
+      null,
     ])
     expect(normalizeRow(plan, ['RUH-01', '05/01/2024', 'P-1'])).toEqual([
       'P-1',
       'RUH-01',
       '2024-01-05',
       '',
+      null,
       null,
     ])
   })

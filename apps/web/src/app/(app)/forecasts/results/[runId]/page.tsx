@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { DemandUnitEvidence } from '@/components/demand-unit-evidence'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
@@ -159,6 +160,9 @@ export default async function ForecastResults({
             </NextIntlClientProvider>
           )}
           <p>{t('observed', { from: detail.source.start_day, to: detail.source.end_day })}</p>
+          {!detail.source.preparation && (
+            <DemandUnitEvidence evidence={detail.source.unit_provenance} />
+          )}
           {detail.source.preparation ? (
             <PreparedForecastDetails detail={detail} locale={locale} />
           ) : (

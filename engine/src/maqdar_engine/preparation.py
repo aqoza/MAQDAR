@@ -104,6 +104,8 @@ def prepare_group(ids, snapshot, calendar):
     row = dict(group_id=min(ids),source_ids=ids,status='blocked',issue=None,sold=None,lost=None,
                contributors=[],daily=[],target_code=None,unit=None)
     try:
+        if any(item.get('unit_conflict', False) for item in items.values()):
+            raise Conflict('unit_mismatch')
         mapping = conversions(items,supersessions,interchanges)
         terminals = {target for target,factor in mapping.values()}
         if len(terminals)!=1:

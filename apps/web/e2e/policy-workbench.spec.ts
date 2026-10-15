@@ -51,6 +51,10 @@ with psycopg.connect(dsn) as db:
         period=lambda days: dict(days=days,forecast=f'{days}.000',quantile=f'{days+1}.000',target=f'{days+1}.000',safety_stock='1.000')
         output=dict(status='available',lead_time=period(3),protection=period(7),residual_count=0,positive_days=90,samples=5000,seed='fixture',calibration=[])
         evidence=dict(method='policy-v1',options=dict(lead_time=3,review_interval=4,service_level='0.95'),forecast=dict(id=str(forecast),run_id=str(source_run),item_id=str(item),method='baseline-v1',to_date='2026-10-01',horizon=7,output=dict(model='naive',forecast=[dict(date=str(date(2026,10,2)+timedelta(days=n)),quantity='1.000') for n in range(7)])),output=output)
+        if i==1:
+            evidence['forecast']['source']=dict(unit_provenance=dict(method='source-units-v1',status='consistent',unit='EA',rows=90,unknown_rows=0,units=['EA']))
+            db.execute("insert into public.items(id,organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency) values(%s,%s,'TARGET-01','Target','Test','EA',99,'SAR')",(item,org))
+            db.execute("insert into public.stock_snapshots(organization_id,item_id,location_id,snapshot_date,quantity,allocated_quantity,unit_cost,currency,unit_of_measure) values(%s,%s,%s,'2026-10-01',12,2,1.125,'KWD','EA')",(org,item,location))
         db.execute("insert into public.planning_runs(id,organization_id,location_id,request_id,from_date,to_date,kind,status,options,result,finished_at) values(%s,%s,%s,%s,'2026-07-01','2026-10-01','policy','succeeded','{}','{}',now())",(run,org,location,uuid4()))
         db.execute("insert into public.inventory_policies(id,organization_id,run_id,location_id,forecast_id,item_id,item_code,unit,status,summary,evidence) values(%s,%s,%s,%s,%s,%s,%s,'EA','available',%s,%s)",(policy,org,run,location,forecast,item,f'TARGET-{i:02}',Jsonb(output),Jsonb(evidence)))
 `,
@@ -74,6 +78,12 @@ with psycopg.connect(dsn) as db:
   await page.getByRole('link', { name: 'Review TARGET-01', exact: true }).click()
   await expect(page).toHaveURL(/\/forecasts\/workbench\/[0-9a-f-]+$/)
   const reviewUrl = page.url()
+  await page
+    .getByRole('link', { name: 'Compare stock with calculated maximum', exact: true })
+    .click()
+  await expect(page.getByText('2 EA', { exact: true })).toBeVisible()
+  await expect(page.getByText('Value above maximum: 2.25 KWD', { exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Back to policy review', exact: true }).click()
   const comparison = page.getByRole('table', {
     name: 'Calculated and reviewed thresholds',
     exact: true,
@@ -111,6 +121,12 @@ with psycopg.connect(dsn) as db:
       .getByRole('row')
       .nth(2),
   ).toContainText('12.456')
+  await reviewer.getByRole('link', { name: 'Compare stock using revision 1', exact: true }).click()
+  await expect(reviewer.getByText('Comparison available', { exact: true })).toBeVisible()
+  await expect(reviewer.getByText('0 EA', { exact: true })).toBeVisible()
+  await reviewer.getByRole('button', { name: 'Compare stock', exact: true }).click()
+  await expect(reviewer.getByText('0 EA', { exact: true })).toBeVisible()
+  await reviewer.screenshot({ path: testInfo.outputPath('stock-comparison.png'), fullPage: true })
   await reviewerContext.close()
   await page.reload()
   await expect(comparison.getByRole('row').nth(1)).toContainText('4')

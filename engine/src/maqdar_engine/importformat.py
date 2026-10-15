@@ -852,6 +852,7 @@ ENTITIES: tuple[Entity, ...] = (
             Column("demand_date", "date", "Business day at the location."),
             Column("quantity", "decimal", "Quantity sold or issued.", min_value=0, default="0"),
             Column("lost_sales_quantity", "decimal", "Quantity requested but not served (stock-out).", min_value=0, default="0"),
+            Column("unit_of_measure", "enum", "Source unit for sold and lost quantities; absent means unknown.", nullable=True, omittable=True, enum=("EA", "SET", "L", "KG")),
         ),
         monthly_parts=True,
         row_rules=(
@@ -886,6 +887,7 @@ ENTITIES += (
             Column("allocated_quantity", "decimal", "Units already allocated.", min_value=0, default="0"),
             Column("unit_cost", "money", "Inventory cost per physical unit.", min_value=0),
             Column("currency", "currency", "Cost currency.", references="currencies.code"),
+            Column("unit_of_measure", "enum", "Source unit for physical/allocated quantity and unit cost; absent means unknown.", nullable=True, omittable=True, enum=("EA", "SET", "L", "KG")),
         ), column_groups=(("unit_cost", "currency"),),
     ),
     Entity(

@@ -116,6 +116,8 @@ def forecast_item(item: dict, cutoff: date, horizon: int) -> dict:
     row = dict(item_id=item['item_id'], status='insufficient', model=None, scores=[], folds=[],
                forecast=[], total=None, unavailable_models=[],
                uncertainty={'status':'unavailable','bands':[]}, evaluation={'status':'unavailable'})
+    if item.get('unit_provenance', {}).get('status') == 'conflicting':
+        return dict(row, status='incompatible_units')
     discontinued = item.get('discontinued_on')
     if start > cutoff or (discontinued and date.fromisoformat(discontinued) <= cutoff):
         return dict(row, status='outside_lifecycle')

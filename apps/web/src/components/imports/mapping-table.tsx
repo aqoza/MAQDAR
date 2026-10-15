@@ -28,8 +28,8 @@ export type MappingTableProps = {
 
 /**
  * One row per contract column: its label and name, key / required-for-new / group badges, the
- * file column that feeds it, and what happens when it is not imported ("left unchanged" on
- * existing rows, the default on new ones). Mapping errors show on the row they concern.
+ * file column that feeds it, and what happens when it is not imported.
+ * Mapping errors show on the row they concern.
  */
 export function MappingTable({
   entity,
@@ -140,6 +140,9 @@ export function MappingTable({
               candidate.includes(column.name),
             )
             const fallback = defaultText(column)
+            const sourceUnit =
+              column.name === 'unit_of_measure' &&
+              (entity === 'demand_history' || entity === 'stock_snapshots')
             return (
               <TableRow key={column.name} className="align-top">
                 <TableCell className="min-w-48 whitespace-normal">
@@ -189,9 +192,11 @@ export function MappingTable({
                     <span className="text-muted-foreground">{t(`matchedBy.${entry.source}`)}</span>
                   ) : column.natural_key || column.required_for_new ? null : (
                     <span className="text-muted-foreground">
-                      {fallback === null
-                        ? t('leftUnchanged')
-                        : t('leftUnchangedDefault', { value: fallback })}
+                      {sourceUnit
+                        ? t('unitNotImported')
+                        : fallback === null
+                          ? t('leftUnchanged')
+                          : t('leftUnchangedDefault', { value: fallback })}
                     </span>
                   )}
                   {problems.map((problem) => (

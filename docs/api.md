@@ -81,11 +81,13 @@ Decimals and money are returned as strings to preserve precision; booleans and i
 
 Send UTF-8 JSON with `Content-Type: application/json` and a single envelope: `{ "records": [...] }`. The array must be nonempty and every record must provide the same set of fields. Include the natural key, and include all members of any contract column group. Unknown fields are rejected. Holiday override scope fields default to null when omitted.
 
-- An omitted optional field preserves an existing value; inserts use the contract default or require a value as specified by the contract.
+- An omitted optional field preserves an existing value, except the source-unit safeguard below; inserts use the contract default or require a value as specified by the contract.
 - An explicit `null` or empty string clears a nullable field. Required fields cannot be cleared.
 - Send decimal and money values as strings when exact precision matters. Numbers are accepted, but a client may already have rounded them before transmission.
 - Use JSON booleans and weekday arrays, rather than CSV representations.
 - Demand requests must supply `quantity` or `lost_sales_quantity`. The contract's zero-demand rules can remove a row; the omitted measure is preserved on updates.
+
+Demand history and stock snapshots accept optional `unit_of_measure` (`EA`, `SET`, `L`, `KG`), returned as null when unknown. Supplying demand quantities or stock quantities/allocation/cost/currency without this field clears any previous label, even when the supplied values are unchanged. Send the source unit with each observation to preserve its claim; explicit null also clears it. The current item catalog never supplies a missing label. See [stock-comparison.md](stock-comparison.md) for provenance and comparison rules.
 
 One request is one transaction. A validation failure or write conflict saves no records from that request. Larger datasets must be split into requests, and the whole sequence is not atomic. Use the import wizard for larger resumable batches.
 

@@ -186,7 +186,7 @@ set local role authenticated;
 select is(
   (public.import_stage_chunk('00000000-0000-4000-8000-a210000b0002', 2::smallint, 1,
      (select jsonb_agg(jsonb_build_array(g, 'P-' || lpad(((g * 11) % 50000 + 1)::text, 6, '0'), 'L-' || (1 + g % 2),
-                         (date '2024-03-01' + g % 28)::text, '3', null) order by g)
+                         (date '2024-03-01' + g % 28)::text, '3', null, null) order by g)
       from generate_series(1, 10000) as g)::text) ->> 'errors_added')::int,
   0,
   'B: the 10,000-row demand chunk stages without errors'

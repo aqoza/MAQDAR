@@ -11,7 +11,7 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
-async function inspectPolicy(page: Page, dsn: string) {
+async function inspectPolicy(page: Page, dsn: string, compareStock = false) {
   const sourceUrl = page.url()
   const form = page.locator('form').filter({
     has: page.getByRole('heading', { name: 'Plan inventory policy', exact: true }),
@@ -47,6 +47,25 @@ async function inspectPolicy(page: Page, dsn: string) {
   await expect(
     page.getByRole('table', { name: 'Inspect calibration errors', exact: true }).getByRole('row'),
   ).toHaveCount(22)
+  if (compareStock) {
+    const policyUrl = page.url()
+    await page.getByRole('link', { name: 'Review this policy', exact: true }).click()
+    await page
+      .getByRole('link', { name: 'Compare stock with calculated maximum', exact: true })
+      .click()
+    await expect(page.getByText('Comparison available', { exact: true })).toBeVisible()
+    await expect(page.getByText('70 EA', { exact: true })).toBeVisible()
+    await expect(page.getByText('Value above maximum: 78.75 KWD', { exact: true })).toBeVisible()
+    await page.getByLabel('Comparison date', { exact: true }).fill('2026-05-21')
+    await page.getByRole('button', { name: 'Compare stock', exact: true }).click()
+    await expect(
+      page.getByText('Unavailable: choose the policy forecast cutoff as the comparison date.', {
+        exact: true,
+      }),
+    ).toBeVisible()
+    await expect(page.getByText('70 EA', { exact: true })).toHaveCount(0)
+    await page.goto(policyUrl)
+  }
   await page.getByRole('link', { name: 'Inspect source forecast', exact: true }).click()
   await expect(page).toHaveURL(sourceUrl)
 }
@@ -263,6 +282,7 @@ for (const method of ['baseline-v1', 'expanded-v1']) {
         demand_date: new Date(Date.UTC(2026, 0, 1 + i)).toISOString().slice(0, 10),
         quantity: String((i % 7) + 1),
         lost_sales_quantity: '2.123',
+        unit_of_measure: 'EA',
       })),
     )
     await page.goto('/forecasts')
@@ -335,7 +355,22 @@ for (const method of ['baseline-v1', 'expanded-v1']) {
         .getByRole('row')
         .nth(1),
     ).toContainText('2.123')
-    if (method === 'baseline-v1') await inspectPolicy(page, dsn)
+    if (method === 'baseline-v1') {
+      await seedRows('stock_snapshots', [
+        {
+          organization_id: org,
+          item_id: item,
+          location_id: location,
+          snapshot_date: '2026-05-13',
+          quantity: '100',
+          allocated_quantity: '2',
+          unit_cost: '1.125',
+          currency: 'KWD',
+          unit_of_measure: 'EA',
+        },
+      ])
+      await inspectPolicy(page, dsn, true)
+    }
   })
 }
 
