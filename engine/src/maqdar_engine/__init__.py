@@ -1,6 +1,6 @@
 """MAQDAR planning engine.
 
-Later steps add the forecasting models, inventory policies and the pgmq worker here.
+The pgmq readiness worker lives in worker.py; later steps add models and policies.
 """
 
 __version__ = "0.1.0"

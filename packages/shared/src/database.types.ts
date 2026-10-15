@@ -558,6 +558,32 @@ isOneToOne: false
       referencedColumns: ["code"]
     }
                   ]
+                },"planning_runs": {
+                  Row: {
+                    "attempts": number,"created_at": string,"created_by": string | null,"error_code": string | null,"finished_at": string | null,"from_date": string,"id": string,"kind": string,"location_id": string,"organization_id": string,"request_id": string,"result": Json | null,"started_at": string | null,"status": string,"to_date": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "attempts"?: number,"created_at"?: string,"created_by"?: string | null,"error_code"?: string | null,"finished_at"?: string | null,"from_date": string,"id"?: string,"kind"?: string,"location_id": string,"organization_id": string,"request_id": string,"result"?: Json | null,"started_at"?: string | null,"status"?: string,"to_date": string
+                  }
+                  Update: {
+                    "attempts"?: number,"created_at"?: string,"created_by"?: string | null,"error_code"?: string | null,"finished_at"?: string | null,"from_date"?: string,"id"?: string,"kind"?: string,"location_id"?: string,"organization_id"?: string,"request_id"?: string,"result"?: Json | null,"started_at"?: string | null,"status"?: string,"to_date"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "planning_runs_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "planning_runs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"public_holidays": {
                   Row: {
                     "country_code": string,"holiday_date": string,"id": number,"kind": string,"name_en": string,"note": string | null,"sector": string,"shifted_from": string | null,"source": string
@@ -874,6 +900,12 @@ isOneToOne: false
 { Args: { "p_organization_id": string }; Returns: {
               "created_at": string,"email": string,"location_ids": (string)[],"role": string,"user_id": string
             }[]
+                           },
+"planning_cancel":
+{ Args: { "p_organization_id": string,"p_run_id": string }; Returns: undefined
+                           },
+"planning_enqueue":
+{ Args: { "p_from": string,"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined

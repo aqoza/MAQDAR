@@ -12,6 +12,7 @@ dependencies = [
 
 [project.scripts]
 maqdar-engine = "maqdar_engine:main"
+maqdar-worker = "maqdar_engine.worker:main"
 maqdar-synth = "maqdar_engine.synth.cli:main"
 
 [dependency-groups]
