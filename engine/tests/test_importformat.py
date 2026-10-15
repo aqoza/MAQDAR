@@ -74,7 +74,7 @@ def test_natural_keys_are_first_columns():
 
 def test_versions_are_unchanged():
     assert importformat.FORMAT_VERSION == 1
-    assert GENERATOR_VERSION == "1.1.0"
+    assert GENERATOR_VERSION == "1.2.0"
 
 
 def test_load_order_and_optional_entities():
