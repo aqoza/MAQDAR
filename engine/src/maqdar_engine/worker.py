@@ -1,4 +1,4 @@
-"""Durable readiness worker. SQL owns the lease, tenant boundary and atomic result."""
+"""Durable readiness and classification worker. SQL owns the lease, tenant boundary and atomic result."""
 from __future__ import annotations
 
 import argparse
@@ -9,6 +9,9 @@ import threading
 
 import psycopg
 from psycopg.conninfo import conninfo_to_dict
+from psycopg.types.json import Jsonb
+
+from maqdar_engine.classification import VERSION, classify
 
 
 def validate_dsn(dsn: str) -> None:
@@ -30,8 +33,17 @@ def process_one(connection: psycopg.Connection) -> bool:
         return False
     run_id, token = claim
     try:
-        connection.execute('select app.planning_execute(%s,%s)', (run_id, token)).fetchone()
-    except psycopg.Error:
+        task = connection.execute('select app.planning_task(%s,%s)', (run_id, token)).fetchone()[0]
+        if task is None:
+            return True  # Canceled, expired or replaced while this process was paused.
+        if task['kind'] == 'readiness':
+            connection.execute('select app.planning_execute(%s,%s)', (run_id, token)).fetchone()
+        elif task['kind'] == 'classification' and task.get('method') == VERSION:
+            rows = classify(task)
+            connection.execute('select app.classification_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
+        else:
+            raise ValueError('Unsupported planning task')
+    except (psycopg.Error, ValueError, ArithmeticError):
         # A broken connection may also prevent this acknowledgement. The queue's
         # visibility timeout still recovers it; never log DB text or the DSN.
         connection.execute('select app.planning_fail(%s,%s)', (run_id, token))

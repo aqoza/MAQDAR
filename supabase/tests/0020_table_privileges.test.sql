@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('demand_classifications', 'anon', 'r', ''),
+    ('demand_classifications', 'authenticated', 'r', 'SELECT'),
+    ('demand_classifications', 'service_role', 'r', ''),
     ('planning_runs', 'anon', 'r', ''),
     ('planning_runs', 'authenticated', 'r', 'SELECT'),
     ('planning_runs', 'service_role', 'r', ''),
@@ -207,6 +210,13 @@ select set_eq(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname in ('public', 'app') and p.prokind in ('f', 'p')$$,
   $$values
+    ('app.classification_options(jsonb)', ''),
+    ('app.classification_finish(uuid, uuid, jsonb)', ''),
+    ('app.classification_input_cleanup()', ''),
+    ('app.planning_enqueue_kind(uuid, text, date, date, uuid, text, jsonb)', ''),
+    ('app.planning_execute_readiness(uuid, uuid)', ''),
+    ('app.planning_task(uuid, uuid)', ''),
+    ('public.classification_enqueue(uuid, text, date, date, uuid, boolean, jsonb)', 'authenticated'),
     ('app.planning_claim()', ''),
     ('app.planning_execute(uuid, uuid)', ''),
     ('app.planning_fail(uuid, uuid)', ''),

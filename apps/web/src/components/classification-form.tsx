@@ -1,0 +1,93 @@
+'use client'
+
+import { useActionState } from 'react'
+import { useTranslations } from 'next-intl'
+import { enqueueClassification } from '@/app/(app)/forecasts/classify/actions'
+import { idleState } from '@/lib/forms'
+import { CLASSIFICATION_DEFAULTS, CLASSIFICATION_FIELDS } from '@/lib/classification'
+
+export function ClassificationForm({
+  organizationId,
+  requestId,
+  from,
+  to,
+}: {
+  organizationId: string
+  requestId: string
+  from: string
+  to: string
+}) {
+  const t = useTranslations('Classification')
+  const [state, action, pending] = useActionState(enqueueClassification, idleState)
+  const inputClass = 'rounded-md border bg-background p-2'
+  return (
+    <form action={action} className="space-y-5 rounded-xl border p-5">
+      <input type="hidden" name="organization_id" value={organizationId} />
+      <input type="hidden" name="request_id" value={requestId} />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <label className="grid gap-1 text-sm">
+          {t('location')}
+          <input
+            name="location_code"
+            required
+            maxLength={64}
+            defaultValue={state.values?.location_code ?? ''}
+            className={inputClass}
+          />
+        </label>
+        <label className="grid gap-1 text-sm">
+          {t('from')}
+          <input
+            name="from_date"
+            type="date"
+            required
+            defaultValue={state.values?.from_date ?? from}
+            className={inputClass}
+          />
+        </label>
+        <label className="grid gap-1 text-sm">
+          {t('to')}
+          <input
+            name="to_date"
+            type="date"
+            required
+            defaultValue={state.values?.to_date ?? to}
+            className={inputClass}
+          />
+        </label>
+      </div>
+      <details>
+        <summary className="cursor-pointer">{t('thresholds')}</summary>
+        <div className="mt-3 grid gap-4 sm:grid-cols-3">
+          {CLASSIFICATION_FIELDS.map((key) => (
+            <label key={key} className="grid gap-1 text-sm">
+              {t(`fields.${key}`)}
+              <input
+                name={key}
+                type="number"
+                required
+                min="0.000001"
+                max="1000000"
+                step="0.000001"
+                defaultValue={state.values?.[key] ?? CLASSIFICATION_DEFAULTS[key]}
+                className={inputClass}
+              />
+            </label>
+          ))}
+        </div>
+        <p className="mt-2 text-sm text-muted-foreground">{t('thresholdNote')}</p>
+      </details>
+      <label className="flex items-start gap-2 text-sm">
+        <input name="history_complete" type="checkbox" required className="mt-1" />
+        {t('confirmation')}
+      </label>
+      <button
+        disabled={pending}
+        className="rounded-md bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
+      >
+        {pending ? t('pending') : t('submit')}
+      </button>
+      {state.message && <p role="alert">{state.message}</p>}
+    </form>
+  )
+}

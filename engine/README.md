@@ -1,6 +1,6 @@
 # MAQDAR engine
 
-Python 3.12 service managed with [uv](https://docs.astral.sh/uv/). It hosts the synthetic data generator and a durable readiness worker on pgmq. Later steps add demand classification, forecasting models and inventory policies. See [planning-runs.md](../docs/planning-runs.md) for worker setup, retries and the owner-run rollout.
+Python 3.12 service managed with [uv](https://docs.astral.sh/uv/). It hosts the synthetic data generator and a durable readiness and demand-classification worker on pgmq. Later steps add forecasting models and inventory policies. See [demand-classification.md](../docs/demand-classification.md) for the versioned daily method. See [planning-runs.md](../docs/planning-runs.md) for worker setup, retries and the owner-run rollout.
 
 ```bash
 uv sync                                   # .venv with the pinned Python and dependencies

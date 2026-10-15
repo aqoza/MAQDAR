@@ -15,7 +15,7 @@ def test_empty_queue_does_no_work():
 
 def test_claim_is_processed_and_no_failure_is_reported():
     connection = MagicMock()
-    connection.execute.return_value.fetchone.side_effect = [('run', 'token'), (True,)]
+    connection.execute.return_value.fetchone.side_effect = [('run', 'token'), ({'kind':'readiness'},), (True,)]
     assert process_one(connection) is True
     assert connection.execute.call_args.args[1] == ('run', 'token')
     assert 'planning_execute' in connection.execute.call_args.args[0]
@@ -49,6 +49,20 @@ def test_failed_failure_acknowledgement_propagates_for_supervisor_restart():
     connection.execute.side_effect = [claim, psycopg.OperationalError('lost connection'), psycopg.OperationalError('still offline')]
     with pytest.raises(psycopg.OperationalError):
         process_one(connection)
+
+
+def test_canceled_task_does_not_publish():
+    connection = MagicMock()
+    connection.execute.return_value.fetchone.side_effect = [('run', 'token'), (None,)]
+    assert process_one(connection) is True
+    assert connection.execute.call_count == 2
+
+
+def test_unsupported_method_is_failed_without_publishing():
+    connection = MagicMock()
+    connection.execute.return_value.fetchone.side_effect = [('run', 'token'), ({'kind':'classification','method':'future'},)]
+    assert process_one(connection) is True
+    assert 'planning_fail' in connection.execute.call_args.args[0]
 
 
 def test_cli_refuses_invalid_connection_without_leaking_configuration(monkeypatch, capsys):

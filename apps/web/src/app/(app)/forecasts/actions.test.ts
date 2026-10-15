@@ -3,6 +3,7 @@ import { beforeEach, expect, it, vi } from 'vitest'
 const mocks = vi.hoisted(() => ({ guard: vi.fn(), rpc: vi.fn(), revalidate: vi.fn() }))
 vi.mock('@/lib/forms', () => import('../../../lib/forms'))
 vi.mock('@/lib/planning', () => import('../../../lib/planning'))
+vi.mock('@/lib/classification', () => import('../../../lib/classification'))
 vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidate }))
 vi.mock('next/navigation', () => ({
   redirect: () => {
@@ -18,6 +19,8 @@ vi.mock('@/lib/organizations/guard', () => ({
 vi.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ rpc: mocks.rpc }) }))
 
 import { cancelRun, enqueueRun } from './actions'
+import { enqueueClassification } from './classify/actions'
+import { CLASSIFICATION_DEFAULTS } from '../../../lib/classification'
 import { idleState } from '../../../lib/forms'
 
 function form() {
@@ -66,5 +69,40 @@ it('returns a translated conflict without disclosing database messages', async (
 })
 it('rejects an invalid cancellation id', async () => {
   expect((await cancelRun(idleState, form())).code).toBe('validation')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+
+function classificationForm() {
+  const data = form()
+  Object.entries(CLASSIFICATION_DEFAULTS).forEach(([k, v]) => data.set(k, v))
+  data.set('history_complete', 'on')
+  return data
+}
+it('requires explicit confirmation before sending a classification request', async () => {
+  const data = classificationForm()
+  data.delete('history_complete')
+  expect((await enqueueClassification(idleState, data)).message).toBe('confirmationRequired')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('classification honors the editor and stale-organization guard', async () => {
+  mocks.guard.mockResolvedValue({ ok: false, state: { status: 'error', code: 'forbidden' } })
+  expect((await enqueueClassification(idleState, classificationForm())).code).toBe('forbidden')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('classification sends the session organization and approved thresholds', async () => {
+  await expect(enqueueClassification(idleState, classificationForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith(
+    'classification_enqueue',
+    expect.objectContaining({
+      p_organization_id: 'session-org',
+      p_history_complete: true,
+      p_options: CLASSIFICATION_DEFAULTS,
+    }),
+  )
+})
+it('rejects invalid classification thresholds before the RPC', async () => {
+  const data = classificationForm()
+  data.set('abc_a', '0.99')
+  expect((await enqueueClassification(idleState, data)).code).toBe('validation')
   expect(mocks.rpc).not.toHaveBeenCalled()
 })
