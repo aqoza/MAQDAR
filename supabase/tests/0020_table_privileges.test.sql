@@ -30,6 +30,15 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('policy_overrides', 'anon', 'r', ''),
+    ('policy_overrides', 'authenticated', 'r', 'SELECT'),
+    ('policy_overrides', 'service_role', 'r', ''),
+    ('policy_workbench', 'anon', 'v', ''),
+    ('policy_workbench', 'authenticated', 'v', 'SELECT'),
+    ('policy_workbench', 'service_role', 'v', ''),
+    ('policy_override_history', 'anon', 'v', ''),
+    ('policy_override_history', 'authenticated', 'v', 'SELECT'),
+    ('policy_override_history', 'service_role', 'v', ''),
     ('inventory_policies', 'anon', 'r', ''),
     ('inventory_policies', 'authenticated', 'r', 'SELECT'),
     ('inventory_policies', 'service_role', 'r', ''),
@@ -219,6 +228,8 @@ select set_eq(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname in ('public', 'app') and p.prokind in ('f', 'p')$$,
   $$values
+    ('public.policy_override_submit(uuid, uuid, uuid, text, text, text)', 'authenticated'),
+    ('public.policy_override_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
     ('public.policy_enqueue(uuid, uuid, uuid, integer, integer, numeric)', 'authenticated'),
     ('app.policy_task(uuid, uuid)', ''),
     ('app.policy_finish(uuid, uuid, jsonb)', ''),

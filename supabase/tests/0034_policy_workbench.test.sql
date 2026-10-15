@@ -1,0 +1,75 @@
+begin;
+select no_plan();
+create function pg_temp.id(n integer) returns uuid language sql immutable as $$select ('93000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid$$;
+create function pg_temp.login(n integer,org integer) returns void language sql as $$select set_config('request.jwt.claims',jsonb_build_object('sub',pg_temp.id(n),'role','authenticated','org_id',pg_temp.id(org))::text,true)::void$$;
+insert into auth.users(id,email) select pg_temp.id(n),'review-'||n||'@test.local' from generate_series(10,16) n;
+insert into public.organizations(id,slug,name) values(pg_temp.id(1),'review-a','Review A'),(pg_temp.id(2),'review-b','Review B');
+insert into public.memberships(organization_id,user_id,role) values
+ (pg_temp.id(1),pg_temp.id(10),'planner'),(pg_temp.id(1),pg_temp.id(11),'approver'),(pg_temp.id(1),pg_temp.id(12),'owner'),
+ (pg_temp.id(1),pg_temp.id(13),'viewer'),(pg_temp.id(1),pg_temp.id(14),'branch_user'),(pg_temp.id(2),pg_temp.id(15),'planner'),(pg_temp.id(1),pg_temp.id(16),'admin');
+insert into public.locations(id,organization_id,code,name_en,location_type,country_code,timezone) values
+ (pg_temp.id(20),pg_temp.id(1),'L1','L1','branch','SA','Asia/Riyadh'),(pg_temp.id(21),pg_temp.id(1),'L2','L2','branch','SA','Asia/Riyadh');
+insert into public.membership_locations values(pg_temp.id(1),pg_temp.id(14),pg_temp.id(20));
+insert into public.planning_runs(id,organization_id,location_id,request_id,from_date,to_date,kind,status,options,finished_at,result)
+ select pg_temp.id(30+n),pg_temp.id(1),pg_temp.id(20+n),pg_temp.id(40+n),'2026-07-01','2026-10-01','policy','succeeded','{}',now(),'{}' from generate_series(0,1) n;
+insert into public.inventory_policies(id,organization_id,run_id,location_id,forecast_id,item_id,item_code,status,summary,evidence)
+ select pg_temp.id(50+n),pg_temp.id(1),pg_temp.id(30+n),pg_temp.id(20+n),pg_temp.id(60),pg_temp.id(61),'ITEM-'||n,'available',
+ '{"lead_time":{"target":"5.000"},"protection":{"target":"10.000"}}','{}' from generate_series(0,1) n;
+set local role authenticated;
+select pg_temp.login(10,1);
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'-1','10','reason')$$,'MQ422',null,'negative value rejected');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'1.0001','10','reason')$$,'MQ422',null,'excess precision rejected');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'NaN','10','reason')$$,'MQ422',null,'NaN rejected');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'1','10','  ')$$,'MQ422',null,'blank reason rejected');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'1','10',E'\t\n')$$,'MQ422',null,'whitespace-only reason rejected');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'11','10','reason')$$,'MQ422',null,'threshold order validated');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'1000000000000000','1000000000000000','reason')$$,'MQ422',null,'numeric storage bound enforced');
+select lives_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'6','12',' More stock ')$$,'planner submits');
+select is(public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'6.000','12.0','More stock'),(select id from public.policy_overrides where request_id=pg_temp.id(70)),'canonical replay returns original');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(70),'7','12','More stock')$$,'MQ409',null,'changed request rejected');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(71),'6','12','Another')$$,'MQ409',null,'only one pending proposal');
+select throws_ok($$insert into public.policy_overrides default values$$,'42501',null,'direct insert denied');
+select throws_ok($$update public.policy_overrides set status='approved'$$,'42501',null,'direct update denied');
+select throws_ok($$delete from public.policy_overrides$$,'42501',null,'direct deletion denied');
+select throws_ok($$select public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(70)),pg_temp.id(80),'approved','yes')$$,'MQ403',null,'planner cannot self approve');
+select pg_temp.login(11,1);
+select throws_ok($$select public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(70)),pg_temp.id(80),'approved',E'\t\n')$$,'MQ422',null,'whitespace-only decision reason rejected');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(51),pg_temp.id(71),'6','12','reason')$$,'MQ403',null,'approver cannot submit');
+select throws_ok($$select public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(70)),pg_temp.id(80),'withdrawn','no')$$,'MQ403',null,'reviewer cannot withdraw another proposal');
+select lives_ok($$select public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(70)),pg_temp.id(80),'approved','Reviewed')$$,'independent approver approves');
+select is(public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(70)),pg_temp.id(80),'approved','Reviewed'),pg_temp.id(50),'decision replay is idempotent');
+select throws_ok($$select public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(70)),pg_temp.id(81),'rejected','Changed mind')$$,'MQ409',null,'terminal decision cannot be replaced');
+select is((select approved_reorder from public.policy_workbench where id=pg_temp.id(50)),'6.000','approved threshold is an exact string');
+select is((select calculated_reorder from public.policy_workbench where id=pg_temp.id(50)),'5.000','calculated threshold is unchanged');
+select pg_temp.login(12,1);
+select lives_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(51),pg_temp.id(71),'999999999999999.998','999999999999999.999','Owner proposal')$$,'maximum exact decimals accepted');
+select is((select order_up_to from public.policy_override_history where policy_id=pg_temp.id(51)),'999999999999999.999','history preserves all digits');
+select throws_ok($$select public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(71)),pg_temp.id(81),'approved','yes')$$,'MQ403',null,'owner self approval is also denied');
+select pg_temp.login(16,1);
+select lives_ok($$select public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(71)),pg_temp.id(81),'rejected','Too much')$$,'admin can review another author');
+select pg_temp.login(10,1);
+select lives_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(72),'0','0','Lower threshold')$$,'later proposal allowed');
+select lives_ok($$select public.policy_override_decide(pg_temp.id(1),(select id from public.policy_overrides where request_id=pg_temp.id(72)),pg_temp.id(82),'withdrawn','Withdraw')$$,'author can withdraw');
+select is((select approved_reorder from public.policy_workbench where id=pg_temp.id(50)),'6.000','withdrawal preserves last approved values');
+select is((select review_status from public.policy_workbench where id=pg_temp.id(50)),'withdrawn','last proposal state shown separately');
+select pg_temp.login(13,1);
+select is((select count(*) from public.policy_override_history),3::bigint,'viewer reads history');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(51),pg_temp.id(73),'1','2','reason')$$,'MQ403',null,'viewer cannot submit');
+select pg_temp.login(14,1);
+select is((select count(*) from public.policy_workbench),1::bigint,'invoker workbench preserves branch scope');
+select is((select count(*) from public.policy_override_history),2::bigint,'history preserves branch scope');
+select pg_temp.login(15,2);
+select is((select count(*) from public.policy_workbench),0::bigint,'foreign workbench hidden');
+select is((select count(*) from public.policy_override_history),0::bigint,'foreign history hidden');
+select throws_ok($$select public.policy_override_submit(pg_temp.id(2),pg_temp.id(50),pg_temp.id(74),'1','2','reason')$$,'MQ422',null,'foreign policy cannot be proposed');
+select pg_temp.login(10,2);
+select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id(50),pg_temp.id(74),'1','2','reason')$$,'MQ403',null,'stale organization claim denied');
+reset role;
+select is((select count(*) from public.audit_log where table_name='policy_overrides' and organization_id=pg_temp.id(1)),6::bigint,'submission and terminal decisions are audited once');
+select is((select count(*) from public.planning_runs where organization_id=pg_temp.id(1)),2::bigint,'review creates no planning run');
+select ok(not has_table_privilege('maqdar_worker','public.policy_overrides','SELECT'),'worker cannot read proposals');
+select ok(not has_function_privilege('maqdar_worker','public.policy_override_decide(uuid,uuid,uuid,text,text)','EXECUTE'),'worker cannot decide');
+select ok((select reloptions @> array['security_invoker=true'] from pg_class where oid='public.policy_workbench'::regclass),'workbench view uses invoker rights');
+select ok((select reloptions @> array['security_invoker=true'] from pg_class where oid='public.policy_override_history'::regclass),'history view uses invoker rights');
+select * from finish();
+rollback;
