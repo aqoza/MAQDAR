@@ -15,4 +15,5 @@ engine/.venv
 engine/uv.lock
 docs/import-format.schema.json
 packages/shared/src/import-format.schema.json
+apps/web/src/lib/api/openapi.json
 engine/data

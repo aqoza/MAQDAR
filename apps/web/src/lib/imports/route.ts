@@ -353,7 +353,7 @@ export type MappedRpcError = {
   unexpected: boolean
 }
 
-function identifierHint(hint: string | null | undefined): string | undefined {
+export function identifierHint(hint: string | null | undefined): string | undefined {
   const value = hint?.trim() ?? ''
   return /^[a-z][a-z0-9_]{0,62}$/.test(value) ? value : undefined
 }

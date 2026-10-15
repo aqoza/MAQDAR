@@ -30,15 +30,21 @@ import {
 } from '@/lib/master-data/list-params'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
-import { loadMemberEmails } from './data'
+import { IMPORT_SOURCES, historyConditions, loadMemberEmails } from './data'
 
-/** URL state of the history: newest first (index import_batches_list_idx), filter by status. */
+/**
+ * URL state of the history: newest first (index import_batches_list_idx), filter by status and by
+ * source (the import wizard or the REST API).
+ */
 const HISTORY: ListSpec = {
   sorts: ['created_at'],
   defaultSort: 'created_at',
   defaultDir: 'desc',
   tiebreak: 'id',
-  filters: [{ param: 'status', column: 'status', kind: 'enum', values: IMPORT_STATUSES }],
+  filters: [
+    { param: 'status', column: 'status', kind: 'enum', values: IMPORT_STATUSES },
+    { param: 'source', column: 'source', kind: 'enum', values: IMPORT_SOURCES },
+  ],
   search: false,
 }
 
@@ -101,6 +107,15 @@ export default async function ImportsPage({ searchParams }: PageProps<'/imports'
               label: tClient(`status.${status}`),
             })),
           },
+          {
+            param: 'source',
+            label: t('filters.source'),
+            value: params.filters.source ?? '',
+            options: IMPORT_SOURCES.map((source) => ({
+              value: source,
+              label: t(`sources.${source}`),
+            })),
+          },
         ]}
         clearHref={
           filtered ? listHref(BASE_PATH, HISTORY, { ...params, filters: {} }, { page: 1 }) : null
@@ -144,7 +159,7 @@ async function HistoryResults({
       { count: 'exact' },
     )
     .eq('organization_id', organizationId)
-  if (params.filters.status) query = query.eq('status', params.filters.status)
+  for (const [column, value] of historyConditions(params.filters)) query = query.eq(column, value)
   const [{ data, error, count }, emails] = await Promise.all([
     query.order('created_at', { ascending }).order('id', { ascending }).range(from, to),
     loadMemberEmails(supabase, organizationId, isAdmin),
@@ -156,7 +171,9 @@ async function HistoryResults({
       .from('import_batches')
       .select('id', { count: 'exact', head: true })
       .eq('organization_id', organizationId)
-    if (params.filters.status) countQuery = countQuery.eq('status', params.filters.status)
+    for (const [column, value] of historyConditions(params.filters)) {
+      countQuery = countQuery.eq(column, value)
+    }
     const { count: total } = await countQuery
     redirect(listHref(BASE_PATH, HISTORY, params, { page: lastPage(total ?? 0, params.size) }))
   }

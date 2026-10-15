@@ -1,0 +1,6035 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "MAQDAR API",
+    "version": "1.0.0",
+    "description": "Bulk upserts and lists of MAQDAR master data and demand history, per organization.\n\nAuthenticate with `Authorization: Bearer maqdar_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
+    "x-maqdar-import-format": 1
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Organization",
+      "description": "The key and its organization."
+    },
+    {
+      "name": "Master data",
+      "description": "Calendars, locations, items, suppliers and rates."
+    },
+    {
+      "name": "Transactions",
+      "description": "Demand history."
+    }
+  ],
+  "x-maqdar-load-order": [
+    "work-calendars",
+    "holiday-overrides",
+    "locations",
+    "network-links",
+    "brands",
+    "items",
+    "item-supersessions",
+    "item-interchanges",
+    "suppliers",
+    "supplier-items",
+    "fx-rates",
+    "demand-history"
+  ],
+  "x-maqdar-scopes": {
+    "master_data:read": "List master data (calendars, locations, brands, items, suppliers, …).",
+    "master_data:write": "Upsert master data.",
+    "transactions:read": "List demand history.",
+    "transactions:write": "Upsert demand history."
+  },
+  "paths": {
+    "/organization": {
+      "get": {
+        "operationId": "getOrganization",
+        "summary": "The key and its organization",
+        "description": "The organization the key belongs to, the key itself, the demand history window and the limits. Any valid key.",
+        "tags": [
+          "Organization"
+        ],
+        "x-maqdar-scopes": [],
+        "responses": {
+          "200": {
+            "description": "The organization.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Organization"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/work-calendars": {
+      "get": {
+        "operationId": "listWorkCalendars",
+        "summary": "List work-calendars",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "work_calendars",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkCalendarsPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/work-calendars:upsert": {
+      "post": {
+        "operationId": "upsertWorkCalendars",
+        "summary": "Upsert work-calendars",
+        "description": "Inserts or updates up to 1000 records by natural key (work_calendar_code), all or nothing. Load order 1: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "work_calendars",
+        "x-maqdar-load-order": 1,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkCalendarsUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "work_calendar_code": "SA-STD",
+                    "name_en": "Saudi standard week",
+                    "name_ar": "أسبوع العمل السعودي",
+                    "country_code": "SA",
+                    "weekend_days": [
+                      5,
+                      6
+                    ],
+                    "observe_public_holidays": true,
+                    "is_active": true
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/holiday-overrides": {
+      "get": {
+        "operationId": "listHolidayOverrides",
+        "summary": "List holiday-overrides",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "holiday_overrides",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HolidayOverridesPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/holiday-overrides:upsert": {
+      "post": {
+        "operationId": "upsertHolidayOverrides",
+        "summary": "Upsert holiday-overrides",
+        "description": "Inserts or updates up to 1000 records by natural key (country_code, work_calendar_code, starts_on), all or nothing. Load order 2: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "holiday_overrides",
+        "x-maqdar-load-order": 2,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HolidayOverridesUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "country_code": null,
+                    "work_calendar_code": "SA-STD",
+                    "starts_on": "2026-12-31",
+                    "ends_on": "2026-12-31",
+                    "kind": "closure",
+                    "name_en": "Year-end stocktake",
+                    "name_ar": "جرد نهاية السنة",
+                    "note": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/locations": {
+      "get": {
+        "operationId": "listLocations",
+        "summary": "List locations",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "locations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationsPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/locations:upsert": {
+      "post": {
+        "operationId": "upsertLocations",
+        "summary": "Upsert locations",
+        "description": "Inserts or updates up to 1000 records by natural key (location_code), all or nothing. Load order 3: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "locations",
+        "x-maqdar-load-order": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationsUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "location_code": "RUH-DC",
+                    "name_en": "Riyadh Central Distribution Centre",
+                    "name_ar": "مركز التوزيع الرئيسي بالرياض",
+                    "location_type": "central",
+                    "country_code": "SA",
+                    "city": "Riyadh",
+                    "latitude": "24.9247",
+                    "longitude": "46.7764",
+                    "timezone": "Asia/Riyadh",
+                    "parent_location_code": null,
+                    "is_active": true,
+                    "work_calendar_code": "SA-STD"
+                  },
+                  {
+                    "location_code": "JED-BR1",
+                    "name_en": "Jeddah Branch 1",
+                    "name_ar": "فرع جدة 1",
+                    "location_type": "branch",
+                    "country_code": "SA",
+                    "city": "Jeddah",
+                    "latitude": "21.5433",
+                    "longitude": "39.1728",
+                    "timezone": "Asia/Riyadh",
+                    "parent_location_code": "RUH-DC",
+                    "is_active": true,
+                    "work_calendar_code": "SA-STD"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/network-links": {
+      "get": {
+        "operationId": "listNetworkLinks",
+        "summary": "List network-links",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "network_links",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NetworkLinksPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/network-links:upsert": {
+      "post": {
+        "operationId": "upsertNetworkLinks",
+        "summary": "Upsert network-links",
+        "description": "Inserts or updates up to 1000 records by natural key (from_location_code, to_location_code), all or nothing. Load order 4: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "network_links",
+        "x-maqdar-load-order": 4,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NetworkLinksUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "from_location_code": "RUH-DC",
+                    "to_location_code": "JED-BR1",
+                    "lead_time_days_p50": 2,
+                    "lead_time_days_p90": 4,
+                    "freight_basis": "per_shipment",
+                    "freight_cost": "350",
+                    "currency": "SAR",
+                    "is_active": true
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/brands": {
+      "get": {
+        "operationId": "listBrands",
+        "summary": "List brands",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "brands",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandsPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/brands:upsert": {
+      "post": {
+        "operationId": "upsertBrands",
+        "summary": "Upsert brands",
+        "description": "Inserts or updates up to 1000 records by natural key (brand_code), all or nothing. Load order 5: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "brands",
+        "x-maqdar-load-order": 5,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrandsUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "brand_code": "FALCON",
+                    "name_en": "Falcon Genuine Parts",
+                    "name_ar": "قطع فالكون الأصلية",
+                    "brand_type": "oem",
+                    "country_of_origin": "JP",
+                    "is_active": true
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/items": {
+      "get": {
+        "operationId": "listItems",
+        "summary": "List items",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "items",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/items:upsert": {
+      "post": {
+        "operationId": "upsertItems",
+        "summary": "Upsert items",
+        "description": "Inserts or updates up to 1000 records by natural key (item_code), all or nothing. Load order 6: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "items",
+        "x-maqdar-load-order": 6,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemsUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "item_code": "FAL-BRK-1001",
+                    "name_en": "Front brake pad set",
+                    "name_ar": "طقم فحمات فرامل أمامية",
+                    "brand_code": "FALCON",
+                    "product_group": "brakes",
+                    "unit_of_measure": "SET",
+                    "unit_cost": "185.5",
+                    "currency": "SAR",
+                    "status": "active",
+                    "introduced_on": "2024-01-15",
+                    "discontinued_on": null
+                  },
+                  {
+                    "item_code": "FAL-BRK-1002",
+                    "name_en": "Front brake pad set, low dust",
+                    "name_ar": "طقم فحمات فرامل أمامية قليلة الغبار",
+                    "brand_code": "FALCON",
+                    "product_group": "brakes",
+                    "unit_of_measure": "SET",
+                    "unit_cost": "199",
+                    "currency": "SAR",
+                    "status": "new",
+                    "introduced_on": "2026-06-01",
+                    "discontinued_on": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/item-supersessions": {
+      "get": {
+        "operationId": "listItemSupersessions",
+        "summary": "List item-supersessions",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "item_supersessions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSupersessionsPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/item-supersessions:upsert": {
+      "post": {
+        "operationId": "upsertItemSupersessions",
+        "summary": "Upsert item-supersessions",
+        "description": "Inserts or updates up to 1000 records by natural key (predecessor_item_code), all or nothing. Load order 7: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "item_supersessions",
+        "x-maqdar-load-order": 7,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemSupersessionsUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "predecessor_item_code": "FAL-BRK-1001",
+                    "successor_item_code": "FAL-BRK-1002",
+                    "effective_on": "2026-06-01",
+                    "quantity_factor": "1",
+                    "note": "New pad compound"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/item-interchanges": {
+      "get": {
+        "operationId": "listItemInterchanges",
+        "summary": "List item-interchanges",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "item_interchanges",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemInterchangesPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/item-interchanges:upsert": {
+      "post": {
+        "operationId": "upsertItemInterchanges",
+        "summary": "Upsert item-interchanges",
+        "description": "Inserts or updates up to 1000 records by natural key (item_code, alternate_item_code), all or nothing. Load order 8: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "item_interchanges",
+        "x-maqdar-load-order": 8,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemInterchangesUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "item_code": "FAL-BRK-1001",
+                    "alternate_item_code": "FAL-BRK-1002",
+                    "direction": "one_way",
+                    "priority": 1,
+                    "note": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/suppliers": {
+      "get": {
+        "operationId": "listSuppliers",
+        "summary": "List suppliers",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "suppliers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuppliersPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/suppliers:upsert": {
+      "post": {
+        "operationId": "upsertSuppliers",
+        "summary": "Upsert suppliers",
+        "description": "Inserts or updates up to 1000 records by natural key (supplier_code), all or nothing. Load order 9: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "suppliers",
+        "x-maqdar-load-order": 9,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuppliersUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "supplier_code": "GULF-AUTO",
+                    "name_en": "Gulf Auto Parts Trading",
+                    "name_ar": "الخليج لتجارة قطع غيار السيارات",
+                    "country_code": "AE",
+                    "currency": "AED",
+                    "lead_time_days_p50": 7,
+                    "lead_time_days_p90": 12,
+                    "is_active": true,
+                    "work_calendar_code": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/supplier-items": {
+      "get": {
+        "operationId": "listSupplierItems",
+        "summary": "List supplier-items",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "supplier_items",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierItemsPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/supplier-items:upsert": {
+      "post": {
+        "operationId": "upsertSupplierItems",
+        "summary": "Upsert supplier-items",
+        "description": "Inserts or updates up to 1000 records by natural key (supplier_code, item_code), all or nothing. Load order 10: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "supplier_items",
+        "x-maqdar-load-order": 10,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupplierItemsUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "supplier_code": "GULF-AUTO",
+                    "item_code": "FAL-BRK-1001",
+                    "supplier_part_number": "GA-04465",
+                    "lead_time_days": 7,
+                    "lead_time_days_p90": 12,
+                    "min_order_quantity": "10",
+                    "pack_size": "1",
+                    "unit_price": "172.25",
+                    "currency": "AED",
+                    "is_preferred": true,
+                    "valid_from": "2026-01-01"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/fx-rates": {
+      "get": {
+        "operationId": "listFxRates",
+        "summary": "List fx-rates",
+        "description": "Records in a stable order, with cursor paging and an optional updated_since filter.",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:read"
+        ],
+        "x-maqdar-entity": "fx_rates",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/UpdatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FxRatesPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/fx-rates:upsert": {
+      "post": {
+        "operationId": "upsertFxRates",
+        "summary": "Upsert fx-rates",
+        "description": "Inserts or updates up to 1000 records by natural key (from_currency, to_currency, valid_from), all or nothing. Load order 11: send parents before children. Records that match the stored data are left untouched. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Master data"
+        ],
+        "x-maqdar-scopes": [
+          "master_data:write"
+        ],
+        "x-maqdar-entity": "fx_rates",
+        "x-maqdar-load-order": 11,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FxRatesUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "from_currency": "USD",
+                    "to_currency": "SAR",
+                    "valid_from": "2026-01-01",
+                    "rate": "3.75",
+                    "note": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/demand-history": {
+      "get": {
+        "operationId": "listDemandHistory",
+        "summary": "List demand-history",
+        "description": "Demand in a date range, in key order. from and to are required.",
+        "tags": [
+          "Transactions"
+        ],
+        "x-maqdar-scopes": [
+          "transactions:read"
+        ],
+        "x-maqdar-entity": "demand_history",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/From"
+          },
+          {
+            "$ref": "#/components/parameters/To"
+          },
+          {
+            "$ref": "#/components/parameters/ItemCode"
+          },
+          {
+            "$ref": "#/components/parameters/LocationCode"
+          },
+          {
+            "$ref": "#/components/parameters/TransactionLimit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemandHistoryPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/demand-history:upsert": {
+      "post": {
+        "operationId": "upsertDemandHistory",
+        "summary": "Upsert demand-history",
+        "description": "Inserts or updates up to 2500 records by natural key (item_code, location_code, demand_date), all or nothing. Load order 12: send parents before children. A record with both quantities 0 deletes that day. A write that changes nothing is not recorded (recorded: false).",
+        "tags": [
+          "Transactions"
+        ],
+        "x-maqdar-scopes": [
+          "transactions:write"
+        ],
+        "x-maqdar-entity": "demand_history",
+        "x-maqdar-load-order": 12,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemandHistoryUpsertRequest"
+              },
+              "example": {
+                "records": [
+                  {
+                    "item_code": "FAL-BRK-1001",
+                    "location_code": "JED-BR1",
+                    "demand_date": "2026-09-01",
+                    "quantity": "3",
+                    "lost_sales_quantity": "0"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Written (or nothing to change).",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UpsertBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "maqdar_sk_…",
+        "description": "A MAQDAR API key. Operations list the scope they need in x-maqdar-scopes."
+      }
+    },
+    "parameters": {
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Records per page. Out of range is a 400, not clamped.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 100
+        }
+      },
+      "TransactionLimit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Records per page. Out of range is a 400, not clamped.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000,
+          "default": 1000
+        }
+      },
+      "Cursor": {
+        "name": "cursor",
+        "in": "query",
+        "required": false,
+        "description": "next_cursor of the previous page, unchanged, with the same other parameters.",
+        "schema": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        }
+      },
+      "UpdatedSince": {
+        "name": "updated_since",
+        "in": "query",
+        "required": false,
+        "description": "Only records changed at or after this instant (RFC 3339 with an offset).",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "From": {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "First demand date (inclusive).",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "To": {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Last demand date (inclusive); at most 366 days in all.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "ItemCode": {
+        "name": "item_code",
+        "in": "query",
+        "required": false,
+        "description": "Only this part.",
+        "schema": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+          "maxLength": 64
+        }
+      },
+      "LocationCode": {
+        "name": "location_code",
+        "in": "query",
+        "required": false,
+        "description": "Only this location.",
+        "schema": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+          "maxLength": 64
+        }
+      }
+    },
+    "headers": {
+      "X-Request-Id": {
+        "description": "The request id; quote it to support.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "Retry-After": {
+        "description": "Seconds to wait before retrying.",
+        "schema": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "WWW-Authenticate": {
+        "description": "Bearer challenge (RFC 6750).",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "InvalidParameter": {
+        "description": "Bad query parameters (invalid_parameter, invalid_cursor).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ParameterProblem"
+            }
+          }
+        }
+      },
+      "UpsertBadRequest": {
+        "description": "The body is not valid JSON (invalid_json), or the URL has a query string (invalid_parameter).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ParameterProblem"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "No valid API key (unauthorized, invalid_token).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          },
+          "WWW-Authenticate": {
+            "$ref": "#/components/headers/WWW-Authenticate"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "The key lacks the scope (insufficient_scope).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          },
+          "WWW-Authenticate": {
+            "$ref": "#/components/headers/WWW-Authenticate"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ScopeProblem"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Another write holds the organization, or the data changed (import_in_progress, busy, write_conflict).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          },
+          "Retry-After": {
+            "$ref": "#/components/headers/Retry-After"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ConflictProblem"
+            }
+          }
+        }
+      },
+      "PayloadTooLarge": {
+        "description": "Too large (payload_too_large, too_many_records).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/LimitProblem"
+            }
+          }
+        }
+      },
+      "UnsupportedMediaType": {
+        "description": "Send Content-Type: application/json (unsupported_media_type).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "UnprocessableEntity": {
+        "description": "Nothing was saved (invalid_request, validation_failed).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RequestProblem"
+                },
+                {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Slow down (rate_limited, daily_limit).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          },
+          "Retry-After": {
+            "$ref": "#/components/headers/Retry-After"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Unexpected failure (internal_error).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Unavailable": {
+        "description": "Retry later (timeout, unavailable).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/X-Request-Id"
+          },
+          "Retry-After": {
+            "$ref": "#/components/headers/Retry-After"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "WorkCalendarsRecord": {
+        "type": "object",
+        "description": "Working-day calendars: weekend days and whether a country's public holidays apply. Locations and suppliers without a calendar use their country's default. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "work_calendar_code",
+          "name_en",
+          "name_ar",
+          "country_code",
+          "weekend_days",
+          "observe_public_holidays",
+          "is_active",
+          "updated_at"
+        ],
+        "properties": {
+          "work_calendar_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique calendar code.",
+            "x-maqdar-kind": "code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text"
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "country_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Z]{2}$",
+            "description": "Country whose public holidays apply (sector all).",
+            "x-maqdar-kind": "country",
+            "x-maqdar-reference": "countries.code"
+          },
+          "weekend_days": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            },
+            "uniqueItems": true,
+            "maxItems": 6,
+            "description": "Weekend days; empty for none.",
+            "x-maqdar-kind": "weekdays"
+          },
+          "observe_public_holidays": {
+            "type": "boolean",
+            "description": "The country's public holidays are non-working days (needs country_code).",
+            "x-maqdar-kind": "boolean"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for calendars no longer used.",
+            "x-maqdar-kind": "boolean"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "work_calendar_code"
+        ]
+      },
+      "WorkCalendarsUpsert": {
+        "type": "object",
+        "description": "Working-day calendars: weekend days and whether a country's public holidays apply. Locations and suppliers without a calendar use their country's default. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "work_calendar_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "work_calendar_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique calendar code.",
+            "x-maqdar-kind": "code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text",
+            "x-maqdar-required-for-new": true
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "country_code": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Country whose public holidays apply (sector all).",
+            "x-maqdar-kind": "country",
+            "x-maqdar-reference": "countries.code"
+          },
+          "weekend_days": {
+            "oneOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7
+                },
+                "uniqueItems": true,
+                "maxItems": 6
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Weekend days; empty for none.",
+            "x-maqdar-kind": "weekdays",
+            "x-maqdar-default-for-new": ""
+          },
+          "observe_public_holidays": {
+            "type": "boolean",
+            "description": "The country's public holidays are non-working days (needs country_code).",
+            "x-maqdar-kind": "boolean",
+            "x-maqdar-default-for-new": "true"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for calendars no longer used.",
+            "x-maqdar-kind": "boolean",
+            "x-maqdar-default-for-new": "true"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "work_calendar_code"
+        ],
+        "x-maqdar-load-order": 1,
+        "x-maqdar-rules": [
+          {
+            "code": "country_required",
+            "columns": [
+              "country_code",
+              "observe_public_holidays"
+            ],
+            "column": "country_code",
+            "description": "`observe_public_holidays` (true unless provided) needs a `country_code`.",
+            "scope": "record"
+          }
+        ]
+      },
+      "WorkCalendarsUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/WorkCalendarsUpsert"
+            }
+          }
+        }
+      },
+      "WorkCalendarsPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkCalendarsRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "HolidayOverridesRecord": {
+        "type": "object",
+        "description": "Calendar exceptions for one country (every location and supplier there without its own calendar) or one work calendar: closure adds non-working days, working_day cancels a public holiday or weekend day. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "country_code",
+          "work_calendar_code",
+          "starts_on",
+          "ends_on",
+          "kind",
+          "name_en",
+          "name_ar",
+          "note",
+          "updated_at"
+        ],
+        "properties": {
+          "country_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Z]{2}$",
+            "description": "Country scope; empty when work_calendar_code is set.",
+            "x-maqdar-kind": "country",
+            "x-maqdar-reference": "countries.code"
+          },
+          "work_calendar_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Calendar scope; empty when country_code is set.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "work_calendars.work_calendar_code",
+            "x-maqdar-lookup": "work-calendars"
+          },
+          "starts_on": {
+            "type": "string",
+            "format": "date",
+            "description": "First day.",
+            "x-maqdar-kind": "date"
+          },
+          "ends_on": {
+            "type": "string",
+            "format": "date",
+            "description": "Last day (on or after starts_on, at most 366 days in all).",
+            "x-maqdar-kind": "date"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "closure",
+              "working_day"
+            ],
+            "description": "closure: non-working days; working_day: working days despite a holiday or weekend.",
+            "x-maqdar-kind": "enum"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text"
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Free text.",
+            "x-maqdar-kind": "text"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "country_code",
+          "work_calendar_code",
+          "starts_on"
+        ]
+      },
+      "HolidayOverridesUpsert": {
+        "type": "object",
+        "description": "Calendar exceptions for one country (every location and supplier there without its own calendar) or one work calendar: closure adds non-working days, working_day cancels a public holiday or weekend day. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "starts_on"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "country_code": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Country scope; empty when work_calendar_code is set.",
+            "x-maqdar-kind": "country",
+            "x-maqdar-reference": "countries.code"
+          },
+          "work_calendar_code": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Calendar scope; empty when country_code is set.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "work_calendars.work_calendar_code",
+            "x-maqdar-lookup": "work-calendars"
+          },
+          "starts_on": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "description": "First day.",
+            "x-maqdar-kind": "date"
+          },
+          "ends_on": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "description": "Last day (on or after starts_on, at most 366 days in all).",
+            "x-maqdar-kind": "date",
+            "x-maqdar-required-for-new": true
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "closure",
+              "working_day"
+            ],
+            "description": "closure: non-working days; working_day: working days despite a holiday or weekend.",
+            "x-maqdar-kind": "enum",
+            "x-maqdar-required-for-new": true
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text",
+            "x-maqdar-required-for-new": true
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Free text.",
+            "x-maqdar-kind": "text"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "dependentRequired": {
+          "starts_on": [
+            "ends_on"
+          ],
+          "ends_on": [
+            "starts_on"
+          ]
+        },
+        "oneOf": [
+          {
+            "required": [
+              "country_code"
+            ],
+            "properties": {
+              "country_code": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          {
+            "required": [
+              "work_calendar_code"
+            ],
+            "properties": {
+              "work_calendar_code": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        ],
+        "x-maqdar-natural-key": [
+          "country_code",
+          "work_calendar_code",
+          "starts_on"
+        ],
+        "x-maqdar-load-order": 2,
+        "x-maqdar-rules": [
+          {
+            "code": "scope_exactly_one",
+            "columns": [
+              "country_code",
+              "work_calendar_code"
+            ],
+            "column": "country_code",
+            "description": "Exactly one of `country_code` and `work_calendar_code` is set.",
+            "scope": "record"
+          },
+          {
+            "code": "end_before_start",
+            "columns": [
+              "starts_on",
+              "ends_on"
+            ],
+            "column": "ends_on",
+            "description": "`ends_on` is on or after `starts_on`.",
+            "scope": "record"
+          },
+          {
+            "code": "holiday_too_long",
+            "columns": [
+              "starts_on",
+              "ends_on"
+            ],
+            "column": "ends_on",
+            "description": "An override covers at most 366 days.",
+            "scope": "record"
+          },
+          {
+            "code": "holiday_overlap",
+            "columns": [
+              "country_code",
+              "work_calendar_code",
+              "starts_on",
+              "ends_on"
+            ],
+            "column": "starts_on",
+            "description": "Overrides of one scope do not overlap (within the file and with stored overrides it does not replace).",
+            "scope": "set"
+          }
+        ]
+      },
+      "HolidayOverridesUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/HolidayOverridesUpsert"
+            }
+          }
+        }
+      },
+      "HolidayOverridesPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HolidayOverridesRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "LocationsRecord": {
+        "type": "object",
+        "description": "Warehouses, regional hubs and branches of the network. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "location_code",
+          "name_en",
+          "name_ar",
+          "location_type",
+          "country_code",
+          "city",
+          "latitude",
+          "longitude",
+          "timezone",
+          "parent_location_code",
+          "is_active",
+          "work_calendar_code",
+          "updated_at"
+        ],
+        "properties": {
+          "location_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique location code.",
+            "x-maqdar-kind": "code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text"
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "location_type": {
+            "type": "string",
+            "enum": [
+              "central",
+              "hub",
+              "branch"
+            ],
+            "description": "Role in the network.",
+            "x-maqdar-kind": "enum"
+          },
+          "country_code": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$",
+            "description": "Country of the location (drives weekends and holidays).",
+            "x-maqdar-kind": "country",
+            "x-maqdar-reference": "countries.code"
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100,
+            "description": "City.",
+            "x-maqdar-kind": "text"
+          },
+          "latitude": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^-?(0|[1-9][0-9]{0,2})(\\.[0-9]{0,5}[1-9])?$",
+            "description": "Decimal degrees.",
+            "x-maqdar-kind": "decimal"
+          },
+          "longitude": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^-?(0|[1-9][0-9]{0,2})(\\.[0-9]{0,5}[1-9])?$",
+            "description": "Decimal degrees.",
+            "x-maqdar-kind": "decimal"
+          },
+          "timezone": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_+/-]*$",
+            "maxLength": 64,
+            "description": "Time zone of the location.",
+            "x-maqdar-kind": "timezone"
+          },
+          "parent_location_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Default replenishment source; empty for the central warehouse.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "locations.location_code",
+            "x-maqdar-lookup": "locations"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for closed locations.",
+            "x-maqdar-kind": "boolean"
+          },
+          "work_calendar_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Work calendar; empty for the country default (weekends and public holidays).",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "work_calendars.work_calendar_code",
+            "x-maqdar-lookup": "work-calendars"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "location_code"
+        ]
+      },
+      "LocationsUpsert": {
+        "type": "object",
+        "description": "Warehouses, regional hubs and branches of the network. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "location_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "location_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique location code.",
+            "x-maqdar-kind": "code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text",
+            "x-maqdar-required-for-new": true
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "location_type": {
+            "type": "string",
+            "enum": [
+              "central",
+              "hub",
+              "branch"
+            ],
+            "description": "Role in the network.",
+            "x-maqdar-kind": "enum",
+            "x-maqdar-required-for-new": true
+          },
+          "country_code": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$",
+            "description": "Country of the location (drives weekends and holidays).",
+            "x-maqdar-kind": "country",
+            "x-maqdar-reference": "countries.code",
+            "x-maqdar-required-for-new": true
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100,
+            "description": "City.",
+            "x-maqdar-kind": "text"
+          },
+          "latitude": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(0|[1-9][0-9]{0,2})(\\.[0-9]{1,6})?$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Decimal degrees.",
+            "x-maqdar-kind": "decimal"
+          },
+          "longitude": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(0|[1-9][0-9]{0,2})(\\.[0-9]{1,6})?$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Decimal degrees.",
+            "x-maqdar-kind": "decimal"
+          },
+          "timezone": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_+/-]*$",
+            "maxLength": 64,
+            "description": "Time zone of the location.",
+            "x-maqdar-kind": "timezone",
+            "x-maqdar-required-for-new": true
+          },
+          "parent_location_code": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Default replenishment source; empty for the central warehouse.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "locations.location_code",
+            "x-maqdar-lookup": "locations"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for closed locations.",
+            "x-maqdar-kind": "boolean",
+            "x-maqdar-default-for-new": "true"
+          },
+          "work_calendar_code": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Work calendar; empty for the country default (weekends and public holidays).",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "work_calendars.work_calendar_code",
+            "x-maqdar-lookup": "work-calendars"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "location_code"
+        ],
+        "x-maqdar-load-order": 3,
+        "x-maqdar-rules": [
+          {
+            "code": "must_differ",
+            "columns": [
+              "location_code",
+              "parent_location_code"
+            ],
+            "column": "parent_location_code",
+            "description": "A location is not its own parent.",
+            "scope": "record"
+          },
+          {
+            "code": "location_cycle",
+            "columns": [
+              "location_code",
+              "parent_location_code"
+            ],
+            "column": "parent_location_code",
+            "description": "Parents never form a cycle.",
+            "scope": "set"
+          }
+        ]
+      },
+      "LocationsUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/LocationsUpsert"
+            }
+          }
+        }
+      },
+      "LocationsPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocationsRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "NetworkLinksRecord": {
+        "type": "object",
+        "description": "Transfer lanes between locations: lead times in calendar days and the freight cost per unit or per shipment. One lane per ordered pair. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "from_location_code",
+          "to_location_code",
+          "lead_time_days_p50",
+          "lead_time_days_p90",
+          "freight_basis",
+          "freight_cost",
+          "currency",
+          "is_active",
+          "updated_at"
+        ],
+        "properties": {
+          "from_location_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Sending location.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "locations.location_code",
+            "x-maqdar-lookup": "locations"
+          },
+          "to_location_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Receiving location.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "locations.location_code",
+            "x-maqdar-lookup": "locations"
+          },
+          "lead_time_days_p50": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3650,
+            "description": "Typical transfer lead time in calendar days.",
+            "x-maqdar-kind": "integer"
+          },
+          "lead_time_days_p90": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3650,
+            "description": "Slow (90th percentile) lead time in calendar days.",
+            "x-maqdar-kind": "integer"
+          },
+          "freight_basis": {
+            "type": "string",
+            "enum": [
+              "none",
+              "per_unit",
+              "per_shipment"
+            ],
+            "description": "How freight is charged.",
+            "x-maqdar-kind": "enum"
+          },
+          "freight_cost": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
+            "description": "Freight cost; empty when freight_basis is none.",
+            "x-maqdar-kind": "money"
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency of freight_cost; empty when freight_basis is none.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for lanes no longer used.",
+            "x-maqdar-kind": "boolean"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "from_location_code",
+          "to_location_code"
+        ]
+      },
+      "NetworkLinksUpsert": {
+        "type": "object",
+        "description": "Transfer lanes between locations: lead times in calendar days and the freight cost per unit or per shipment. One lane per ordered pair. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "from_location_code",
+          "to_location_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "from_location_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Sending location.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "locations.location_code",
+            "x-maqdar-lookup": "locations"
+          },
+          "to_location_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Receiving location.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "locations.location_code",
+            "x-maqdar-lookup": "locations"
+          },
+          "lead_time_days_p50": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3650
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,8})$"
+              }
+            ],
+            "description": "Typical transfer lead time in calendar days.",
+            "x-maqdar-kind": "integer",
+            "x-maqdar-required-for-new": true
+          },
+          "lead_time_days_p90": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3650
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,8})$"
+              }
+            ],
+            "description": "Slow (90th percentile) lead time in calendar days.",
+            "x-maqdar-kind": "integer",
+            "x-maqdar-required-for-new": true
+          },
+          "freight_basis": {
+            "type": "string",
+            "enum": [
+              "none",
+              "per_unit",
+              "per_shipment"
+            ],
+            "description": "How freight is charged.",
+            "x-maqdar-kind": "enum",
+            "x-maqdar-default-for-new": "none"
+          },
+          "freight_cost": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMaximum": 1000000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,3})?$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Freight cost; empty when freight_basis is none.",
+            "x-maqdar-kind": "money"
+          },
+          "currency": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Currency of freight_cost; empty when freight_basis is none.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for lanes no longer used.",
+            "x-maqdar-kind": "boolean",
+            "x-maqdar-default-for-new": "true"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "dependentRequired": {
+          "lead_time_days_p50": [
+            "lead_time_days_p90"
+          ],
+          "lead_time_days_p90": [
+            "lead_time_days_p50"
+          ],
+          "freight_basis": [
+            "freight_cost",
+            "currency"
+          ],
+          "freight_cost": [
+            "freight_basis",
+            "currency"
+          ],
+          "currency": [
+            "freight_basis",
+            "freight_cost"
+          ]
+        },
+        "x-maqdar-natural-key": [
+          "from_location_code",
+          "to_location_code"
+        ],
+        "x-maqdar-load-order": 4,
+        "x-maqdar-rules": [
+          {
+            "code": "must_differ",
+            "columns": [
+              "from_location_code",
+              "to_location_code"
+            ],
+            "column": "to_location_code",
+            "description": "The two locations differ.",
+            "scope": "record"
+          },
+          {
+            "code": "p90_below_p50",
+            "columns": [
+              "lead_time_days_p50",
+              "lead_time_days_p90"
+            ],
+            "column": "lead_time_days_p90",
+            "description": "`lead_time_days_p90` is at least `lead_time_days_p50`.",
+            "scope": "record"
+          },
+          {
+            "code": "freight_mismatch",
+            "columns": [
+              "freight_basis",
+              "freight_cost",
+              "currency"
+            ],
+            "column": "freight_cost",
+            "description": "`freight_basis` none has no cost and no currency; any other basis needs both.",
+            "scope": "record"
+          }
+        ]
+      },
+      "NetworkLinksUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/NetworkLinksUpsert"
+            }
+          }
+        }
+      },
+      "NetworkLinksPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NetworkLinksRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "BrandsRecord": {
+        "type": "object",
+        "description": "Makes and aftermarket brands that items belong to. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "brand_code",
+          "name_en",
+          "name_ar",
+          "brand_type",
+          "country_of_origin",
+          "is_active",
+          "updated_at"
+        ],
+        "properties": {
+          "brand_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique brand code.",
+            "x-maqdar-kind": "code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text"
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "brand_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "oem",
+              "aftermarket",
+              null
+            ],
+            "description": "Genuine (OEM) or aftermarket.",
+            "x-maqdar-kind": "enum"
+          },
+          "country_of_origin": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Z]{2}$",
+            "description": "Country of origin (any ISO code).",
+            "x-maqdar-kind": "country"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for brands no longer sold.",
+            "x-maqdar-kind": "boolean"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "brand_code"
+        ]
+      },
+      "BrandsUpsert": {
+        "type": "object",
+        "description": "Makes and aftermarket brands that items belong to. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "brand_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "brand_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique brand code.",
+            "x-maqdar-kind": "code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text",
+            "x-maqdar-required-for-new": true
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "brand_type": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "oem",
+                  "aftermarket"
+                ]
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Genuine (OEM) or aftermarket.",
+            "x-maqdar-kind": "enum"
+          },
+          "country_of_origin": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Country of origin (any ISO code).",
+            "x-maqdar-kind": "country"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for brands no longer sold.",
+            "x-maqdar-kind": "boolean",
+            "x-maqdar-default-for-new": "true"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "brand_code"
+        ],
+        "x-maqdar-load-order": 5
+      },
+      "BrandsUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/BrandsUpsert"
+            }
+          }
+        }
+      },
+      "BrandsPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BrandsRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "ItemsRecord": {
+        "type": "object",
+        "description": "Service parts. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "item_code",
+          "name_en",
+          "name_ar",
+          "brand_code",
+          "product_group",
+          "unit_of_measure",
+          "unit_cost",
+          "currency",
+          "status",
+          "introduced_on",
+          "discontinued_on",
+          "updated_at"
+        ],
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique part number.",
+            "x-maqdar-kind": "item_code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text"
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "brand_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Brand or make.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "brands.brand_code",
+            "x-maqdar-lookup": "brands"
+          },
+          "product_group": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "description": "Planning group, e.g. battery, oil_filter.",
+            "x-maqdar-kind": "text"
+          },
+          "unit_of_measure": {
+            "type": "string",
+            "enum": [
+              "EA",
+              "SET",
+              "L",
+              "KG"
+            ],
+            "description": "Stocking unit.",
+            "x-maqdar-kind": "enum"
+          },
+          "unit_cost": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
+            "description": "Standard cost per unit.",
+            "x-maqdar-kind": "money"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency of unit_cost.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "active",
+              "phase_out",
+              "discontinued"
+            ],
+            "description": "Lifecycle status.",
+            "x-maqdar-kind": "enum"
+          },
+          "introduced_on": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "First day the item was available.",
+            "x-maqdar-kind": "date"
+          },
+          "discontinued_on": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "Last day the item was available.",
+            "x-maqdar-kind": "date"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "item_code"
+        ]
+      },
+      "ItemsUpsert": {
+        "type": "object",
+        "description": "Service parts. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "item_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique part number.",
+            "x-maqdar-kind": "item_code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text",
+            "x-maqdar-required-for-new": true
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "brand_code": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Brand or make.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "brands.brand_code",
+            "x-maqdar-lookup": "brands"
+          },
+          "product_group": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "description": "Planning group, e.g. battery, oil_filter.",
+            "x-maqdar-kind": "text",
+            "x-maqdar-required-for-new": true
+          },
+          "unit_of_measure": {
+            "type": "string",
+            "enum": [
+              "EA",
+              "SET",
+              "L",
+              "KG"
+            ],
+            "description": "Stocking unit.",
+            "x-maqdar-kind": "enum",
+            "x-maqdar-required-for-new": true
+          },
+          "unit_cost": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMaximum": 1000000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,3})?$"
+              }
+            ],
+            "description": "Standard cost per unit.",
+            "x-maqdar-kind": "money",
+            "x-maqdar-required-for-new": true
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency of unit_cost.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code",
+            "x-maqdar-required-for-new": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "active",
+              "phase_out",
+              "discontinued"
+            ],
+            "description": "Lifecycle status.",
+            "x-maqdar-kind": "enum",
+            "x-maqdar-default-for-new": "active"
+          },
+          "introduced_on": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "First day the item was available.",
+            "x-maqdar-kind": "date"
+          },
+          "discontinued_on": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Last day the item was available.",
+            "x-maqdar-kind": "date"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "dependentRequired": {
+          "unit_cost": [
+            "currency"
+          ],
+          "currency": [
+            "unit_cost"
+          ]
+        },
+        "x-maqdar-natural-key": [
+          "item_code"
+        ],
+        "x-maqdar-load-order": 6,
+        "x-maqdar-rules": [
+          {
+            "code": "end_before_start",
+            "columns": [
+              "introduced_on",
+              "discontinued_on"
+            ],
+            "column": "discontinued_on",
+            "description": "`discontinued_on` is on or after `introduced_on`; a file may map either one, and the other keeps its stored value.",
+            "scope": "record"
+          }
+        ]
+      },
+      "ItemsUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/ItemsUpsert"
+            }
+          }
+        }
+      },
+      "ItemsPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemsRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "ItemSupersessionsRecord": {
+        "type": "object",
+        "description": "Part replacements: demand for the predecessor moves to the successor from effective_on. One successor per predecessor. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "predecessor_item_code",
+          "successor_item_code",
+          "effective_on",
+          "quantity_factor",
+          "note",
+          "updated_at"
+        ],
+        "properties": {
+          "predecessor_item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Replaced item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "successor_item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Replacing item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "effective_on": {
+            "type": "string",
+            "format": "date",
+            "description": "First day the successor replaces the predecessor.",
+            "x-maqdar-kind": "date"
+          },
+          "quantity_factor": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
+            "description": "Units of successor per unit of predecessor (1 unless the pack changes).",
+            "x-maqdar-kind": "decimal"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Free text.",
+            "x-maqdar-kind": "text"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "predecessor_item_code"
+        ]
+      },
+      "ItemSupersessionsUpsert": {
+        "type": "object",
+        "description": "Part replacements: demand for the predecessor moves to the successor from effective_on. One successor per predecessor. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "predecessor_item_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "predecessor_item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Replaced item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "successor_item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Replacing item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items",
+            "x-maqdar-required-for-new": true
+          },
+          "effective_on": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "description": "First day the successor replaces the predecessor.",
+            "x-maqdar-kind": "date",
+            "x-maqdar-required-for-new": true
+          },
+          "quantity_factor": {
+            "oneOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "exclusiveMaximum": 1000000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,3})?$"
+              }
+            ],
+            "description": "Units of successor per unit of predecessor (1 unless the pack changes).",
+            "x-maqdar-kind": "decimal",
+            "x-maqdar-default-for-new": "1"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Free text.",
+            "x-maqdar-kind": "text"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "predecessor_item_code"
+        ],
+        "x-maqdar-load-order": 7,
+        "x-maqdar-rules": [
+          {
+            "code": "must_differ",
+            "columns": [
+              "predecessor_item_code",
+              "successor_item_code"
+            ],
+            "column": "successor_item_code",
+            "description": "An item does not supersede itself.",
+            "scope": "record"
+          },
+          {
+            "code": "supersession_cycle",
+            "columns": [
+              "predecessor_item_code",
+              "successor_item_code"
+            ],
+            "column": "successor_item_code",
+            "description": "Supersession chains never form a cycle.",
+            "scope": "set"
+          }
+        ]
+      },
+      "ItemSupersessionsUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/ItemSupersessionsUpsert"
+            }
+          }
+        }
+      },
+      "ItemSupersessionsPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemSupersessionsRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "ItemInterchangesRecord": {
+        "type": "object",
+        "description": "Interchangeable parts. one_way: the alternate may be issued when the item is requested, never the reverse; two_way: both directions. One row per unordered pair; a reversed pair replaces the stored orientation when the file maps direction (otherwise the stored orientation and direction are kept). Every field is always present; decimals are canonical strings.",
+        "required": [
+          "item_code",
+          "alternate_item_code",
+          "direction",
+          "priority",
+          "note",
+          "updated_at"
+        ],
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Requested item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "alternate_item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Item that may be issued instead.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "one_way",
+              "two_way"
+            ],
+            "description": "Direction of the interchange.",
+            "x-maqdar-kind": "enum"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "description": "Order in which alternates are tried (1 first).",
+            "x-maqdar-kind": "integer"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Free text.",
+            "x-maqdar-kind": "text"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "item_code",
+          "alternate_item_code"
+        ]
+      },
+      "ItemInterchangesUpsert": {
+        "type": "object",
+        "description": "Interchangeable parts. one_way: the alternate may be issued when the item is requested, never the reverse; two_way: both directions. One row per unordered pair; a reversed pair replaces the stored orientation when the file maps direction (otherwise the stored orientation and direction are kept). Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "item_code",
+          "alternate_item_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Requested item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "alternate_item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Item that may be issued instead.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "one_way",
+              "two_way"
+            ],
+            "description": "Direction of the interchange.",
+            "x-maqdar-kind": "enum",
+            "x-maqdar-default-for-new": "two_way"
+          },
+          "priority": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 99
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,8})$"
+              }
+            ],
+            "description": "Order in which alternates are tried (1 first).",
+            "x-maqdar-kind": "integer",
+            "x-maqdar-default-for-new": "1"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Free text.",
+            "x-maqdar-kind": "text"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "item_code",
+          "alternate_item_code"
+        ],
+        "x-maqdar-load-order": 8,
+        "x-maqdar-unordered-pair": true,
+        "x-maqdar-rules": [
+          {
+            "code": "must_differ",
+            "columns": [
+              "item_code",
+              "alternate_item_code"
+            ],
+            "column": "alternate_item_code",
+            "description": "The two items differ.",
+            "scope": "record"
+          }
+        ]
+      },
+      "ItemInterchangesUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/ItemInterchangesUpsert"
+            }
+          }
+        }
+      },
+      "ItemInterchangesPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemInterchangesRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "SuppliersRecord": {
+        "type": "object",
+        "description": "Suppliers and their typical lead times. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "supplier_code",
+          "name_en",
+          "name_ar",
+          "country_code",
+          "currency",
+          "lead_time_days_p50",
+          "lead_time_days_p90",
+          "is_active",
+          "work_calendar_code",
+          "updated_at"
+        ],
+        "properties": {
+          "supplier_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique supplier code.",
+            "x-maqdar-kind": "code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text"
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "country_code": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$",
+            "description": "Country the supplier ships from (any ISO code).",
+            "x-maqdar-kind": "country"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Default price currency.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "lead_time_days_p50": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999999999,
+            "description": "Typical lead time in calendar days.",
+            "x-maqdar-kind": "integer"
+          },
+          "lead_time_days_p90": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999999999,
+            "description": "Slow lead time (90th percentile) in calendar days.",
+            "x-maqdar-kind": "integer"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for inactive suppliers.",
+            "x-maqdar-kind": "boolean"
+          },
+          "work_calendar_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Work calendar; empty for the country default (weekends and public holidays).",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "work_calendars.work_calendar_code",
+            "x-maqdar-lookup": "work-calendars"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "supplier_code"
+        ]
+      },
+      "SuppliersUpsert": {
+        "type": "object",
+        "description": "Suppliers and their typical lead times. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "supplier_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "supplier_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Unique supplier code.",
+            "x-maqdar-kind": "code"
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "description": "English name.",
+            "x-maqdar-kind": "text",
+            "x-maqdar-required-for-new": true
+          },
+          "name_ar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "Arabic name.",
+            "x-maqdar-kind": "text"
+          },
+          "country_code": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$",
+            "description": "Country the supplier ships from (any ISO code).",
+            "x-maqdar-kind": "country",
+            "x-maqdar-required-for-new": true
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Default price currency.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code",
+            "x-maqdar-required-for-new": true
+          },
+          "lead_time_days_p50": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 999999999
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,8})$"
+              }
+            ],
+            "description": "Typical lead time in calendar days.",
+            "x-maqdar-kind": "integer",
+            "x-maqdar-required-for-new": true
+          },
+          "lead_time_days_p90": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 999999999
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,8})$"
+              }
+            ],
+            "description": "Slow lead time (90th percentile) in calendar days.",
+            "x-maqdar-kind": "integer",
+            "x-maqdar-required-for-new": true
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "false for inactive suppliers.",
+            "x-maqdar-kind": "boolean",
+            "x-maqdar-default-for-new": "true"
+          },
+          "work_calendar_code": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Work calendar; empty for the country default (weekends and public holidays).",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "work_calendars.work_calendar_code",
+            "x-maqdar-lookup": "work-calendars"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "dependentRequired": {
+          "lead_time_days_p50": [
+            "lead_time_days_p90"
+          ],
+          "lead_time_days_p90": [
+            "lead_time_days_p50"
+          ]
+        },
+        "x-maqdar-natural-key": [
+          "supplier_code"
+        ],
+        "x-maqdar-load-order": 9,
+        "x-maqdar-rules": [
+          {
+            "code": "p90_below_p50",
+            "columns": [
+              "lead_time_days_p50",
+              "lead_time_days_p90"
+            ],
+            "column": "lead_time_days_p90",
+            "description": "`lead_time_days_p90` is at least `lead_time_days_p50`.",
+            "scope": "record"
+          }
+        ]
+      },
+      "SuppliersUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/SuppliersUpsert"
+            }
+          }
+        }
+      },
+      "SuppliersPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SuppliersRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "SupplierItemsRecord": {
+        "type": "object",
+        "description": "What each supplier sells: lead time, minimum order quantity, pack size and price. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "supplier_code",
+          "item_code",
+          "supplier_part_number",
+          "lead_time_days",
+          "lead_time_days_p90",
+          "min_order_quantity",
+          "pack_size",
+          "unit_price",
+          "currency",
+          "is_preferred",
+          "valid_from",
+          "updated_at"
+        ],
+        "properties": {
+          "supplier_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Supplier.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "suppliers.supplier_code",
+            "x-maqdar-lookup": "suppliers"
+          },
+          "item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "supplier_part_number": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100,
+            "description": "Supplier's own part number.",
+            "x-maqdar-kind": "text"
+          },
+          "lead_time_days": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999999999,
+            "description": "Planning lead time in calendar days.",
+            "x-maqdar-kind": "integer"
+          },
+          "lead_time_days_p90": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 999999999,
+            "description": "Slow lead time in calendar days.",
+            "x-maqdar-kind": "integer"
+          },
+          "min_order_quantity": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
+            "description": "Minimum order quantity (0 = none).",
+            "x-maqdar-kind": "decimal"
+          },
+          "pack_size": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
+            "description": "Order multiple.",
+            "x-maqdar-kind": "decimal"
+          },
+          "unit_price": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
+            "description": "Purchase price per unit.",
+            "x-maqdar-kind": "money"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency of unit_price.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "is_preferred": {
+            "type": "boolean",
+            "description": "Preferred source for the item (at most one per item).",
+            "x-maqdar-kind": "boolean"
+          },
+          "valid_from": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "Price valid from.",
+            "x-maqdar-kind": "date"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "supplier_code",
+          "item_code"
+        ]
+      },
+      "SupplierItemsUpsert": {
+        "type": "object",
+        "description": "What each supplier sells: lead time, minimum order quantity, pack size and price. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "supplier_code",
+          "item_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "supplier_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Supplier.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "suppliers.supplier_code",
+            "x-maqdar-lookup": "suppliers"
+          },
+          "item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "supplier_part_number": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100,
+            "description": "Supplier's own part number.",
+            "x-maqdar-kind": "text"
+          },
+          "lead_time_days": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 999999999
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,8})$"
+              }
+            ],
+            "description": "Planning lead time in calendar days.",
+            "x-maqdar-kind": "integer",
+            "x-maqdar-required-for-new": true
+          },
+          "lead_time_days_p90": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 999999999
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,8})$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Slow lead time in calendar days.",
+            "x-maqdar-kind": "integer"
+          },
+          "min_order_quantity": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMaximum": 1000000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,3})?$"
+              }
+            ],
+            "description": "Minimum order quantity (0 = none).",
+            "x-maqdar-kind": "decimal",
+            "x-maqdar-default-for-new": "0"
+          },
+          "pack_size": {
+            "oneOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "exclusiveMaximum": 1000000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,3})?$"
+              }
+            ],
+            "description": "Order multiple.",
+            "x-maqdar-kind": "decimal",
+            "x-maqdar-default-for-new": "1"
+          },
+          "unit_price": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMaximum": 1000000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,3})?$"
+              }
+            ],
+            "description": "Purchase price per unit.",
+            "x-maqdar-kind": "money",
+            "x-maqdar-required-for-new": true
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency of unit_price.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code",
+            "x-maqdar-required-for-new": true
+          },
+          "is_preferred": {
+            "type": "boolean",
+            "description": "Preferred source for the item (at most one per item).",
+            "x-maqdar-kind": "boolean",
+            "x-maqdar-default-for-new": "false"
+          },
+          "valid_from": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Price valid from.",
+            "x-maqdar-kind": "date"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "dependentRequired": {
+          "unit_price": [
+            "currency"
+          ],
+          "currency": [
+            "unit_price"
+          ]
+        },
+        "x-maqdar-natural-key": [
+          "supplier_code",
+          "item_code"
+        ],
+        "x-maqdar-load-order": 10,
+        "x-maqdar-rules": [
+          {
+            "code": "p90_below_p50",
+            "columns": [
+              "lead_time_days",
+              "lead_time_days_p90"
+            ],
+            "column": "lead_time_days_p90",
+            "description": "`lead_time_days_p90` is empty or at least `lead_time_days`; a file may map either one, and the other keeps its stored value.",
+            "scope": "record"
+          },
+          {
+            "code": "preferred_conflict",
+            "columns": [
+              "item_code",
+              "is_preferred"
+            ],
+            "column": "is_preferred",
+            "description": "At most one preferred supplier per item in the file; importing a preferred row clears the item's other preferred row.",
+            "scope": "set"
+          }
+        ]
+      },
+      "SupplierItemsUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/SupplierItemsUpsert"
+            }
+          }
+        }
+      },
+      "SupplierItemsPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplierItemsRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "FxRatesRecord": {
+        "type": "object",
+        "description": "Exchange rates: 1 from_currency = rate to_currency from valid_from until the next row of the pair. One row per unordered pair and date; a reversed pair replaces the stored orientation when the file maps rate (otherwise the stored orientation and rate are kept). Every field is always present; decimals are canonical strings.",
+        "required": [
+          "from_currency",
+          "to_currency",
+          "valid_from",
+          "rate",
+          "note",
+          "updated_at"
+        ],
+        "properties": {
+          "from_currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency converted from.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "to_currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency converted to.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date",
+            "description": "First day the rate applies.",
+            "x-maqdar-kind": "date"
+          },
+          "rate": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,9})(\\.[0-9]{0,9}[1-9])?$",
+            "description": "Units of to_currency per unit of from_currency.",
+            "x-maqdar-kind": "decimal"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Free text.",
+            "x-maqdar-kind": "text"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "from_currency",
+          "to_currency",
+          "valid_from"
+        ]
+      },
+      "FxRatesUpsert": {
+        "type": "object",
+        "description": "Exchange rates: 1 from_currency = rate to_currency from valid_from until the next row of the pair. One row per unordered pair and date; a reversed pair replaces the stored orientation when the file maps rate (otherwise the stored orientation and rate are kept). Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "from_currency",
+          "to_currency",
+          "valid_from"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "from_currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency converted from.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "to_currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency converted to.",
+            "x-maqdar-kind": "currency",
+            "x-maqdar-reference": "currencies.code"
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "description": "First day the rate applies.",
+            "x-maqdar-kind": "date"
+          },
+          "rate": {
+            "oneOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "exclusiveMaximum": 10000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,9})(\\.[0-9]{1,10})?$"
+              }
+            ],
+            "description": "Units of to_currency per unit of from_currency.",
+            "x-maqdar-kind": "decimal",
+            "x-maqdar-required-for-new": true
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Free text.",
+            "x-maqdar-kind": "text"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "x-maqdar-natural-key": [
+          "from_currency",
+          "to_currency",
+          "valid_from"
+        ],
+        "x-maqdar-load-order": 11,
+        "x-maqdar-unordered-pair": true,
+        "x-maqdar-rules": [
+          {
+            "code": "must_differ",
+            "columns": [
+              "from_currency",
+              "to_currency"
+            ],
+            "column": "to_currency",
+            "description": "The two currencies differ.",
+            "scope": "record"
+          }
+        ]
+      },
+      "FxRatesUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/FxRatesUpsert"
+            }
+          }
+        }
+      },
+      "FxRatesPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FxRatesRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "DemandHistoryRecord": {
+        "type": "object",
+        "description": "Daily demand per item and location. Only days with demand or lost sales appear; a missing day means zero. Every field is always present; decimals are canonical strings.",
+        "required": [
+          "item_code",
+          "location_code",
+          "demand_date",
+          "quantity",
+          "lost_sales_quantity"
+        ],
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "location_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Location where the demand arose.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "locations.location_code",
+            "x-maqdar-lookup": "locations"
+          },
+          "demand_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Business day at the location.",
+            "x-maqdar-kind": "date"
+          },
+          "quantity": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
+            "description": "Quantity sold or issued.",
+            "x-maqdar-kind": "decimal"
+          },
+          "lost_sales_quantity": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
+            "description": "Quantity requested but not served (stock-out).",
+            "x-maqdar-kind": "decimal"
+          }
+        },
+        "x-maqdar-natural-key": [
+          "item_code",
+          "location_code",
+          "demand_date"
+        ]
+      },
+      "DemandHistoryUpsert": {
+        "type": "object",
+        "description": "Daily demand per item and location. Only days with demand or lost sales appear; a missing day means zero. Every record of a request carries the same fields; a field left out of every record keeps its stored value, and null or \"\" clears a nullable field.",
+        "required": [
+          "item_code",
+          "location_code",
+          "demand_date"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
+            "maxLength": 64,
+            "description": "Item.",
+            "x-maqdar-kind": "item_code",
+            "x-maqdar-reference": "items.item_code",
+            "x-maqdar-lookup": "items"
+          },
+          "location_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+            "maxLength": 64,
+            "description": "Location where the demand arose.",
+            "x-maqdar-kind": "code",
+            "x-maqdar-reference": "locations.location_code",
+            "x-maqdar-lookup": "locations"
+          },
+          "demand_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "description": "Business day at the location.",
+            "x-maqdar-kind": "date"
+          },
+          "quantity": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMaximum": 1000000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,3})?$"
+              }
+            ],
+            "description": "Quantity sold or issued.",
+            "x-maqdar-kind": "decimal",
+            "x-maqdar-default-for-new": "0"
+          },
+          "lost_sales_quantity": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMaximum": 1000000000000
+              },
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,3})?$"
+              }
+            ],
+            "description": "Quantity requested but not served (stock-out).",
+            "x-maqdar-kind": "decimal",
+            "x-maqdar-default-for-new": "0"
+          },
+          "updated_at": {
+            "description": "Read-only; ignored, so that listed records can be sent back unchanged."
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "quantity"
+            ]
+          },
+          {
+            "required": [
+              "lost_sales_quantity"
+            ]
+          }
+        ],
+        "x-maqdar-natural-key": [
+          "item_code",
+          "location_code",
+          "demand_date"
+        ],
+        "x-maqdar-load-order": 12,
+        "x-maqdar-rules": [
+          {
+            "code": "date_outside_history_window",
+            "columns": [
+              "demand_date"
+            ],
+            "column": "demand_date",
+            "description": "`demand_date` falls in a month the database keeps demand for and is at most tomorrow.",
+            "scope": "record"
+          }
+        ]
+      },
+      "DemandHistoryUpsertRequest": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2500,
+            "items": {
+              "$ref": "#/components/schemas/DemandHistoryUpsert"
+            }
+          }
+        }
+      },
+      "DemandHistoryPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DemandHistoryRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024,
+            "description": "Pass as cursor to get the next page; null on the last page."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the first page was read; carried by the cursor. Use it (minus a minute) as the next updated_since."
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "description": "RFC 9457 problem details.",
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail",
+          "instance",
+          "code",
+          "request_id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "urn:maqdar:problem:<code>"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string",
+            "description": "urn:uuid:<request_id>"
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "invalid_parameter",
+              "invalid_cursor",
+              "invalid_json",
+              "unauthorized",
+              "invalid_token",
+              "insufficient_scope",
+              "not_found",
+              "method_not_allowed",
+              "import_in_progress",
+              "busy",
+              "write_conflict",
+              "payload_too_large",
+              "too_many_records",
+              "unsupported_media_type",
+              "invalid_request",
+              "validation_failed",
+              "rate_limited",
+              "daily_limit",
+              "internal_error",
+              "timeout",
+              "unavailable"
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ParameterProblem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Problem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "errors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "parameter",
+                    "detail"
+                  ],
+                  "properties": {
+                    "parameter": {
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ScopeProblem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Problem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "required_scope": {
+                "type": "string",
+                "enum": [
+                  "master_data:read",
+                  "master_data:write",
+                  "transactions:read",
+                  "transactions:write"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "LimitProblem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Problem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "records": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        ]
+      },
+      "RequestError": {
+        "type": "object",
+        "required": [
+          "pointer",
+          "record",
+          "field",
+          "code",
+          "detail"
+        ],
+        "properties": {
+          "pointer": {
+            "type": "string",
+            "description": "Where: #/records/<index>/<field>."
+          },
+          "record": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "0-based index in records."
+          },
+          "field": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "missing_records",
+              "not_an_object",
+              "inconsistent_fields",
+              "unknown_field",
+              "missing_key_field",
+              "incomplete_group",
+              "value_field_required",
+              "invalid_type",
+              "invalid_record"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestProblem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Problem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "error_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "errors": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "$ref": "#/components/schemas/RequestError"
+                }
+              },
+              "errors_truncated": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "ResultItem": {
+        "type": "object",
+        "required": [
+          "pointer",
+          "record",
+          "field",
+          "code",
+          "detail"
+        ],
+        "properties": {
+          "pointer": {
+            "type": "string",
+            "description": "Where: #/records/<index>/<field>."
+          },
+          "record": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "0-based index in records."
+          },
+          "field": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "required",
+              "required_for_new",
+              "too_long",
+              "invalid_code",
+              "invalid_item_code",
+              "invalid_integer",
+              "invalid_decimal",
+              "too_many_decimals",
+              "too_many_digits",
+              "out_of_range",
+              "invalid_date",
+              "invalid_boolean",
+              "invalid_enum",
+              "invalid_weekdays",
+              "invalid_timezone",
+              "unknown_currency",
+              "unknown_country",
+              "unknown_reference",
+              "duplicate_key",
+              "end_before_start",
+              "p90_below_p50",
+              "must_differ",
+              "freight_mismatch",
+              "country_required",
+              "scope_exactly_one",
+              "holiday_too_long",
+              "holiday_overlap",
+              "supersession_cycle",
+              "location_cycle",
+              "preferred_conflict",
+              "date_outside_history_window",
+              "source_size_mismatch",
+              "changed_during_commit",
+              "concurrent_change",
+              "zero_row_new_key",
+              "source_missing"
+            ]
+          },
+          "value": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200,
+            "description": "The value as sent (as text), clipped."
+          },
+          "detail": {
+            "type": "string"
+          },
+          "first_record": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "duplicate_key: the first record with this key."
+          },
+          "stored": {
+            "type": "object",
+            "description": "Two-field rules: the stored values the record was compared with.",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "ValidationProblem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Problem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "error_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "error_counts": {
+                "type": "object",
+                "description": "Complete counts per code and field (\"\" for record-level codes).",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "errors": {
+                "type": "array",
+                "maxItems": 1000,
+                "items": {
+                  "$ref": "#/components/schemas/ResultItem"
+                }
+              },
+              "errors_truncated": {
+                "type": "boolean"
+              },
+              "warning_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "warnings": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "$ref": "#/components/schemas/ResultItem"
+                }
+              },
+              "warnings_truncated": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "ConflictProblem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Problem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "failure_code": {
+                "type": "string"
+              },
+              "error_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "error_counts": {
+                "type": "object",
+                "description": "Complete counts per code and field (\"\" for record-level codes).",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "errors": {
+                "type": "array",
+                "maxItems": 1000,
+                "items": {
+                  "$ref": "#/components/schemas/ResultItem"
+                }
+              },
+              "errors_truncated": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "UpsertResult": {
+        "type": "object",
+        "required": [
+          "import_id",
+          "recorded",
+          "request_id",
+          "resource",
+          "records",
+          "counts",
+          "warning_count",
+          "warnings",
+          "warnings_truncated"
+        ],
+        "properties": {
+          "import_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "The import in MAQDAR history; null when nothing changed (not recorded)."
+          },
+          "recorded": {
+            "type": "boolean",
+            "description": "False when nothing changed: the write left no import record."
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resource": {
+            "type": "string",
+            "enum": [
+              "work-calendars",
+              "holiday-overrides",
+              "locations",
+              "network-links",
+              "brands",
+              "items",
+              "item-supersessions",
+              "item-interchanges",
+              "suppliers",
+              "supplier-items",
+              "fx-rates",
+              "demand-history"
+            ]
+          },
+          "records": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "counts": {
+            "type": "object",
+            "required": [
+              "inserted",
+              "updated",
+              "unchanged",
+              "deleted",
+              "skipped"
+            ],
+            "properties": {
+              "inserted": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "updated": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unchanged": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "deleted": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "skipped": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "parents_set": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "preferred_cleared": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "warning_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "warnings": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/ResultItem"
+            }
+          },
+          "warnings_truncated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "required": [
+          "organization",
+          "key",
+          "demand_window",
+          "limits"
+        ],
+        "properties": {
+          "organization": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "base_currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              },
+              "home_country": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[A-Z]{2}$"
+              },
+              "time_zone": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "key": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "display": {
+                "type": "string",
+                "description": "maqdar_sk_AbCd…wxyz"
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "master_data:read",
+                    "master_data:write",
+                    "transactions:read",
+                    "transactions:write"
+                  ]
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "demand_window": {
+            "type": "object",
+            "description": "Demand dates MAQDAR accepts: from (inclusive) to until_exclusive.",
+            "properties": {
+              "from": {
+                "type": "string",
+                "format": "date"
+              },
+              "until_exclusive": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          },
+          "limits": {
+            "type": "object",
+            "description": "The API limits that apply to this key.",
+            "properties": {
+              "body_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "upsert_records": {
+                "type": "object",
+                "properties": {
+                  "master_data": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "demand_history": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "list_limit": {
+                "type": "object",
+                "properties": {
+                  "master_data": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "demand_history": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "list_default_limit": {
+                "type": "object",
+                "properties": {
+                  "master_data": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "demand_history": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "demand_list_days": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recorded_writes_per_day": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "active_keys": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

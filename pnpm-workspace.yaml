@@ -25,6 +25,9 @@ minimumReleaseAgeExclude:
 # Pin the transitive dependency to the last 1.15 release until upstream fixes it.
 overrides:
   '@swc/core': 1.15.47
+  # node-minify pins an old glob CLI affected by GHSA-5j98-mcp5-4vw2. Keep the same major
+  # with the upstream security fix until node-minify updates its own dependency.
+  '@node-minify/core>glob': 10.5.0
   # SheetJS stopped publishing to npm at 0.18.5, which has unfixed CVEs (prototype pollution,
   # ReDoS). The web app takes 0.20.3 from the official CDN tarball; this keeps any registry `xlsx`
   # from resolving, directly or transitively. Bump both together (apps/web/package.json).

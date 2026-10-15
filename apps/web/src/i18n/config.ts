@@ -55,6 +55,7 @@ export const clientNamespaces = [
   'Invitations',
   'Members',
   'InviteMembers',
+  'ApiKeys',
   'Roles',
   'Settings',
   'Validation',

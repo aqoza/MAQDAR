@@ -13,9 +13,12 @@
 -- directly); new public functions still default to EXECUTE for PUBLIC and the API roles (the
 -- PUBLIC grant is a global built-in default a per-schema rule cannot revoke), so every RPC revokes
 -- explicitly and the function snapshot below fails for any new function until it is reviewed.
+-- Step 5b: api_keys has no table-level grant at all; authenticated reads it through column-level
+-- SELECT on every column but key_hash, pinned by the two column snapshots. The api_* RPCs are
+-- service_role's only, the key RPCs authenticated's only, and the app.api_* helpers nobody's.
 begin;
 
-select plan(12);
+select plan(14);
 
 select set_eq(
   $$select c.relname::text collate "default", r.rolname, c.relkind::text,
@@ -27,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('api_keys', 'anon', 'r', ''),
+    ('api_keys', 'authenticated', 'r', ''),
+    ('api_keys', 'service_role', 'r', ''),
     ('brands', 'anon', 'r', ''),
     ('brands', 'authenticated', 'r', 'SELECT,INSERT,UPDATE,DELETE'),
     ('brands', 'service_role', 'r', 'SELECT,INSERT,UPDATE,DELETE'),
@@ -102,6 +108,62 @@ select set_eq(
   'every public table: the privileges of anon, authenticated and service_role match the reviewed snapshot'
 );
 
+-- Column-level privileges. has_table_privilege ignores column grants, so the table snapshot above
+-- shows nothing for api_keys; these two pin what the API roles can do column by column.
+select set_eq(
+  $$select x.attname, x.rolname, x.privileges
+    from (
+      select a.attname::text collate "default" as attname, r.rolname,
+             array_to_string(array(
+               select p from unnest(array['SELECT', 'INSERT', 'UPDATE', 'REFERENCES']) as p
+               where has_column_privilege(r.rolname, a.attrelid, a.attnum, p)), ',') as privileges
+      from pg_attribute a
+      cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
+      where a.attrelid = 'public.api_keys'::regclass and a.attnum > 0 and not a.attisdropped
+    ) as x
+    where x.privileges <> ''$$,
+  $$values
+    ('created_at', 'authenticated', 'SELECT'),
+    ('created_by', 'authenticated', 'SELECT'),
+    ('display_prefix', 'authenticated', 'SELECT'),
+    ('expires_at', 'authenticated', 'SELECT'),
+    ('id', 'authenticated', 'SELECT'),
+    ('last4', 'authenticated', 'SELECT'),
+    ('last_used_at', 'authenticated', 'SELECT'),
+    ('name', 'authenticated', 'SELECT'),
+    ('organization_id', 'authenticated', 'SELECT'),
+    ('revoked_at', 'authenticated', 'SELECT'),
+    ('revoked_by', 'authenticated', 'SELECT'),
+    ('scopes', 'authenticated', 'SELECT'),
+    ('updated_at', 'authenticated', 'SELECT')$$,
+  'api_keys: authenticated selects every column but key_hash, and the API roles can do nothing else with any column'
+);
+select set_eq(
+  $$select c.relname::text collate "default", a.attname::text collate "default",
+           coalesce(r.rolname::text, 'public') collate "default", x.privilege_type::text collate "default"
+    from pg_attribute a
+    join pg_class c on c.oid = a.attrelid
+    join pg_namespace n on n.oid = c.relnamespace
+    cross join lateral aclexplode(a.attacl) as x
+    left join pg_roles r on r.oid = x.grantee
+    where n.nspname = 'public' and a.attnum > 0 and not a.attisdropped$$,
+  $$values
+    ('api_keys', 'created_at', 'authenticated', 'SELECT'),
+    ('api_keys', 'created_by', 'authenticated', 'SELECT'),
+    ('api_keys', 'display_prefix', 'authenticated', 'SELECT'),
+    ('api_keys', 'expires_at', 'authenticated', 'SELECT'),
+    ('api_keys', 'id', 'authenticated', 'SELECT'),
+    ('api_keys', 'last4', 'authenticated', 'SELECT'),
+    ('api_keys', 'last_used_at', 'authenticated', 'SELECT'),
+    ('api_keys', 'name', 'authenticated', 'SELECT'),
+    ('api_keys', 'organization_id', 'authenticated', 'SELECT'),
+    ('api_keys', 'revoked_at', 'authenticated', 'SELECT'),
+    ('api_keys', 'revoked_by', 'authenticated', 'SELECT'),
+    ('api_keys', 'scopes', 'authenticated', 'SELECT'),
+    ('api_keys', 'updated_at', 'authenticated', 'SELECT')$$,
+  'every column-level grant in public matches the reviewed snapshot (api_keys only)'
+);
+
 select set_eq(
   $$select c.relname::text collate "default", r.rolname,
            array_to_string(array(
@@ -132,6 +194,15 @@ select set_eq(
   $$values
     ('app.active_organization_claim()', 'authenticated,service_role'),
     ('app.admin_organizations()', 'authenticated,service_role'),
+    ('app.api_authorize(bytea, text)', ''),
+    ('app.api_check_fields(text, jsonb)', ''),
+    ('app.api_cursor_decode(text, text)', ''),
+    ('app.api_cursor_encode(jsonb)', ''),
+    ('app.api_error_result(uuid, text)', ''),
+    ('app.api_limits()', ''),
+    ('app.api_record_type_drift()', ''),
+    ('app.api_stage_records(uuid, jsonb)', ''),
+    ('app.api_success_result(uuid, boolean)', ''),
     ('app.approving_organizations()', 'authenticated,service_role'),
     ('app.can_edit(uuid)', 'authenticated,service_role'),
     ('app.custom_access_token_hook(jsonb)', ''),
@@ -207,6 +278,11 @@ select set_eq(
     ('app.unscoped_organizations()', 'authenticated,service_role'),
     ('app.uploadable_import_paths()', 'authenticated'),
     ('public.accept_invitation(uuid)', 'authenticated,service_role'),
+    ('public.api_list(bytea, text, text, integer, timestamp with time zone)', 'service_role'),
+    ('public.api_list_demand(bytea, date, date, text, text, text, integer)', 'service_role'),
+    ('public.api_organization(bytea)', 'service_role'),
+    ('public.api_upsert(bytea, text, jsonb, uuid)', 'service_role'),
+    ('public.create_api_key(uuid, text, text[], integer, bytea, text, text)', 'authenticated'),
     ('public.create_organization(text, text, character, character, boolean)', 'authenticated,service_role'),
     ('public.import_cancel_step(uuid)', 'authenticated'),
     ('public.import_commit_step(uuid, integer)', 'authenticated'),
@@ -220,6 +296,7 @@ select set_eq(
     ('public.my_organizations()', 'authenticated,service_role'),
     ('public.organization_members(uuid)', 'authenticated,service_role'),
     ('public.remove_member(uuid, uuid)', 'authenticated,service_role'),
+    ('public.revoke_api_key(uuid)', 'authenticated'),
     ('public.revoke_invitation(uuid)', 'authenticated,service_role'),
     ('public.set_active_organization(uuid)', 'authenticated,service_role'),
     ('public.set_member_locations(uuid, uuid, uuid[])', 'authenticated,service_role'),

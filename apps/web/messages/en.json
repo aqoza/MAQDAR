@@ -616,6 +616,92 @@
       "roleCeiling": "Only owners can invite owners."
     }
   },
+  "ApiKeys": {
+    "title": "API keys",
+    "description": "Keys let other systems, such as an ERP or a data warehouse, read and update this organization's data through the REST API.",
+    "creatorRule": "A key stops working as soon as the person who created it is no longer an owner or administrator of this organization. Create keys for long-running integrations from an account that will keep that role.",
+    "docs": "API documentation",
+    "openApi": "OpenAPI description (JSON)",
+    "activeCount": "Active keys: {count, number} of {max, number}",
+    "limitReached": "This organization has {max, number} active keys, the most allowed. Revoke one to create another.",
+    "create": {
+      "title": "New key",
+      "name": "Key name",
+      "nameHint": "Name it after the system that will use it, for example “ERP nightly sync”.",
+      "expiry": "Expires after",
+      "expiryOption": "{days, plural, one {# day} other {# days}}",
+      "scopes": "Permissions",
+      "scopesHint": "Choose at least one. A write permission does not include reading.",
+      "submit": "Create key",
+      "creating": "Creating…"
+    },
+    "scopes": {
+      "masterDataRead": {
+        "label": "Read master data",
+        "badge": "Master data: read",
+        "description": "List work calendars, locations, brands, items, suppliers and the other master data."
+      },
+      "masterDataWrite": {
+        "label": "Write master data",
+        "badge": "Master data: write",
+        "description": "Add and update master data."
+      },
+      "transactionsRead": {
+        "label": "Read transactions",
+        "badge": "Transactions: read",
+        "description": "List demand history."
+      },
+      "transactionsWrite": {
+        "label": "Write transactions",
+        "badge": "Transactions: write",
+        "description": "Add, update and clear demand history."
+      }
+    },
+    "secret": {
+      "title": "Key “{name}” created",
+      "description": "Copy it now; it will not be shown again. Keep it in the integration's secret store: anyone who has it can use it until it expires or is revoked.",
+      "label": "API key",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copiedHint": "The key is on the clipboard.",
+      "copyFailed": "The key could not be copied. Select it and copy it yourself.",
+      "done": "Done"
+    },
+    "list": {
+      "heading": "Keys",
+      "none": "No API keys yet.",
+      "name": "Name",
+      "key": "Key",
+      "scopes": "Permissions",
+      "created": "Created",
+      "lastUsed": "Last used",
+      "expires": "Expires",
+      "status": "Status",
+      "actions": "Actions",
+      "never": "Never",
+      "formerMember": "A former member"
+    },
+    "status": {
+      "active": "Active",
+      "expiresSoon": "{days, plural, one {Expires in # day} other {Expires in # days}}",
+      "expired": "Expired",
+      "revoked": "Revoked",
+      "creatorInactive": "Creator no longer an owner or administrator"
+    },
+    "revoke": {
+      "button": "Revoke",
+      "buttonLabel": "Revoke {name}",
+      "title": "Revoke “{name}”?",
+      "description": "Requests with this key are refused immediately. This cannot be undone; create a new key if the integration still needs access.",
+      "confirm": "Revoke key"
+    },
+    "errors": {
+      "name": "Use 1 to 80 characters, without line breaks or tabs.",
+      "scopes": "Choose at least one permission.",
+      "expiry": "Choose one of the offered periods.",
+      "tooMany": "This organization already has {max, number} active keys. Revoke one before creating another."
+    }
+  },
   "Roles": {
     "owner": "Owner",
     "admin": "Administrator",
@@ -825,14 +911,20 @@
       "by": "By"
     },
     "filters": {
-      "status": "Status"
+      "status": "Status",
+      "source": "Source"
+    },
+    "sources": {
+      "wizard": "Import wizard",
+      "api": "API"
     },
     "you": "You",
     "someoneElse": "Another member",
     "viaApi": "API",
+    "requestId": "Request ID",
     "empty": "No imports yet.",
     "emptyHint": "Start a new import to load data from files.",
-    "noMatches": "No imports have this status.",
+    "noMatches": "No imports match these filters.",
     "deleted": "Import deleted.",
     "loadFailed": "The imports could not be loaded. Reload the page to try again.",
     "moreFiles": "+{count, number}",

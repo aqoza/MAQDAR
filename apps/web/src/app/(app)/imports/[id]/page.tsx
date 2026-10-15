@@ -39,7 +39,7 @@ export default async function ImportPage({ params }: PageProps<'/imports/[id]'>)
     supabase
       .from('import_batches')
       .select(
-        'id, status, commit_mode, source, created_by, created_at, validated_at, finished_at, expires_at, last_step_at, rows_total, rows_staged, error_count, warning_count, counts, failure_code',
+        'id, status, commit_mode, source, api_request_id, created_by, created_at, validated_at, finished_at, expires_at, last_step_at, rows_total, rows_staged, error_count, warning_count, counts, failure_code',
       )
       .eq('organization_id', organizationId)
       .eq('id', id)
@@ -159,6 +159,8 @@ export default async function ImportPage({ params }: PageProps<'/imports/[id]'>)
           failure_code: batch.failure_code,
           idle: isIdleCommit(batch.status, batch.last_step_at),
           by,
+          // The X-Request-Id the API answered with (also in the Worker logs), for support.
+          request_id: batch.source === 'api' ? batch.api_request_id : null,
         }}
         files={files}
         examples={examples}

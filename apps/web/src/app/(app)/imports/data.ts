@@ -16,6 +16,23 @@ import { isEntityName } from '@/lib/imports/contract'
 
 type Client = SupabaseClient<Database>
 
+/** `import_batches.source`: the import wizard or the REST API (the history's source filter). */
+export const IMPORT_SOURCES = ['wizard', 'api'] as const
+export type ImportSource = (typeof IMPORT_SOURCES)[number]
+
+/**
+ * The history's `eq` conditions from its validated filters (status, source), shared by the page
+ * query and the count behind its past-the-end redirect so both see the same rows.
+ */
+export function historyConditions(
+  filters: Readonly<Record<string, string>>,
+): Array<['status' | 'source', string]> {
+  const conditions: Array<['status' | 'source', string]> = []
+  if (filters.status) conditions.push(['status', filters.status])
+  if (filters.source) conditions.push(['source', filters.source])
+  return conditions
+}
+
 const EXAMPLES_PER_GROUP = 5
 /** Error details read in one ordered pass; groups whose rows come later are fetched one by one. */
 const FIRST_PASS_ROWS = 1_000
