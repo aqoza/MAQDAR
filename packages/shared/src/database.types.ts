@@ -898,6 +898,9 @@ isOneToOne: false
 "forecast_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
                            },
+"forecast_expanded_enqueue":
+{ Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
+                           },
 "import_cancel_step":
 { Args: { "p_batch_id": string }; Returns: Json
                            },

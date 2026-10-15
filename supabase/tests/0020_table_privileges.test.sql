@@ -218,6 +218,7 @@ select set_eq(
     ('app.forecast_input_cleanup()', ''),
     ('app.planning_task_classification(uuid, uuid)', ''),
     ('public.forecast_enqueue(uuid, text, date, date, uuid, boolean, text[], integer)', 'authenticated'),
+    ('public.forecast_expanded_enqueue(uuid, text, date, date, uuid, boolean, text[], integer)', 'authenticated'),
     ('app.classification_options(jsonb)', ''),
     ('app.classification_finish(uuid, uuid, jsonb)', ''),
     ('app.classification_input_cleanup()', ''),
