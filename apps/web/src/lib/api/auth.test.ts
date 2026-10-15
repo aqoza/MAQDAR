@@ -34,9 +34,13 @@ describe('scopes', () => {
     expect(isApiScope('read')).toBe(false)
   })
 
-  it('needs transactions scopes for demand history and master_data scopes otherwise', () => {
+  it('needs transactions scopes for transaction feeds and master_data scopes otherwise', () => {
     for (const entity of ENTITY_NAMES) {
-      const family = entity === 'demand_history' ? 'transactions' : 'master_data'
+      const family = ['demand_history', 'stock_snapshots', 'open_orders', 'receipts'].includes(
+        entity,
+      )
+        ? 'transactions'
+        : 'master_data'
       expect(scopeFor(entity, 'read')).toBe(`${family}:read`)
       expect(scopeFor(entity, 'write')).toBe(`${family}:write`)
     }

@@ -54,7 +54,12 @@ export const API_LIMITS = {
 export type ListLimits = { readonly min: number; readonly max: number; readonly default: number }
 
 /** Entities whose resources need the `transactions:*` scopes (demand history; Step 6 adds more). */
-export const TRANSACTION_ENTITIES: ReadonlySet<EntityName> = new Set<EntityName>(['demand_history'])
+export const TRANSACTION_ENTITIES: ReadonlySet<EntityName> = new Set<EntityName>([
+  'demand_history',
+  'stock_snapshots',
+  'open_orders',
+  'receipts',
+])
 
 export function isTransactionEntity(entity: EntityName): boolean {
   getEntity(entity)
@@ -63,12 +68,12 @@ export function isTransactionEntity(entity: EntityName): boolean {
 
 /** Records one upsert of the entity may carry. */
 export function recordCap(entity: EntityName): number {
-  return isTransactionEntity(entity) ? API_LIMITS.transactionRecords : API_LIMITS.masterRecords
+  return entity === 'demand_history' ? API_LIMITS.transactionRecords : API_LIMITS.masterRecords
 }
 
 /** `limit` bounds and default of the entity's list. */
 export function listLimits(entity: EntityName): ListLimits {
-  return isTransactionEntity(entity) ? API_LIMITS.transactionList : API_LIMITS.masterList
+  return entity === 'demand_history' ? API_LIMITS.transactionList : API_LIMITS.masterList
 }
 
 type PerCategory = { readonly master_data: number; readonly demand_history: number }

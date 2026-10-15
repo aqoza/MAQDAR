@@ -66,6 +66,8 @@ jobs:
           uv run pytest -m db -q
         env:
           MAQDAR_TEST_DSN: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      - name: Import retention unit tests
+        run: node --test scripts/import-retention.test.mjs
       - name: Build web
         run: pnpm --filter web build
       - name: Install Playwright browser

@@ -807,7 +807,7 @@
     "description": "الملفات المستوردة إلى هذه المنظمة، الأحدث أولًا.",
     "new": "استيراد جديد",
     "newTitle": "استيراد جديد",
-    "newDescription": "حمّل البيانات الأساسية وسجل الطلب من ملفات CSV أو Excel. لا يُحفَظ شيء حتى تعتمد الاستيراد.",
+    "newDescription": "Load master data and transactions from CSV or Excel files. Nothing is saved until you commit.",
     "detailTitle": "استيراد بتاريخ {date}",
     "columns": {
       "started": "تاريخ البدء",
@@ -910,7 +910,10 @@
       "suppliers": "الموردون",
       "supplier_items": "أصناف الموردين",
       "fx_rates": "أسعار الصرف",
-      "demand_history": "سجل الطلب"
+      "demand_history": "سجل الطلب",
+      "stock_snapshots": "Stock snapshots",
+      "open_orders": "Open orders",
+      "receipts": "Receipts"
     },
     "status": {
       "staging": "قيد الفحص",
@@ -1206,7 +1209,8 @@
       "commitStopped": "توقف الاعتماد؛ السبب أدناه.",
       "committed": "حُفظت جميع الصفوف المفحوصة.",
       "canceling": "جارٍ إلغاء الاستيراد."
-    }
+    },
+    "retention": "Original uploads and row-level error details are retained for 30 days after completion. Import summaries remain."
   },
   "ImportErrors": {
     "required": "القيمة مطلوبة.",
@@ -1252,6 +1256,75 @@
       "demand_date": "تاريخ الطلب",
       "quantity": "الكمية",
       "lost_sales_quantity": "كمية المبيعات المفقودة"
+    },
+    "stock_snapshots": {
+      "item_code": "Item code",
+      "location_code": "Location code",
+      "snapshot_date": "Snapshot date",
+      "quantity": "Quantity",
+      "allocated_quantity": "Allocated quantity",
+      "unit_cost": "Unit cost",
+      "currency": "Currency"
+    },
+    "open_orders": {
+      "order_code": "Order code",
+      "line_code": "Line code",
+      "item_code": "Item code",
+      "location_code": "Location code",
+      "supplier_code": "Supplier code",
+      "expected_date": "Expected date",
+      "quantity": "Quantity",
+      "unit_cost": "Unit cost",
+      "currency": "Currency",
+      "status": "Status"
+    },
+    "receipts": {
+      "receipt_code": "Receipt code",
+      "line_code": "Line code",
+      "item_code": "Item code",
+      "location_code": "Location code",
+      "supplier_code": "Supplier code",
+      "receipt_date": "Receipt date",
+      "quantity": "Quantity",
+      "unit_cost": "Unit cost",
+      "currency": "Currency"
     }
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "description": "Availability, inventory value and demand at a glance.",
+    "empty": "No stock observations yet. Import stock snapshots to see inventory value and stock-outs.",
+    "asOf": "Business day: {date}",
+    "importData": "Import transactions",
+    "audit": "Audit log",
+    "value": "Inventory value",
+    "valueNote": "Physical stock × supplied unit cost. Currencies are reported separately.",
+    "stockOuts": "Stock-out pairs",
+    "stockOutsNote": "Observed item/location pairs with no unallocated stock.",
+    "coverage": "Observed pairs",
+    "coverageNote": "Latest snapshot for each active item/location pair.",
+    "missing": "Unobserved pairs",
+    "missingNote": "Active item/location combinations without a snapshot. These are unknown, not stock-outs.",
+    "stale": "{count, plural, one {# observation is} other {# observations are}} more than seven days old.",
+    "trend": "Demand over 30 days",
+    "trendNote": "Units sold and reported lost sales. Days without demand records are shown as zero.",
+    "sold": "Units sold",
+    "lost": "Lost sales units",
+    "table": "View daily data",
+    "date": "Business date"
+  },
+  "Audit": {
+    "title": "Audit log",
+    "description": "The latest 100 business changes in this organization. Demand imports are summarized by statement; other changes retain before and after values in the audit records.",
+    "time": "Time (UTC)",
+    "actor": "Actor",
+    "entity": "Entity",
+    "operation": "Change",
+    "rows": "Rows",
+    "system": "API or system",
+    "empty": "No changes recorded yet.",
+    "INSERT": "Inserted",
+    "UPDATE": "Updated",
+    "DELETE": "Deleted"
   }
 }

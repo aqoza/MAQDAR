@@ -3,7 +3,7 @@ import { getEntity, ENTITY_NAMES } from '../imports/contract'
 import { scopeFor } from './auth'
 import { EXAMPLES } from './examples'
 import { REQUEST_ERROR_CODES, contractErrorCodes } from './errors'
-import { API_LIMITS, isTransactionEntity, listLimits, recordCap } from './limits'
+import { API_LIMITS, listLimits, recordCap } from './limits'
 import {
   buildOpenApi,
   openApiText,
@@ -244,7 +244,7 @@ describe('entity schemas', () => {
     for (const entity of ENTITY_NAMES) {
       const names = schemaNames(entity)
       const columns = getEntity(entity).columns.map((column) => column.name)
-      const master = !isTransactionEntity(entity)
+      const master = entity !== 'demand_history'
       const record = schema(names.record)
       expect(Object.keys(record.properties as Schema)).toEqual(
         master ? [...columns, 'updated_at'] : columns,
@@ -314,9 +314,10 @@ describe('entity schemas', () => {
     for (const entity of ENTITY_NAMES) {
       const names = schemaNames(entity)
       for (const example of EXAMPLES[entity]) {
-        const listed = isTransactionEntity(entity)
-          ? { ...example }
-          : { ...example, updated_at: '2026-10-14T08:00:00.123456Z' }
+        const listed =
+          entity === 'demand_history'
+            ? { ...example }
+            : { ...example, updated_at: '2026-10-14T08:00:00.123456Z' }
         expect(valid(schema(names.record), listed), entity).toBe(true)
       }
     }

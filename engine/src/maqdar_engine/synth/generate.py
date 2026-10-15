@@ -51,6 +51,7 @@ def generate(preset: Preset, out_dir: Path, force: bool = False, progress: Progr
     files.append(_write_supersessions(out_dir, catalog))
     files.append(_write_suppliers(out_dir, suppliers))
     files.append(_write_supplier_items(out_dir, supplier_items))
+    files.extend(_write_transactions(preset, out_dir, catalog, central, suppliers[0].code))
 
     progress(f"[{preset.name}] demand: {len(catalog.families):,} families")
     files.extend(_write_demand(preset, out_dir, catalog, locations, calendar, progress))
@@ -60,6 +61,25 @@ def generate(preset: Preset, out_dir: Path, force: bool = False, progress: Progr
     manifest_path = write_manifest(out_dir, manifest)
     progress(f"[{preset.name}] wrote {manifest_path} ({sum(f.rows for f in manifest.files):,} rows in {len(files)} files, truth in {len(truth_files)} files)")
     return manifest
+
+
+def _write_transactions(preset: Preset, out_dir: Path, catalog: Catalog, location: str, supplier: str) -> list[Path]:
+    """Deterministic, independent transaction feeds; never infer a receipt's stock impact."""
+    day = preset.window_end.isoformat()
+    rows: dict[str, list[tuple[object, ...]]] = {name: [] for name in ("stock_snapshots", "open_orders", "receipts")}
+    for index, item in enumerate(catalog.items):
+        cost = format_decimal(item.unit_cost)
+        rows["stock_snapshots"].append((item.code, location, day, index % 17, 0, cost, item.currency))
+        if index % 10 == 0:
+            rows["open_orders"].append((f"PO-{index}", "1", item.code, location, supplier, day, 10, cost, item.currency, "open"))
+            rows["receipts"].append((f"GR-{index}", "1", item.code, location, supplier, day, 5, cost, item.currency))
+    paths = []
+    for name, values in rows.items():
+        entity = importformat.ENTITY_BY_NAME[name]
+        path = out_dir / entity.file
+        write_table(path, entity.minimal_header, values)
+        paths.append(path)
+    return paths
 
 
 def _write_locations(out_dir: Path, locations: list[Location], codes: set[str], central: str) -> Path:

@@ -32,8 +32,11 @@ LOAD_ORDER = (
     "supplier_items",
     "fx_rates",
     "demand_history",
+    "stock_snapshots",
+    "open_orders",
+    "receipts",
 )
-OPTIONAL = {"work_calendars", "holiday_overrides", "network_links", "item_interchanges", "fx_rates"}
+OPTIONAL = {"stock_snapshots", "open_orders", "receipts", "work_calendars", "holiday_overrides", "network_links", "item_interchanges", "fx_rates"}
 
 
 def test_every_money_column_has_a_currency_sibling():

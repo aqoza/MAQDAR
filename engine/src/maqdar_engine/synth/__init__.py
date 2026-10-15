@@ -5,4 +5,4 @@ and daily demand history) for the Gulf service-parts network described in docs/s
 loads them into the local Supabase stack.
 """
 
-GENERATOR_VERSION = "1.1.0"
+GENERATOR_VERSION = "1.2.0"

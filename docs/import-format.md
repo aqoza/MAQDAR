@@ -1,6 +1,6 @@
 # Import format v1
 
-The files MAQDAR imports master data and demand history from. The synthetic data generator writes them as a bundle, the loader reads the bundle into the local stack, and the import wizard accepts the same entities from customers as CSV, TSV, TXT or XLSX files. The contract lives in code (`engine/src/maqdar_engine/importformat.py`); the column tables below are generated from it and a test fails when they drift. A machine-readable copy is in [`import-format.schema.json`](import-format.schema.json) (also exported to the web app as `@maqdar/shared/import-format.schema.json`), and the database's copy (`ingest.contract_entities` and `ingest.contract_columns`) is seeded from `uv run maqdar-synth format --sql`.
+The files MAQDAR imports master data and transactions from. The synthetic data generator writes them as a bundle, the loader reads the bundle into the local stack, and the import wizard accepts the same entities from customers as CSV, TSV, TXT or XLSX files. The contract lives in code (`engine/src/maqdar_engine/importformat.py`); the column tables below are generated from it and a test fails when they drift. A machine-readable copy is in [`import-format.schema.json`](import-format.schema.json) (also exported to the web app as `@maqdar/shared/import-format.schema.json`), and the database's copy (`ingest.contract_entities` and `ingest.contract_columns`) is seeded from `uv run maqdar-synth format --sql`.
 
 Version 1 is frozen: later versions only add optional entities and optional trailing columns. Never rename, remove or reorder a column.
 
@@ -9,7 +9,7 @@ Version 1 is frozen: later versions only add optional entities and optional trai
 - An import belongs to one organization. No file carries an organization id: the importing user's organization is applied on load.
 - Rows are identified by natural keys (codes), never by database ids. The loader derives ids deterministically from the organization and the code, so reloading a bundle is idempotent; the wizard matches rows by natural key, so re-importing a file converges.
 - `/` is allowed in part numbers (`item_code` and the columns that reference items) and in no other code.
-- Files are loaded in the order of the tables below so every reference resolves: work calendars, holiday overrides, locations, network links, brands, items, item supersessions, item interchanges, suppliers, supplier items, fx rates, demand history.
+- Files are loaded in the order of the tables below so every reference resolves: work calendars, holiday overrides, locations, network links, brands, items, item supersessions, item interchanges, suppliers, supplier items, fx rates, demand history, stock snapshots, open orders, receipts.
 - Work calendars, holiday overrides, network links, item interchanges and fx rates are optional: a bundle may leave their files out. `work_calendar_code` is an optional trailing column of `locations.csv` and `suppliers.csv`; a file may leave it out of its header, and the location or supplier then follows its country's default calendar.
 - `manifest.json` lists every file with its row count and sha256 and records the generator version, seed, window and organization. The loader verifies it before writing anything.
 - `_truth/` (generator ground truth) is not part of the format and is never loaded.
@@ -328,10 +328,69 @@ Rules:
 | `quantity`            | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0            | yes      | `0`                  | Quantity sold or issued.                                               |
 | `lost_sales_quantity` | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0            | yes      | `0`                  | Quantity requested but not served (stock-out).                         |
 
+### `stock_snapshots.csv` → `public.stock_snapshots`
+
+Daily stock observations. Missing observations are unknown, not zero. The dashboard uses the latest observation on or before its reporting day for each item and location. Available stock is quantity minus allocated_quantity; allocations may exceed stock.
+
+Natural key: `item_code` + `location_code` + `snapshot_date`. Load order 13. Optional: a bundle may leave this file out.
+
+Provided together: `unit_cost` + `currency`.
+
+| Column               | Type                                                             | Required | Default for new rows | Description                                           |
+| -------------------- | ---------------------------------------------------------------- | -------- | -------------------- | ----------------------------------------------------- |
+| `item_code`          | part number (1-64 characters: letters, digits, `.` `_` `-` `/`)  | yes      | key                  | Item. References `items.item_code`.                   |
+| `location_code`      | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | Stock location. References `locations.location_code`. |
+| `snapshot_date`      | date, `YYYY-MM-DD`                                               | yes      | key                  | Business date of the observation.                     |
+| `quantity`           | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | —                    | Physical units on hand.                               |
+| `allocated_quantity` | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | `0`                  | Units already allocated.                              |
+| `unit_cost`          | money in `currency`, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0 | yes      | —                    | Inventory cost per physical unit.                     |
+| `currency`           | ISO 4217 currency code                                           | yes      | —                    | Cost currency. References `currencies.code`.          |
+
+### `open_orders.csv` → `public.open_orders`
+
+Outstanding inbound order lines. Quantity is the remaining open quantity, not the original ordered quantity. Set it to zero or status to closed/canceled to retire a line; receipts do not automatically change orders or stock.
+
+Natural key: `order_code` + `line_code`. Load order 14. Optional: a bundle may leave this file out.
+
+Provided together: `unit_cost` + `currency`.
+
+| Column          | Type                                                             | Required | Default for new rows | Description                                           |
+| --------------- | ---------------------------------------------------------------- | -------- | -------------------- | ----------------------------------------------------- |
+| `order_code`    | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | External order reference.                             |
+| `line_code`     | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | External line reference, unique within the order.     |
+| `item_code`     | part number (1-64 characters: letters, digits, `.` `_` `-` `/`)  | yes      | —                    | Item. References `items.item_code`.                   |
+| `location_code` | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | —                    | Stock location. References `locations.location_code`. |
+| `supplier_code` | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | —                    | Supplier. References `suppliers.supplier_code`.       |
+| `expected_date` | date, `YYYY-MM-DD`                                               | yes      | —                    | Expected arrival business date.                       |
+| `quantity`      | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | —                    | Remaining quantity.                                   |
+| `unit_cost`     | money in `currency`, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0 | yes      | —                    | Cost per unit.                                        |
+| `currency`      | ISO 4217 currency code                                           | yes      | —                    | Cost currency. References `currencies.code`.          |
+| `status`        | one of `open`, `closed`, `canceled`                              | yes      | `open`               | Current line status.                                  |
+
+### `receipts.csv` → `public.receipts`
+
+Inbound receipt lines, keyed by external receipt and line references. Corrections replace a line. Importing a receipt never increments a stock snapshot or decrements an open order; each feed remains authoritative.
+
+Natural key: `receipt_code` + `line_code`. Load order 15. Optional: a bundle may leave this file out.
+
+Provided together: `unit_cost` + `currency`.
+
+| Column          | Type                                                             | Required | Default for new rows | Description                                           |
+| --------------- | ---------------------------------------------------------------- | -------- | -------------------- | ----------------------------------------------------- |
+| `receipt_code`  | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | External receipt reference.                           |
+| `line_code`     | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | External line reference, unique within the receipt.   |
+| `item_code`     | part number (1-64 characters: letters, digits, `.` `_` `-` `/`)  | yes      | —                    | Item. References `items.item_code`.                   |
+| `location_code` | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | —                    | Stock location. References `locations.location_code`. |
+| `supplier_code` | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | —                    | Supplier. References `suppliers.supplier_code`.       |
+| `receipt_date`  | date, `YYYY-MM-DD`                                               | yes      | —                    | Received business date.                               |
+| `quantity`      | decimal, ≤ 12 integer and ≤ 3 fractional digits, > 0             | yes      | —                    | Units received.                                       |
+| `unit_cost`     | money in `currency`, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0 | yes      | —                    | Cost per received unit.                               |
+| `currency`      | ISO 4217 currency code                                           | yes      | —                    | Cost currency. References `currencies.code`.          |
+
 <!-- import-format:end -->
 
 ## How later steps use it
 
 - Step 4 added `brands.csv` and replaced the free-text `brand` column of `items.csv` with `brand_code`, a reference to `brands.csv` (generator 1.1.0; the format version stays 1 because no customer bundles exist yet).
 - Step 5 added the optional work calendars, holiday overrides, network links, item interchanges and fx rates, the optional trailing `work_calendar_code` of locations and suppliers, and made the supersession key the predecessor alone (one successor per predecessor). The generator's output is unchanged (still 1.1.0). The import wizard uploads files to Storage, maps customer columns onto this contract, validates every cell and rule in the database from `ingest.contract_*`, stages the rows and applies them to the tables above under the user's organization.
-- Step 6 adds stock snapshots, open orders and receipts as optional entities.
+- Stock snapshots, open orders and receipts are optional entities. [Transaction semantics and retention](transactions-dashboard.md) explain how they feed the dashboard.

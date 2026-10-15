@@ -41,6 +41,9 @@ export const ENTITY_NAMES = [
   'supplier_items',
   'fx_rates',
   'demand_history',
+  'stock_snapshots',
+  'open_orders',
+  'receipts',
 ] as const
 
 export type EntityName = (typeof ENTITY_NAMES)[number]
@@ -446,6 +449,9 @@ export const COLUMN_LABEL_PATHS: {
   demand_history: {
     item_code: ['Items.fields.code'],
   },
+  stock_snapshots: {},
+  open_orders: {},
+  receipts: {},
 }
 
 function messageAt(messages: unknown, path: string): string | undefined {

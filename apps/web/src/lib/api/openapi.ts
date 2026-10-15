@@ -263,7 +263,7 @@ function rules(entity: ContractEntity): Schema[] {
 }
 
 function recordSchema(entity: ContractEntity): Schema {
-  const master = !isTransactionEntity(entity.name)
+  const master = entity.name !== 'demand_history'
   const properties: Record<string, Schema> = {}
   for (const column of entity.columns) properties[column.name] = responseColumnSchema(column)
   if (master) properties.updated_at = UPDATED_AT_RECORD
@@ -778,12 +778,13 @@ function listOperation(resource: ApiResource): Schema {
   const names = schemaNames(resource.entity)
   const scope = scopeFor(resource.entity, 'read')
   const transaction = isTransactionEntity(resource.entity)
-  const parameterNames = transaction ? DEMAND_PARAMETERS : MASTER_PARAMETERS
+  const demand = resource.entity === 'demand_history'
+  const parameterNames = demand ? DEMAND_PARAMETERS : MASTER_PARAMETERS
   const id = operationId(resource.entity, 'list')
   return withDeprecation(id, {
     operationId: id,
     summary: `List ${resource.name}`,
-    description: transaction
+    description: demand
       ? 'Demand in a date range, in key order. from and to are required.'
       : 'Records in a stable order, with cursor paging and an optional updated_since filter.',
     tags: [transaction ? TAGS.transactions : TAGS.master_data],
@@ -792,7 +793,7 @@ function listOperation(resource: ApiResource): Schema {
     parameters: parameterNames.map((name) =>
       ref(
         'parameters',
-        name === 'limit' && transaction ? 'TransactionLimit' : (PARAMETER_REFS[name] ?? name),
+        name === 'limit' && demand ? 'TransactionLimit' : (PARAMETER_REFS[name] ?? name),
       ),
     ),
     responses: {

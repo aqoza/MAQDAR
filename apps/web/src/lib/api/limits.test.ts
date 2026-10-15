@@ -59,8 +59,13 @@ describe('API limits', () => {
     expect(listLimits('demand_history')).toEqual({ min: 1, max: 5_000, default: 1_000 })
   })
 
-  it('treats only demand history as a transaction resource', () => {
-    expect(ENTITY_NAMES.filter(isTransactionEntity)).toEqual(['demand_history'])
+  it('classifies all four transaction resources', () => {
+    expect(ENTITY_NAMES.filter(isTransactionEntity)).toEqual([
+      'demand_history',
+      'stock_snapshots',
+      'open_orders',
+      'receipts',
+    ])
   })
 
   it('states the approved plan values', () => {

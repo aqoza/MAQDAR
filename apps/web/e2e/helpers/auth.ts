@@ -114,6 +114,30 @@ export async function seedRows(
 
 /** Deletes every row of `table` that belongs to the organization (service role, local stack). */
 export async function deleteOrganizationRows(table: string, organizationId: string): Promise<void> {
-  const { error } = await adminClient().from(table).delete().eq('organization_id', organizationId)
-  if (error) throw new Error(`Could not delete ${table} rows: ${error.message}`)
+  const client = adminClient()
+  if (table === 'demand_history') {
+    const { error } = await client.from(table).delete().eq('organization_id', organizationId)
+    if (error) throw new Error(`Could not delete ${table} rows: ${error.message}`)
+    return
+  }
+  // FK checks and audit triggers also run during fixture cleanup. Bound each request so a
+  // 50,000-item cleanup stays below PostgREST's statement timeout, including with stale statistics.
+  for (;;) {
+    const { data, error } = await client
+      .from(table)
+      .select('id')
+      .eq('organization_id', organizationId)
+      .limit(100)
+    if (error) throw new Error(`Could not read ${table} cleanup rows: ${error.message}`)
+    if (!data?.length) return
+    const result = await client
+      .from(table)
+      .delete()
+      .eq('organization_id', organizationId)
+      .in(
+        'id',
+        data.map((row) => row.id),
+      )
+    if (result.error) throw new Error(`Could not delete ${table} rows: ${result.error.message}`)
+  }
 }

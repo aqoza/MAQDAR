@@ -16,8 +16,8 @@ from maqdar_engine.synth.writer import read_manifest, sha256_of
 def test_bundle_has_every_file_with_the_contract_header(tiny_bundle: Path):
     for entity in importformat.ENTITIES:
         files = entity_files(tiny_bundle, entity)
-        if not entity.required_in_bundle:
-            # The generator writes the required entities only; the optional ones stay absent.
+        if not entity.required_in_bundle and entity.name not in {"stock_snapshots", "open_orders", "receipts"}:
+            # Step 6 emits the optional transaction feeds; optional master data stays absent.
             assert files == [], entity.name
             continue
         assert files, entity.name
