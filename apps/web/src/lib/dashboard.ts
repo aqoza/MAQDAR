@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { firstParam, type RawSearchParams } from './master-data/list-params'
 
 const decimal = z.string().regex(/^\d+(\.\d+)?$/)
 export const dashboardSchema = z.object({
@@ -12,6 +13,29 @@ export const dashboardSchema = z.object({
   demand: z.array(z.object({ date: z.string(), quantity: decimal, lost_sales_quantity: decimal })),
 })
 export type DashboardData = z.infer<typeof dashboardSchema>
+
+export const kpiSchema = dashboardSchema.extend({
+  location_code: z.string().nullable(),
+  available_pairs: z.number().int().nonnegative(),
+})
+
+export function dashboardParams(raw: RawSearchParams, today: string) {
+  const candidate = firstParam(raw.day)
+  const day =
+    candidate &&
+    z.iso.date().safeParse(candidate).success &&
+    candidate >= '0001-01-01' &&
+    candidate <= today
+      ? candidate
+      : today
+  const code = firstParam(raw.location)?.trim()
+  const location = code && /^[A-Za-z0-9_.-]{1,64}$/.test(code) ? code : null
+  return { day, location }
+}
+
+export function availability(available: number, observed: number): number | null {
+  return observed === 0 ? null : available / observed
+}
 
 /** Intl accepts decimal strings without a lossy Number conversion (ECMA-402); TS still types numbers only. */
 export function formatInventoryValue(value: string, currency: string, locale: string): string {

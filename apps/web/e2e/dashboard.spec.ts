@@ -100,6 +100,15 @@ test('dashboard loads below two seconds with 50,000 items and 40 locations', asy
     }
     await expect(page.getByText('5,000', { exact: true })).toBeVisible()
     await expect(page.getByText('1,950,000', { exact: true })).toBeVisible()
+    const filteredStart = Date.now()
+    await page.goto(`/dashboard?day=${day}&location=L-1`)
+    await expect(page.getByText('2,812.500', { exact: false })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'Observed stock availability', exact: true }).locator('..'),
+    ).toContainText('100%')
+    const filteredElapsed = Date.now() - filteredStart
+    console.log(`[dashboard-scale] location-filtered navigation: ${filteredElapsed} ms`)
+    expect(filteredElapsed).toBeLessThan(2000)
   } finally {
     for (const table of ['stock_snapshots', 'demand_history', 'items', 'locations'])
       await deleteOrganizationRows(table, org)

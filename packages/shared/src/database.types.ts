@@ -931,7 +931,21 @@ isOneToOne: false
                 }
           }
           Views: {
-            "policy_override_history": {
+            "forecast_quality": {
+                  Row: {
+                    "bias": string | null,"comparison": string | null,"evaluation": Json | null,"finished_at": string | null,"folds": Json | null,"from_date": string | null,"horizon": string | null,"id": string | null,"item_code": string | null,"item_id": string | null,"item_name": string | null,"location_code": string | null,"location_id": string | null,"mae": string | null,"method": string | null,"model": string | null,"organization_id": string | null,"rmse": string | null,"run_id": string | null,"search_text": string | null,"status": string | null,"to_date": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "forecast_results_organization_id_run_id_location_id_fkey"
+      columns: ["organization_id","run_id","location_id"]
+isOneToOne: false
+      referencedRelation: "planning_runs"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
+                },"policy_override_history": {
                   Row: {
                     "created_at": string | null,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"id": string | null,"location_id": string | null,"order_up_to": string | null,"organization_id": string | null,"policy_id": string | null,"reason": string | null,"reorder_point": string | null,"revision": number | null,"status": string | null,"submitted_by": string | null
                   }
@@ -997,6 +1011,9 @@ isOneToOne: false
                            },
 "create_organization":
 { Args: { "p_arabic_enabled"?: boolean,"p_base_currency"?: string,"p_home_country"?: string,"p_name": string,"p_slug": string }; Returns: string
+                           },
+"dashboard_kpis":
+{ Args: { "p_day": string,"p_location_code"?: string,"p_organization_id": string }; Returns: Json
                            },
 "dashboard_summary":
 { Args: { "p_day"?: string,"p_organization_id": string }; Returns: Json
