@@ -16,3 +16,5 @@ uv run maqdar-synth format --sql               # ingest.contract_* seed, pasted 
 Layout: `src/maqdar_engine` (package: `importformat.py` is the CSV contract, `synth/` the generator and loader, `synth/data/` the curated reference tables), `tests` (pytest), `tools` (command-line entry points), `data/` (generated bundles, gitignored).
 
 See `docs/synthetic-data.md` for the demand model and presets and `docs/import-format.md` for the CSV contract.
+
+Step 11 adds `policy-v1` recommendations from one saved forecast. The worker replays the selected model on its saved rolling windows, samples total demand over lead time and the review protection period, and publishes immutable evidence through `policy_finish`. See [inventory policies](../docs/inventory-policies.md). Upgrade the local/hosted schema before starting the new worker; hosted rollout remains owner-run.

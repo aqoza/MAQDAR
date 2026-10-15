@@ -310,6 +310,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"inventory_policies": {
+                  Row: {
+                    "evidence": NonNullable<Json>,"forecast_id": string,"id": string,"item_code": string,"item_id": string,"location_id": string,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "evidence": NonNullable<Json>,"forecast_id": string,"id"?: string,"item_code": string,"item_id": string,"location_id": string,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>,"unit"?: string | null
+                  }
+                  Update: {
+                    "evidence"?: NonNullable<Json>,"forecast_id"?: string,"id"?: string,"item_code"?: string,"item_id"?: string,"location_id"?: string,"organization_id"?: string,"run_id"?: string,"status"?: string,"summary"?: NonNullable<Json>,"unit"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "inventory_policies_organization_id_run_id_location_id_fkey"
+      columns: ["organization_id","run_id","location_id"]
+isOneToOne: false
+      referencedRelation: "planning_runs"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 },"item_interchanges": {
                   Row: {
                     "alternate_item_id": string,"created_at": string,"direction": string,"id": string,"item_id": string,"note": string | null,"organization_id": string,"priority": number,"updated_at": string
@@ -978,6 +998,9 @@ isOneToOne: false
                            },
 "planning_enqueue":
 { Args: { "p_from": string,"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
+                           },
+"policy_enqueue":
+{ Args: { "p_forecast_id": string,"p_lead_time": number,"p_organization_id": string,"p_request_id": string,"p_review_interval": number,"p_service_level": number }; Returns: string
                            },
 "preparation_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string

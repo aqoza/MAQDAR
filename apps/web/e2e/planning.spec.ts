@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve } from 'node:path'
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import {
   createConfirmedUser,
   organizationIdBySlug,
@@ -11,10 +11,50 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
+async function inspectPolicy(page: Page, dsn: string) {
+  const sourceUrl = page.url()
+  const form = page.locator('form').filter({
+    has: page.getByRole('heading', { name: 'Plan inventory policy', exact: true }),
+  })
+  await expect(page.getByLabel('Cycle-service target (%)', { exact: true })).toHaveValue('95')
+  await expect(page.getByLabel('Review interval (calendar days)', { exact: true })).toHaveValue('7')
+  await page.getByLabel('Lead time (calendar days)', { exact: true }).fill('3')
+  await page.getByRole('button', { name: 'Queue inventory policy', exact: true }).click()
+  // Wait for this form's response, not Next.js's route-announcer alert.
+  await expect(form.getByRole('alert')).toHaveText('That input is not valid for this organization.')
+  await expect(
+    form.getByRole('button', { name: 'Queue inventory policy', exact: true }),
+  ).toBeEnabled()
+  await page.getByLabel('Review interval (calendar days)', { exact: true }).fill('4')
+  await page.getByRole('button', { name: 'Queue inventory policy', exact: true }).click()
+  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+    cwd: resolve(process.cwd(), '../../engine'),
+    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    timeout: 100_000,
+  })
+  await page.getByRole('button', { name: 'Refresh runs' }).click()
+  await page.getByRole('link', { name: 'View inventory policy', exact: true }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Inventory policy recommendation', exact: true }),
+  ).toBeVisible()
+  await expect(page.getByText('Recommendation available', { exact: true })).toBeVisible()
+  const table = page.getByRole('table', { name: 'Stock thresholds', exact: true })
+  await expect(table.getByRole('row')).toHaveCount(3)
+  await expect(table.getByRole('row').nth(1)).toContainText('Reorder-point reference')
+  await expect(table.getByRole('row').nth(2)).toContainText('Periodic order-up-to maximum')
+  await page.getByText('Inspect calibration errors', { exact: true }).first().click()
+  await expect(
+    page.getByRole('table', { name: 'Inspect calibration errors', exact: true }).getByRole('row'),
+  ).toHaveCount(22)
+  await page.getByRole('link', { name: 'Inspect source forecast', exact: true }).click()
+  await expect(page).toHaveURL(sourceUrl)
+}
+
 test('preparation preserves contributions and forecasts a saved group with fixed-group evidence', async ({
   page,
 }) => {
-  test.setTimeout(120_000)
+  test.setTimeout(180_000)
   const id = randomUUID()
   const email = `prepare-${id}@example.com`
   const password = `Prepare-${id}`
@@ -155,6 +195,7 @@ test('preparation preserves contributions and forecasts a saved group with fixed
   const future = page.getByRole('table', { name: 'Captured forecast calendar', exact: true })
   await expect(future.getByRole('row').nth(1)).toContainText('2026-10-02')
   await expect(future.getByRole('row').nth(1)).toContainText('Unknown')
+  await inspectPolicy(page, dsn)
   await page
     .getByRole('link', { name: 'Inspect saved preparation and source contributions', exact: true })
     .click()
@@ -294,6 +335,7 @@ for (const method of ['baseline-v1', 'expanded-v1']) {
         .getByRole('row')
         .nth(1),
     ).toContainText('2.123')
+    if (method === 'baseline-v1') await inspectPolicy(page, dsn)
   })
 }
 

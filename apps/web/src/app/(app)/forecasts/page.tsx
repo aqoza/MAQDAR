@@ -95,7 +95,7 @@ export default async function ForecastsPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="font-semibold">
                 {t(
-                  `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation'}`,
+                  `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation' | 'policy'}`,
                 )}{' '}
                 · {run.locations?.code ?? run.location_id} · {run.from_date} – {run.to_date}
               </h3>
@@ -135,6 +135,11 @@ export default async function ForecastsPage() {
             {run.status === 'succeeded' && run.kind === 'forecast' && (
               <Link href={`/forecasts/results/${run.id}`} className="inline-block underline">
                 {t('forecastResults')}
+              </Link>
+            )}
+            {run.status === 'succeeded' && run.kind === 'policy' && (
+              <Link href={`/forecasts/policies/${run.id}`} className="inline-block underline">
+                {t('policyResults')}
               </Link>
             )}
             {result && (

@@ -49,6 +49,10 @@ def process_one(connection: psycopg.Connection) -> bool:
             from maqdar_engine.forecast_process import compute
             rows = compute(task)
             connection.execute('select app.forecast_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
+        elif task['kind'] == 'policy' and task.get('method') == 'policy-v1':
+            from maqdar_engine.forecast_process import compute
+            rows = compute(task)
+            connection.execute('select app.policy_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
         elif task['kind'] == 'preparation' and task.get('method') == 'preparation-v1':
             from maqdar_engine.preparation import prepare
             rows = prepare(task)

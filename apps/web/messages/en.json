@@ -1459,12 +1459,14 @@
       "readiness": "Demand readiness",
       "classification": "Demand classification",
       "forecast": "Forecast baselines",
-      "preparation": "Demand preparation"
+      "preparation": "Demand preparation",
+      "policy": "Inventory policy"
     },
     "forecast": "Create forecast",
     "forecastResults": "View forecast results",
     "prepare": "Prepare demand",
-    "preparationResults": "View prepared demand"
+    "preparationResults": "View prepared demand",
+    "policyResults": "View inventory policy"
   },
   "Classification": {
     "title": "Classify demand",
@@ -1741,5 +1743,48 @@
     "unknown": "Unknown",
     "yes": "Yes",
     "no": "No"
+  },
+  "InventoryPolicy": {
+    "title": "Inventory policy recommendation",
+    "create": "Plan inventory policy",
+    "formNote": "Use this saved forecast to estimate stock targets. Lead time plus review interval must fit within its {horizon}-day horizon. Lead times are fixed calendar days; the service target is cycle service, not fill rate.",
+    "leadTime": "Lead time (calendar days)",
+    "reviewInterval": "Review interval (calendar days)",
+    "serviceTarget": "Cycle-service target (%)",
+    "pending": "Queuing…",
+    "submit": "Queue inventory policy",
+    "back": "Back to planning runs",
+    "itemUnits": "Item units (label not saved)",
+    "asOf": "Planning date: {date}. This recommendation starts after the saved forecast cutoff.",
+    "inputs": "Lead time: {lead} days · Review interval: {review} days · Cycle-service target: {service}%",
+    "assumptions": "Conditional estimate from sold-demand forecasts and independently sampled historical forecast errors. Sparse demand, serial dependence, changing demand and unseen demand can invalidate this estimate. Lost sales and variable supply lead times are not modeled. The target is not a guarantee of achieved service.",
+    "groupNote": "Values use the saved group and its unit conversions. Comparisons are conditional on that fixed group; they do not reconstruct historical planning decisions or allocate stock among member parts.",
+    "statuses": {
+      "available": "Recommendation available",
+      "insufficient_residuals": "Insufficient calibration errors: at least 20 are required.",
+      "no_positive_history": "No positive sold demand in the saved history. Unseen-demand risk cannot be estimated.",
+      "unsupported_scale": "Quantities exceed the supported calculation range.",
+      "calibration_failed": "The saved model could not reproduce its calibration forecasts. No replacement model was used."
+    },
+    "thresholds": "Stock thresholds",
+    "period": "Reference",
+    "days": "Days",
+    "forecast": "Point-forecast total",
+    "quantile": "Demand quantile",
+    "safetyStock": "Safety stock",
+    "target": "Stock target",
+    "lead_time": "Reorder-point reference",
+    "protection": "Periodic order-up-to maximum",
+    "rulesNote": "The reorder-point reference covers lead time. The periodic order-up-to maximum covers lead time plus the review interval. These describe different review rules, not an optimized hybrid min/max policy. They are recommendations, before stock/order netting, sourcing and pack-size rounding.",
+    "evidenceCounts": "{residuals} calibration errors · {positive} positive history days · {samples} sampled paths",
+    "sourceLink": "Inspect source forecast",
+    "points": "Saved daily point forecasts",
+    "date": "Date",
+    "calibration": "Inspect calibration errors",
+    "calibrationNote": "Each fit uses only demand through its training cutoff. The chosen model is held fixed and was selected using these comparison windows, so these errors can be optimistic; this is not an independent policy coverage test.",
+    "trainTo": "Training through",
+    "actual": "Actual sold",
+    "prediction": "Prediction",
+    "error": "Actual minus prediction"
   }
 }
