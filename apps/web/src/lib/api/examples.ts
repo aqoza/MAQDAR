@@ -176,6 +176,7 @@ export const EXAMPLES: { readonly [E in EntityName]: readonly ExampleRecord[] } 
       demand_date: '2026-09-01',
       quantity: '3',
       lost_sales_quantity: '0',
+      unit_of_measure: 'EA',
     },
   ],
   stock_snapshots: [
@@ -187,6 +188,7 @@ export const EXAMPLES: { readonly [E in EntityName]: readonly ExampleRecord[] } 
       allocated_quantity: '2',
       unit_cost: '172.25',
       currency: 'AED',
+      unit_of_measure: 'EA',
     },
   ],
   open_orders: [

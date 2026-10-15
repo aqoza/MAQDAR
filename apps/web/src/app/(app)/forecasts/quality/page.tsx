@@ -211,7 +211,9 @@ export default async function ForecastQuality({
                     <p className="mt-2">
                       {row.comparison === 'fixed-group-v1'
                         ? t('fixedGroup', { unit: row.unit ?? '—' })
-                        : t('individual')}
+                        : row.unit
+                          ? t('individualUnit', { unit: row.unit })
+                          : t('individual')}
                     </p>
                     <h2 className="mt-3 font-semibold">{t('folds')}</h2>
                     {row.folds.length ? (

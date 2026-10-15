@@ -120,6 +120,9 @@ test('all contract resources round-trip through HTTP with atomic writes and tena
     expect(read.status()).toBe(200)
     const body = await read.json()
     expect(body.data).toHaveLength(EXAMPLES[resource.entity].length)
+    if (['demand_history', 'stock_snapshots'].includes(resource.entity)) {
+      expect(body.data[0].unit_of_measure).toBe('EA')
+    }
     expect(body.next_cursor).toBeNull()
     expect(read.headers()['set-cookie']).toBeUndefined()
     // Read representations can be sent back unchanged, including decimal strings and updated_at.

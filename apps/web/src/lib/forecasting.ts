@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { unitProvenanceSchema } from './stock-comparison'
 import {
   calendarModelSchema,
   preparedSourceSchema,
@@ -22,6 +23,7 @@ export const FORECAST_STATUSES = [
   'insufficient',
   'outside_lifecycle',
   'unsupported_scale',
+  'incompatible_units',
 ] as const
 export const forecastOptionsSchema = z
   .object({
@@ -57,6 +59,7 @@ export const forecastEvidenceSchema = z.object({
     discontinued_on: z.string().nullable(),
     demand: z.array(z.tuple([z.string(), decimal, decimal])),
     preparation: preparedSourceSchema.optional(),
+    unit_provenance: unitProvenanceSchema.optional(),
   }),
   output: forecastSummarySchema.extend({
     comparison: z.literal('fixed-group-v1').optional(),

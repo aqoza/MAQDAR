@@ -277,7 +277,7 @@ describe('mapping outputs', () => {
   })
 
   it('gives a source index per contract column', () => {
-    expect(sourceIndexes('demand_history', mapping)).toEqual([1, 3, 2, 0, null])
+    expect(sourceIndexes('demand_history', mapping)).toEqual([1, 3, 2, 0, null, null])
     expect(sourceIndexes('demand_history', mapping)).toHaveLength(
       getEntity('demand_history').columns.length,
     )
@@ -292,6 +292,6 @@ describe('mapping outputs', () => {
       quantity: 'qty',
     })
     const again = autoMap('demand_history', ['Branch', 'QTY', 'DATE', 'PART'], { previous: stored })
-    expect(sourceIndexes('demand_history', again)).toEqual([3, 0, 2, 1, null])
+    expect(sourceIndexes('demand_history', again)).toEqual([3, 0, 2, 1, null, null])
   })
 })

@@ -76,6 +76,8 @@ def forecast_item(item: dict, cutoff: date, horizon: int) -> dict:
     start, series = daily_series(item)
     row = dict(item_id=item['item_id'], status='insufficient', model=None,
                scores=[], folds=[], forecast=[], total=None)
+    if item.get('unit_provenance', {}).get('status') == 'conflicting':
+        return dict(row, status='incompatible_units')
     discontinued = item.get('discontinued_on')
     # Never extrapolate beyond a recorded lifecycle end, or from a future introduction.
     if start > cutoff or (discontinued and date.fromisoformat(discontinued) <= cutoff):

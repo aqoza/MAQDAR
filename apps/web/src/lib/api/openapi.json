@@ -1828,7 +1828,8 @@
                     "location_code": "JED-BR1",
                     "demand_date": "2026-09-01",
                     "quantity": "3",
-                    "lost_sales_quantity": "0"
+                    "lost_sales_quantity": "0",
+                    "unit_of_measure": "EA"
                   }
                 ]
               }
@@ -1973,7 +1974,8 @@
                     "quantity": "12",
                     "allocated_quantity": "2",
                     "unit_cost": "172.25",
-                    "currency": "AED"
+                    "currency": "AED",
+                    "unit_of_measure": "EA"
                   }
                 ]
               }
@@ -5627,7 +5629,8 @@
           "location_code",
           "demand_date",
           "quantity",
-          "lost_sales_quantity"
+          "lost_sales_quantity",
+          "unit_of_measure"
         ],
         "properties": {
           "item_code": {
@@ -5665,6 +5668,21 @@
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Quantity requested but not served (stock-out).",
             "x-maqdar-kind": "decimal"
+          },
+          "unit_of_measure": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "EA",
+              "SET",
+              "L",
+              "KG",
+              null
+            ],
+            "description": "Source unit for sold and lost quantities; absent means unknown.",
+            "x-maqdar-kind": "enum"
           }
         },
         "x-maqdar-natural-key": [
@@ -5739,6 +5757,27 @@
             "description": "Quantity requested but not served (stock-out).",
             "x-maqdar-kind": "decimal",
             "x-maqdar-default-for-new": "0"
+          },
+          "unit_of_measure": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "EA",
+                  "SET",
+                  "L",
+                  "KG"
+                ]
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Source unit for sold and lost quantities; absent means unknown.",
+            "x-maqdar-kind": "enum"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -5831,6 +5870,7 @@
           "allocated_quantity",
           "unit_cost",
           "currency",
+          "unit_of_measure",
           "updated_at"
         ],
         "properties": {
@@ -5882,6 +5922,21 @@
             "description": "Cost currency.",
             "x-maqdar-kind": "currency",
             "x-maqdar-reference": "currencies.code"
+          },
+          "unit_of_measure": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "EA",
+              "SET",
+              "L",
+              "KG",
+              null
+            ],
+            "description": "Source unit for physical/allocated quantity and unit cost; absent means unknown.",
+            "x-maqdar-kind": "enum"
           },
           "updated_at": {
             "type": "string",
@@ -5986,6 +6041,27 @@
             "x-maqdar-kind": "currency",
             "x-maqdar-reference": "currencies.code",
             "x-maqdar-required-for-new": true
+          },
+          "unit_of_measure": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "EA",
+                  "SET",
+                  "L",
+                  "KG"
+                ]
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Source unit for physical/allocated quantity and unit cost; absent means unknown.",
+            "x-maqdar-kind": "enum"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."

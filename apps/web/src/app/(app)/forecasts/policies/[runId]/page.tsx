@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { DemandUnitEvidence } from '@/components/demand-unit-evidence'
 import { notFound, redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -59,6 +60,9 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
         })}
       </p>
       <p className="rounded-lg border p-3">{t('assumptions')}</p>
+      {forecast.method !== 'regional-v1' && (
+        <DemandUnitEvidence evidence={forecast.source?.unit_provenance} />
+      )}
       {forecast.method === 'regional-v1' && <p>{t('groupNote')}</p>}
       <p role="status">{t(`statuses.${output.status}`)}</p>
       {output.lead_time && output.protection && (

@@ -220,7 +220,7 @@ export type MappingIssue =
   | { code: 'too_many_columns'; level: 'error'; count: number; max: number }
   /** A column new rows need is not mapped: new keys will be rejected (warning). */
   | { code: 'required_for_new_unmapped'; level: 'warning'; column: string }
-  /** An optional column is not mapped: existing rows keep their value (info). */
+  /** An optional column is not mapped; the UI explains defaults and the source-unit safeguard. */
   | { code: 'unmapped_optional'; level: 'info'; column: string; default: string | null }
   /** A header column feeds nothing and is ignored (info). */
   | { code: 'unmapped_header'; level: 'info'; index: number; header: string }
@@ -265,7 +265,7 @@ export function checkMapping(
       issues.push({ code: 'duplicate_source', level: 'error', columns, index })
   }
   if (entity.monthly_parts) {
-    const values = entity.columns.filter((column) => !column.natural_key).map((c) => c.name)
+    const values = ['quantity', 'lost_sales_quantity']
     if (!values.some(mapped)) {
       issues.push({ code: 'value_column_required', level: 'error', columns: values })
     }

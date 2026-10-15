@@ -32,7 +32,7 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 ## Phase 2 build steps
 
-Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 2026-10-15. Step 12b was scoped and approved on 2026-10-16. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
+Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 2026-10-15. Steps 12b and 12c were scoped and approved on 2026-10-16. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
 | Step | Scope                                                                                                                                                                                      | Status    |
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
@@ -44,8 +44,8 @@ Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 
 | 10b  | **Prepared-group forecasts:** fixed saved groups, bounded learned weekday/verified holiday/Ramadan candidate, rolling comparisons, daily bands and independent coverage.                   | Merged    |
 | 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Merged    |
 | 12a  | **Policy review workbench:** searchable saved recommendations, reasoned manual thresholds and independent approval history.                                                                | Merged    |
-| 12b  | **KPI foundation:** observed availability, inventory value by currency, snapshot freshness/coverage and searchable saved forecast quality.                                                 | In review |
-| 12c  | **Excess-stock comparison:** unit provenance and explicit policy/date selection before calculating excess.                                                                                 | Proposed  |
+| 12b  | **KPI foundation:** observed availability, inventory value by currency, snapshot freshness/coverage and searchable saved forecast quality.                                                 | Merged    |
+| 12c  | **Individual-item stock comparison:** supplied unit provenance, explicit cutoff and calculated/approved maximum selection, with quantity/value above that maximum.                         | In review |
 
 Step 7 criteria, operational limits and owner-run rollout are in [planning-runs.md](planning-runs.md).
 
@@ -173,3 +173,9 @@ PR #17 was reviewed and merged as `2d282dc`. The owner approved the policy revie
 ### Step 12b approved decisions (2026-10-16)
 
 PR #18 was reviewed and merged as `c16d915`. The owner approved a read-only KPI foundation: observed stock availability, inventory value by currency, snapshot freshness/coverage, and searchable saved forecast metrics. Availability is the fraction of observed pairs with positive stock after allocations; missing snapshots remain unknown and observations older than seven days are flagged. Saved RMSE, MAE and signed bias remain historical model-selection scores, while held-out coverage is labeled separately with its own model and window. There is no cross-item error average or claim of realized future performance. Excess comparisons follow after trustworthy unit provenance and explicit policy/date selection. See [planning-kpis.md](planning-kpis.md) for acceptance, exact definitions, limits and rollout.
+
+### Step 12c approved decisions (2026-10-16)
+
+PR #19 was reviewed and merged as `c9a7f42`. The owner approved individual-item comparisons from the policy workbench, optional source-supplied demand/stock units and immutable unit provenance in new forecasts and policies. Unlabeled legacy data remains non-comparable; prepared-group pooling follows separately.
+
+Use `max(on-hand − allocations − selected periodic maximum, 0)`, valued at the snapshot's cost/currency. Compare at the saved forecast cutoff with matching known units and a latest eligible snapshot no more than seven days old. The user explicitly chooses the calculated maximum or a particular approved override. Missing, stale or incompatible inputs remain unavailable. See [stock-comparison.md](stock-comparison.md) for acceptance, exact semantics and owner-run rollout.

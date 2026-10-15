@@ -2649,6 +2649,32 @@
           "references": null,
           "lookup": null,
           "target_column": "lost_sales_quantity"
+        },
+        {
+          "name": "unit_of_measure",
+          "kind": "enum",
+          "required": false,
+          "required_for_new": false,
+          "natural_key": false,
+          "omittable": true,
+          "description": "Source unit for sold and lost quantities; absent means unknown.",
+          "pattern": null,
+          "max_length": null,
+          "scale": null,
+          "integer_digits": null,
+          "min_value": null,
+          "max_value": null,
+          "greater_than": null,
+          "enum": [
+            "EA",
+            "SET",
+            "L",
+            "KG"
+          ],
+          "default": null,
+          "references": null,
+          "lookup": null,
+          "target_column": "unit_of_measure"
         }
       ]
     },
@@ -2823,6 +2849,32 @@
           "references": "currencies.code",
           "lookup": null,
           "target_column": "currency"
+        },
+        {
+          "name": "unit_of_measure",
+          "kind": "enum",
+          "required": false,
+          "required_for_new": false,
+          "natural_key": false,
+          "omittable": true,
+          "description": "Source unit for physical/allocated quantity and unit cost; absent means unknown.",
+          "pattern": null,
+          "max_length": null,
+          "scale": null,
+          "integer_digits": null,
+          "min_value": null,
+          "max_value": null,
+          "greater_than": null,
+          "enum": [
+            "EA",
+            "SET",
+            "L",
+            "KG"
+          ],
+          "default": null,
+          "references": null,
+          "lookup": null,
+          "target_column": "unit_of_measure"
         }
       ]
     },

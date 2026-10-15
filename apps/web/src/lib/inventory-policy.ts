@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { unitProvenanceSchema } from './stock-comparison'
 
 const integer = z
   .string()
@@ -41,6 +42,7 @@ export const policyEvidenceSchema = z.object({
     service_level: decimal,
   }),
   forecast: z.object({
+    source: z.object({ unit_provenance: unitProvenanceSchema.optional() }).optional(),
     id: z.uuid(),
     run_id: z.uuid(),
     item_id: z.uuid(),

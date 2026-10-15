@@ -27,6 +27,15 @@ def test_cutoff_mapping_converts_all_predecessor_history_and_preserves_lost_sale
     assert row['daily'][1]['working'] is False  # Friday; observed sales are retained.
 
 
+def test_explicit_source_units_conflicting_with_catalog_block_group():
+    data = task()
+    data['items'][0]['unit_conflict'] = True
+    result = prepare(data)[0]
+    assert result['status'] == 'blocked'
+    assert result['issue'] == 'unit_mismatch'
+    assert result['sold'] is None and result['daily'] == []
+
+
 def test_two_way_pooling_deduplicates_and_one_way_stays_separate():
     data=task();data['supersessions']=[]
     data['interchanges']=[dict(item='a',alternate='b',direction='two_way')]
