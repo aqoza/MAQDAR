@@ -867,6 +867,60 @@ ENTITIES: tuple[Entity, ...] = (
     ),
 )
 
+def _transaction_references() -> tuple[Column, ...]:
+    return (
+        Column("item_code", "item_code", "Item.", references="items.item_code", db_column="item_id", lookup="items"),
+        Column("location_code", "code", "Stock location.", references="locations.location_code", db_column="location_id", lookup="locations"),
+    )
+
+
+ENTITIES += (
+    Entity(
+        name="stock_snapshots", table="public.stock_snapshots", file="stock_snapshots.csv",
+        description="Daily stock observations. Missing observations are unknown, not zero. The dashboard uses the latest observation on or before its reporting day for each item and location. Available stock is quantity minus allocated_quantity; allocations may exceed stock.",
+        natural_key=("item_code", "location_code", "snapshot_date"), required_in_bundle=False,
+        columns=(
+            *_transaction_references(),
+            Column("snapshot_date", "date", "Business date of the observation."),
+            Column("quantity", "decimal", "Physical units on hand.", min_value=0),
+            Column("allocated_quantity", "decimal", "Units already allocated.", min_value=0, default="0"),
+            Column("unit_cost", "money", "Inventory cost per physical unit.", min_value=0),
+            Column("currency", "currency", "Cost currency.", references="currencies.code"),
+        ), column_groups=(("unit_cost", "currency"),),
+    ),
+    Entity(
+        name="open_orders", table="public.open_orders", file="open_orders.csv",
+        description="Outstanding inbound order lines. Quantity is the remaining open quantity, not the original ordered quantity. Set it to zero or status to closed/canceled to retire a line; receipts do not automatically change orders or stock.",
+        natural_key=("order_code", "line_code"), required_in_bundle=False,
+        columns=(
+            Column("order_code", "code", "External order reference."),
+            Column("line_code", "code", "External line reference, unique within the order."),
+            *_transaction_references(),
+            Column("supplier_code", "code", "Supplier.", references="suppliers.supplier_code", db_column="supplier_id", lookup="suppliers"),
+            Column("expected_date", "date", "Expected arrival business date."),
+            Column("quantity", "decimal", "Remaining quantity.", min_value=0),
+            Column("unit_cost", "money", "Cost per unit.", min_value=0),
+            Column("currency", "currency", "Cost currency.", references="currencies.code"),
+            Column("status", "enum", "Current line status.", enum=("open", "closed", "canceled"), default="open"),
+        ), column_groups=(("unit_cost", "currency"),),
+    ),
+    Entity(
+        name="receipts", table="public.receipts", file="receipts.csv",
+        description="Inbound receipt lines, keyed by external receipt and line references. Corrections replace a line. Importing a receipt never increments a stock snapshot or decrements an open order; each feed remains authoritative.",
+        natural_key=("receipt_code", "line_code"), required_in_bundle=False,
+        columns=(
+            Column("receipt_code", "code", "External receipt reference."),
+            Column("line_code", "code", "External line reference, unique within the receipt."),
+            *_transaction_references(),
+            Column("supplier_code", "code", "Supplier.", references="suppliers.supplier_code", db_column="supplier_id", lookup="suppliers"),
+            Column("receipt_date", "date", "Received business date."),
+            Column("quantity", "decimal", "Units received.", greater_than=0),
+            Column("unit_cost", "money", "Cost per received unit.", min_value=0),
+            Column("currency", "currency", "Cost currency.", references="currencies.code"),
+        ), column_groups=(("unit_cost", "currency"),),
+    ),
+)
+
 ENTITY_NAMES: tuple[str, ...] = tuple(e.name for e in ENTITIES)
 ENTITY_BY_NAME: dict[str, Entity] = {e.name: e for e in ENTITIES}
 

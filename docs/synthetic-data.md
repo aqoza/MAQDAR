@@ -70,3 +70,5 @@ Every family draws from `numpy.random.default_rng([family_index, seed])`, so out
 ## Ground truth
 
 `_truth/items.csv` (archetype, base probability, size parameters, velocity, seasonal coefficients, lifecycle, chain) and `_truth/pairs.csv` (effective probability and size per stocked pair, stock-out episodes) are not part of the import format and are never loaded. They let later steps score demand classification and forecast accuracy against the process that produced the data.
+
+Generator 1.2.0 also writes the optional stock snapshot, open-order and receipt feeds. Each item gets one deterministic snapshot at the central location on the final demand day, including explicit zero-stock cases; every tenth item gets an order and a receipt. These feeds are independent and use the item's cost and currency. Older v1 bundles without these files remain valid.

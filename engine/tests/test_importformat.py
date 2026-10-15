@@ -32,8 +32,11 @@ LOAD_ORDER = (
     "supplier_items",
     "fx_rates",
     "demand_history",
+    "stock_snapshots",
+    "open_orders",
+    "receipts",
 )
-OPTIONAL = {"work_calendars", "holiday_overrides", "network_links", "item_interchanges", "fx_rates"}
+OPTIONAL = {"stock_snapshots", "open_orders", "receipts", "work_calendars", "holiday_overrides", "network_links", "item_interchanges", "fx_rates"}
 
 
 def test_every_money_column_has_a_currency_sibling():
@@ -71,7 +74,7 @@ def test_natural_keys_are_first_columns():
 
 def test_versions_are_unchanged():
     assert importformat.FORMAT_VERSION == 1
-    assert GENERATOR_VERSION == "1.1.0"
+    assert GENERATOR_VERSION == "1.2.0"
 
 
 def test_load_order_and_optional_entities():

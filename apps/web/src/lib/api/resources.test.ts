@@ -17,7 +17,7 @@ import {
 
 describe('resources', () => {
   it('has one resource per contract entity, in load order', () => {
-    expect(RESOURCES).toHaveLength(12)
+    expect(RESOURCES).toHaveLength(15)
     expect(RESOURCES.map((resource) => resource.entity).sort()).toEqual([...ENTITY_NAMES].sort())
     const orders = RESOURCES.map((resource) => resource.loadOrder)
     expect(orders).toEqual([...orders].sort((a, b) => a - b))
@@ -34,7 +34,9 @@ describe('resources', () => {
       expect(resourceByName(resource.name)).toBe(resource)
       expect(resourceForEntity(resource.entity)).toBe(resource)
       expect(resource.category).toBe(
-        resource.entity === 'demand_history' ? 'transactions' : 'master_data',
+        ['demand_history', 'stock_snapshots', 'open_orders', 'receipts'].includes(resource.entity)
+          ? 'transactions'
+          : 'master_data',
       )
     }
     expect(resourceByName('demand_history')).toBeNull()
@@ -103,7 +105,7 @@ describe('paths, methods and operation ids', () => {
     expect(operationId('demand_history', 'upsert')).toBe('upsertDemandHistory')
     expect(operationId('items', 'list')).toBe('listItems')
     const ids = allOperationIds()
-    expect(ids).toHaveLength(25)
+    expect(ids).toHaveLength(31)
     expect(new Set(ids).size).toBe(ids.length)
     expect(ids[0]).toBe('getOrganization')
   })

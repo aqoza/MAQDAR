@@ -3,7 +3,7 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
-  
+
   "public": {
           Tables: {
             "api_keys": {
@@ -25,6 +25,20 @@ isOneToOne: false
       referencedRelation: "organizations"
       referencedColumns: ["id"]
     }
+                  ]
+                },"audit_log": {
+                  Row: {
+                    "actor_user_id": string | null,"id": string,"new_values": Json | null,"occurred_at": string,"old_values": Json | null,"operation": string,"organization_id": string,"record_id": string | null,"row_count": number,"table_name": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "actor_user_id"?: string | null,"id"?: string,"new_values"?: Json | null,"occurred_at"?: string,"old_values"?: Json | null,"operation": string,"organization_id": string,"record_id"?: string | null,"row_count"?: number,"table_name": string
+                  }
+                  Update: {
+                    "actor_user_id"?: string | null,"id"?: string,"new_values"?: Json | null,"occurred_at"?: string,"old_values"?: Json | null,"operation"?: string,"organization_id"?: string,"record_id"?: string | null,"row_count"?: number,"table_name"?: string
+                  }
+                  Relationships: [
+
                   ]
                 },"brands": {
                   Row: {
@@ -78,7 +92,7 @@ isOneToOne: false
                     "code"?: string,"minor_units"?: number,"name_ar"?: string | null,"name_en"?: string
                   }
                   Relationships: [
-                    
+
                   ]
                 },"demand_history": {
                   Row: {
@@ -92,7 +106,7 @@ isOneToOne: false
                     "demand_date"?: string,"item_id"?: string,"location_id"?: string,"lost_sales_quantity"?: number,"organization_id"?: string,"quantity"?: number
                   }
                   Relationships: [
-                    
+
                   ]
                 },"fx_rates": {
                   Row: {
@@ -212,14 +226,14 @@ isOneToOne: false
                   ]
                 },"import_files": {
                   Row: {
-                    "batch_id": string,"columns": (string)[],"content_type": string | null,"counts": NonNullable<Json>,"created_at": string,"entity": string,"error_count": number,"error_counts": NonNullable<Json>,"errors_stored": number,"extension": string,"file_no": number,"header": (string)[],"id": string,"mapping": NonNullable<Json>,"merged_through_row": number,"organization_id": string,"original_name": string,"parse": NonNullable<Json>,"rows_existing": number,"rows_new": number,"rows_staged": number,"rows_total": number,"sealed_at": string | null,"sha256": string,"size_bytes": number,"source_stored": boolean,"status": string,"storage_path": string,"updated_at": string,"warning_count": number
+                    "batch_id": string,"columns": (string)[],"content_type": string | null,"counts": NonNullable<Json>,"created_at": string,"entity": string,"error_count": number,"error_counts": NonNullable<Json>,"errors_stored": number,"extension": string,"file_no": number,"header": (string)[],"id": string,"mapping": NonNullable<Json>,"merged_through_row": number,"organization_id": string,"original_name": string,"parse": NonNullable<Json>,"rows_existing": number,"rows_new": number,"rows_staged": number,"rows_total": number,"sealed_at": string | null,"sha256": string,"size_bytes": number,"source_purged_at": string | null,"source_stored": boolean,"status": string,"storage_path": string,"updated_at": string,"warning_count": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "batch_id": string,"columns": (string)[],"content_type"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"entity": string,"error_count"?: number,"error_counts"?: NonNullable<Json>,"errors_stored"?: number,"extension": string,"file_no": number,"header"?: (string)[],"id"?: string,"mapping"?: NonNullable<Json>,"merged_through_row"?: number,"organization_id": string,"original_name": string,"parse"?: NonNullable<Json>,"rows_existing"?: number,"rows_new"?: number,"rows_staged"?: number,"rows_total": number,"sealed_at"?: string | null,"sha256": string,"size_bytes": number,"source_stored"?: boolean,"status"?: string,"storage_path": string,"updated_at"?: string,"warning_count"?: number
+                    "batch_id": string,"columns": (string)[],"content_type"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"entity": string,"error_count"?: number,"error_counts"?: NonNullable<Json>,"errors_stored"?: number,"extension": string,"file_no": number,"header"?: (string)[],"id"?: string,"mapping"?: NonNullable<Json>,"merged_through_row"?: number,"organization_id": string,"original_name": string,"parse"?: NonNullable<Json>,"rows_existing"?: number,"rows_new"?: number,"rows_staged"?: number,"rows_total": number,"sealed_at"?: string | null,"sha256": string,"size_bytes": number,"source_purged_at"?: string | null,"source_stored"?: boolean,"status"?: string,"storage_path": string,"updated_at"?: string,"warning_count"?: number
                   }
                   Update: {
-                    "batch_id"?: string,"columns"?: (string)[],"content_type"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"entity"?: string,"error_count"?: number,"error_counts"?: NonNullable<Json>,"errors_stored"?: number,"extension"?: string,"file_no"?: number,"header"?: (string)[],"id"?: string,"mapping"?: NonNullable<Json>,"merged_through_row"?: number,"organization_id"?: string,"original_name"?: string,"parse"?: NonNullable<Json>,"rows_existing"?: number,"rows_new"?: number,"rows_staged"?: number,"rows_total"?: number,"sealed_at"?: string | null,"sha256"?: string,"size_bytes"?: number,"source_stored"?: boolean,"status"?: string,"storage_path"?: string,"updated_at"?: string,"warning_count"?: number
+                    "batch_id"?: string,"columns"?: (string)[],"content_type"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"entity"?: string,"error_count"?: number,"error_counts"?: NonNullable<Json>,"errors_stored"?: number,"extension"?: string,"file_no"?: number,"header"?: (string)[],"id"?: string,"mapping"?: NonNullable<Json>,"merged_through_row"?: number,"organization_id"?: string,"original_name"?: string,"parse"?: NonNullable<Json>,"rows_existing"?: number,"rows_new"?: number,"rows_staged"?: number,"rows_total"?: number,"sealed_at"?: string | null,"sha256"?: string,"size_bytes"?: number,"source_purged_at"?: string | null,"source_stored"?: boolean,"status"?: string,"storage_path"?: string,"updated_at"?: string,"warning_count"?: number
                   }
                   Relationships: [
                     {
@@ -454,6 +468,50 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"open_orders": {
+                  Row: {
+                    "created_at": string,"currency": string,"expected_date": string,"id": string,"item_id": string,"line_code": string,"location_id": string,"order_code": string,"organization_id": string,"quantity": number,"status": string,"supplier_id": string,"unit_cost": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"currency": string,"expected_date": string,"id"?: string,"item_id": string,"line_code": string,"location_id": string,"order_code": string,"organization_id": string,"quantity": number,"status"?: string,"supplier_id": string,"unit_cost": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"currency"?: string,"expected_date"?: string,"id"?: string,"item_id"?: string,"line_code"?: string,"location_id"?: string,"order_code"?: string,"organization_id"?: string,"quantity"?: number,"status"?: string,"supplier_id"?: string,"unit_cost"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "open_orders_currency_fkey"
+      columns: ["currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "open_orders_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "open_orders_organization_id_item_id_fkey"
+      columns: ["organization_id","item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "open_orders_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "open_orders_organization_id_supplier_id_fkey"
+      columns: ["organization_id","supplier_id"]
+isOneToOne: false
+      referencedRelation: "suppliers"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"organization_invitations": {
                   Row: {
                     "accepted_at": string | null,"accepted_by": string | null,"created_at": string,"email": string,"expires_at": string,"id": string,"invited_by": string | null,"last_sent_at": string,"organization_id": string,"revoked_at": string | null,"revoked_by": string | null,"role": string,"send_count": number
@@ -538,6 +596,88 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "countries"
       referencedColumns: ["code"]
+    }
+                  ]
+                },"receipts": {
+                  Row: {
+                    "created_at": string,"currency": string,"id": string,"item_id": string,"line_code": string,"location_id": string,"organization_id": string,"quantity": number,"receipt_code": string,"receipt_date": string,"supplier_id": string,"unit_cost": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"currency": string,"id"?: string,"item_id": string,"line_code": string,"location_id": string,"organization_id": string,"quantity": number,"receipt_code": string,"receipt_date": string,"supplier_id": string,"unit_cost": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"currency"?: string,"id"?: string,"item_id"?: string,"line_code"?: string,"location_id"?: string,"organization_id"?: string,"quantity"?: number,"receipt_code"?: string,"receipt_date"?: string,"supplier_id"?: string,"unit_cost"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "receipts_currency_fkey"
+      columns: ["currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "receipts_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "receipts_organization_id_item_id_fkey"
+      columns: ["organization_id","item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "receipts_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "receipts_organization_id_supplier_id_fkey"
+      columns: ["organization_id","supplier_id"]
+isOneToOne: false
+      referencedRelation: "suppliers"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"stock_snapshots": {
+                  Row: {
+                    "allocated_quantity": number,"created_at": string,"currency": string,"id": string,"item_id": string,"location_id": string,"organization_id": string,"quantity": number,"snapshot_date": string,"unit_cost": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "allocated_quantity"?: number,"created_at"?: string,"currency": string,"id"?: string,"item_id": string,"location_id": string,"organization_id": string,"quantity": number,"snapshot_date": string,"unit_cost": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "allocated_quantity"?: number,"created_at"?: string,"currency"?: string,"id"?: string,"item_id"?: string,"location_id"?: string,"organization_id"?: string,"quantity"?: number,"snapshot_date"?: string,"unit_cost"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "stock_snapshots_currency_fkey"
+      columns: ["currency"]
+isOneToOne: false
+      referencedRelation: "currencies"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "stock_snapshots_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "stock_snapshots_organization_id_item_id_fkey"
+      columns: ["organization_id","item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "stock_snapshots_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
     }
                   ]
                 },"supplier_items": {
@@ -683,6 +823,9 @@ isOneToOne: false
 "create_organization":
 { Args: { "p_arabic_enabled"?: boolean,"p_base_currency"?: string,"p_home_country"?: string,"p_name": string,"p_slug": string }; Returns: string
                            },
+"dashboard_summary":
+{ Args: { "p_day"?: string,"p_organization_id": string }; Returns: Json
+                           },
 "import_cancel_step":
 { Args: { "p_batch_id": string }; Returns: Json
                            },
@@ -697,6 +840,14 @@ isOneToOne: false
                            },
 "import_resume":
 { Args: { "p_batch_id": string }; Returns: Json
+                           },
+"import_retention_candidates":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "batch_id": string,"file_no": number,"storage_path": string
+            }[]
+                           },
+"import_retention_complete":
+{ Args: { "p_batch_id": string,"p_file_no": number }; Returns: boolean
                            },
 "import_seal_file":
 { Args: { "p_batch_id": string,"p_file_no": number,"p_rows_total": number }; Returns: Json
@@ -866,7 +1017,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            
+
           }
         }
 } as const

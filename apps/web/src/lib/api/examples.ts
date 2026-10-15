@@ -178,4 +178,42 @@ export const EXAMPLES: { readonly [E in EntityName]: readonly ExampleRecord[] } 
       lost_sales_quantity: '0',
     },
   ],
+  stock_snapshots: [
+    {
+      item_code: 'FAL-BRK-1001',
+      location_code: 'JED-BR1',
+      snapshot_date: '2026-09-30',
+      quantity: '12',
+      allocated_quantity: '2',
+      unit_cost: '172.25',
+      currency: 'AED',
+    },
+  ],
+  open_orders: [
+    {
+      order_code: 'PO-1001',
+      line_code: '1',
+      item_code: 'FAL-BRK-1001',
+      location_code: 'JED-BR1',
+      supplier_code: 'GULF-AUTO',
+      expected_date: '2026-10-20',
+      quantity: '20',
+      unit_cost: '172.25',
+      currency: 'AED',
+      status: 'open',
+    },
+  ],
+  receipts: [
+    {
+      receipt_code: 'GR-1001',
+      line_code: '1',
+      item_code: 'FAL-BRK-1001',
+      location_code: 'JED-BR1',
+      supplier_code: 'GULF-AUTO',
+      receipt_date: '2026-09-30',
+      quantity: '12',
+      unit_cost: '172.25',
+      currency: 'AED',
+    },
+  ],
 }

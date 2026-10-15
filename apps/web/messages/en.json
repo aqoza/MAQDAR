@@ -63,7 +63,25 @@
   "Dashboard": {
     "title": "Dashboard",
     "description": "Availability, inventory value and demand at a glance.",
-    "empty": "KPIs appear once transactions are loaded (Step 6)."
+    "empty": "No stock observations yet. Import stock snapshots to see inventory value and stock-outs.",
+    "asOf": "Business day: {date}",
+    "importData": "Import transactions",
+    "audit": "Audit log",
+    "value": "Inventory value",
+    "valueNote": "Physical stock × supplied unit cost. Currencies are reported separately.",
+    "stockOuts": "Stock-out pairs",
+    "stockOutsNote": "Observed item/location pairs with no unallocated stock.",
+    "coverage": "Observed pairs",
+    "coverageNote": "Latest snapshot for each active item/location pair.",
+    "missing": "Unobserved pairs",
+    "missingNote": "Active item/location combinations without a snapshot. These are unknown, not stock-outs.",
+    "stale": "{count, plural, one {# observation is} other {# observations are}} more than seven days old.",
+    "trend": "Demand over 30 days",
+    "trendNote": "Units sold and reported lost sales. Days without demand records are shown as zero.",
+    "sold": "Units sold",
+    "lost": "Lost sales units",
+    "table": "View daily data",
+    "date": "Business date"
   },
   "Items": {
     "title": "Items",
@@ -649,12 +667,12 @@
       "transactionsRead": {
         "label": "Read transactions",
         "badge": "Transactions: read",
-        "description": "List demand history."
+        "description": "List demand history, stock snapshots, open orders and receipts."
       },
       "transactionsWrite": {
         "label": "Write transactions",
         "badge": "Transactions: write",
-        "description": "Add, update and clear demand history."
+        "description": "Add and update transaction feeds; zero quantities clear demand history only."
       }
     },
     "secret": {
@@ -899,7 +917,7 @@
     "description": "Files imported into this organization, newest first.",
     "new": "New import",
     "newTitle": "New import",
-    "newDescription": "Load master data and demand history from CSV or Excel files. Nothing is saved until you commit.",
+    "newDescription": "Load master data and transactions from CSV or Excel files. Nothing is saved until you commit.",
     "detailTitle": "Import of {date}",
     "columns": {
       "started": "Started",
@@ -1002,7 +1020,10 @@
       "suppliers": "Suppliers",
       "supplier_items": "Supplier items",
       "fx_rates": "Exchange rates",
-      "demand_history": "Demand history"
+      "demand_history": "Demand history",
+      "stock_snapshots": "Stock snapshots",
+      "open_orders": "Open orders",
+      "receipts": "Receipts"
     },
     "status": {
       "staging": "Checking",
@@ -1298,7 +1319,8 @@
       "commitStopped": "The commit stopped; the reason follows.",
       "committed": "Every checked row is saved.",
       "canceling": "Canceling the import."
-    }
+    },
+    "retention": "Original uploads and row-level error details are retained for 30 days after completion. Import summaries remain."
   },
   "ImportErrors": {
     "required": "A value is required.",
@@ -1344,6 +1366,52 @@
       "demand_date": "Demand date",
       "quantity": "Quantity",
       "lost_sales_quantity": "Lost sales quantity"
+    },
+    "stock_snapshots": {
+      "item_code": "Item code",
+      "location_code": "Location code",
+      "snapshot_date": "Snapshot date",
+      "quantity": "Quantity",
+      "allocated_quantity": "Allocated quantity",
+      "unit_cost": "Unit cost",
+      "currency": "Currency"
+    },
+    "open_orders": {
+      "order_code": "Order code",
+      "line_code": "Line code",
+      "item_code": "Item code",
+      "location_code": "Location code",
+      "supplier_code": "Supplier code",
+      "expected_date": "Expected date",
+      "quantity": "Quantity",
+      "unit_cost": "Unit cost",
+      "currency": "Currency",
+      "status": "Status"
+    },
+    "receipts": {
+      "receipt_code": "Receipt code",
+      "line_code": "Line code",
+      "item_code": "Item code",
+      "location_code": "Location code",
+      "supplier_code": "Supplier code",
+      "receipt_date": "Receipt date",
+      "quantity": "Quantity",
+      "unit_cost": "Unit cost",
+      "currency": "Currency"
     }
+  },
+  "Audit": {
+    "title": "Audit log",
+    "description": "The latest 100 business changes in this organization. Demand imports are summarized by statement; other changes retain before and after values in the audit records.",
+    "time": "Time (UTC)",
+    "actor": "Actor",
+    "entity": "Entity",
+    "operation": "Change",
+    "rows": "Rows",
+    "system": "API or system",
+    "empty": "No changes recorded yet.",
+    "INSERT": "Inserted",
+    "UPDATE": "Updated",
+    "DELETE": "Deleted"
   }
 }

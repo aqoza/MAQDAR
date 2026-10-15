@@ -1,6 +1,6 @@
 # REST API v1
 
-Use `/api/v1` on your MAQDAR application's origin for server-to-server integrations. It lists master data and demand history and accepts atomic bulk upserts using the same validation and merge rules as the import wizard. The [import contract](import-format.md) defines field names, natural keys, required fields, defaults and validation rules.
+Use `/api/v1` on your MAQDAR application's origin for server-to-server integrations. It lists master data, demand history, stock snapshots, open orders and receipts and accepts atomic bulk upserts using the same validation and merge rules as the import wizard. The [import contract](import-format.md) defines field names, natural keys, required fields, defaults and validation rules.
 
 The machine-readable OpenAPI 3.1.1 description is available at `/api/v1/openapi.json` without authentication. Its [committed copy](../apps/web/src/lib/api/openapi.json) includes request examples for every resource. `/api/v1` returns the documentation and OpenAPI links.
 
@@ -8,12 +8,12 @@ The machine-readable OpenAPI 3.1.1 description is available at `/api/v1/openapi.
 
 An organization owner or administrator opens **Settings → API keys**, gives the key a name, chooses permissions and an expiry, and selects **Create key**. Copy the key from the dialog into the integration's secret store. It is shown once; Settings subsequently shows only a prefix and suffix. The database stores a SHA-256 hash, never the complete key.
 
-| Scope                | Operations                       |
-| -------------------- | -------------------------------- |
-| `master_data:read`   | List all master-data resources   |
-| `master_data:write`  | Upsert all master-data resources |
-| `transactions:read`  | List demand history              |
-| `transactions:write` | Upsert and clear demand history  |
+| Scope                | Operations                                               |
+| -------------------- | -------------------------------------------------------- |
+| `master_data:read`   | List all master-data resources                           |
+| `master_data:write`  | Upsert all master-data resources                         |
+| `transactions:read`  | List all four transaction feeds                          |
+| `transactions:write` | Upsert transaction feeds (clear by zero only for demand) |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -144,3 +144,5 @@ The Step 5b migration must be reviewed and applied by the owner before deploying
 The owner runs `pnpm exec supabase db push` after migration review. For Cloudflare, retain both `API_KEY_LIMITER` and `API_IP_LIMITER` bindings in each Wrangler environment, confirm their namespace IDs are available in the account, and set the Worker secret through the existing deployment process. Run `pnpm --filter web cf:build` to validate packaging before deployment. No hosted migration or deployment is performed by the development checks.
 
 Version 1 changes are additive. Clients should tolerate new response fields and error codes. If an operation is deprecated, its OpenAPI entry and `Deprecation`, optional `Sunset`, and `Link` response headers identify the change. No operations are currently deprecated.
+
+The three Step 6 resources (`stock-snapshots`, `open-orders`, `receipts`) use transaction scopes with UUID cursor paging and `updated_since`, like master-data lists. Their list default is 100, maximum 1,000, and atomic writes accept up to 1,000 records. See [transaction semantics and dashboard definitions](transactions-dashboard.md).

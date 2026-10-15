@@ -1,6 +1,6 @@
 import { getColumn, type EntityName } from '../imports/contract'
 import type { KeyHash } from './keys'
-import { API_LIMITS, isTransactionEntity, listLimits } from './limits'
+import { API_LIMITS, listLimits } from './limits'
 import type { ApiRpcArgs } from './rpc-request'
 
 /**
@@ -63,7 +63,7 @@ export const DEMAND_PARAMETERS = [
 
 /** The query parameters a list of the entity accepts. */
 export function listParameters(entity: EntityName): readonly string[] {
-  return isTransactionEntity(entity) ? DEMAND_PARAMETERS : MASTER_PARAMETERS
+  return entity === 'demand_history' ? DEMAND_PARAMETERS : MASTER_PARAMETERS
 }
 
 const CURSOR = /^[A-Za-z0-9_-]+$/
@@ -177,7 +177,7 @@ export function parseListQuery(entity: EntityName, params: URLSearchParams): Lis
   }
 
   let query: ListQuery
-  if (!isTransactionEntity(entity)) {
+  if (!(entity === 'demand_history')) {
     const updatedSince = values.get('updated_since') ?? null
     if (updatedSince !== null && !isRfc3339DateTime(updatedSince)) {
       errors.push({
