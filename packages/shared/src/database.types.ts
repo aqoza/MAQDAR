@@ -128,6 +128,26 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"forecast_results": {
+                  Row: {
+                    "evidence": NonNullable<Json>,"id": string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"model": string | null,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "evidence": NonNullable<Json>,"id"?: string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"model"?: string | null,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>
+                  }
+                  Update: {
+                    "evidence"?: NonNullable<Json>,"id"?: string,"item_code"?: string,"item_id"?: string,"item_name"?: string,"location_id"?: string,"model"?: string | null,"organization_id"?: string,"run_id"?: string,"status"?: string,"summary"?: NonNullable<Json>
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "forecast_results_organization_id_run_id_location_id_fkey"
+      columns: ["organization_id","run_id","location_id"]
+isOneToOne: false
+      referencedRelation: "planning_runs"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 },"fx_rates": {
                   Row: {
                     "created_at": string,"from_currency": string,"id": string,"note": string | null,"organization_id": string,"rate": number,"to_currency": string,"updated_at": string,"valid_from": string
@@ -874,6 +894,9 @@ isOneToOne: false
                            },
 "dashboard_summary":
 { Args: { "p_day"?: string,"p_organization_id": string }; Returns: Json
+                           },
+"forecast_enqueue":
+{ Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
                            },
 "import_cancel_step":
 { Args: { "p_batch_id": string }; Returns: Json

@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({ guard: vi.fn(), rpc: vi.fn(), revalidate: vi.f
 vi.mock('@/lib/forms', () => import('../../../lib/forms'))
 vi.mock('@/lib/planning', () => import('../../../lib/planning'))
 vi.mock('@/lib/classification', () => import('../../../lib/classification'))
+vi.mock('@/lib/forecasting', () => import('../../../lib/forecasting'))
 vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidate }))
 vi.mock('next/navigation', () => ({
   redirect: () => {
@@ -20,6 +21,7 @@ vi.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ rpc: mock
 
 import { cancelRun, enqueueRun } from './actions'
 import { enqueueClassification } from './classify/actions'
+import { enqueueForecast } from './new/actions'
 import { CLASSIFICATION_DEFAULTS } from '../../../lib/classification'
 import { idleState } from '../../../lib/forms'
 
@@ -105,4 +107,41 @@ it('rejects invalid classification thresholds before the RPC', async () => {
   data.set('abc_a', '0.99')
   expect((await enqueueClassification(idleState, data)).code).toBe('validation')
   expect(mocks.rpc).not.toHaveBeenCalled()
+})
+
+function forecastForm() {
+  const data = form()
+  data.set('item_codes', 'PART-1\nPART-2')
+  data.set('horizon', '28')
+  data.set('history_complete', 'on')
+  return data
+}
+it('forecast requires confirmation and valid item/horizon bounds before any RPC', async () => {
+  const data = forecastForm()
+  data.delete('history_complete')
+  expect((await enqueueForecast(idleState, data)).message).toBe('confirmationRequired')
+  data.set('history_complete', 'on')
+  data.set('horizon', '91')
+  expect((await enqueueForecast(idleState, data)).code).toBe('validation')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('forecast honors the shared editor and stale-organization guard', async () => {
+  mocks.guard.mockResolvedValue({
+    ok: false,
+    state: { status: 'error', code: 'stale_organization' },
+  })
+  expect((await enqueueForecast(idleState, forecastForm())).code).toBe('stale_organization')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('forecast sends the session organization and parsed selection', async () => {
+  await expect(enqueueForecast(idleState, forecastForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith(
+    'forecast_enqueue',
+    expect.objectContaining({
+      p_organization_id: 'session-org',
+      p_item_codes: ['PART-1', 'PART-2'],
+      p_horizon: 28,
+      p_history_complete: true,
+    }),
+  )
 })
