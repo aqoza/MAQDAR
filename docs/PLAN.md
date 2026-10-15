@@ -32,16 +32,17 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 ## Phase 2 build steps
 
-Steps 7 and 8 scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
+Steps 7, 8 and 9 scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
-| Step | Scope                                                                                                                                                                             | Status    |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| 7    | **Planning-run foundation:** durable pgmq jobs, restricted Python worker, bounded retries and crash recovery, location-scoped demand readiness results and Forecasts run history. | Merged    |
-| 8    | **Demand classification:** define observation windows and missing-data semantics, ADI/CV squared, ABC-XYZ and lifecycle evidence, with persisted versioned classifications.       | In review |
-| 9    | **Forecast baselines and selection:** intermittent and regular-demand models, rolling backtests and reproducible accuracy comparisons.                                            | Proposed  |
-| 10   | **Regional effects and part relationships:** calendar effects plus supersession/interchange demand preparation, with explicit roll-up decisions.                                  | Proposed  |
-| 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                   | Proposed  |
-| 12   | **Planner workbench and KPIs:** reviewed overrides, forecast/policy inspection and availability/accuracy/excess views.                                                            | Proposed  |
+| Step | Scope                                                                                                                                                                                      | Status    |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
+| 7    | **Planning-run foundation:** durable pgmq jobs, restricted Python worker, bounded retries and crash recovery, location-scoped demand readiness results and Forecasts run history.          | Merged    |
+| 8    | **Demand classification:** define observation windows and missing-data semantics, ADI/CV squared, ABC-XYZ and lifecycle evidence, with persisted versioned classifications.                | Merged    |
+| 9    | **Forecast baselines and selection:** mean, naive, weekly seasonal naive, SES, Croston, SBA and TSB; three rolling backtests, versioned daily forecasts and inspectable model comparisons. | In review |
+| 9b   | **Forecast model expansion:** automatic ETS/ARIMA and bootstrap uncertainty, with explicit calibration and evaluation decisions.                                                           | Proposed  |
+| 10   | **Regional effects and part relationships:** calendar effects plus supersession/interchange demand preparation, with explicit roll-up decisions.                                           | Proposed  |
+| 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Proposed  |
+| 12   | **Planner workbench and KPIs:** reviewed overrides, forecast/policy inspection and availability/accuracy/excess views.                                                                     | Proposed  |
 
 Step 7 criteria, operational limits and owner-run rollout are in [planning-runs.md](planning-runs.md).
 
@@ -133,3 +134,5 @@ Step 6 definitions (owner-confirmed 2026-10-15): latest stock observations are v
 Step 7 owner decision (2026-10-15): begin Phase 2 with the planning-run foundation and demand-data readiness checks; defer forecast models and inventory policies to later steps.
 
 Step 8 owner decisions (2026-10-15): daily sold-demand classification requires explicit complete-history confirmation before missing days become zero. Lost sales remain separate. Editable defaults are ADI/CV² 1.32/0.49, ABC sold quantity × current item cost per currency at 80%/95%, and XYZ daily CV at 0.5/1.0. Lifecycle reports recorded evidence without inferring obsolescence. See [demand-classification.md](demand-classification.md) for definitions, acceptance, limits and rollout.
+
+Step 9 owner decisions (2026-10-15): ship the first baseline release with mean, naive, weekly seasonal naive, SES, Croston, SBA and TSB. Use an editable 28-day default horizon and three non-overlapping rolling test windows of the same horizon; select by lowest RMSE, also show MAE and signed bias. Insufficient history is explicit. Automatic ETS/ARIMA and bootstrap uncertainty are deferred to the next forecasting increment. See [forecast-baselines.md](forecast-baselines.md) for acceptance, algorithms, limits and rollout. PR #12 (Step 8) was reviewed and merged before this work.

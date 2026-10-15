@@ -1457,8 +1457,11 @@
     "classificationResults": "View classification results",
     "kinds": {
       "readiness": "Demand readiness",
-      "classification": "Demand classification"
-    }
+      "classification": "Demand classification",
+      "forecast": "Forecast baselines"
+    },
+    "forecast": "Create forecast",
+    "forecastResults": "View forecast results"
   },
   "Classification": {
     "title": "Classify demand",
@@ -1533,5 +1536,60 @@
     "pages": "Result pages",
     "previous": "Previous page",
     "next": "Next page"
+  },
+  "Forecasting": {
+    "title": "Create forecast",
+    "back": "Back to planning runs",
+    "results": "Forecast results",
+    "description": "Compare seven daily sold-demand baselines using three rolling backtests. Review the selected model and expected daily quantities.",
+    "location": "Location code",
+    "horizon": "Forecast horizon (days)",
+    "from": "From date",
+    "to": "History through date",
+    "items": "Item codes (one per line)",
+    "limits": "Select 1–100 distinct item codes, up to 1,096 days of history and a 1–90 day horizon. Selection requires 56 training days plus three horizon-length test windows (140 days for a 28-day horizon).",
+    "confirmation": "I confirm complete sales history for these items at this location and date window. Missing days within each item’s recorded lifecycle may be treated as zero sold demand.",
+    "confirmationRequired": "Confirm complete sales history before forecasting.",
+    "pending": "Queueing…",
+    "submit": "Queue forecast",
+    "method": "baseline-v1 · Daily sold demand; lost sales excluded. Missing observed days are zero after confirmation. Fixed smoothing coefficients: 0.1. Three rolling test windows; lowest pooled RMSE selects the model. Forecasts stop after a recorded discontinuation date.",
+    "item": "Item",
+    "status": "Result",
+    "model": "Model",
+    "total": "Horizon total",
+    "rmse": "RMSE",
+    "mae": "MAE",
+    "bias": "Signed bias",
+    "details": "Forecast evidence",
+    "inspect": "Inspect {code}",
+    "observed": "Observed interval: {from} – {to}",
+    "lifecycle": "Recorded introduction: {from}; discontinuation: {to}",
+    "insufficientNote": "Selection needs 56 training days plus three complete test windows. Items whose recorded lifecycle has ended are not extrapolated.",
+    "comparison": "Model comparison",
+    "scoreNote": "Scores pool daily forecast errors across the same three withheld windows. Signed bias is forecast minus actual: positive means over-forecasting. Scores use unrounded predictions; displayed forecasts use three decimals. Equal scores follow the listed model order. These are selection scores, not an independent estimate of future accuracy.",
+    "winner": "Selected",
+    "folds": "Backtest windows and scores",
+    "foldWindow": "Window {number}: train {trainFrom} – {trainTo}; test {testFrom} – {testTo}",
+    "daily": "Daily forecast",
+    "date": "Date",
+    "quantity": "Expected sold quantity",
+    "source": "Captured sales history",
+    "sourceNote": "Stored observations within the lifecycle-clipped window are shown below. Unlisted observed days count as zero; lost sales are retained as evidence but excluded from the models.",
+    "sold": "Sold quantity",
+    "lost": "Lost sales quantity",
+    "models": {
+      "mean": "Historical mean",
+      "naive": "Last observation",
+      "seasonal_naive": "Weekly seasonal naive",
+      "ses": "Simple exponential smoothing",
+      "croston": "Croston",
+      "sba": "SBA",
+      "tsb": "TSB"
+    },
+    "statuses": {
+      "selected": "Model selected",
+      "insufficient": "Insufficient history",
+      "outside_lifecycle": "Outside recorded lifecycle"
+    }
   }
 }

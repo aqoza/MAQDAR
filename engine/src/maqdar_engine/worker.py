@@ -12,6 +12,7 @@ from psycopg.conninfo import conninfo_to_dict
 from psycopg.types.json import Jsonb
 
 from maqdar_engine.classification import VERSION, classify
+from maqdar_engine.forecasting import VERSION as FORECAST_VERSION, forecast
 
 
 def validate_dsn(dsn: str) -> None:
@@ -41,6 +42,9 @@ def process_one(connection: psycopg.Connection) -> bool:
         elif task['kind'] == 'classification' and task.get('method') == VERSION:
             rows = classify(task)
             connection.execute('select app.classification_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
+        elif task['kind'] == 'forecast' and task.get('method') == FORECAST_VERSION:
+            rows = forecast(task)
+            connection.execute('select app.forecast_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
         else:
             raise ValueError('Unsupported planning task')
     except (psycopg.Error, ValueError, ArithmeticError):

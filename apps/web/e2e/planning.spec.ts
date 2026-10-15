@@ -11,6 +11,119 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
+test('planner compares forecast baselines and inspects daily quantities and held-out windows', async ({
+  page,
+}) => {
+  const id = randomUUID()
+  const email = `forecast-${id}@example.com`
+  const password = `Forecast-${id}`
+  await createConfirmedUser(email, password)
+  await signInWithPassword(page, email, password)
+  const slug = `forecast-${id}`
+  await createOrganization(page, { name: `Forecast ${id}`, slug })
+  const org = await organizationIdBySlug(slug)
+  const location = randomUUID()
+  const item = randomUUID()
+  const shortItem = randomUUID()
+  await seedRows('locations', [
+    {
+      id: location,
+      organization_id: org,
+      code: 'FC',
+      name_en: 'Forecast branch',
+      location_type: 'branch',
+      country_code: 'SA',
+      timezone: 'Asia/Riyadh',
+    },
+  ])
+  await seedRows('items', [
+    {
+      id: item,
+      organization_id: org,
+      code: 'WEEKLY',
+      name_en: 'Weekly part',
+      product_group: 'Test',
+      unit_of_measure: 'EA',
+      unit_cost: '1.123',
+      currency: 'KWD',
+    },
+    {
+      id: shortItem,
+      organization_id: org,
+      code: 'NEW',
+      name_en: 'New part',
+      product_group: 'Test',
+      unit_of_measure: 'EA',
+      unit_cost: '1',
+      currency: 'SAR',
+      introduced_on: '2026-05-01',
+    },
+  ])
+  await seedRows(
+    'demand_history',
+    Array.from({ length: 140 }, (_, i) => ({
+      organization_id: org,
+      item_id: item,
+      location_id: location,
+      demand_date: new Date(Date.UTC(2026, 0, 1 + i)).toISOString().slice(0, 10),
+      quantity: String((i % 7) + 1),
+      lost_sales_quantity: '2.123',
+    })),
+  )
+  await page.goto('/forecasts')
+  await page.getByRole('link', { name: 'Create forecast', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Create forecast', exact: true })).toBeVisible()
+  await page.getByLabel('Location code', { exact: true }).fill('FC')
+  await page.getByLabel('From date', { exact: true }).fill('2026-01-01')
+  await page.getByLabel('History through date', { exact: true }).fill('2026-05-20')
+  await page.getByLabel('Forecast horizon (days)', { exact: true }).fill('7')
+  await page.getByLabel('Item codes (one per line)', { exact: true }).fill('WEEKLY\nNEW')
+  await page.getByRole('button', { name: 'Queue forecast', exact: true }).click()
+  await expect(page).toHaveURL(/\/forecasts\/new$/)
+  await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: 'Queue forecast', exact: true }).click()
+  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  const dsn =
+    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+  if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
+    throw new Error('Local worker test only')
+  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+    cwd: resolve(process.cwd(), '../../engine'),
+    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    timeout: 100_000,
+  })
+  await page.getByRole('button', { name: 'Refresh runs' }).click()
+  await page.getByRole('link', { name: 'View forecast results' }).click()
+  await expect(page.getByRole('heading', { name: 'Forecast results', exact: true })).toBeVisible()
+  await expect(page.getByRole('cell', { name: 'Insufficient history', exact: true })).toBeVisible()
+  await expect(page.getByRole('cell', { name: 'Weekly seasonal naive', exact: true })).toBeVisible()
+  await expect(page.getByRole('cell', { name: '28', exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Inspect WEEKLY', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Model comparison', exact: true })).toBeVisible()
+  await expect(
+    page.getByRole('cell', { name: 'Weekly seasonal naive · Selected', exact: true }),
+  ).toBeVisible()
+  const daily = page.getByRole('table', { name: 'Daily forecast', exact: true })
+  await expect(daily.getByRole('row')).toHaveCount(8)
+  await expect(daily.getByRole('row').nth(1)).toContainText('2026-05-21')
+  await page.getByText('Backtest windows and scores', { exact: true }).click()
+  await expect(
+    page.getByText('Window 3: train 2026-01-01 – 2026-05-13; test 2026-05-14 – 2026-05-20', {
+      exact: true,
+    }),
+  ).toBeVisible()
+  await page
+    .locator('summary')
+    .filter({ hasText: /^Captured sales history$/ })
+    .click()
+  await expect(
+    page
+      .getByRole('table', { name: 'Captured sales history', exact: true })
+      .getByRole('row')
+      .nth(1),
+  ).toContainText('2.123')
+})
+
 test('planner queues a readiness check, the worker completes it, and another run can be canceled', async ({
   page,
 }) => {
