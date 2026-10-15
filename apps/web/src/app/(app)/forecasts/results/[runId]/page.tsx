@@ -1,10 +1,13 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { getLocale, getTranslations } from 'next-intl/server'
+import { NextIntlClientProvider } from 'next-intl'
+import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { PreparedForecastDetails } from '@/components/prepared-forecast-details'
+import { InventoryPolicyForm } from '@/components/inventory-policy-form'
+import { isEditorRole } from '@/lib/auth/roles'
 import {
   forecastEvidenceSchema,
   forecastSummarySchema,
@@ -43,13 +46,15 @@ export default async function ForecastResults({
   const prepared = await getTranslations('PreparedForecast')
   const { data: rows, error } = await db
     .from('forecast_results')
-    .select('item_id,item_code,item_name,status,model,summary')
+    .select('id,item_id,item_code,item_name,status,model,summary')
     .eq('organization_id', context.active.id)
     .eq('run_id', runId)
     .order('item_code')
     .order('item_id')
     .limit(100)
   if (error) throw new Error('Forecast results unavailable')
+  const selected = rows?.find((row) => row.item_id === item)
+  const messages = await getMessages()
   const formatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
   // Intl accepts decimal strings at runtime, retaining precision beyond binary floats.
   const format = (value: string | number | null) =>
@@ -142,6 +147,17 @@ export default async function ForecastResults({
           <h2 className="text-xl font-semibold">
             {t('details')} · {rows?.find((r) => r.item_id === item)?.item_code}
           </h2>
+          {selected?.status === 'selected' && isEditorRole(context.role) && (
+            <NextIntlClientProvider messages={{ InventoryPolicy: messages.InventoryPolicy }}>
+              <InventoryPolicyForm
+                key={selected.id}
+                organizationId={context.active.id}
+                forecastId={selected.id}
+                requestId={crypto.randomUUID()}
+                horizon={detail.output.forecast.length}
+              />
+            </NextIntlClientProvider>
+          )}
           <p>{t('observed', { from: detail.source.start_day, to: detail.source.end_day })}</p>
           {detail.source.preparation ? (
             <PreparedForecastDetails detail={detail} locale={locale} />

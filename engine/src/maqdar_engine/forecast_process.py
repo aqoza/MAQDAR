@@ -5,7 +5,9 @@ import multiprocessing
 def _run(sender, task):
     try:
         from threadpoolctl import threadpool_limits
-        if task.get('method') == 'regional-v1':
+        if task.get('method') == 'policy-v1':
+            from maqdar_engine.inventory_policy import calculate as forecast
+        elif task.get('method') == 'regional-v1':
             from maqdar_engine.regional_forecasting import forecast
         else:
             from maqdar_engine.expanded_forecasting import forecast

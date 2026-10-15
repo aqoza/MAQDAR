@@ -7,6 +7,7 @@ vi.mock('@/lib/classification', () => import('../../../lib/classification'))
 vi.mock('@/lib/forecasting', () => import('../../../lib/forecasting'))
 vi.mock('@/lib/preparation', () => import('../../../lib/preparation'))
 vi.mock('@/lib/prepared-forecast', () => import('../../../lib/prepared-forecast'))
+vi.mock('@/lib/inventory-policy', () => import('../../../lib/inventory-policy'))
 vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidate }))
 vi.mock('next/navigation', () => ({
   redirect: () => {
@@ -26,6 +27,7 @@ import { enqueueClassification } from './classify/actions'
 import { enqueueForecast } from './new/actions'
 import { enqueuePreparation } from './prepare/actions'
 import { enqueuePreparedForecast } from './prepared/actions'
+import { enqueuePolicy } from './policies/actions'
 import { CLASSIFICATION_DEFAULTS } from '../../../lib/classification'
 import { idleState } from '../../../lib/forms'
 
@@ -40,6 +42,46 @@ function form() {
   }).forEach(([key, value]) => data.set(key, value))
   return data
 }
+function policyForm() {
+  const data = form()
+  data.set('forecast_id', '70000000-0000-4000-8000-000000000002')
+  data.set('lead_time', '14')
+  data.set('review_interval', '7')
+  data.set('service_percent', '95')
+  return data
+}
+it('policy uses session organization and converts cycle service to a probability', async () => {
+  await expect(enqueuePolicy(idleState, policyForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith(
+    'policy_enqueue',
+    expect.objectContaining({
+      p_organization_id: 'session-org',
+      p_lead_time: 14,
+      p_review_interval: 7,
+      p_service_level: 0.95,
+    }),
+  )
+})
+it('policy rejects stale organization and invalid parameters before enqueue', async () => {
+  const data = policyForm()
+  data.set('service_percent', '100')
+  expect((await enqueuePolicy(idleState, data)).code).toBe('validation')
+  data.set('service_percent', '95')
+  data.set('lead_time', '89')
+  expect((await enqueuePolicy(idleState, data)).code).toBe('validation')
+  mocks.guard.mockResolvedValue({
+    ok: false,
+    state: { status: 'error', code: 'stale_organization' },
+  })
+  expect((await enqueuePolicy(idleState, policyForm())).code).toBe('stale_organization')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('policy returns a translated database rejection without raw details', async () => {
+  mocks.rpc.mockResolvedValue({ error: { code: 'MQ422', message: 'private details' } })
+  const result = await enqueuePolicy(idleState, policyForm())
+  expect(result.code).toBe('MQ422')
+  expect(JSON.stringify(result)).not.toContain('private')
+})
 beforeEach(() => {
   vi.clearAllMocks()
   mocks.guard.mockResolvedValue({ ok: true, organizationId: 'session-org' })
