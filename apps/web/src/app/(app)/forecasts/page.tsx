@@ -60,6 +60,11 @@ export default async function ForecastsPage() {
         </Link>
       )}
       {editor && !active && (
+        <Link href="/forecasts/prepare" className="inline-block rounded-md border px-4 py-2">
+          {t('prepare')}
+        </Link>
+      )}
+      {editor && !active && (
         <PlanningForm
           key={organization.id}
           organizationId={context.active.id}
@@ -89,8 +94,10 @@ export default async function ForecastsPage() {
           <article key={run.id} className="space-y-3 rounded-xl border p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="font-semibold">
-                {t(`kinds.${run.kind as 'readiness' | 'classification' | 'forecast'}`)} ·{' '}
-                {run.locations?.code ?? run.location_id} · {run.from_date} – {run.to_date}
+                {t(
+                  `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation'}`,
+                )}{' '}
+                · {run.locations?.code ?? run.location_id} · {run.from_date} – {run.to_date}
               </h3>
               <span>
                 {t(
@@ -118,6 +125,11 @@ export default async function ForecastsPage() {
             {run.status === 'succeeded' && run.kind === 'classification' && (
               <Link href={`/forecasts/${run.id}`} className="inline-block underline">
                 {t('classificationResults')}
+              </Link>
+            )}
+            {run.status === 'succeeded' && run.kind === 'preparation' && (
+              <Link href={`/forecasts/prepared/${run.id}`} className="inline-block underline">
+                {t('preparationResults')}
               </Link>
             )}
             {run.status === 'succeeded' && run.kind === 'forecast' && (

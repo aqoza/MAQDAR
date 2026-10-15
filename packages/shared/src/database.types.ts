@@ -128,6 +128,26 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"demand_preparations": {
+                  Row: {
+                    "evidence": NonNullable<Json>,"group_id": string,"id": string,"location_id": string,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "evidence": NonNullable<Json>,"group_id": string,"id"?: string,"location_id": string,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>
+                  }
+                  Update: {
+                    "evidence"?: NonNullable<Json>,"group_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"run_id"?: string,"status"?: string,"summary"?: NonNullable<Json>
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "demand_preparations_organization_id_run_id_location_id_fkey"
+      columns: ["organization_id","run_id","location_id"]
+isOneToOne: false
+      referencedRelation: "planning_runs"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 },"forecast_results": {
                   Row: {
                     "evidence": NonNullable<Json>,"id": string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"model": string | null,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>
@@ -955,6 +975,9 @@ isOneToOne: false
                            },
 "planning_enqueue":
 { Args: { "p_from": string,"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
+                           },
+"preparation_enqueue":
+{ Args: { "p_from": string,"p_history_complete": boolean,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined
