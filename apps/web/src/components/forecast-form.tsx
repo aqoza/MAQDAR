@@ -23,6 +23,17 @@ export function ForecastForm({
     <form action={action} className="space-y-5 rounded-xl border p-5">
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="request_id" value={requestId} />
+      <label className="grid gap-1 text-sm">
+        {t('methodLabel')}
+        <select
+          name="method"
+          defaultValue={state.values?.method ?? 'expanded-v1'}
+          className={inputClass}
+        >
+          <option value="expanded-v1">{t('expandedChoice')}</option>
+          <option value="baseline-v1">{t('baselineChoice')}</option>
+        </select>
+      </label>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-1 text-sm">
           {t('location')}

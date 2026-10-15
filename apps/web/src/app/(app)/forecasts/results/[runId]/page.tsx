@@ -37,6 +37,7 @@ export default async function ForecastResults({
   if (runError) throw new Error('Forecast run unavailable')
   if (!run || run.kind !== 'forecast') notFound()
   if (run.status !== 'succeeded') redirect('/forecasts')
+  const expanded = z.object({ method: z.literal('expanded-v1') }).safeParse(run.options).success
   const { data: rows, error } = await db
     .from('forecast_results')
     .select('item_id,item_code,item_name,status,model,summary')
@@ -74,7 +75,7 @@ export default async function ForecastResults({
       <p>
         {run.locations?.code} · {run.from_date} – {run.to_date}
       </p>
-      <p className="text-sm text-muted-foreground">{t('method')}</p>
+      <p className="text-sm text-muted-foreground">{t(expanded ? 'expandedMethod' : 'method')}</p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('results')}</caption>
@@ -149,6 +150,15 @@ export default async function ForecastResults({
           )}
           {!!detail.output.scores.length && (
             <>
+              {!!detail.output.unavailable_models?.length && (
+                <p>
+                  {t('unavailableModels', {
+                    models: detail.output.unavailable_models
+                      .map((m) => t(`models.${m.model}`))
+                      .join(', '),
+                  })}
+                </p>
+              )}
               <h3 className="font-semibold">{t('comparison')}</h3>
               <p className="text-sm">{t('scoreNote')}</p>
               <div className="overflow-x-auto">
@@ -204,23 +214,75 @@ export default async function ForecastResults({
                 ))}
               </details>
               <h3 className="font-semibold">{t('daily')}</h3>
+              {detail.output.uncertainty && (
+                <div className="space-y-2">
+                  <h3 className="font-semibold">{t('uncertainty')}</h3>
+                  <p className="text-sm">{t('uncertaintyNote')}</p>
+                  <p>{t(`uncertaintyStatuses.${detail.output.uncertainty.status}`)}</p>
+                  {detail.output.uncertainty.residual_count !== undefined && (
+                    <p>
+                      {t('calibrationCount', { count: detail.output.uncertainty.residual_count })}
+                    </p>
+                  )}
+                </div>
+              )}
               <table className="w-full text-sm">
                 <caption className="sr-only">{t('daily')}</caption>
                 <thead>
                   <tr>
                     <th className="p-2 text-start">{t('date')}</th>
                     <th className="p-2 text-start">{t('quantity')}</th>
+                    {detail.output.uncertainty?.status === 'available' &&
+                      (['lower80', 'upper80', 'lower95', 'upper95'] as const).map((key) => (
+                        <th key={key} className="p-2 text-start">
+                          {t(key)}
+                        </th>
+                      ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {detail.output.forecast.map((p) => (
+                  {detail.output.forecast.map((p, index) => (
                     <tr key={p.date} className="border-t">
                       <td className="p-2">{p.date}</td>
                       <td className="p-2 tabular-nums">{format(p.quantity)}</td>
+                      {detail.output.uncertainty?.status === 'available' &&
+                        (['lower80', 'upper80', 'lower95', 'upper95'] as const).map((key) => (
+                          <td key={key} className="p-2 tabular-nums">
+                            {format(detail.output.uncertainty?.bands[index]?.[key] ?? null)}
+                          </td>
+                        ))}
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {detail.output.evaluation && (
+                <section className="space-y-2" aria-label={t('coverage')}>
+                  <h3 className="font-semibold">{t('coverage')}</h3>
+                  <p className="text-sm">{t('coverageNote')}</p>
+                  <p>{t(`evaluationStatuses.${detail.output.evaluation.status}`)}</p>
+                  {detail.output.evaluation.status === 'available' &&
+                    detail.output.evaluation.model && (
+                      <>
+                        <p>
+                          {t('coverageWindow', {
+                            model: t(`models.${detail.output.evaluation.model}`),
+                            train: detail.output.evaluation.train_to ?? '',
+                            from: detail.output.evaluation.test_from ?? '',
+                            to: detail.output.evaluation.test_to ?? '',
+                            count: detail.output.evaluation.count ?? 0,
+                            calibration: detail.output.evaluation.calibration ?? 0,
+                          })}
+                        </p>
+                        <p>
+                          {t('coverageValues', {
+                            level80: format(Number(detail.output.evaluation.coverage80) * 100),
+                            level95: format(Number(detail.output.evaluation.coverage95) * 100),
+                          })}
+                        </p>
+                      </>
+                    )}
+                </section>
+              )}
             </>
           )}
           <details>

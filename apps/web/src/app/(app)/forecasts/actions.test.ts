@@ -116,6 +116,19 @@ function forecastForm() {
   data.set('history_complete', 'on')
   return data
 }
+it('expanded forecasts use their bounded RPC and reject excessive item selections', async () => {
+  const data = forecastForm()
+  data.set('method', 'expanded-v1')
+  await expect(enqueueForecast(idleState, data)).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith(
+    'forecast_expanded_enqueue',
+    expect.objectContaining({ p_organization_id: 'session-org' }),
+  )
+  mocks.rpc.mockClear()
+  data.set('item_codes', Array.from({ length: 11 }, (_, i) => `PART-${i}`).join('\n'))
+  expect((await enqueueForecast(idleState, data)).code).toBe('validation')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
 it('forecast requires confirmation and valid item/horizon bounds before any RPC', async () => {
   const data = forecastForm()
   data.delete('history_complete')

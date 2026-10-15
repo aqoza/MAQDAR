@@ -11,12 +11,18 @@ import pytest
 
 from maqdar_engine.worker import process_one
 from maqdar_engine.classification import classify
-from maqdar_engine.forecasting import forecast
+from maqdar_engine.forecasting import forecast as baseline_forecast
+from maqdar_engine.expanded_forecasting import forecast as expanded_forecast
 from psycopg.types.json import Jsonb
+
 
 CLASSIFICATION_OPTIONS = dict(adi='1.32', cv2='0.49', abc_a='0.8', abc_b='0.95', xyz_x='0.5', xyz_y='1')
 
 pytestmark = pytest.mark.db
+
+
+def forecast(snapshot):
+    return (expanded_forecast if snapshot['method'] == 'expanded-v1' else baseline_forecast)(snapshot)
 
 
 @pytest.fixture
@@ -164,32 +170,37 @@ def test_bad_output_cannot_publish_partial_results(planning):
         assert db.execute('select status from public.planning_runs where id=%s',(run,)).fetchone()[0]=='running'
 
 
-def enqueue_forecast(fixture):
+def enqueue_forecast(fixture, expanded=False):
     dsn, org, user = fixture
     with psycopg.connect(dsn) as db:
         db.execute('set local role authenticated')
         db.execute("select set_config('request.jwt.claims',%s,true)", (json.dumps({'sub':str(user),'org_id':str(org),'role':'authenticated'}),))
-        return db.execute("select public.forecast_enqueue(%s,'TEST','2026-07-01','2026-10-01',%s,true,array['TEST'],7)",
+        return db.execute(("select public.forecast_expanded_enqueue(" if expanded else "select public.forecast_enqueue(") + "%s,'TEST','2026-07-01','2026-10-01',%s,true,array['TEST'],7)",
                           (org,uuid4())).fetchone()[0]
 
 
-def test_forecast_worker_publishes_scores_and_daily_quantities(planning):
-    run=enqueue_forecast(planning)
+@pytest.mark.parametrize("expanded", [False, True])
+def test_forecast_worker_publishes_scores_and_daily_quantities(planning, expanded):
+    run=enqueue_forecast(planning, expanded)
     with worker(planning[0]) as db:
         assert process_one(db)
     with psycopg.connect(planning[0]) as db:
         status,result=db.execute('select status,result from public.planning_runs where id=%s',(run,)).fetchone()
-        assert status=='succeeded' and result['method']=='baseline-v1'
+        assert status=='succeeded' and result['method']==('expanded-v1' if expanded else 'baseline-v1')
         evidence=db.execute('select evidence from public.forecast_results where run_id=%s',(run,)).fetchone()[0]
         assert evidence['output']['model']=='mean'  # all-zero training folds tie
-        assert len(evidence['output']['scores'])==7
+        assert len(evidence['output']['scores']) >= 7
+        if expanded:
+            assert evidence['output']['uncertainty']['status']=='available'
+            assert evidence['output']['evaluation']['status']=='available'
         assert len(evidence['output']['forecast'])==7
         assert evidence['source']['demand']==[['2026-10-01','1.123','0.000']]
         assert db.execute('select count(*) from planning.forecast_inputs where run_id=%s',(run,)).fetchone()[0]==0
 
 
-def test_forecast_retry_is_immutable_and_old_claim_cannot_publish(planning):
-    run=enqueue_forecast(planning)
+@pytest.mark.parametrize("expanded", [False, True])
+def test_forecast_retry_is_immutable_and_old_claim_cannot_publish(planning, expanded):
+    run=enqueue_forecast(planning, expanded)
     with worker(planning[0]) as db:
         lease=db.execute('select * from app.planning_claim()').fetchone()
         snapshot=db.execute('select app.planning_task(%s,%s)',lease).fetchone()[0]
@@ -209,8 +220,9 @@ def test_forecast_retry_is_immutable_and_old_claim_cannot_publish(planning):
         assert db.execute('select app.forecast_finish(%s,%s,%s)',(*replacement,Jsonb(rows))).fetchone()[0] is True
 
 
-def test_forecast_cancellation_removes_snapshot_and_fences_publication(planning):
-    run=enqueue_forecast(planning)
+@pytest.mark.parametrize("expanded", [False, True])
+def test_forecast_cancellation_removes_snapshot_and_fences_publication(planning, expanded):
+    run=enqueue_forecast(planning, expanded)
     with worker(planning[0]) as db:
         lease=db.execute('select * from app.planning_claim()').fetchone()
         snapshot=db.execute('select app.planning_task(%s,%s)',lease).fetchone()[0]

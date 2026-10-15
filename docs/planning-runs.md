@@ -45,3 +45,5 @@ Use the web form to enqueue a check first. `--once` processes at most one availa
 4. For an application rollback, stop the worker and deploy the prior web version. Preserve the additive tables, queue and history. Cancel unwanted runs before rollback, or leave them for recovery. Schema removal or purging history requires a separate reviewed migration.
 
 Step 8 adds [demand classification](demand-classification.md) as an explicit run kind with versioned inputs/results. Step 9 adds [forecast baselines](forecast-baselines.md). This foundation intentionally has no automatic schedule, no ERP export and no forecasting-model choice.
+
+Expanded forecast runs (`expanded-v1`) use a 900-second visibility/lease and a 720-second isolated computation limit for up to 10 items. Other run kinds retain the 120-second lease. See [forecast-expansion.md](forecast-expansion.md) for the versioned numerical contract and owner-run rollout.

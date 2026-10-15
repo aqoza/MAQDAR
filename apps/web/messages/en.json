@@ -1547,7 +1547,7 @@
     "from": "From date",
     "to": "History through date",
     "items": "Item codes (one per line)",
-    "limits": "Select 1–100 distinct item codes, up to 1,096 days of history and a 1–90 day horizon. Selection requires 56 training days plus three horizon-length test windows (140 days for a 28-day horizon).",
+    "limits": "Select up to 10 items for automatic models, or 100 for baselines. History is limited to 1,096 days; horizons are 1–90 days. Automatic runs may take several minutes.",
     "confirmation": "I confirm complete sales history for these items at this location and date window. Missing days within each item’s recorded lifecycle may be treated as zero sold demand.",
     "confirmationRequired": "Confirm complete sales history before forecasting.",
     "pending": "Queueing…",
@@ -1584,12 +1584,41 @@
       "ses": "Simple exponential smoothing",
       "croston": "Croston",
       "sba": "SBA",
-      "tsb": "TSB"
+      "tsb": "TSB",
+      "auto_ets": "Automatic ETS",
+      "auto_arima": "Automatic ARIMA"
     },
     "statuses": {
       "selected": "Model selected",
       "insufficient": "Insufficient history",
       "outside_lifecycle": "Outside recorded lifecycle"
+    },
+    "methodLabel": "Forecast method",
+    "expandedChoice": "Automatic models and uncertainty (up to 10 items)",
+    "baselineChoice": "Seven baselines (up to 100 items)",
+    "expandedMethod": "expanded-v1: seven baselines plus bounded automatic ETS/ARIMA, selected by three rolling RMSE backtests. Automatic models use floating-point fitting; negative predictions are clipped to zero.",
+    "unavailableModels": "These automatic candidates could not complete fitting and were excluded: {models}.",
+    "uncertainty": "Daily forecast uncertainty",
+    "uncertaintyNote": "80% and 95% empirical bands use 2,000 seeded bootstrap draws from pooled out-of-sample errors. They assume errors are exchangeable across days and forecast horizons. They may understate uncertainty for sparse demand, changing patterns or dependent errors; all-zero history cannot reveal unseen demand. These are marginal daily bands, not a horizon-total interval or a service-level guarantee.",
+    "calibrationCount": "Calibration errors: {count}. At least 20 are required.",
+    "lower80": "80% lower",
+    "upper80": "80% upper",
+    "lower95": "95% lower",
+    "upper95": "95% upper",
+    "uncertaintyStatuses": {
+      "available": "Bootstrap bands available.",
+      "unavailable": "Uncertainty unavailable.",
+      "insufficient_residuals": "Too few calibration errors for uncertainty bands."
+    },
+    "coverage": "Independent historical coverage check",
+    "coverageNote": "A separate historical exercise selects a model and constructs bands before the final withheld window. Coverage is the fraction of withheld daily observations inside the bands. It evaluates the forecasting procedure at that earlier cutoff; the final selected model can differ. This single window is a diagnostic, not a calibration guarantee.",
+    "coverageWindow": "{model}; trained through {train}. Held-out window: {from} – {to} ({count} days), using {calibration} earlier calibration errors.",
+    "coverageValues": "Observed coverage: 80% bands — {level80}%; 95% bands — {level95}%.",
+    "evaluationStatuses": {
+      "available": "Held-out coverage available.",
+      "unavailable": "Coverage unavailable.",
+      "insufficient_history": "Coverage needs 56 training days plus four horizon-length windows.",
+      "insufficient_residuals": "Coverage needs at least 20 earlier calibration errors."
     }
   }
 }
