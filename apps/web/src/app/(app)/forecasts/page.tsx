@@ -49,6 +49,9 @@ export default async function ForecastsPage() {
         <PlanningRefresh active={active} label={t('refresh')} />
       </div>
       <p className="text-sm text-muted-foreground">{t('scope')}</p>
+      <Link href="/forecasts/workbench" className="inline-block rounded-md border px-4 py-2">
+        {t('workbench')}
+      </Link>
       {editor && !active && (
         <Link href="/forecasts/classify" className="inline-block rounded-md border px-4 py-2">
           {t('classify')}

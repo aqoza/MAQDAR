@@ -27,7 +27,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
   if (run.status !== 'succeeded') redirect('/forecasts')
   const { data, error } = await db
     .from('inventory_policies')
-    .select('item_code,unit,evidence')
+    .select('id,item_code,unit,evidence')
     .eq('organization_id', context.active.id)
     .eq('run_id', runId)
     .maybeSingle()
@@ -44,6 +44,9 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
         {t('back')}
       </Link>
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      <Link href={`/forecasts/workbench/${data.id}`} className="inline-block underline">
+        {t('reviewPolicy')}
+      </Link>
       <p>
         {data.item_code} · {run.locations?.code} · {data.unit ?? t('itemUnits')}
       </p>

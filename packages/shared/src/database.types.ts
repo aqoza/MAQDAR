@@ -664,6 +664,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"policy_overrides": {
+                  Row: {
+                    "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"decision_request_id": string | null,"id": string,"location_id": string,"order_up_to": number,"organization_id": string,"policy_id": string,"reason": string,"reorder_point": number,"request_id": string,"revision": number,"status": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"decision_request_id"?: string | null,"id"?: string,"location_id": string,"order_up_to": number,"organization_id": string,"policy_id": string,"reason": string,"reorder_point": number,"request_id": string,"revision": number,"status"?: string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"decision_request_id"?: string | null,"id"?: string,"location_id"?: string,"order_up_to"?: number,"organization_id"?: string,"policy_id"?: string,"reason"?: string,"reorder_point"?: number,"request_id"?: string,"revision"?: number,"status"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 },"public_holidays": {
                   Row: {
                     "country_code": string,"holiday_date": string,"id": number,"kind": string,"name_en": string,"note": string | null,"sector": string,"shifted_from": string | null,"source": string
@@ -905,7 +931,47 @@ isOneToOne: false
                 }
           }
           Views: {
-            [_ in never]: never
+            "policy_override_history": {
+                  Row: {
+                    "created_at": string | null,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"id": string | null,"location_id": string | null,"order_up_to": string | null,"organization_id": string | null,"policy_id": string | null,"reason": string | null,"reorder_point": string | null,"revision": number | null,"status": string | null,"submitted_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"id"?: string | null,"location_id"?: string | null,"order_up_to"?: never,"organization_id"?: string | null,"policy_id"?: string | null,"reason"?: string | null,"reorder_point"?: never,"revision"?: number | null,"status"?: string | null,"submitted_by"?: string | null
+                         }
+                        Update: {
+                           "created_at"?: string | null,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"id"?: string | null,"location_id"?: string | null,"order_up_to"?: never,"organization_id"?: string | null,"policy_id"?: string | null,"reason"?: string | null,"reorder_point"?: never,"revision"?: number | null,"status"?: string | null,"submitted_by"?: string | null
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
+                },"policy_workbench": {
+                  Row: {
+                    "approved_maximum": string | null,"approved_reorder": string | null,"calculated_maximum": string | null,"calculated_reorder": string | null,"finished_at": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"review_status": string | null,"run_id": string | null,"search_text": string | null,"status": string | null,"to_date": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "inventory_policies_organization_id_run_id_location_id_fkey"
+      columns: ["organization_id","run_id","location_id"]
+isOneToOne: false
+      referencedRelation: "planning_runs"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
+                }
           }
           Functions: {
             "accept_invitation":
@@ -1001,6 +1067,12 @@ isOneToOne: false
                            },
 "policy_enqueue":
 { Args: { "p_forecast_id": string,"p_lead_time": number,"p_organization_id": string,"p_request_id": string,"p_review_interval": number,"p_service_level": number }; Returns: string
+                           },
+"policy_override_decide":
+{ Args: { "p_decision": string,"p_organization_id": string,"p_override_id": string,"p_reason": string,"p_request_id": string }; Returns: string
+                           },
+"policy_override_submit":
+{ Args: { "p_order_up_to": string,"p_organization_id": string,"p_policy_id": string,"p_reason": string,"p_reorder_point": string,"p_request_id": string }; Returns: string
                            },
 "preparation_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string

@@ -32,7 +32,7 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 ## Phase 2 build steps
 
-Steps 7, 8, 9, 9b, 10, 10b and 11 were scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
+Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
 | Step | Scope                                                                                                                                                                                      | Status    |
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
@@ -42,8 +42,9 @@ Steps 7, 8, 9, 9b, 10, 10b and 11 were scoped and approved by the owner on 2026-
 | 9b   | **Forecast model expansion:** bounded automatic ETS/ARIMA, seeded daily bootstrap bands and an independent historical coverage check.                                                      | Merged    |
 | 10   | **Demand preparation:** saved related-part groups, source contributions, exact daily sold/lost totals and verified calendar evidence.                                                      | Merged    |
 | 10b  | **Prepared-group forecasts:** fixed saved groups, bounded learned weekday/verified holiday/Ramadan candidate, rolling comparisons, daily bands and independent coverage.                   | Merged    |
-| 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | In review |
-| 12   | **Planner workbench and KPIs:** reviewed overrides, forecast/policy inspection and availability/accuracy/excess views.                                                                     | Proposed  |
+| 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Merged    |
+| 12a  | **Policy review workbench:** searchable saved recommendations, reasoned manual thresholds and independent approval history.                                                                | In review |
+| 12b  | **KPI expansion:** availability, forecast accuracy and excess views with explicit definitions and data coverage.                                                                           | Proposed  |
 
 Step 7 criteria, operational limits and owner-run rollout are in [planning-runs.md](planning-runs.md).
 
@@ -163,3 +164,7 @@ The owner also approved holding saved relationships and conversions fixed across
 ### Step 11 approved decisions (2026-10-15)
 
 PR #16 was reviewed and merged as `71bfcc8` before this work. The owner approved saved inventory-policy recommendations from individual and prepared-group forecasts, including safety stock, a reorder-point reference and periodic-review order-up-to maximum. The defaults are 95% cycle service, an explicitly entered fixed calendar-day lead time and a seven-day review interval. The saved forecast must cover lead time plus review interval. Group values remain in saved units; variable lead times, fill-rate targets and purchasing follow separately. See [inventory-policies.md](inventory-policies.md) for acceptance, numerical assumptions, evidence and rollout.
+
+### Step 12a approved decisions (2026-10-15)
+
+PR #17 was reviewed and merged as `2d282dc`. The owner approved the policy review workbench first, with KPI expansion following separately. Planners, owners and admins submit reasoned threshold overrides; a different approver, owner or admin approves/rejects; authors may withdraw pending proposals. Reasons are required and nonnegative reorder references cannot exceed periodic maxima. Calculated results remain immutable, and approved overrides remain attached to the exact saved policy without carry-forward or order execution. See [policy-workbench.md](policy-workbench.md) for acceptance, concurrency, numeric precision and rollout.
