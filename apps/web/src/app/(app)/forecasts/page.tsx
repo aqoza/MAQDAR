@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
@@ -26,7 +27,7 @@ export default async function ForecastsPage() {
   const { data, error } = await db
     .from('planning_runs')
     .select(
-      'id,location_id,from_date,to_date,status,attempts,created_at,finished_at,result,locations(code)',
+      'id,kind,location_id,from_date,to_date,status,attempts,created_at,finished_at,result,locations(code)',
     )
     .eq('organization_id', context.active.id)
     .order('created_at', { ascending: false })
@@ -49,7 +50,13 @@ export default async function ForecastsPage() {
       </div>
       <p className="text-sm text-muted-foreground">{t('scope')}</p>
       {editor && !active && (
+        <Link href="/forecasts/classify" className="inline-block rounded-md border px-4 py-2">
+          {t('classify')}
+        </Link>
+      )}
+      {editor && !active && (
         <PlanningForm
+          key={organization.id}
           organizationId={context.active.id}
           requestId={crypto.randomUUID()}
           from={from}
@@ -72,11 +79,12 @@ export default async function ForecastsPage() {
       <h2 className="text-lg font-semibold">{t('recent')}</h2>
       {data.map((run) => {
         const parsed = readinessSchema.safeParse(run.result)
-        const result = parsed.success ? parsed.data : null
+        const result = run.kind === 'readiness' && parsed.success ? parsed.data : null
         return (
           <article key={run.id} className="space-y-3 rounded-xl border p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="font-semibold">
+                {t(`kinds.${run.kind as 'readiness' | 'classification'}`)} ·{' '}
                 {run.locations?.code ?? run.location_id} · {run.from_date} – {run.to_date}
               </h3>
               <span>
@@ -99,7 +107,14 @@ export default async function ForecastsPage() {
               />
             )}
             {run.status === 'failed' && <p role="status">{t('failedNote')}</p>}
-            {run.status === 'succeeded' && !result && <p role="status">{t('unavailable')}</p>}
+            {run.status === 'succeeded' && run.kind === 'readiness' && !result && (
+              <p role="status">{t('unavailable')}</p>
+            )}
+            {run.status === 'succeeded' && run.kind === 'classification' && (
+              <Link href={`/forecasts/${run.id}`} className="inline-block underline">
+                {t('classificationResults')}
+              </Link>
+            )}
             {result && (
               <>
                 <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

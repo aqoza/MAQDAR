@@ -10,6 +10,10 @@ from psycopg.conninfo import conninfo_to_dict
 import pytest
 
 from maqdar_engine.worker import process_one
+from maqdar_engine.classification import classify
+from psycopg.types.json import Jsonb
+
+CLASSIFICATION_OPTIONS = dict(adi='1.32', cv2='0.49', abc_a='0.8', abc_b='0.95', xyz_x='0.5', xyz_y='1')
 
 pytestmark = pytest.mark.db
 
@@ -92,3 +96,68 @@ def test_expired_claim_is_recovered_and_fenced(planning):
         assert replacement[1] != original[1]
         assert db.execute('select app.planning_execute(%s,%s)', original).fetchone()[0] is False
         assert db.execute('select app.planning_execute(%s,%s)', replacement).fetchone()[0] is True
+
+
+def enqueue_classification(fixture, confirmed=True):
+    dsn, org, user = fixture
+    with psycopg.connect(dsn) as db:
+        db.execute('set local role authenticated')
+        db.execute("select set_config('request.jwt.claims',%s,true)", (json.dumps({'sub':str(user),'org_id':str(org),'role':'authenticated'}),))
+        return db.execute("select public.classification_enqueue(%s,'TEST','2026-10-01','2026-10-02',%s,%s,%s)",
+                          (org,uuid4(),confirmed,Jsonb(CLASSIFICATION_OPTIONS))).fetchone()[0]
+
+
+def test_classification_requires_confirmed_history(planning):
+    with pytest.raises(psycopg.Error) as error:
+        enqueue_classification(planning,False)
+    assert error.value.sqlstate == 'MQ422'
+
+
+def test_classification_worker_publishes_versioned_evidence(planning):
+    run=enqueue_classification(planning)
+    with worker(planning[0]) as db:
+        assert process_one(db)
+    with psycopg.connect(planning[0]) as db:
+        status,result=db.execute('select status,result from public.planning_runs where id=%s',(run,)).fetchone()
+        assert status=='succeeded' and result['method']=='daily-v1'
+        pattern,abc,xyz,evidence=db.execute('select pattern,abc,xyz,evidence from public.demand_classifications where run_id=%s',(run,)).fetchone()
+        assert (pattern,abc,xyz)==('insufficient','A','U')
+        assert Decimal(evidence['source']['quantity'])==Decimal('1.123')
+        assert evidence['source']['days']==2
+        assert db.execute('select count(*) from planning.classification_inputs where run_id=%s',(run,)).fetchone()[0]==0
+
+
+def test_retry_reuses_snapshot_despite_imports_and_source_deletion(planning):
+    run=enqueue_classification(planning)
+    with worker(planning[0]) as db:
+        lease=db.execute('select * from app.planning_claim()').fetchone()
+        snapshot=db.execute('select app.planning_task(%s,%s)',lease).fetchone()[0]
+        assert db.execute('select app.planning_fail(%s,%s)',lease).fetchone()[0]
+    with psycopg.connect(planning[0],autocommit=True) as db:
+        db.execute('delete from public.demand_history where organization_id=%s',(planning[1],))
+        db.execute('delete from public.items where organization_id=%s',(planning[1],))
+        db.execute("update pgmq.q_planning set vt=clock_timestamp()-interval '1 second' where message->>'run_id'=%s",(str(run),))
+    with worker(planning[0]) as db:
+        new_lease=db.execute('select * from app.planning_claim()').fetchone()
+        new_snapshot=db.execute('select app.planning_task(%s,%s)',new_lease).fetchone()[0]
+        assert new_snapshot==snapshot
+        rows=Jsonb(classify(snapshot))
+        assert db.execute('select app.classification_finish(%s,%s,%s)',(*lease,rows)).fetchone()[0] is False
+        assert db.execute('select app.classification_finish(%s,%s,%s)',(*new_lease,rows)).fetchone()[0] is True
+        assert db.execute('select app.classification_finish(%s,%s,%s)',(*new_lease,rows)).fetchone()[0] is False
+
+
+def test_bad_output_cannot_publish_partial_results(planning):
+    run=enqueue_classification(planning)
+    with worker(planning[0]) as db:
+        lease=db.execute('select * from app.planning_claim()').fetchone()
+        snapshot=db.execute('select app.planning_task(%s,%s)',lease).fetchone()[0]
+        rows=classify(snapshot);rows[0]['item_id']=str(uuid4())
+        with pytest.raises(psycopg.Error) as error:
+            db.execute('select app.classification_finish(%s,%s,%s)',(*lease,Jsonb(rows)))
+        assert error.value.sqlstate=='MQ422'
+        with pytest.raises(psycopg.Error):
+            db.execute('select app.planning_execute(%s,%s)',lease)
+    with psycopg.connect(planning[0]) as db:
+        assert db.execute('select count(*) from public.demand_classifications where run_id=%s',(run,)).fetchone()[0]==0
+        assert db.execute('select status from public.planning_runs where id=%s',(run,)).fetchone()[0]=='running'

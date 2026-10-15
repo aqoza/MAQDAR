@@ -32,12 +32,12 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 ## Phase 2 build steps
 
-Step 7 scope approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
+Steps 7 and 8 scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
 | Step | Scope                                                                                                                                                                             | Status    |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| 7    | **Planning-run foundation:** durable pgmq jobs, restricted Python worker, bounded retries and crash recovery, location-scoped demand readiness results and Forecasts run history. | In review |
-| 8    | **Demand classification:** define observation windows and missing-data semantics, ADI/CV squared, ABC-XYZ and lifecycle evidence, with persisted versioned classifications.       | Proposed  |
+| 7    | **Planning-run foundation:** durable pgmq jobs, restricted Python worker, bounded retries and crash recovery, location-scoped demand readiness results and Forecasts run history. | Merged    |
+| 8    | **Demand classification:** define observation windows and missing-data semantics, ADI/CV squared, ABC-XYZ and lifecycle evidence, with persisted versioned classifications.       | In review |
 | 9    | **Forecast baselines and selection:** intermittent and regular-demand models, rolling backtests and reproducible accuracy comparisons.                                            | Proposed  |
 | 10   | **Regional effects and part relationships:** calendar effects plus supersession/interchange demand preparation, with explicit roll-up decisions.                                  | Proposed  |
 | 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                   | Proposed  |
@@ -131,3 +131,5 @@ Step 6 definitions (owner-confirmed 2026-10-15): latest stock observations are v
 - Supersession, holiday-override and location-parent files above 10,000 rows still merge in ranges, so a reversal spread over such a file can fail with a transient cycle or overlap.
 
 Step 7 owner decision (2026-10-15): begin Phase 2 with the planning-run foundation and demand-data readiness checks; defer forecast models and inventory policies to later steps.
+
+Step 8 owner decisions (2026-10-15): daily sold-demand classification requires explicit complete-history confirmation before missing days become zero. Lost sales remain separate. Editable defaults are ADI/CV² 1.32/0.49, ABC sold quantity × current item cost per currency at 80%/95%, and XYZ daily CV at 0.5/1.0. Lifecycle reports recorded evidence without inferring obsolescence. See [demand-classification.md](demand-classification.md) for definitions, acceptance, limits and rollout.

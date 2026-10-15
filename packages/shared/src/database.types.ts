@@ -94,6 +94,26 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"demand_classifications": {
+                  Row: {
+                    "abc": string,"currency": string,"evidence": NonNullable<Json>,"id": string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"organization_id": string,"pattern": string,"run_id": string,"xyz": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "abc": string,"currency": string,"evidence": NonNullable<Json>,"id"?: string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"organization_id": string,"pattern": string,"run_id": string,"xyz": string
+                  }
+                  Update: {
+                    "abc"?: string,"currency"?: string,"evidence"?: NonNullable<Json>,"id"?: string,"item_code"?: string,"item_id"?: string,"item_name"?: string,"location_id"?: string,"organization_id"?: string,"pattern"?: string,"run_id"?: string,"xyz"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "demand_classifications_organization_id_run_id_location_id_fkey"
+      columns: ["organization_id","run_id","location_id"]
+isOneToOne: false
+      referencedRelation: "planning_runs"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 },"demand_history": {
                   Row: {
                     "demand_date": string,"item_id": string,"location_id": string,"lost_sales_quantity": number,"organization_id": string,"quantity": number
@@ -560,14 +580,14 @@ isOneToOne: false
                   ]
                 },"planning_runs": {
                   Row: {
-                    "attempts": number,"created_at": string,"created_by": string | null,"error_code": string | null,"finished_at": string | null,"from_date": string,"id": string,"kind": string,"location_id": string,"organization_id": string,"request_id": string,"result": Json | null,"started_at": string | null,"status": string,"to_date": string
+                    "attempts": number,"created_at": string,"created_by": string | null,"error_code": string | null,"finished_at": string | null,"from_date": string,"id": string,"kind": string,"location_id": string,"options": NonNullable<Json>,"organization_id": string,"request_id": string,"result": Json | null,"started_at": string | null,"status": string,"to_date": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "attempts"?: number,"created_at"?: string,"created_by"?: string | null,"error_code"?: string | null,"finished_at"?: string | null,"from_date": string,"id"?: string,"kind"?: string,"location_id": string,"organization_id": string,"request_id": string,"result"?: Json | null,"started_at"?: string | null,"status"?: string,"to_date": string
+                    "attempts"?: number,"created_at"?: string,"created_by"?: string | null,"error_code"?: string | null,"finished_at"?: string | null,"from_date": string,"id"?: string,"kind"?: string,"location_id": string,"options"?: NonNullable<Json>,"organization_id": string,"request_id": string,"result"?: Json | null,"started_at"?: string | null,"status"?: string,"to_date": string
                   }
                   Update: {
-                    "attempts"?: number,"created_at"?: string,"created_by"?: string | null,"error_code"?: string | null,"finished_at"?: string | null,"from_date"?: string,"id"?: string,"kind"?: string,"location_id"?: string,"organization_id"?: string,"request_id"?: string,"result"?: Json | null,"started_at"?: string | null,"status"?: string,"to_date"?: string
+                    "attempts"?: number,"created_at"?: string,"created_by"?: string | null,"error_code"?: string | null,"finished_at"?: string | null,"from_date"?: string,"id"?: string,"kind"?: string,"location_id"?: string,"options"?: NonNullable<Json>,"organization_id"?: string,"request_id"?: string,"result"?: Json | null,"started_at"?: string | null,"status"?: string,"to_date"?: string
                   }
                   Relationships: [
                     {
@@ -842,6 +862,9 @@ isOneToOne: false
                            },
 "api_upsert":
 { Args: { "p_body": Json,"p_entity": string,"p_key_hash": string,"p_request_id": string }; Returns: Json
+                           },
+"classification_enqueue":
+{ Args: { "p_from": string,"p_history_complete": boolean,"p_location_code": string,"p_options": Json,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
                            },
 "create_api_key":
 { Args: { "p_display_prefix": string,"p_expires_in_days": number,"p_key_hash": string,"p_last4": string,"p_name": string,"p_organization_id": string,"p_scopes": (string)[] }; Returns: string

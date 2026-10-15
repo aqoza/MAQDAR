@@ -1452,6 +1452,86 @@
       "positive_demand_rows": "Rows with sales",
       "quantity": "Sold quantity",
       "lost_sales_quantity": "Lost-sales quantity"
+    },
+    "classify": "Classify demand",
+    "classificationResults": "View classification results",
+    "kinds": {
+      "readiness": "Demand readiness",
+      "classification": "Demand classification"
     }
+  },
+  "Classification": {
+    "title": "Classify demand",
+    "description": "Classify daily sold demand and compare value within each currency.",
+    "scope": "Includes all catalog items at one location. Recorded introduction and discontinuation dates limit each item’s observation window. If sales history is incomplete, use Check demand data first.",
+    "back": "Back to planning runs",
+    "results": "Demand classification results",
+    "location": "Location code",
+    "from": "From date",
+    "to": "To date",
+    "thresholds": "Classification thresholds",
+    "fields": {
+      "adi": "ADI boundary",
+      "cv2": "Positive-demand CV² boundary",
+      "abc_a": "ABC A share",
+      "abc_b": "ABC B cumulative share",
+      "xyz_x": "XYZ X maximum daily CV",
+      "xyz_y": "XYZ Y maximum daily CV"
+    },
+    "thresholdNote": "Shares use fractions (0.8 = 80%). ADI must be at least 1; ABC shares must increase and stay below 1; XYZ boundaries must increase. Equal-value items remain together in ABC.",
+    "confirmation": "I confirm that this location and date window contain complete sales history. Missing days within each item’s lifecycle may be treated as zero sold demand.",
+    "confirmationRequired": "Confirm complete sales history before classifying demand.",
+    "submit": "Queue classification",
+    "pending": "Queuing classification…",
+    "methodNote": "Daily method v1. Missing days are zero only under the planner’s complete-history confirmation. Lost sales are separate. ABC uses captured current costs, separately per currency. Lifecycle evidence does not infer obsolescence.",
+    "pattern": "Demand pattern",
+    "all": "All patterns",
+    "filter": "Filter results",
+    "total": "{count, plural, one {# item} other {# items}}",
+    "patterns": {
+      "smooth": "Smooth",
+      "erratic": "Erratic",
+      "intermittent": "Intermittent",
+      "lumpy": "Lumpy",
+      "no_sales": "No sales",
+      "insufficient": "Insufficient positive days",
+      "outside_lifecycle": "Outside recorded lifecycle"
+    },
+    "columns": {
+      "item": "Item",
+      "pattern": "Pattern",
+      "abc": "ABC",
+      "xyz": "XYZ",
+      "adi": "ADI",
+      "cv2": "Positive CV²",
+      "dailyCv": "Daily CV",
+      "value": "Sold demand value",
+      "evidence": "Evidence"
+    },
+    "noValue": "No value",
+    "unknown": "Unknown",
+    "details": "Show evidence",
+    "empty": "No items match this view.",
+    "evidence": {
+      "days": "Observed calendar days",
+      "positive_days": "Positive sales days",
+      "quantity": "Sold quantity",
+      "lost_sales_quantity": "Lost sales quantity",
+      "unit_cost": "Captured unit cost",
+      "days_since_last_sale": "Days since last sale at window end",
+      "status": "Recorded item status",
+      "introduced_on": "Introduction date",
+      "discontinued_on": "Discontinuation date",
+      "last_sale": "Last sale in observed window"
+    },
+    "statuses": {
+      "active": "Active",
+      "discontinued": "Discontinued",
+      "new": "New",
+      "phase_out": "Phase out"
+    },
+    "pages": "Result pages",
+    "previous": "Previous page",
+    "next": "Next page"
   }
 }
