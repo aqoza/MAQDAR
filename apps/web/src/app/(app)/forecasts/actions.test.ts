@@ -5,6 +5,7 @@ vi.mock('@/lib/forms', () => import('../../../lib/forms'))
 vi.mock('@/lib/planning', () => import('../../../lib/planning'))
 vi.mock('@/lib/classification', () => import('../../../lib/classification'))
 vi.mock('@/lib/forecasting', () => import('../../../lib/forecasting'))
+vi.mock('@/lib/preparation', () => import('../../../lib/preparation'))
 vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidate }))
 vi.mock('next/navigation', () => ({
   redirect: () => {
@@ -22,6 +23,7 @@ vi.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ rpc: mock
 import { cancelRun, enqueueRun } from './actions'
 import { enqueueClassification } from './classify/actions'
 import { enqueueForecast } from './new/actions'
+import { enqueuePreparation } from './prepare/actions'
 import { CLASSIFICATION_DEFAULTS } from '../../../lib/classification'
 import { idleState } from '../../../lib/forms'
 
@@ -116,6 +118,34 @@ function forecastForm() {
   data.set('history_complete', 'on')
   return data
 }
+it('preparation requires complete-history confirmation and bounded related-source selection', async () => {
+  const data = forecastForm()
+  data.delete('history_complete')
+  expect((await enqueuePreparation(idleState, data)).message).toBe('confirmationRequired')
+  data.set('history_complete', 'on')
+  data.set('item_codes', Array.from({ length: 26 }, (_, i) => `P-${i}`).join('\n'))
+  expect((await enqueuePreparation(idleState, data)).code).toBe('validation')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('preparation sends only session organization and its own parsed parameters', async () => {
+  await expect(enqueuePreparation(idleState, forecastForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith(
+    'preparation_enqueue',
+    expect.objectContaining({
+      p_organization_id: 'session-org',
+      p_item_codes: ['PART-1', 'PART-2'],
+      p_history_complete: true,
+    }),
+  )
+})
+it('preparation respects the shared stale-organization guard', async () => {
+  mocks.guard.mockResolvedValue({
+    ok: false,
+    state: { status: 'error', code: 'stale_organization' },
+  })
+  expect((await enqueuePreparation(idleState, forecastForm())).code).toBe('stale_organization')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
 it('expanded forecasts use their bounded RPC and reject excessive item selections', async () => {
   const data = forecastForm()
   data.set('method', 'expanded-v1')

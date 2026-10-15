@@ -11,6 +11,115 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
+test('preparation preserves source contributions, blocks unit conflicts and shows unknown calendar dates', async ({
+  page,
+}) => {
+  test.setTimeout(120_000)
+  const id = randomUUID()
+  const email = `prepare-${id}@example.com`
+  const password = `Prepare-${id}`
+  await createConfirmedUser(email, password)
+  await signInWithPassword(page, email, password)
+  const slug = `prepare-${id}`
+  await createOrganization(page, { name: `Preparation ${id}`, slug })
+  const org = await organizationIdBySlug(slug)
+  const location = randomUUID()
+  await seedRows('locations', [
+    {
+      id: location,
+      organization_id: org,
+      code: 'PREP',
+      name_en: 'Preparation branch',
+      location_type: 'branch',
+      country_code: 'SA',
+      timezone: 'Asia/Riyadh',
+    },
+  ])
+  const ids = Array.from({ length: 5 }, () => randomUUID())
+  await seedRows(
+    'items',
+    ['OLD', 'NEW', 'ZZ-ALT', 'BAD', 'BAD-SET'].map((code, index) => ({
+      id: ids[index],
+      organization_id: org,
+      code,
+      name_en: code,
+      product_group: 'Test',
+      unit_of_measure: index === 4 ? 'SET' : 'EA',
+      unit_cost: '1',
+      currency: 'SAR',
+    })),
+  )
+  await seedRows('item_supersessions', [
+    {
+      organization_id: org,
+      predecessor_item_id: ids[0],
+      successor_item_id: ids[1],
+      effective_on: '2026-09-30',
+      quantity_factor: '2',
+    },
+  ])
+  await seedRows('item_interchanges', [
+    { organization_id: org, item_id: ids[1], alternate_item_id: ids[2], direction: 'two_way' },
+    { organization_id: org, item_id: ids[3], alternate_item_id: ids[4], direction: 'two_way' },
+  ])
+  await seedRows('demand_history', [
+    {
+      organization_id: org,
+      location_id: location,
+      item_id: ids[0],
+      demand_date: '2026-10-01',
+      quantity: '1.123',
+      lost_sales_quantity: '0.500',
+    },
+    {
+      organization_id: org,
+      location_id: location,
+      item_id: ids[2],
+      demand_date: '2026-09-29',
+      quantity: '3',
+      lost_sales_quantity: '2',
+    },
+  ])
+  await page.goto('/forecasts')
+  await page.getByRole('link', { name: 'Prepare demand', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Prepare demand', exact: true })).toBeVisible()
+  await page.getByLabel('Location code', { exact: true }).fill('PREP')
+  await page.getByLabel('From date', { exact: true }).fill('2026-09-29')
+  await page.getByLabel('History through date', { exact: true }).fill('2026-10-01')
+  await page.getByLabel('Item codes (one per line)', { exact: true }).fill('NEW\nBAD')
+  await page.getByRole('button', { name: 'Queue preparation', exact: true }).click()
+  await expect(page).toHaveURL(/\/forecasts\/prepare$/)
+  await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: 'Queue preparation', exact: true }).click()
+  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  const dsn =
+    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+  if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
+    throw new Error('Local worker test only')
+  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+    cwd: resolve(process.cwd(), '../../engine'),
+    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    timeout: 100_000,
+  })
+  await page.getByRole('button', { name: 'Refresh runs' }).click()
+  await page.getByRole('link', { name: 'View prepared demand', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Prepared demand results' })).toBeVisible()
+  await expect(
+    page.getByText('Two-way interchanges have different units.', { exact: true }),
+  ).toBeVisible()
+  await expect(page.getByRole('cell', { name: '5.246', exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Inspect NEW', exact: true }).click()
+  const sources = page.getByRole('table', { name: 'Source contributions', exact: true })
+  await expect(sources.getByRole('row')).toHaveCount(4)
+  await expect(
+    sources.getByRole('row').filter({ has: page.getByRole('cell', { name: 'OLD', exact: true }) }),
+  ).toContainText('2.246')
+  const daily = page.getByRole('table', { name: 'Daily prepared demand and calendar', exact: true })
+  await expect(daily.getByRole('row')).toHaveCount(4)
+  await expect(daily.getByRole('row').filter({ hasText: '2026-10-01' })).toContainText('Unknown')
+  await expect(daily.getByRole('row').filter({ hasText: '2026-10-01' })).toContainText('2.246')
+})
+
 for (const method of ['baseline-v1', 'expanded-v1']) {
   test(`planner compares ${method} forecasts and inspects daily quantities and held-out windows`, async ({
     page,

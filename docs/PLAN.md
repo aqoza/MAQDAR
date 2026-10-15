@@ -32,21 +32,24 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 ## Phase 2 build steps
 
-Steps 7, 8, 9 and 9b scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
+Steps 7, 8, 9, 9b and the first Step 10 release were scoped and approved by the owner on 2026-10-15. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
 | Step | Scope                                                                                                                                                                                      | Status    |
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
 | 7    | **Planning-run foundation:** durable pgmq jobs, restricted Python worker, bounded retries and crash recovery, location-scoped demand readiness results and Forecasts run history.          | Merged    |
 | 8    | **Demand classification:** define observation windows and missing-data semantics, ADI/CV squared, ABC-XYZ and lifecycle evidence, with persisted versioned classifications.                | Merged    |
 | 9    | **Forecast baselines and selection:** mean, naive, weekly seasonal naive, SES, Croston, SBA and TSB; three rolling backtests, versioned daily forecasts and inspectable model comparisons. | Merged    |
-| 9b   | **Forecast model expansion:** bounded automatic ETS/ARIMA, seeded daily bootstrap bands and an independent historical coverage check.                                                      | In review |
-| 10   | **Regional effects and part relationships:** calendar effects plus supersession/interchange demand preparation, with explicit roll-up decisions.                                           | Proposed  |
+| 9b   | **Forecast model expansion:** bounded automatic ETS/ARIMA, seeded daily bootstrap bands and an independent historical coverage check.                                                      | Merged    |
+| 10   | **Demand preparation:** saved related-part groups, source contributions, exact daily sold/lost totals and verified calendar evidence.                                                      | In review |
+| 10b  | **Regional forecast integration:** define and validate learned calendar adjustments and prepared-demand use in forecasts and backtests.                                                    | Proposed  |
 | 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Proposed  |
 | 12   | **Planner workbench and KPIs:** reviewed overrides, forecast/policy inspection and availability/accuracy/excess views.                                                                     | Proposed  |
 
 Step 7 criteria, operational limits and owner-run rollout are in [planning-runs.md](planning-runs.md).
 
 Step 9b acceptance, numerical definitions and rollout are in [forecast-expansion.md](forecast-expansion.md).
+
+Step 10 acceptance, grouping/calendar semantics, bounds and rollout are in [demand-preparation.md](demand-preparation.md).
 
 ## Decision log
 
@@ -122,7 +125,7 @@ Step 6 definitions (owner-confirmed 2026-10-15): latest stock observations are v
 - Component tests with jsdom and Testing Library when the first UI logic worth testing appears.
 - Switching to TypeScript 7 when typescript-eslint supports its API.
 - Keyset paging and a security-definer search RPC (pg_trgm) for the 500k-item phase; today lists use offset paging and a tenant filter scan for search.
-- Engine helpers that consume Step 4 master data: fx conversion (direct, inverse, via base currency), working-calendar expansion, item planning keys from interchanges and supersessions.
+- Engine helpers that consume Step 4 master data: fx conversion (direct, inverse, via base currency), and applying prepared calendar/part-group evidence to forecasts and inventory policies. Step 10 provides inspectable working-calendar expansion and related-part preparation.
 - Product-group master table (items.product_group stays text), working hours and Ramadan hours on calendars, transport modes and ranks on lanes.
 - Branch scoping of network lanes, calendars and overrides (branch users can read them today; 0005 allows location scoping only on id/location_id).
 - Public-holiday and Ramadan reference refresh: coverage ends 2026-09-30, and Bahrain, Egypt and Jordan have no rows yet.
@@ -142,3 +145,9 @@ Step 9 owner decisions (2026-10-15): ship the first baseline release with mean, 
 ### Step 9b approved decisions (2026-10-15)
 
 The owner approved automatic ETS/ARIMA alongside the seven baselines, retaining rolling RMSE selection, with reproducible daily bootstrap bands at 80%/95% and a separate held-out coverage check when sufficient history exists. Sparse-demand limitations must be visible. Expanded jobs are bounded to 10 items, a 900-second lease and a 720-second isolated computation budget; baseline jobs retain their existing bounds. Technical definitions and verification are in [forecast-expansion.md](forecast-expansion.md).
+
+### Step 10 approved decisions (2026-10-15)
+
+PR #14 (Step 9b) was reviewed and merged before this work. The owner approved a saved demand-preparation release: related-part groups, each source contribution, combined daily sold demand, separate lost sales and daily calendar flags. Dates outside verified regional coverage remain unknown. Learned regional forecast adjustments follow separately.
+
+Grouping uses relationships effective at the history cutoff: predecessors roll into terminal successors with recorded quantity factors; two-way interchanges pool only at 1:1 with matching units; one-way substitutes remain separate. Conflicting conversion paths block their group and every source contributes once. Complete-history confirmation covers automatically included related sources. See [demand-preparation.md](demand-preparation.md) for exact lifecycle, calendar and cutoff semantics.

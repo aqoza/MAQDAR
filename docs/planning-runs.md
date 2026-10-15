@@ -17,7 +17,7 @@ All verification targets the local Supabase stack. The technical throttle is one
 
 ## Queue and worker
 
-The private `pgmq` queue contains only run IDs. `planning.leases` holds transport IDs, random lease tokens and expiration times. Neither is exposed through PostgREST. Public `planning_runs` has tenant and branch RLS, composite location foreign keys and no direct API writes. Six private worker functions (`planning_claim`, `planning_task`, `planning_execute`, `classification_finish`, `forecast_finish`, `planning_fail`) are granted only to `maqdar_worker`, a NOLOGIN capability role. Public enqueue/cancel RPCs recheck live membership and the active-organization claim.
+The private `pgmq` queue contains only run IDs. `planning.leases` holds transport IDs, random lease tokens and expiration times. Neither is exposed through PostgREST. Public `planning_runs` has tenant and branch RLS, composite location foreign keys and no direct API writes. Seven private worker functions (`planning_claim`, `planning_task`, `planning_execute`, `classification_finish`, `forecast_finish`, `preparation_finish`, `planning_fail`) are granted only to `maqdar_worker`, a NOLOGIN capability role. Public enqueue/cancel RPCs recheck live membership and the active-organization claim.
 
 The Python worker uses psycopg autocommit: claim commits before processing. Readiness aggregation, run completion and queue archive then commit in one transaction. Run row locks serialize cancellation and completion; an already committed completion wins a racing cancellation. Claim uses `SKIP LOCKED` on the run after reading the queue to avoid a lock-order deadlock. Leases last 120 seconds; the worker's statement timeout is 90 seconds and lock timeout five seconds. Long calculations time out and eventually fail visibly; they do not loop forever. Remote DSNs require `sslmode=verify-full` and a trusted CA.
 
@@ -47,3 +47,5 @@ Use the web form to enqueue a check first. `--once` processes at most one availa
 Step 8 adds [demand classification](demand-classification.md) as an explicit run kind with versioned inputs/results. Step 9 adds [forecast baselines](forecast-baselines.md). This foundation intentionally has no automatic schedule, no ERP export and no forecasting-model choice.
 
 Expanded forecast runs (`expanded-v1`) use a 900-second visibility/lease and a 720-second isolated computation limit for up to 10 items. Other run kinds retain the 120-second lease. See [forecast-expansion.md](forecast-expansion.md) for the versioned numerical contract and owner-run rollout.
+
+Step 10 adds [demand preparation](demand-preparation.md): immutable related-part contributions and calendar evidence, with up to 25 selected codes expanding to 100 sources. It uses the existing 120-second lease and a guarded publication RPC; it does not alter forecasts.

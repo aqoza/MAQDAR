@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('demand_preparations', 'anon', 'r', ''),
+    ('demand_preparations', 'authenticated', 'r', 'SELECT'),
+    ('demand_preparations', 'service_role', 'r', ''),
     ('forecast_results', 'anon', 'r', ''),
     ('forecast_results', 'authenticated', 'r', 'SELECT'),
     ('forecast_results', 'service_role', 'r', ''),
@@ -213,6 +216,10 @@ select set_eq(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname in ('public', 'app') and p.prokind in ('f', 'p')$$,
   $$values
+    ('app.preparation_task(uuid, uuid)', ''),
+    ('app.preparation_finish(uuid, uuid, jsonb)', ''),
+    ('app.preparation_input_cleanup()', ''),
+    ('public.preparation_enqueue(uuid, text, date, date, uuid, boolean, text[])', 'authenticated'),
     ('app.forecast_task(uuid, uuid)', ''),
     ('app.forecast_finish(uuid, uuid, jsonb)', ''),
     ('app.forecast_input_cleanup()', ''),

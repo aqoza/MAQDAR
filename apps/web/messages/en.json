@@ -1458,10 +1458,13 @@
     "kinds": {
       "readiness": "Demand readiness",
       "classification": "Demand classification",
-      "forecast": "Forecast baselines"
+      "forecast": "Forecast baselines",
+      "preparation": "Demand preparation"
     },
     "forecast": "Create forecast",
-    "forecastResults": "View forecast results"
+    "forecastResults": "View forecast results",
+    "prepare": "Prepare demand",
+    "preparationResults": "View prepared demand"
   },
   "Classification": {
     "title": "Classify demand",
@@ -1620,5 +1623,72 @@
       "insufficient_history": "Coverage needs 56 training days plus four horizon-length windows.",
       "insufficient_residuals": "Coverage needs at least 20 earlier calibration errors."
     }
+  },
+  "Preparation": {
+    "title": "Prepare demand",
+    "description": "Inspect related-part demand and calendar evidence before using it in future planning models.",
+    "back": "Back to planning runs",
+    "location": "Location code",
+    "to": "History through date",
+    "items": "Item codes (one per line)",
+    "limits": "Select up to 25 codes at one location. All connected predecessors, successors and two-way interchanges are included, up to 100 source items and 1,096 history days. Larger groups must be reviewed separately.",
+    "rules": "preparation-v1 uses relationships effective at the history cutoff to convert all predecessor history into terminal-successor units. Same-unit two-way interchanges are pooled at 1:1; one-way substitutes stay separate. Each source is counted once. Conflicting paths block aggregation. This run does not alter sales records or forecasts.",
+    "confirmation": "I confirm complete sales history for the selected location and window, including every related source item. Missing days within each item’s recorded lifecycle may be treated as zero.",
+    "confirmationRequired": "Confirm complete history for all related source items before preparing demand.",
+    "pending": "Queuing…",
+    "submit": "Queue preparation",
+    "results": "Prepared demand results",
+    "groups": "Prepared groups",
+    "target": "Target part",
+    "status": "Status",
+    "sources": "Source items",
+    "unit": "Unit",
+    "sold": "Sold quantity",
+    "lost": "Lost sales",
+    "details": "Details",
+    "unresolved": "Unresolved group",
+    "ready": "Ready",
+    "blocked": "Blocked",
+    "inspect": "Inspect {code}",
+    "contributions": "Source contributions",
+    "contributionNote": "Original totals are clipped to each source’s lifecycle. Conversion factors multiply along effective replacement paths. Displayed totals use three decimal places; stored calculations retain exact decimal values.",
+    "item": "Source part",
+    "factor": "Conversion factor",
+    "convertedSold": "Converted sold",
+    "convertedLost": "Converted lost",
+    "calendarNote": "Calendar flags use captured reference data and organization overrides. Unverified holiday and Ramadan/Eid dates are unknown. Closures never erase recorded sales. No regional uplift or synthetic heat multiplier is applied.",
+    "calendarHeader": "Calendar: {calendar} ({country}). Verified reference coverage: {from} – {to}.",
+    "countryDefault": "Country default",
+    "daily": "Daily prepared demand and calendar",
+    "lifecycleNote": "A dash means no source lifecycle covers that date. Zero is used only inside confirmed source lifecycles. Working-day status follows calendar override, country override, applicable holiday, then weekend rules.",
+    "date": "Date",
+    "activeSources": "Active sources",
+    "working": "Working day",
+    "reason": "Calendar reason",
+    "weekend": "Weekend",
+    "holiday": "Public holiday",
+    "ramadan": "Ramadan",
+    "eid_al_fitr": "Eid al-Fitr",
+    "arafat_day": "Arafat day",
+    "eid_al_adha": "Eid al-Adha",
+    "unknown": "Unknown",
+    "yes": "Yes",
+    "no": "No",
+    "issues": {
+      "unit_mismatch": "Two-way interchanges have different units.",
+      "invalid_factor": "A conversion factor is invalid.",
+      "conflicting_conversion": "Replacement paths disagree on the terminal part or conversion factor.",
+      "relationship_cycle": "The combined relationship graph contains a cycle."
+    },
+    "reasons": {
+      "unknown_coverage": "Unverified holiday coverage",
+      "inactive_calendar": "Inactive assigned calendar",
+      "calendar_override": "Calendar override",
+      "country_override": "Country override",
+      "weekend": "Weekend",
+      "weekly_pattern": "Weekly pattern",
+      "public_holiday": "Public holiday"
+    },
+    "from": "From date"
   }
 }
