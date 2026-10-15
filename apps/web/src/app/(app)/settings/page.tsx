@@ -5,12 +5,24 @@ import { LocaleSwitcher } from '@/components/locale-switcher'
 import { PageHeader } from '@/components/page-header'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { fallbackTimeZone } from '@/i18n/config'
+import { API_SCOPES } from '@/lib/api/auth'
+import { API_LIMITS } from '@/lib/api/limits'
 import { assignableRoles, isAdminRole } from '@/lib/auth/roles'
 import {
   getActiveContext,
   type OrganizationSummary as Organization,
 } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
+import { ApiKeysCard } from './api-keys-card'
+import {
+  API_KEY_COLUMNS,
+  isActiveApiKey,
+  listedApiKeys,
+  scopeOptions,
+  toApiKeyRows,
+  type ApiKeyRecord,
+  type ApiKeyRow,
+} from './api-keys'
 import { InvitationsCard, type InvitationRow } from './invitations-card'
 import { MembersCard, type LocationOption, type MemberRow } from './members-card'
 import {
@@ -20,6 +32,12 @@ import {
   type TimeZoneOption,
 } from './organization-settings-form'
 import { SetPasswordCard } from './set-password-card'
+
+/** The REST API's description and documentation, linked from the API keys card. */
+const OPENAPI_HREF = '/api/v1/openapi.json'
+const API_DOCS_HREF = 'https://github.com/aqoza/MAQDAR/blob/main/docs/api.md'
+/** Keys listed in Settings besides the active ones (at most 20), newest first. */
+const API_KEYS_LISTED = 100
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Settings')
@@ -50,25 +68,53 @@ export default async function SettingsPage() {
   let members: MemberRow[] = []
   let locations: LocationOption[] = []
   let invitations: InvitationRow[] = []
+  let apiKeys: ApiKeyRow[] = []
+  let activeApiKeys = 0
   if (admin) {
-    const [membersResult, locationsResult, invitationsResult] = await Promise.all([
-      supabase.rpc('organization_members', { p_organization_id: organization.id }),
-      supabase
-        .from('locations')
-        .select('id, code, name_en')
-        .eq('organization_id', organization.id)
-        .order('code'),
-      supabase
-        .from('organization_invitations')
-        .select('id, email, role, created_at, last_sent_at, expires_at, send_count')
-        .eq('organization_id', organization.id)
-        .is('accepted_at', null)
-        .is('revoked_at', null)
-        .order('created_at', { ascending: false }),
-    ])
+    const now = new Date()
+    const [membersResult, locationsResult, invitationsResult, apiKeysResult, activeKeysResult] =
+      await Promise.all([
+        supabase.rpc('organization_members', { p_organization_id: organization.id }),
+        supabase
+          .from('locations')
+          .select('id, code, name_en')
+          .eq('organization_id', organization.id)
+          .order('code'),
+        supabase
+          .from('organization_invitations')
+          .select('id, email, role, created_at, last_sent_at, expires_at, send_count')
+          .eq('organization_id', organization.id)
+          .is('accepted_at', null)
+          .is('revoked_at', null)
+          .order('created_at', { ascending: false }),
+        // Explicit columns: key_hash is not granted, so `*` would fail with 42501.
+        supabase
+          .from('api_keys')
+          .select(API_KEY_COLUMNS)
+          .eq('organization_id', organization.id)
+          .order('created_at', { ascending: false })
+          .limit(API_KEYS_LISTED),
+        // Every active key, however old, so the count is exact and each one can be revoked.
+        supabase
+          .from('api_keys')
+          .select(API_KEY_COLUMNS)
+          .eq('organization_id', organization.id)
+          .is('revoked_at', null)
+          .gt('expires_at', now.toISOString())
+          .order('created_at', { ascending: false })
+          .limit(API_KEYS_LISTED),
+      ])
     members = membersResult.data ?? []
     locations = locationsResult.data ?? []
     invitations = invitationsResult.data ?? []
+    const keyRecords: ApiKeyRecord[] = listedApiKeys(
+      activeKeysResult.data ?? [],
+      apiKeysResult.data ?? [],
+    )
+    // Creators are matched against the members just loaded: a creator who left or is no longer
+    // an owner or admin marks the key as stopped (the API answers 401 creator_inactive).
+    apiKeys = toApiKeyRows(keyRecords, members, now.getTime())
+    activeApiKeys = keyRecords.filter((key) => isActiveApiKey(key, now.getTime())).length
   }
 
   return (
@@ -125,6 +171,16 @@ export default async function SettingsPage() {
             organizationName={organization.name}
           />
           <InvitationsCard invitations={invitations} roles={assignableRoles(context.role)} />
+          <ApiKeysCard
+            keys={apiKeys}
+            scopes={scopeOptions(API_SCOPES)}
+            expiryDays={API_LIMITS.keyExpiryDays}
+            defaultExpiryDays={API_LIMITS.defaultKeyExpiryDays}
+            activeCount={activeApiKeys}
+            maxActive={API_LIMITS.activeKeysPerOrganization}
+            openApiHref={OPENAPI_HREF}
+            docsHref={API_DOCS_HREF}
+          />
         </>
       ) : null}
 

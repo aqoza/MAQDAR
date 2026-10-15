@@ -10,6 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "gen:openapi": "vitest run src/lib/api/openapi.test.ts -u",
     "test:e2e": "playwright test",
     "check:logical": "node scripts/check-logical-utilities.mjs src",
     "cf:build": "opennextjs-cloudflare build",

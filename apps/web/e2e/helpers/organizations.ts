@@ -86,5 +86,6 @@ export async function switchOrganization(page: Page, from: string, to: string): 
 /** Opens Settings from the sidebar. */
 export async function openSettings(page: Page): Promise<void> {
   await page.getByRole('link', { name: 'Settings', exact: true }).click()
-  await expect(page).toHaveURL(/\/settings(?:[?#].*)?$/)
+  // Navigation may include the first compilation of Settings under next dev.
+  await page.waitForURL(/\/settings(?:[?#].*)?$/)
 }

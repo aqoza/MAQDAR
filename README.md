@@ -4,6 +4,8 @@ Multi-tenant cloud SaaS for service parts planning, built for OEMs, distributors
 
 Read `CLAUDE.md` for the engineering rules and `docs/PLAN.md` for the roadmap and build steps.
 
+Integrating another system? See [REST API v1](docs/api.md) for API keys, resource lists, bulk upserts and error handling.
+
 ## Prerequisites
 
 - Node.js 24 and pnpm 12 (`npm install -g pnpm@12`)

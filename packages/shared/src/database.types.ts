@@ -6,7 +6,27 @@ export type Database = {
   
   "public": {
           Tables: {
-            "brands": {
+            "api_keys": {
+                  Row: {
+                    "created_at": string,"created_by": string | null,"display_prefix": string,"expires_at": string,"id": string,"key_hash": string,"last_used_at": string | null,"last4": string,"name": string,"organization_id": string,"revoked_at": string | null,"revoked_by": string | null,"scopes": (string)[],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by"?: string | null,"display_prefix": string,"expires_at": string,"id"?: string,"key_hash": string,"last_used_at"?: string | null,"last4": string,"name": string,"organization_id": string,"revoked_at"?: string | null,"revoked_by"?: string | null,"scopes": (string)[],"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string | null,"display_prefix"?: string,"expires_at"?: string,"id"?: string,"key_hash"?: string,"last_used_at"?: string | null,"last4"?: string,"name"?: string,"organization_id"?: string,"revoked_at"?: string | null,"revoked_by"?: string | null,"scopes"?: (string)[],"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "api_keys_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"brands": {
                   Row: {
                     "brand_type": string | null,"code": string,"country_of_origin": string | null,"created_at": string,"id": string,"is_active": boolean,"name_ar": string | null,"name_en": string,"organization_id": string,"search_text": string | null,"updated_at": string
                   }
@@ -140,17 +160,23 @@ isOneToOne: false
                   ]
                 },"import_batches": {
                   Row: {
-                    "commit_mode": string | null,"commit_started_at": string | null,"counts": NonNullable<Json>,"created_at": string,"created_by": string | null,"error_count": number,"expires_at": string | null,"failure_code": string | null,"failure_detail": string | null,"file_count": number,"files_sha256": string | null,"finished_at": string | null,"id": string,"last_step_at": string | null,"organization_id": string,"progress": NonNullable<Json>,"rows_staged": number,"rows_total": number,"source": string,"staging_cleared_at": string | null,"status": string,"updated_at": string,"validated_at": string | null,"warning_count": number
+                    "api_key_id": string | null,"api_request_id": string | null,"commit_mode": string | null,"commit_started_at": string | null,"counts": NonNullable<Json>,"created_at": string,"created_by": string | null,"error_count": number,"expires_at": string | null,"failure_code": string | null,"failure_detail": string | null,"file_count": number,"files_sha256": string | null,"finished_at": string | null,"id": string,"last_step_at": string | null,"organization_id": string,"progress": NonNullable<Json>,"rows_staged": number,"rows_total": number,"source": string,"staging_cleared_at": string | null,"status": string,"updated_at": string,"validated_at": string | null,"warning_count": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "commit_mode"?: string | null,"commit_started_at"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"created_by"?: string | null,"error_count"?: number,"expires_at"?: string | null,"failure_code"?: string | null,"failure_detail"?: string | null,"file_count"?: number,"files_sha256"?: string | null,"finished_at"?: string | null,"id": string,"last_step_at"?: string | null,"organization_id": string,"progress"?: NonNullable<Json>,"rows_staged"?: number,"rows_total"?: number,"source"?: string,"staging_cleared_at"?: string | null,"status"?: string,"updated_at"?: string,"validated_at"?: string | null,"warning_count"?: number
+                    "api_key_id"?: string | null,"api_request_id"?: string | null,"commit_mode"?: string | null,"commit_started_at"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"created_by"?: string | null,"error_count"?: number,"expires_at"?: string | null,"failure_code"?: string | null,"failure_detail"?: string | null,"file_count"?: number,"files_sha256"?: string | null,"finished_at"?: string | null,"id": string,"last_step_at"?: string | null,"organization_id": string,"progress"?: NonNullable<Json>,"rows_staged"?: number,"rows_total"?: number,"source"?: string,"staging_cleared_at"?: string | null,"status"?: string,"updated_at"?: string,"validated_at"?: string | null,"warning_count"?: number
                   }
                   Update: {
-                    "commit_mode"?: string | null,"commit_started_at"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"created_by"?: string | null,"error_count"?: number,"expires_at"?: string | null,"failure_code"?: string | null,"failure_detail"?: string | null,"file_count"?: number,"files_sha256"?: string | null,"finished_at"?: string | null,"id"?: string,"last_step_at"?: string | null,"organization_id"?: string,"progress"?: NonNullable<Json>,"rows_staged"?: number,"rows_total"?: number,"source"?: string,"staging_cleared_at"?: string | null,"status"?: string,"updated_at"?: string,"validated_at"?: string | null,"warning_count"?: number
+                    "api_key_id"?: string | null,"api_request_id"?: string | null,"commit_mode"?: string | null,"commit_started_at"?: string | null,"counts"?: NonNullable<Json>,"created_at"?: string,"created_by"?: string | null,"error_count"?: number,"expires_at"?: string | null,"failure_code"?: string | null,"failure_detail"?: string | null,"file_count"?: number,"files_sha256"?: string | null,"finished_at"?: string | null,"id"?: string,"last_step_at"?: string | null,"organization_id"?: string,"progress"?: NonNullable<Json>,"rows_staged"?: number,"rows_total"?: number,"source"?: string,"staging_cleared_at"?: string | null,"status"?: string,"updated_at"?: string,"validated_at"?: string | null,"warning_count"?: number
                   }
                   Relationships: [
                     {
+      foreignKeyName: "import_batches_api_key_fkey"
+      columns: ["organization_id","api_key_id"]
+isOneToOne: false
+      referencedRelation: "api_keys"
+      referencedColumns: ["organization_id","id"]
+    },{
       foreignKeyName: "import_batches_organization_id_fkey"
       columns: ["organization_id"]
 isOneToOne: false
@@ -639,6 +665,21 @@ isOneToOne: false
             "accept_invitation":
 { Args: { "p_invitation_id": string }; Returns: string
                            },
+"api_list":
+{ Args: { "p_after"?: string,"p_entity": string,"p_key_hash": string,"p_limit"?: number,"p_updated_since"?: string }; Returns: Json
+                           },
+"api_list_demand":
+{ Args: { "p_after"?: string,"p_from": string,"p_item_code"?: string,"p_key_hash": string,"p_limit"?: number,"p_location_code"?: string,"p_to": string }; Returns: Json
+                           },
+"api_organization":
+{ Args: { "p_key_hash": string }; Returns: Json
+                           },
+"api_upsert":
+{ Args: { "p_body": Json,"p_entity": string,"p_key_hash": string,"p_request_id": string }; Returns: Json
+                           },
+"create_api_key":
+{ Args: { "p_display_prefix": string,"p_expires_in_days": number,"p_key_hash": string,"p_last4": string,"p_name": string,"p_organization_id": string,"p_scopes": (string)[] }; Returns: string
+                           },
 "create_organization":
 { Args: { "p_arabic_enabled"?: boolean,"p_base_currency"?: string,"p_home_country"?: string,"p_name": string,"p_slug": string }; Returns: string
                            },
@@ -685,6 +726,9 @@ isOneToOne: false
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined
+                           },
+"revoke_api_key":
+{ Args: { "p_key_id": string }; Returns: undefined
                            },
 "revoke_invitation":
 { Args: { "p_invitation_id": string }; Returns: undefined

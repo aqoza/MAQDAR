@@ -5,7 +5,11 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
+import { API_SCOPES } from '@/lib/api/auth'
+import { generateApiKey } from '@/lib/api/keys'
+import { API_LIMITS } from '@/lib/api/limits'
 import { siteOrigin } from '@/lib/auth/origin'
+import { isAdminRole } from '@/lib/auth/roles'
 import { requireClaims } from '@/lib/auth/session'
 import { env } from '@/lib/env'
 import { checkboxValue, fieldValues, type ActionState } from '@/lib/forms'
@@ -21,6 +25,13 @@ import { isRpcCode, type RpcErrorLike } from '@/lib/rpc-errors'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { fieldErrorsFrom } from '@/lib/validation'
+import {
+  API_KEY_FIELDS,
+  apiKeyErrorFields,
+  apiKeyFormSchema,
+  isApiKeyField,
+  type ApiKeyField,
+} from './api-keys'
 
 /*
  * Every action re-checks the session, reads the organization from the active context (never from
@@ -379,6 +390,111 @@ export async function revokeInvitation(
 
   const supabase = await createClient()
   const { error } = await supabase.rpc('revoke_invitation', { p_invitation_id: invitationId.data })
+  if (error) return rpcErrorState(error)
+
+  revalidatePath('/settings')
+  return { status: 'success' }
+}
+
+/* ------------------------------------------------------------------------------------------ */
+/* API keys                                                                                    */
+/* ------------------------------------------------------------------------------------------ */
+
+/**
+ * The create form's state. On success `secret` carries the new key, the only time it leaves the
+ * server: the form shows it once and drops it. It is never logged, stored or put in `values`.
+ */
+export type ApiKeyActionState = ActionState & { secret?: string; name?: string }
+
+const API_KEY_ERROR_KEYS = {
+  name: 'name',
+  scopes: 'scopes',
+  expires_in_days: 'expiry',
+} as const satisfies Record<ApiKeyField, string>
+
+async function apiKeyFieldErrorState(fields: Iterable<ApiKeyField>, code: string) {
+  const t = await getTranslations('ApiKeys.errors')
+  const fieldErrors: Record<string, string> = {}
+  for (const field of fields) fieldErrors[field] = t(API_KEY_ERROR_KEYS[field])
+  return { status: 'error', fieldErrors, code } satisfies ActionState
+}
+
+/**
+ * create_api_key's errors: the 20-key limit (MQ409 hint `api_keys`) and MQ422 naming a form field
+ * get their own messages; the rest (role, stale organization, internal fields) the RpcErrors ones.
+ */
+async function apiKeyErrorState(error: RpcErrorLike): Promise<ActionState> {
+  if (isRpcCode(error, 'MQ409') && error?.hint?.trim() === 'api_keys') {
+    const t = await getTranslations('ApiKeys.errors')
+    return {
+      status: 'error',
+      message: t('tooMany', { max: API_LIMITS.activeKeysPerOrganization }),
+      code: 'MQ409',
+    }
+  }
+  const hint = error?.hint?.trim()
+  if (isRpcCode(error, 'MQ422') && isApiKeyField(hint))
+    return apiKeyFieldErrorState([hint], 'MQ422')
+  return rpcErrorState(error)
+}
+
+/**
+ * Creates a key for the active organization (owners and admins). The key is generated here, only
+ * its SHA-256 and display parts go to create_api_key, and the plaintext comes back once.
+ */
+export async function createApiKey(
+  _previous: ApiKeyActionState,
+  formData: FormData,
+): Promise<ApiKeyActionState> {
+  const guard = await requireActiveOrganization(formData)
+  if (!guard.ok) return guard.state
+  if (!isAdminRole(guard.context.role)) return rpcErrorState({ code: 'MQ403' })
+  const { organizationId } = guard
+  const scopes = formData.getAll('scopes').filter((value) => typeof value === 'string')
+  const fields = fieldValues(formData, API_KEY_FIELDS)
+  // Re-fills the form after an error; the scopes as one comma-separated value.
+  const values: Record<string, string> = { ...fields, scopes: scopes.join(',') }
+
+  const parsed = apiKeyFormSchema(API_SCOPES, API_LIMITS.keyExpiryDays).safeParse({
+    name: fields.name,
+    scopes,
+    expires_in_days: fields.expires_in_days,
+  })
+  if (!parsed.success) {
+    const fields = apiKeyErrorFields(parsed.error.issues)
+    return { ...(await apiKeyFieldErrorState(fields, 'validation')), values }
+  }
+
+  const key = await generateApiKey()
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('create_api_key', {
+    p_organization_id: organizationId,
+    p_name: parsed.data.name,
+    p_scopes: parsed.data.scopes,
+    p_expires_in_days: parsed.data.expires_in_days,
+    p_key_hash: key.hash,
+    p_display_prefix: key.displayPrefix,
+    p_last4: key.last4,
+  })
+  if (error) return { ...(await apiKeyErrorState(error)), values }
+
+  revalidatePath('/settings')
+  return { status: 'success', secret: key.token, name: parsed.data.name }
+}
+
+/** Revokes a key of the active organization at once (owners and admins; a repeat is a no-op). */
+export async function revokeApiKey(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const guard = await requireActiveOrganization(formData)
+  if (!guard.ok) return guard.state
+  if (!isAdminRole(guard.context.role)) return rpcErrorState({ code: 'MQ403' })
+  const keyId = uuidSchema.safeParse(formData.get('id'))
+  if (!keyId.success) return invalidState('invalid_key')
+
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('revoke_api_key', { p_key_id: keyId.data })
   if (error) return rpcErrorState(error)
 
   revalidatePath('/settings')

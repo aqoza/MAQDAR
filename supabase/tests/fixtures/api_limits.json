@@ -1,0 +1,9 @@
+{
+  "body_bytes": 1048576,
+  "upsert_records": { "master_data": 1000, "demand_history": 2500 },
+  "list_limit": { "master_data": 1000, "demand_history": 5000 },
+  "list_default_limit": { "master_data": 100, "demand_history": 1000 },
+  "demand_list_days": 366,
+  "recorded_writes_per_day": 5000,
+  "active_keys": 20
+}

@@ -207,8 +207,8 @@ select is(
 );
 select tables_are(
   'ingest',
-  array['contract_entities', 'contract_columns', 'staged_rows', 'staged_chunks', 'pending_errors', 'import_creations'],
-  'ingest holds the two contract tables, the three staging tables and the creation ledger'
+  array['contract_entities', 'contract_columns', 'staged_rows', 'staged_chunks', 'pending_errors', 'import_creations', 'api_writes'],
+  'ingest holds the contract and staging tables plus separate wizard and API quota ledgers'
 );
 select is(
   array(select c.relname::text from pg_class c

@@ -94,7 +94,15 @@ describe('pickNamespaces', () => {
   })
 
   it('lists the namespaces used by Client Components', () => {
-    for (const namespace of ['Common', 'Auth', 'Nav', 'Organizations', 'Roles', 'Settings']) {
+    for (const namespace of [
+      'Common',
+      'Auth',
+      'Nav',
+      'Organizations',
+      'Roles',
+      'Settings',
+      'ApiKeys',
+    ]) {
       expect(clientNamespaces).toContain(namespace)
     }
   })

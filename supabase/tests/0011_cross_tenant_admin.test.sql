@@ -5,12 +5,14 @@
 -- * invitation throttles count revoked rows, so revoking and re-inviting cannot reset them, and the
 --   daily caps per address, per organization and per inviter hold;
 -- * internal helpers and the hook are not executable by API roles; anon cannot call any RPC,
---   including the Step 5a import RPCs;
+--   including the Step 5a import RPCs and the Step 5b key and API RPCs; the API RPCs (api_*) are
+--   for the secret key only (not authenticated), the key RPCs for signed-in users only (not
+--   service_role);
 -- * a confirmed account without an e-mail address cannot accept an invitation;
 -- * a branch user of A who is a viewer of B sees exactly the right locations with and without a claim.
 begin;
 
-select plan(41);
+select plan(44);
 
 -- Fixture --------------------------------------------------------------------------------------
 insert into auth.users (id, email, email_confirmed_at) values
@@ -78,6 +80,32 @@ select is(
    where has_function_privilege('anon', f::regprocedure, 'execute')),
   0,
   'anon cannot execute any import RPC'
+);
+select is(
+  (select count(*)::int
+   from unnest(array[
+     'public.create_api_key(uuid, text, text[], integer, bytea, text, text)', 'public.revoke_api_key(uuid)',
+     'public.api_organization(bytea)', 'public.api_list(bytea, text, text, integer, timestamptz)',
+     'public.api_list_demand(bytea, date, date, text, text, text, integer)', 'public.api_upsert(bytea, text, jsonb, uuid)']) as f
+   where has_function_privilege('anon', f::regprocedure, 'execute')),
+  0,
+  'anon cannot execute the API key RPCs or the API RPCs'
+);
+select is(
+  (select count(*)::int
+   from unnest(array[
+     'public.api_organization(bytea)', 'public.api_list(bytea, text, text, integer, timestamptz)',
+     'public.api_list_demand(bytea, date, date, text, text, text, integer)', 'public.api_upsert(bytea, text, jsonb, uuid)']) as f
+   where has_function_privilege('authenticated', f::regprocedure, 'execute')),
+  0,
+  'authenticated cannot execute the API RPCs (they take the organization from a key, not a session)'
+);
+select is(
+  (select count(*)::int
+   from unnest(array['public.create_api_key(uuid, text, text[], integer, bytea, text, text)', 'public.revoke_api_key(uuid)']) as f
+   where has_function_privilege('service_role', f::regprocedure, 'execute')),
+  0,
+  'service_role cannot execute the API key RPCs (keys are managed by a signed-in owner or admin)'
 );
 
 -- Admin of B against organization A ------------------------------------------------------------

@@ -30,12 +30,17 @@ select format(
 ) as predicate
 from unnest(array['id', 'location_id']) as column_name;
 
--- Tables written only through the security-definer RPCs (Step 3 tenancy, Step 5a imports).
+-- Tables written only through the security-definer RPCs (Step 3 tenancy, Step 5a imports, Step 5b
+-- API keys).
 create temporary table rpc_only_tables on commit drop as
 select unnest(array['organizations', 'memberships', 'membership_locations', 'organization_invitations', 'user_settings',
-                    'import_batches', 'import_files', 'import_errors']) as table_name;
+                    'import_batches', 'import_files', 'import_errors', 'api_keys']) as table_name;
 
-select plan((select count(*)::int * 7 from tenant_tables) + 7);
+-- Columns no API role may read or write in any way (Step 5b: the SHA-256 of every API key).
+create temporary table secret_columns on commit drop as
+select * from (values ('api_keys', 'key_hash')) as s (table_name, column_name);
+
+select plan((select count(*)::int * 7 from tenant_tables) + 8);
 
 select cmp_ok((select count(*)::int from tenant_tables), '>=', 9, 'at least the Step 2 and Step 3 tenant tables exist');
 
@@ -127,11 +132,15 @@ select results_eq(
   'user_settings: users read only their own row, nothing else'
 );
 
+-- has_any_column_privilege also sees column-level grants (api_keys has them); DELETE has none.
 select is(
   (select count(*)::int
    from rpc_only_tables t
    cross join unnest(array['INSERT', 'UPDATE', 'DELETE']) as p
-   where has_table_privilege('authenticated', ('public.' || t.table_name)::regclass, p)),
+   where case p
+           when 'DELETE' then has_table_privilege('authenticated', ('public.' || t.table_name)::regclass, p)
+           else has_any_column_privilege('authenticated', ('public.' || t.table_name)::regclass, p)
+         end),
   0,
   'authenticated cannot insert, update or delete the RPC-only tenancy tables'
 );
@@ -147,7 +156,8 @@ select is(
 );
 
 -- Default privileges no longer grant new public tables to the API roles (Step 5a), so the read
--- access of every RPC-only table must be an explicit grant in its migration.
+-- access of every RPC-only table must be an explicit grant in its migration. api_keys, and only
+-- api_keys, grants it column by column (every column but key_hash; 0020 pins the exact columns).
 select is(
   (select array_agg(t.table_name order by t.table_name)
    from rpc_only_tables t
@@ -157,9 +167,30 @@ select is(
      cross join lateral aclexplode(c.relacl) as a
      where c.oid = ('public.' || t.table_name)::regclass
        and a.grantee = 'authenticated'::regrole
-       and a.privilege_type = 'SELECT')),
+       and a.privilege_type = 'SELECT')
+     and not (t.table_name = 'api_keys' and exists (
+       select 1
+       from pg_attribute att
+       cross join lateral aclexplode(att.attacl) as a
+       where att.attrelid = ('public.' || t.table_name)::regclass
+         and att.attnum > 0
+         and not att.attisdropped
+         and a.grantee = 'authenticated'::regrole
+         and a.privilege_type = 'SELECT'))),
   null,
-  'every RPC-only table grants SELECT to authenticated explicitly'
+  'every RPC-only table grants SELECT to authenticated explicitly (api_keys column by column)'
+);
+
+-- has_column_privilege is true for a table-level grant too, so this also catches a later
+-- `grant select on public.api_keys`.
+select is(
+  (select array_agg(s.table_name || '.' || s.column_name || ' ' || r || ' ' || p order by 1)
+   from secret_columns s
+   cross join unnest(array['anon', 'authenticated', 'service_role']) as r
+   cross join unnest(array['SELECT', 'INSERT', 'UPDATE', 'REFERENCES']) as p
+   where has_column_privilege(r, ('public.' || s.table_name)::regclass, s.column_name, p)),
+  null,
+  'no API role can select, insert, update or reference a secret column (api_keys.key_hash)'
 );
 
 select * from finish();

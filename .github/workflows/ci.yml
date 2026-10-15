@@ -72,6 +72,8 @@ jobs:
         run: pnpm --filter web exec playwright install --with-deps chromium
       - name: Playwright smoke
         run: pnpm --filter web test:e2e
+      - name: Package Cloudflare Worker (no deployment)
+        run: pnpm --filter web cf:build
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

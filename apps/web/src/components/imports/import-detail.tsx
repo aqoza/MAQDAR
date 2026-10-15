@@ -50,6 +50,8 @@ export type DetailBatch = {
   idle: boolean
   /** Who started it, translated. */
   by: string
+  /** The request id of a write through the REST API (null for the wizard). */
+  request_id?: string | null
 }
 
 export type DetailFile = SummaryFile & {
@@ -86,6 +88,7 @@ export function ImportDetail({
   labels: ColumnLabelMap
 }) {
   const t = useTranslations('Imports.detail')
+  const tImports = useTranslations('Imports')
   const tClient = useTranslations('ImportsClient')
   const format = useFormatter()
   const when = (value: string | null) => (value ? format.dateTime(new Date(value), 'long') : '—')
@@ -104,6 +107,16 @@ export function ImportDetail({
     { label: t('validated'), value: when(batch.validated_at) },
     { label: t('finished'), value: when(batch.finished_at) },
   ]
+  if (batch.request_id) {
+    summary.push({
+      label: tImports('requestId'),
+      value: (
+        <bdi dir="ltr" className="font-mono text-xs break-all select-all">
+          {batch.request_id}
+        </bdi>
+      ),
+    })
+  }
   if (batch.commit_mode) {
     summary.push({ label: t('mode'), value: t(`modes.${batch.commit_mode}`) })
   }
