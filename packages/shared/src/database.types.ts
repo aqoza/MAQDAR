@@ -742,6 +742,38 @@ isOneToOne: false
       referencedColumns: ["code"]
     }
                   ]
+                },"purchase_cost_estimates": {
+                  Row: {
+                    "created_at": string,"delivery_id": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"delivery_id": string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"delivery_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "purchase_cost_estimates_organization_id_delivery_id_fkey"
+      columns: ["organization_id","delivery_id"]
+isOneToOne: false
+      referencedRelation: "delivery_scenario_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_cost_estimates_organization_id_delivery_id_fkey"
+      columns: ["organization_id","delivery_id"]
+isOneToOne: false
+      referencedRelation: "delivery_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_cost_estimates_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"ramadan_windows": {
                   Row: {
                     "arafat_day": string,"country_code": string,"eid_al_adha": string,"eid_al_fitr": string,"hijri_year": number,"ramadan_end": string,"ramadan_start": string,"source": string
@@ -1107,6 +1139,38 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"purchase_cost_list": {
+                  Row: {
+                    "created_at": string | null,"currency": string | null,"delivery_id": string | null,"id": string | null,"item_code": string | null,"location_id": string | null,"minor_units": number | null,"order_date": string | null,"organization_id": string | null,"status": string | null,"subtotal": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"currency"?: never,"delivery_id"?: string | null,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"minor_units"?: never,"order_date"?: never,"organization_id"?: string | null,"status"?: never,"subtotal"?: never
+                         }
+                        Update: {
+                           "created_at"?: string | null,"currency"?: never,"delivery_id"?: string | null,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"minor_units"?: never,"order_date"?: never,"organization_id"?: string | null,"status"?: never,"subtotal"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "purchase_cost_estimates_organization_id_delivery_id_fkey"
+      columns: ["organization_id","delivery_id"]
+isOneToOne: false
+      referencedRelation: "delivery_scenario_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_cost_estimates_organization_id_delivery_id_fkey"
+      columns: ["organization_id","delivery_id"]
+isOneToOne: false
+      referencedRelation: "delivery_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_cost_estimates_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"replenishment_draft_list": {
                   Row: {
                     "basis": string | null,"created_at": string | null,"cutoff": string | null,"gap": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"policy_id": string | null,"search_text": string | null,"status": string | null,"submitted_by": string | null,"unit": string | null
@@ -1282,6 +1346,12 @@ isOneToOne: false
                            },
 "preparation_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
+                           },
+"purchase_cost_preview":
+{ Args: { "p_delivery_id": string,"p_organization_id": string,"p_price_confirmed": boolean }; Returns: Json
+                           },
+"purchase_cost_save":
+{ Args: { "p_delivery_id": string,"p_fingerprint": string,"p_organization_id": string,"p_price_confirmed": boolean,"p_request_id": string }; Returns: string
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined
