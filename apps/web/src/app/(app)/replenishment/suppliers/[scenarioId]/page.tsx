@@ -3,14 +3,18 @@ import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { SupplierScenarioReport } from '@/components/supplier-scenario-report'
+import { DeliveryScenarioHistory } from '@/components/delivery-scenario-history'
+import type { RawSearchParams } from '@/lib/master-data/list-params'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { supplierScenarioReportSchema } from '@/lib/supplier-scenarios'
 
 export default async function SavedSupplierScenario({
   params,
+  searchParams,
 }: {
   params: Promise<{ scenarioId: string }>
+  searchParams: Promise<RawSearchParams>
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
@@ -42,6 +46,19 @@ export default async function SavedSupplierScenario({
       </p>
       <p>{t('immutable')}</p>
       <SupplierScenarioReport report={report} locale={locale} />
+      {report.status === 'available' && (
+        <Link
+          className="inline-block underline"
+          href={`/replenishment/deliveries/new?scenario=${scenarioId}`}
+        >
+          {t('deliveryScenario')}
+        </Link>
+      )}
+      <DeliveryScenarioHistory
+        organizationId={context.active.id}
+        scenarioId={scenarioId}
+        raw={await searchParams}
+      />
       <Link
         className="inline-block underline"
         href={`/replenishment/suppliers/new?draft=${report.source.draft_id}&supplier=${encodeURIComponent(report.requested_supplier_code)}`}

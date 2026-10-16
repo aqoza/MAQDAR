@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
-test('replenishment and supplier scenarios retain evidence and reject changed previews', async ({
+test('replenishment, supplier and delivery scenarios retain evidence and reject changed previews', async ({
   page,
 }, testInfo) => {
   test.setTimeout(180_000)
@@ -134,9 +134,63 @@ with psycopg.connect(sys.argv[1]) as db:
   const scenarioUrl = page.url()
   await runPython(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
+    for code,days,table in [('SEND',[6,7],'suppliers'),('RECEIVE',[4,5],'locations')]:
+        cal=db.execute("insert into public.work_calendars(organization_id,code,name_en,country_code,weekend_days,observe_public_holidays) values(%s,%s,%s,'SA',%s,false) returning id",(sys.argv[2],code,code,days)).fetchone()[0]
+        db.execute('update public.'+table+' set work_calendar_id=%s where organization_id=%s',(cal,sys.argv[2]))`)
+  await page.getByRole('link', { name: 'Create delivery-date scenario', exact: true }).click()
+  await expect(page).toHaveURL(/\/replenishment\/deliveries\/new\?scenario=/)
+  const deliveryPreviewUrl = page.url()
+  await page.getByRole('button', { name: 'Refresh delivery preview', exact: true }).click()
+  await expect(
+    page.getByText('Unavailable: confirm calendar applicability for the selected period.', {
+      exact: true,
+    }),
+  ).toBeVisible()
+  await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: 'Refresh delivery preview', exact: true }).click()
+  await expect(page.getByText('Delivery-date scenario available', { exact: true })).toBeVisible()
+  await expect(page.getByText('2026-10-17', { exact: true }).first()).toBeVisible()
+  await expect(page.getByText('Policy recalculation required:', { exact: false })).toBeVisible()
+  await runPython(`import sys,psycopg
+with psycopg.connect(sys.argv[1]) as db:
+    db.execute("insert into public.holiday_overrides(organization_id,work_calendar_id,starts_on,ends_on,kind,name_en) select organization_id,id,'2026-10-12','2026-10-16','closure','Supplier shutdown' from public.work_calendars where organization_id=%s and code='SEND'",(sys.argv[2],))`)
+  await page.getByRole('button', { name: 'Save delivery-date scenario', exact: true }).click()
+  await expect(
+    page.getByRole('alert').filter({ hasText: 'Refresh the delivery preview' }),
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Refresh delivery preview', exact: true }).click()
+  await expect(page.getByText('2026-10-24', { exact: true }).first()).toBeVisible()
+  await page.getByRole('button', { name: 'Save delivery-date scenario', exact: true }).click()
+  await expect(page).toHaveURL(/\/replenishment\/deliveries\/[a-f0-9-]+$/)
+  const deliveryUrl = page.url()
+  await expect(
+    page.getByRole('heading', { name: 'Saved delivery-date scenario', exact: true }),
+  ).toBeVisible()
+  await page.screenshot({ path: testInfo.outputPath('delivery-scenario.png'), fullPage: true })
+  await page.getByRole('link', { name: 'Inspect source supplier scenario', exact: true }).click()
+  await expect(page).toHaveURL(scenarioUrl)
+  await expect(page.getByText('1 saved delivery-date scenario', { exact: true })).toBeVisible()
+  await page
+    .getByRole('link', { name: 'Inspect date scenario for 2026-10-10', exact: true })
+    .click()
+  await expect(page).toHaveURL(deliveryUrl)
+  await page.goto(scenarioUrl)
+  await runPython(`import sys,psycopg
+with psycopg.connect(sys.argv[1]) as db:
     db.execute('update public.stock_snapshots set quantity=99 where organization_id=%s',(sys.argv[2],))
     db.execute('update public.supplier_items set pack_size=100 where organization_id=%s',(sys.argv[2],))
     db.execute("update public.memberships set role='viewer' where organization_id=%s and user_id=%s",(sys.argv[2],sys.argv[3]))`)
+  await runPython(`import sys,psycopg
+with psycopg.connect(sys.argv[1]) as db:
+    db.execute('delete from public.holiday_overrides where organization_id=%s',(sys.argv[2],))`)
+  await page.goto(deliveryUrl)
+  await expect(page.getByText('2026-10-24', { exact: true }).first()).toBeVisible()
+  await page.goto(`${deliveryPreviewUrl}&requested=2026-10-10&confirmed=true`)
+  await expect(page.getByText('2026-10-17', { exact: true }).first()).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: 'Save delivery-date scenario', exact: true }),
+  ).toHaveCount(0)
+  await page.goto(scenarioUrl)
   await page.reload()
   await expect(page.getByText('14 EA', { exact: true })).toBeVisible()
   await page.screenshot({ path: testInfo.outputPath('supplier-scenario.png'), fullPage: true })

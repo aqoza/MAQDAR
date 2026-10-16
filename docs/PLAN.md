@@ -58,16 +58,17 @@ Step 10b acceptance, fixed-group comparison interpretation, calendar model and r
 
 ## Phase 3 build steps
 
-Steps 13 and 13b were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
+Steps 13, 13b and 13c were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
 
 | Step | Scope                                                                                                                                                                                              | Status    |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
 | 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | Merged    |
-| 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | In review |
+| 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | Merged    |
+| 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | In review |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
-Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-scenarios.md](supplier-scenarios.md).
+Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-scenarios.md](supplier-scenarios.md). Step 13c delivery-date scenarios are in review; acceptance, calendar semantics and rollout are in [delivery-scenarios.md](delivery-scenarios.md).
 
 ## Decision log
 
@@ -213,3 +214,10 @@ Require a matching-unit snapshot for every member at the policy cutoff, no more 
 - Keep zero gaps zero. For positive gaps, round `max(gap, MOQ)` up to a pack multiple and report overage above the saved gap.
 - Require known matching units, supplier-item lead time equal to the saved policy lead time and explicit confirmation that current terms apply at the source cutoff. Missing or incompatible evidence remains unavailable.
 - Save original evidence, reject changed previews and preserve tenant/branch access. Pricing totals, calendars, prepared groups and order execution follow later.
+
+### Step 13c approved decisions (2026-10-16)
+
+- PR #23 was reviewed and merged as 104e004. Build saved delivery-date scenarios from available supplier MOQ/pack scenarios, retaining source quantity and lead time.
+- Move the requested date to the next known supplier working date, add the saved calendar-day lead time, then move receipt to the next known receiving-location working date.
+- Require confirmation that current calendar settings apply. Unknown dates remain unavailable, zero quantity needs no order, and receipt later than cutoff plus saved lead flags policy recalculation.
+- Save immutable calendar evidence; pricing, order execution and automatic policy recalculation follow separately.
