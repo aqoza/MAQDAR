@@ -94,6 +94,38 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"delivery_scenarios": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string,"supplier_scenario_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string,"supplier_scenario_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string,"supplier_scenario_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "delivery_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "delivery_scenarios_organization_id_supplier_scenario_id_fkey"
+      columns: ["organization_id","supplier_scenario_id"]
+isOneToOne: false
+      referencedRelation: "supplier_scenario_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "delivery_scenarios_organization_id_supplier_scenario_id_fkey"
+      columns: ["organization_id","supplier_scenario_id"]
+isOneToOne: false
+      referencedRelation: "supplier_scenarios"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"demand_classifications": {
                   Row: {
                     "abc": string,"currency": string,"evidence": NonNullable<Json>,"id": string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"organization_id": string,"pattern": string,"run_id": string,"xyz": string
@@ -989,7 +1021,39 @@ isOneToOne: false
                 }
           }
           Views: {
-            "forecast_quality": {
+            "delivery_scenario_list": {
+                  Row: {
+                    "created_at": string | null,"id": string | null,"location_id": string | null,"order_date": string | null,"organization_id": string | null,"policy_recalculation_required": boolean | null,"receipt_date": string | null,"requested_date": string | null,"status": string | null,"supplier_scenario_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"id"?: string | null,"location_id"?: string | null,"order_date"?: never,"organization_id"?: string | null,"policy_recalculation_required"?: never,"receipt_date"?: never,"requested_date"?: never,"status"?: never,"supplier_scenario_id"?: string | null
+                         }
+                        Update: {
+                           "created_at"?: string | null,"id"?: string | null,"location_id"?: string | null,"order_date"?: never,"organization_id"?: string | null,"policy_recalculation_required"?: never,"receipt_date"?: never,"requested_date"?: never,"status"?: never,"supplier_scenario_id"?: string | null
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "delivery_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "delivery_scenarios_organization_id_supplier_scenario_id_fkey"
+      columns: ["organization_id","supplier_scenario_id"]
+isOneToOne: false
+      referencedRelation: "supplier_scenario_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "delivery_scenarios_organization_id_supplier_scenario_id_fkey"
+      columns: ["organization_id","supplier_scenario_id"]
+isOneToOne: false
+      referencedRelation: "supplier_scenarios"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"forecast_quality": {
                   Row: {
                     "bias": string | null,"comparison": string | null,"evaluation": Json | null,"finished_at": string | null,"folds": Json | null,"from_date": string | null,"horizon": string | null,"id": string | null,"item_code": string | null,"item_id": string | null,"item_name": string | null,"location_code": string | null,"location_id": string | null,"mae": string | null,"method": string | null,"model": string | null,"organization_id": string | null,"rmse": string | null,"run_id": string | null,"search_text": string | null,"status": string | null,"to_date": string | null,"unit": string | null
                   }
@@ -1133,6 +1197,12 @@ isOneToOne: false
                            },
 "dashboard_summary":
 { Args: { "p_day"?: string,"p_organization_id": string }; Returns: Json
+                           },
+"delivery_scenario_preview":
+{ Args: { "p_calendars_confirmed": boolean,"p_organization_id": string,"p_requested_date": string,"p_supplier_scenario_id": string }; Returns: Json
+                           },
+"delivery_scenario_save":
+{ Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_requested_date": string,"p_supplier_scenario_id": string }; Returns: string
                            },
 "forecast_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
