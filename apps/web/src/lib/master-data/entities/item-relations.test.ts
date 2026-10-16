@@ -348,6 +348,7 @@ describe('supplierItemSchema', () => {
       lead_time_days_p90: null,
       min_order_quantity: 0,
       pack_size: 12,
+      unit_of_measure: null,
       unit_price: 1250.125,
       currency: 'KWD',
       is_preferred: false,

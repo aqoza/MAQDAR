@@ -438,6 +438,7 @@ export const COLUMN_LABEL_PATHS: {
     currency: ['SupplierItems.fields.currency'],
     is_preferred: ['SupplierItems.fields.is_preferred', 'SupplierItems.columns.is_preferred'],
     valid_from: ['SupplierItems.fields.valid_from'],
+    unit_of_measure: ['SupplierItems.fields.unit_of_measure', 'Items.fields.unit_of_measure'],
   },
   fx_rates: {
     from_currency: ['FxRates.fields.from_currency'],

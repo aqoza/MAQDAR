@@ -58,13 +58,16 @@ Step 10b acceptance, fixed-group comparison interpretation, calendar model and r
 
 ## Phase 3 build steps
 
-Step 13 was scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
+Steps 13 and 13b were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
 
 | Step | Scope                                                                                                                                                                                              | Status    |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | In review |
+| 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | Merged    |
+| 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | In review |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
+
+Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-scenarios.md](supplier-scenarios.md).
 
 ## Decision log
 
@@ -203,3 +206,10 @@ Require a matching-unit snapshot for every member at the policy cutoff, no more 
 - Gap is `max(maximum − (on-hand − allocations + all remaining open inbound − additional unallocated backorders), 0)`, using an explicitly selected calculated or approved maximum.
 - Require matching known units, stock dated at the policy cutoff, explicit backorders (zero allowed), and confirmation that the recorded order book is complete and synchronized to that cutoff. Missing evidence remains unavailable.
 - Include every positive remaining open line regardless of arrival date, flag overdue/late arrivals, and never subtract receipts again. Save immutable evidence and reject changes since preview.
+
+### Step 13b approved decisions (2026-10-16)
+
+- PR #22 was reviewed and merged as `44da11b`. Build saved supplier MOQ/pack scenarios from available individual-item drafts, with explicit active supplier selection and source-supplied supplier-item units in maintenance/imports/API.
+- Keep zero gaps zero. For positive gaps, round `max(gap, MOQ)` up to a pack multiple and report overage above the saved gap.
+- Require known matching units, supplier-item lead time equal to the saved policy lead time and explicit confirmation that current terms apply at the source cutoff. Missing or incompatible evidence remains unavailable.
+- Save original evidence, reject changed previews and preserve tenant/branch access. Pricing totals, calendars, prepared groups and order execution follow later.

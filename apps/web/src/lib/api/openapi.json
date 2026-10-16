@@ -1533,7 +1533,8 @@
                     "unit_price": "172.25",
                     "currency": "AED",
                     "is_preferred": true,
-                    "valid_from": "2026-01-01"
+                    "valid_from": "2026-01-01",
+                    "unit_of_measure": "EA"
                   }
                 ]
               }
@@ -5100,6 +5101,7 @@
           "currency",
           "is_preferred",
           "valid_from",
+          "unit_of_measure",
           "updated_at"
         ],
         "properties": {
@@ -5185,6 +5187,21 @@
             "format": "date",
             "description": "Price valid from.",
             "x-maqdar-kind": "date"
+          },
+          "unit_of_measure": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "EA",
+              "SET",
+              "L",
+              "KG",
+              null
+            ],
+            "description": "Source-supplied unit for MOQ, pack multiple and unit price; empty means unknown.",
+            "x-maqdar-kind": "enum"
           },
           "updated_at": {
             "type": "string",
@@ -5349,6 +5366,27 @@
             ],
             "description": "Price valid from.",
             "x-maqdar-kind": "date"
+          },
+          "unit_of_measure": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "EA",
+                  "SET",
+                  "L",
+                  "KG"
+                ]
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Source-supplied unit for MOQ, pack multiple and unit price; empty means unknown.",
+            "x-maqdar-kind": "enum"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."

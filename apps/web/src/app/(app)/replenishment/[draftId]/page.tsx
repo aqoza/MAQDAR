@@ -6,8 +6,16 @@ import { ReplenishmentReport } from '@/components/replenishment-report'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { replenishmentReportSchema } from '@/lib/replenishment'
+import { SupplierScenarioHistory } from '@/components/supplier-scenario-history'
+import type { RawSearchParams } from '@/lib/master-data/list-params'
 
-export default async function SavedDraft({ params }: { params: Promise<{ draftId: string }> }) {
+export default async function SavedDraft({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ draftId: string }>
+  searchParams: Promise<RawSearchParams>
+}) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { draftId } = await params
@@ -43,6 +51,20 @@ export default async function SavedDraft({ params }: { params: Promise<{ draftId
       </p>
       <p>{t('immutable')}</p>
       <ReplenishmentReport report={report} locale={locale} />
+      {report.status === 'available' && (
+        <Link
+          className="inline-block underline"
+          href={`/replenishment/suppliers/new?draft=${draftId}`}
+        >
+          {t('supplierScenario')}
+        </Link>
+      )}
+      <SupplierScenarioHistory
+        organizationId={context.active.id}
+        draftId={draftId}
+        locale={locale}
+        raw={await searchParams}
+      />
       <Link className="inline-block underline" href={`/replenishment/new?${next}`}>
         {t('newFromPolicy')}
       </Link>

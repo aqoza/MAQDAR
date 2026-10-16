@@ -278,19 +278,20 @@ Rules:
 - `p90_below_p50`: `lead_time_days_p90` is empty or at least `lead_time_days`; a file may map either one, and the other keeps its stored value.
 - `preferred_conflict`: At most one preferred supplier per item in the file; importing a preferred row clears the item's other preferred row.
 
-| Column                 | Type                                                             | Required | Default for new rows | Description                                           |
-| ---------------------- | ---------------------------------------------------------------- | -------- | -------------------- | ----------------------------------------------------- |
-| `supplier_code`        | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | Supplier. References `suppliers.supplier_code`.       |
-| `item_code`            | part number (1-64 characters: letters, digits, `.` `_` `-` `/`)  | yes      | key                  | Item. References `items.item_code`.                   |
-| `supplier_part_number` | text, at most 100 characters                                     | no       | empty                | Supplier's own part number.                           |
-| `lead_time_days`       | integer, at most 9 digits, ≥ 0                                   | yes      | —                    | Planning lead time in calendar days.                  |
-| `lead_time_days_p90`   | integer, at most 9 digits, ≥ 0                                   | no       | empty                | Slow lead time in calendar days.                      |
-| `min_order_quantity`   | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | `0`                  | Minimum order quantity (0 = none).                    |
-| `pack_size`            | decimal, ≤ 12 integer and ≤ 3 fractional digits, > 0             | yes      | `1`                  | Order multiple.                                       |
-| `unit_price`           | money in `currency`, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0 | yes      | —                    | Purchase price per unit.                              |
-| `currency`             | ISO 4217 currency code                                           | yes      | —                    | Currency of unit_price. References `currencies.code`. |
-| `is_preferred`         | `true` or `false`                                                | yes      | `false`              | Preferred source for the item (at most one per item). |
-| `valid_from`           | date, `YYYY-MM-DD`                                               | no       | empty                | Price valid from.                                     |
+| Column                 | Type                                                             | Required | Default for new rows | Description                                                                                                                         |
+| ---------------------- | ---------------------------------------------------------------- | -------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `supplier_code`        | code (1-64 characters: letters, digits, `.` `_` `-`)             | yes      | key                  | Supplier. References `suppliers.supplier_code`.                                                                                     |
+| `item_code`            | part number (1-64 characters: letters, digits, `.` `_` `-` `/`)  | yes      | key                  | Item. References `items.item_code`.                                                                                                 |
+| `supplier_part_number` | text, at most 100 characters                                     | no       | empty                | Supplier's own part number.                                                                                                         |
+| `lead_time_days`       | integer, at most 9 digits, ≥ 0                                   | yes      | —                    | Planning lead time in calendar days.                                                                                                |
+| `lead_time_days_p90`   | integer, at most 9 digits, ≥ 0                                   | no       | empty                | Slow lead time in calendar days.                                                                                                    |
+| `min_order_quantity`   | decimal, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0             | yes      | `0`                  | Minimum order quantity (0 = none).                                                                                                  |
+| `pack_size`            | decimal, ≤ 12 integer and ≤ 3 fractional digits, > 0             | yes      | `1`                  | Order multiple.                                                                                                                     |
+| `unit_price`           | money in `currency`, ≤ 12 integer and ≤ 3 fractional digits, ≥ 0 | yes      | —                    | Purchase price per unit.                                                                                                            |
+| `currency`             | ISO 4217 currency code                                           | yes      | —                    | Currency of unit_price. References `currencies.code`.                                                                               |
+| `is_preferred`         | `true` or `false`                                                | yes      | `false`              | Preferred source for the item (at most one per item).                                                                               |
+| `valid_from`           | date, `YYYY-MM-DD`                                               | no       | empty                | Price valid from.                                                                                                                   |
+| `unit_of_measure`      | one of `EA`, `SET`, `L`, `KG`                                    | no       | empty                | Source-supplied unit for MOQ, pack multiple and unit price; empty means unknown. Optional trailing column: a file may leave it out. |
 
 ### `fx_rates.csv` → `public.fx_rates`
 

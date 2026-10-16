@@ -802,6 +802,7 @@ ENTITIES: tuple[Entity, ...] = (
             Column("currency", "currency", "Currency of unit_price.", references="currencies.code"),
             Column("is_preferred", "boolean", "Preferred source for the item (at most one per item).", default="false"),
             Column("valid_from", "date", "Price valid from.", nullable=True),
+            Column("unit_of_measure", "enum", "Source-supplied unit for MOQ, pack multiple and unit price; empty means unknown.", nullable=True, omittable=True, enum=("EA", "SET", "L", "KG")),
         ),
         column_groups=(("unit_price", "currency"),),
         row_rules=(
