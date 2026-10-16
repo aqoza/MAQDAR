@@ -203,6 +203,7 @@ export const EXAMPLES: { readonly [E in EntityName]: readonly ExampleRecord[] } 
       unit_cost: '172.25',
       currency: 'AED',
       status: 'open',
+      unit_of_measure: 'EA',
     },
   ],
   receipts: [

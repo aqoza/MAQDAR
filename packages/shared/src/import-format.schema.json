@@ -3115,6 +3115,32 @@
           "references": null,
           "lookup": null,
           "target_column": "status"
+        },
+        {
+          "name": "unit_of_measure",
+          "kind": "enum",
+          "required": false,
+          "required_for_new": false,
+          "natural_key": false,
+          "omittable": true,
+          "description": "Source unit for remaining quantity and unit cost; absent means unknown.",
+          "pattern": null,
+          "max_length": null,
+          "scale": null,
+          "integer_digits": null,
+          "min_value": null,
+          "max_value": null,
+          "greater_than": null,
+          "enum": [
+            "EA",
+            "SET",
+            "L",
+            "KG"
+          ],
+          "default": null,
+          "references": null,
+          "lookup": null,
+          "target_column": "unit_of_measure"
         }
       ]
     },
