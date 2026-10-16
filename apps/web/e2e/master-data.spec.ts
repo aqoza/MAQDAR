@@ -341,6 +341,19 @@ test('a viewer sees master data read-only and cannot open a new form', async ({
   await viewerPage.goto('/items/new')
   await expect(viewerPage.getByText('This page could not be found.')).toBeVisible()
   await expect(createButton(viewerPage)).toHaveCount(0)
+  await viewerPage.goto('/forecasts')
+  await expect(
+    viewerPage.getByRole('heading', { name: 'Review your planning results', exact: true }),
+  ).toBeVisible()
+  await expect(
+    viewerPage.getByRole('form', { name: 'Check demand data', exact: true }),
+  ).toHaveCount(0)
+  await expect(viewerPage.getByRole('link', { name: 'Create forecast', exact: true })).toHaveCount(
+    0,
+  )
+  await expect(
+    viewerPage.getByRole('link', { name: 'Saved forecast quality', exact: true }),
+  ).toBeVisible()
   await context.close()
 })
 
