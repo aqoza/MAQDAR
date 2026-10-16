@@ -58,17 +58,18 @@ Step 10b acceptance, fixed-group comparison interpretation, calendar model and r
 
 ## Phase 3 build steps
 
-Steps 13, 13b and 13c were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
+Steps 13, 13b, 13c and 13d were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
 
 | Step | Scope                                                                                                                                                                                              | Status    |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
 | 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | Merged    |
 | 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | Merged    |
-| 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | In review |
+| 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | Merged    |
+| 13d  | **Purchase-cost estimates:** confirmed supplier-price evidence for saved delivery quantities and dates, exact multiplication, one currency rounding step and immutable estimates.                  | In review |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
-Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-scenarios.md](supplier-scenarios.md). Step 13c delivery-date scenarios are in review; acceptance, calendar semantics and rollout are in [delivery-scenarios.md](delivery-scenarios.md).
+Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-scenarios.md](supplier-scenarios.md). Step 13c acceptance, calendar semantics and rollout are in [delivery-scenarios.md](delivery-scenarios.md). Step 13d purchase-cost estimates are in review; pricing evidence, rounding and rollout are in [purchase-cost-estimates.md](purchase-cost-estimates.md).
 
 ## Decision log
 
@@ -221,3 +222,10 @@ Require a matching-unit snapshot for every member at the policy cutoff, no more 
 - Move the requested date to the next known supplier working date, add the saved calendar-day lead time, then move receipt to the next known receiving-location working date.
 - Require confirmation that current calendar settings apply. Unknown dates remain unavailable, zero quantity needs no order, and receipt later than cutoff plus saved lead flags policy recalculation.
 - Save immutable calendar evidence; pricing, order execution and automatic policy recalculation follow separately.
+
+### Step 13d approved decisions (2026-10-16)
+
+- PR #24 was reviewed and merged as `9705cb3`. Build saved purchase-cost estimates from delivery scenarios while retaining their policy-recalculation warnings.
+- Require the supplied price's known matching unit and finite valid-from date no later than the saved adjusted order date. The planner confirms current price applicability to the saved quantity and date; missing or incompatible evidence remains unavailable.
+- Multiply saved quantity by supplied unit price with exact numeric arithmetic, then round once half-up to the currency's reference decimal places. Preserve exact product and original price evidence.
+- Keep source quantity and dates fixed. Taxes, freight, FX, prepared-group purchasing and order execution follow separately.

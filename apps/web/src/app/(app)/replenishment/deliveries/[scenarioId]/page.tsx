@@ -1,3 +1,5 @@
+import { PurchaseCostHistory } from '@/components/purchase-cost-history'
+import type { RawSearchParams } from '@/lib/master-data/list-params'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
@@ -9,8 +11,10 @@ import { deliveryScenarioReportSchema } from '@/lib/delivery-scenarios'
 
 export default async function SavedDeliveryScenario({
   params,
+  searchParams,
 }: {
   params: Promise<{ scenarioId: string }>
+  searchParams: Promise<RawSearchParams>
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
@@ -31,6 +35,7 @@ export default async function SavedDeliveryScenario({
   if (error) throw new Error('Delivery scenario unavailable')
   if (!data) notFound()
   const report = deliveryScenarioReportSchema.parse(data.report)
+  const costT = await getTranslations('PurchaseCosts')
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-semibold">{t('saved')}</h1>
@@ -41,6 +46,14 @@ export default async function SavedDeliveryScenario({
         })}
       </p>
       <p>{t('immutable')}</p>
+      {['available', 'no_order_needed'].includes(report.status) && (
+        <Link
+          className="inline-block rounded-md border px-4 py-2"
+          href={`/replenishment/costs/new?delivery=${scenarioId}`}
+        >
+          {costT('new')}
+        </Link>
+      )}
       <DeliveryScenarioReport report={report} locale={locale} />
       <Link
         className="inline-block underline"
@@ -48,6 +61,11 @@ export default async function SavedDeliveryScenario({
       >
         {t('newFromSource')}
       </Link>
+      <PurchaseCostHistory
+        organizationId={context.active.id}
+        deliveryId={scenarioId}
+        raw={await searchParams}
+      />
     </div>
   )
 }

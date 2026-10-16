@@ -174,15 +174,65 @@ with psycopg.connect(sys.argv[1]) as db:
     .getByRole('link', { name: 'Inspect date scenario for 2026-10-10', exact: true })
     .click()
   await expect(page).toHaveURL(deliveryUrl)
+  await page.getByRole('link', { name: 'Estimate purchase cost', exact: true }).click()
+  await expect(page).toHaveURL(/\/replenishment\/costs\/new\?delivery=/)
+  const costPreviewUrl = page.url()
+  await expect(
+    page.getByText('Unavailable: a finite price-valid-from date is required', { exact: true }),
+  ).toBeVisible()
+  await runPython(`import sys,psycopg
+with psycopg.connect(sys.argv[1]) as db:
+    db.execute("update public.supplier_items set unit_price=1.005,valid_from='2026-10-19' where organization_id=%s",(sys.argv[2],))`)
+  await page.getByRole('button', { name: 'Preview purchase cost', exact: true }).click()
+  await expect(
+    page.getByText(
+      'Confirm that the displayed price applies to the saved quantity and adjusted order date',
+      { exact: true },
+    ),
+  ).toBeVisible()
+  await expect(page.getByText('1.005 SAR / EA', { exact: true })).toBeVisible()
+  await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: 'Preview purchase cost', exact: true }).click()
+  await expect(page.getByText('Purchase-cost estimate available', { exact: true })).toBeVisible()
+  await expect(page.getByText('14 EA', { exact: true })).toBeVisible()
+  await expect(page.getByText(/SAR\s14\.07/, { exact: true })).toBeVisible()
+  await expect(page.getByText('Policy recalculation required:', { exact: false })).toBeVisible()
+  await runPython(`import sys,psycopg
+with psycopg.connect(sys.argv[1]) as db:
+    db.execute('update public.supplier_items set unit_price=1.015 where organization_id=%s',(sys.argv[2],))`)
+  await page.getByRole('button', { name: 'Save purchase-cost estimate', exact: true }).click()
+  await expect(page.getByRole('alert').filter({ hasText: 'Price evidence changed.' })).toBeVisible()
+  await page.getByRole('button', { name: 'Preview purchase cost', exact: true }).click()
+  await expect(page.getByText(/SAR\s14\.21/, { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Save purchase-cost estimate', exact: true }).click()
+  await expect(page).toHaveURL(/\/replenishment\/costs\/[a-f0-9-]+$/)
+  const costUrl = page.url()
+  await expect(
+    page.getByRole('heading', { name: 'Saved purchase-cost estimate', exact: true }),
+  ).toBeVisible()
+  await page.screenshot({ path: testInfo.outputPath('purchase-cost.png'), fullPage: true })
+  await page.getByRole('link', { name: 'Source delivery scenario', exact: true }).click()
+  await expect(page).toHaveURL(deliveryUrl)
+  await expect(page.getByText('1 saved estimates', { exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Inspect cost for 2026-10-19', exact: true }).click()
+  await expect(page).toHaveURL(costUrl)
   await page.goto(scenarioUrl)
   await runPython(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('update public.stock_snapshots set quantity=99 where organization_id=%s',(sys.argv[2],))
-    db.execute('update public.supplier_items set pack_size=100 where organization_id=%s',(sys.argv[2],))
+    db.execute('update public.supplier_items set pack_size=100,unit_price=2 where organization_id=%s',(sys.argv[2],))
     db.execute("update public.memberships set role='viewer' where organization_id=%s and user_id=%s",(sys.argv[2],sys.argv[3]))`)
   await runPython(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('delete from public.holiday_overrides where organization_id=%s',(sys.argv[2],))`)
+  await page.goto(costUrl)
+  await expect(page.getByText(/SAR\s14\.21/, { exact: true })).toBeVisible()
+  await expect(page.getByText('Policy recalculation required:', { exact: false })).toBeVisible()
+  await page.goto(`${costPreviewUrl}&confirmed=true`)
+  await expect(page.getByText(/SAR\s28\.00/, { exact: true })).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: 'Save purchase-cost estimate', exact: true }),
+  ).toHaveCount(0)
   await page.goto(deliveryUrl)
   await expect(page.getByText('2026-10-24', { exact: true }).first()).toBeVisible()
   await page.goto(`${deliveryPreviewUrl}&requested=2026-10-10&confirmed=true`)
