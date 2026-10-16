@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
+import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { draftListParams, draftListSpec, replenishmentStatuses } from '@/lib/replenishment'
@@ -79,30 +80,30 @@ export default async function ReplenishmentPage({
         className="flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('search')}
           <input
             name="q"
             maxLength={100}
             defaultValue={params.q}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('location')}
           <input
             name="location"
             maxLength={64}
             defaultValue={params.filters.location ?? ''}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('result')}
           <select
             name="status"
             defaultValue={params.filters.status ?? ''}
-            className="max-w-sm rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2 sm:max-w-sm"
           >
             <option value="">{t('all')}</option>
             {replenishmentStatuses.map((s) => (
@@ -120,7 +121,7 @@ export default async function ReplenishmentPage({
         </Link>
       </Form>
       <p>{t('count', { total })}</p>
-      <div className="overflow-x-auto">
+      <TableScrollRegion label={t('title')}>
         <table className="w-full text-sm">
           <caption className="sr-only">{t('title')}</caption>
           <thead>
@@ -155,7 +156,7 @@ export default async function ReplenishmentPage({
             ))}
           </tbody>
         </table>
-      </div>
+      </TableScrollRegion>
       {!rows.length && <p>{t('empty')}</p>}
       <nav aria-label={t('pagination')} className="flex gap-4">
         {params.page > 1 && (

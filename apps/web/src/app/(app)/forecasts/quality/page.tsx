@@ -2,6 +2,7 @@ import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
+import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { FORECAST_MODELS, FORECAST_STATUSES } from '@/lib/forecasting'
@@ -68,7 +69,7 @@ export default async function ForecastQuality({
   const rows = (range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])).map(
     (row) => qualityRowSchema.parse(row),
   )
-  const inputClass = 'rounded-md border bg-background p-2'
+  const inputClass = 'w-full min-w-0 max-w-full rounded-md border bg-background p-2'
   const amount = (value: string | null | undefined) => formatScore(value, locale)
   return (
     <div className="space-y-5">
@@ -84,11 +85,11 @@ export default async function ForecastQuality({
         className="flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('search')}
           <input name="q" defaultValue={params.q} maxLength={100} className={inputClass} />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('location')}
           <input
             name="location"
@@ -97,7 +98,7 @@ export default async function ForecastQuality({
             className={inputClass}
           />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('result')}
           <select name="status" defaultValue={params.filters.status ?? ''} className={inputClass}>
             <option value="">{t('all')}</option>
@@ -108,7 +109,7 @@ export default async function ForecastQuality({
             ))}
           </select>
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('model')}
           <select name="model" defaultValue={params.filters.model ?? ''} className={inputClass}>
             <option value="">{t('all')}</option>
@@ -119,7 +120,7 @@ export default async function ForecastQuality({
             ))}
           </select>
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('method')}
           <select name="method" defaultValue={params.filters.method ?? ''} className={inputClass}>
             <option value="">{t('all')}</option>
@@ -130,7 +131,7 @@ export default async function ForecastQuality({
             ))}
           </select>
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('size')}
           <select name="size" defaultValue={params.size} className={inputClass}>
             {PAGE_SIZES.map((size) => (
@@ -138,7 +139,7 @@ export default async function ForecastQuality({
             ))}
           </select>
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('order')}
           <select name="dir" defaultValue={params.dir} className={inputClass}>
             <option value="desc">{t('newest')}</option>
@@ -153,7 +154,7 @@ export default async function ForecastQuality({
         </Link>
       </Form>
       <p>{t('count', { total })}</p>
-      <div className="overflow-x-auto">
+      <TableScrollRegion label={t('title')}>
         <table className="w-full text-sm">
           <caption className="sr-only">{t('title')}</caption>
           <thead>
@@ -259,7 +260,7 @@ export default async function ForecastQuality({
             ))}
           </tbody>
         </table>
-      </div>
+      </TableScrollRegion>
       {!rows.length && <p>{t('empty')}</p>}
       <nav aria-label={t('pagination')} className="flex gap-4">
         {params.page > 1 && (

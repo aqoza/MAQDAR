@@ -2,6 +2,7 @@ import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
+import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { POLICY_STATUSES } from '@/lib/inventory-policy'
@@ -79,30 +80,30 @@ export default async function PolicyWorkbench({
         className="flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('search')}
           <input
             name="q"
             defaultValue={params.q}
             maxLength={100}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('location')}
           <input
             name="location"
             defaultValue={params.filters.location ?? ''}
             maxLength={64}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('result')}
           <select
             name="status"
             defaultValue={params.filters.status ?? ''}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           >
             <option value="">{t('all')}</option>
             {POLICY_STATUSES.map((s) => (
@@ -112,12 +113,12 @@ export default async function PolicyWorkbench({
             ))}
           </select>
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('lastProposal')}
           <select
             name="review"
             defaultValue={params.filters.review ?? ''}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           >
             <option value="">{t('all')}</option>
             {REVIEW_STATUSES.map((s) => (
@@ -135,7 +136,7 @@ export default async function PolicyWorkbench({
         </Link>
       </Form>
       <p>{t('count', { total })}</p>
-      <div className="overflow-x-auto">
+      <TableScrollRegion label={t('title')}>
         <table className="w-full text-sm">
           <caption className="sr-only">{t('title')}</caption>
           <thead>
@@ -183,7 +184,7 @@ export default async function PolicyWorkbench({
             ))}
           </tbody>
         </table>
-      </div>
+      </TableScrollRegion>
       {!rows.length && <p>{t('empty')}</p>}
       <nav aria-label={t('pagination')} className="flex gap-4">
         {params.page > 1 && (

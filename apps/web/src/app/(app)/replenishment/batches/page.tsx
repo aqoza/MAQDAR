@@ -2,6 +2,7 @@ import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
+import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { isEditorRole } from '@/lib/auth/roles'
 import { createClient } from '@/lib/supabase/server'
@@ -80,39 +81,39 @@ export default async function HandoffBatches({
         className="flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('search')}
           <input
             name="q"
             maxLength={100}
             defaultValue={params.q}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('supplier')}
           <input
             name="supplier"
             maxLength={64}
             defaultValue={params.filters.supplier ?? ''}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('location')}
           <input
             name="location"
             maxLength={64}
             defaultValue={params.filters.location ?? ''}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           />
         </label>
-        <label className="grid gap-1">
+        <label className="grid min-w-0 max-w-full gap-1">
           {t('selection')}
           <select
             name="selection"
             defaultValue={params.filters.selection ?? ''}
-            className="rounded-md border bg-background p-2"
+            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
           >
             <option value="">{t('all')}</option>
             {(['current', 'historical'] as const).map((key) => (
@@ -130,7 +131,7 @@ export default async function HandoffBatches({
         </Link>
       </Form>
       <p>{t('count', { total })}</p>
-      <div className="overflow-x-auto">
+      <TableScrollRegion label={t('title')}>
         <table className="w-full text-sm">
           <caption className="sr-only">{t('title')}</caption>
           <thead>
@@ -182,7 +183,7 @@ export default async function HandoffBatches({
             ))}
           </tbody>
         </table>
-      </div>
+      </TableScrollRegion>
       {!rows.length && <p>{t('empty')}</p>}
       <nav aria-label={t('pagination')} className="flex gap-4">
         {params.page > 1 && (
