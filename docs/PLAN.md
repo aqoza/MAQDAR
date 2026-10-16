@@ -32,7 +32,7 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 ## Phase 2 build steps
 
-Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 2026-10-15. Steps 12b and 12c were scoped and approved on 2026-10-16. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
+Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 2026-10-15. Steps 12b, 12c and 12d were scoped and approved on 2026-10-16. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
 | Step | Scope                                                                                                                                                                                      | Status    |
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
@@ -45,7 +45,8 @@ Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 
 | 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Merged    |
 | 12a  | **Policy review workbench:** searchable saved recommendations, reasoned manual thresholds and independent approval history.                                                                | Merged    |
 | 12b  | **KPI foundation:** observed availability, inventory value by currency, snapshot freshness/coverage and searchable saved forecast quality.                                                 | Merged    |
-| 12c  | **Individual-item stock comparison:** supplied unit provenance, explicit cutoff and calculated/approved maximum selection, with quantity/value above that maximum.                         | In review |
+| 12c  | **Individual-item stock comparison:** supplied unit provenance, explicit cutoff and calculated/approved maximum selection, with quantity/value above that maximum.                         | Merged    |
+| 12d  | **Prepared-group stock comparison:** saved two-way 1:1 groups, captured demand units, complete snapshot coverage and quantity above the explicitly selected maximum.                       | In review |
 
 Step 7 criteria, operational limits and owner-run rollout are in [planning-runs.md](planning-runs.md).
 
@@ -179,3 +180,9 @@ PR #18 was reviewed and merged as `c16d915`. The owner approved a read-only KPI 
 PR #19 was reviewed and merged as `c9a7f42`. The owner approved individual-item comparisons from the policy workbench, optional source-supplied demand/stock units and immutable unit provenance in new forecasts and policies. Unlabeled legacy data remains non-comparable; prepared-group pooling follows separately.
 
 Use `max(on-hand − allocations − selected periodic maximum, 0)`, valued at the snapshot's cost/currency. Compare at the saved forecast cutoff with matching known units and a latest eligible snapshot no more than seven days old. The user explicitly chooses the calculated maximum or a particular approved override. Missing, stale or incompatible inputs remain unavailable. See [stock-comparison.md](stock-comparison.md) for acceptance, exact semantics and owner-run rollout.
+
+### Step 12d approved decisions (2026-10-16)
+
+PR #20 was reviewed and merged as `856f67b`. The owner approved stock comparisons for saved prepared groups whose members are all two-way interchangeable at 1:1 in the same unit, with captured demand-unit evidence in new runs. Groups requiring directed supersession conversions and legacy artifacts lacking evidence remain unavailable.
+
+Require a matching-unit snapshot for every member at the policy cutoff, no more than seven days old. Compare pooled on-hand minus allocations with the explicitly selected calculated or approved maximum. Show quantity above maximum and physical member inventory values separately by currency. Pooled-excess valuation is deferred pending a cost-allocation rule. See [prepared-stock-comparison.md](prepared-stock-comparison.md) for acceptance, provenance, exact arithmetic and owner-run rollout.

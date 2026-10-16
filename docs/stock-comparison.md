@@ -1,6 +1,6 @@
 # Individual-item stock comparison (Step 12c)
 
-Owner-approved 2026-10-16: optional source-supplied demand/stock units, saved forecast/policy provenance, and a read-only comparison at the selected policy's forecast cutoff. Prepared-group stock pooling is deferred.
+Owner-approved 2026-10-16: optional source-supplied demand/stock units, saved forecast/policy provenance, and a read-only comparison at the selected policy's forecast cutoff. The subsequent [Step 12d extension](prepared-stock-comparison.md) adds eligible prepared-group comparisons under its separate pooling rules; this document describes individual comparisons.
 
 ## Workflow and interpretation
 

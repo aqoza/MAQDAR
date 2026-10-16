@@ -277,6 +277,7 @@ select set_eq(
     ('public.dashboard_kpis(uuid, date, text)', 'authenticated'),
     ('public.policy_stock_comparison(uuid, uuid, date, text, uuid)', 'authenticated'),
     ('app.demand_unit_evidence(bigint, bigint, text[])', ''),
+    ('app.prepared_stock_evidence(jsonb, jsonb)', ''),
     ('app.import_rows_stock_snapshots_units(uuid, uuid, smallint, integer, integer)', ''),
     ('app.import_rows_demand_history_units(uuid, uuid, smallint, integer, integer)', ''),
     ('public.import_retention_candidates()', 'service_role'),
