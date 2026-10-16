@@ -60,15 +60,15 @@ Step 10b acceptance, fixed-group comparison interpretation, calendar model and r
 
 Steps 13, 13b, 13c, 13d, 14, 15 and 15b were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
 
-| Step | Scope                                                                                                                                                                                              | Status    |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | Merged    |
-| 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | Merged    |
-| 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | Merged    |
-| 13d  | **Purchase-cost estimates:** confirmed supplier-price evidence for saved delivery quantities and dates, exact multiplication, one currency rounding step and immutable estimates.                  | Merged    |
-| 14   | **Purchase-proposal review:** independent reasoned decisions, per-draft selection history, current-price checks and policy-recalculation approval gate.                                            | Merged    |
-| 15   | **Purchase handoffs:** immutable single-proposal CSV/JSON exports, selected-approval and price gates, historical evidence, stable retries and member-scoped downloads.                             | Merged    |
-| 15b  | **Purchase handoff batches:** compatible multi-line CSV/JSON packages, atomic evidence gates, exact cost totals, canonical set retries and visible overlap.                                        | In review |
+| Step | Scope                                                                                                                                                                                              | Status |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | Merged |
+| 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | Merged |
+| 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | Merged |
+| 13d  | **Purchase-cost estimates:** confirmed supplier-price evidence for saved delivery quantities and dates, exact multiplication, one currency rounding step and immutable estimates.                  | Merged |
+| 14   | **Purchase-proposal review:** independent reasoned decisions, per-draft selection history, current-price checks and policy-recalculation approval gate.                                            | Merged |
+| 15   | **Purchase handoffs:** immutable single-proposal CSV/JSON exports, selected-approval and price gates, historical evidence, stable retries and member-scoped downloads.                             | Merged |
+| 15b  | **Purchase handoff batches:** compatible multi-line CSV/JSON packages, atomic evidence gates, exact cost totals, canonical set retries and visible overlap.                                        | Merged |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -254,3 +254,7 @@ Require a matching-unit snapshot for every member at the policy cutoff, no more 
 - Require every line's proposal to remain selected, current price evidence to match, and saved policy compatibility to be explicitly false for recalculation. Reject repeated items; any invalid line rejects the entire new batch.
 - Use the exact handoff set as retry identity regardless of selection order. Allow visible overlap between different packages so unchanged lines may be reused. Existing downloads retain their original evidence.
 - Batches remain planning packages; they do not reserve quantities, prevent duplicate external orders or create inbound. ERP transmission and execution follow later. See [handoff-batches.md](handoff-batches.md).
+
+### Responsive planning screens approved scope (2026-10-16)
+
+PR #28 was reviewed and merged as `5dcd979`. Authenticated frontend checks then found page-level horizontal overflow on forecast quality, policy review, forecast creation, replenishment drafts and handoff batches. The owner approved one corrective PR before further feature development: constrain form controls to the available width, retain horizontal scrolling inside wide tables, and verify keyboard access and mobile navigation at 375, 768 and 1440px. Planning calculations, persistence and review rules remain unchanged.

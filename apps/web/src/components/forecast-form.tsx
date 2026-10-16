@@ -18,12 +18,12 @@ export function ForecastForm({
 }) {
   const t = useTranslations('Forecasting')
   const [state, action, pending] = useActionState(enqueueForecast, idleState)
-  const inputClass = 'rounded-md border bg-background p-2'
+  const inputClass = 'w-full min-w-0 max-w-full rounded-md border bg-background p-2'
   return (
     <form action={action} className="space-y-5 rounded-xl border p-5">
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="request_id" value={requestId} />
-      <label className="grid gap-1 text-sm">
+      <label className="grid min-w-0 gap-1 text-sm">
         {t('methodLabel')}
         <select
           name="method"
@@ -35,7 +35,7 @@ export function ForecastForm({
         </select>
       </label>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="grid gap-1 text-sm">
+        <label className="grid min-w-0 gap-1 text-sm">
           {t('location')}
           <input
             name="location_code"
@@ -45,7 +45,7 @@ export function ForecastForm({
             className={inputClass}
           />
         </label>
-        <label className="grid gap-1 text-sm">
+        <label className="grid min-w-0 gap-1 text-sm">
           {t('horizon')}
           <input
             name="horizon"
@@ -58,7 +58,7 @@ export function ForecastForm({
             className={inputClass}
           />
         </label>
-        <label className="grid gap-1 text-sm">
+        <label className="grid min-w-0 gap-1 text-sm">
           {t('from')}
           <input
             name="from_date"
@@ -68,7 +68,7 @@ export function ForecastForm({
             className={inputClass}
           />
         </label>
-        <label className="grid gap-1 text-sm">
+        <label className="grid min-w-0 gap-1 text-sm">
           {t('to')}
           <input
             name="to_date"
@@ -79,7 +79,7 @@ export function ForecastForm({
           />
         </label>
       </div>
-      <label className="grid gap-1 text-sm">
+      <label className="grid min-w-0 gap-1 text-sm">
         {t('items')}
         <textarea
           name="item_codes"
