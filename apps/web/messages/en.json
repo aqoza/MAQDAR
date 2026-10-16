@@ -1581,7 +1581,32 @@
     "preparationResults": "View prepared demand",
     "policyResults": "View inventory policy",
     "workbench": "Policy review workbench",
-    "quality": "Saved forecast quality"
+    "quality": "Saved forecast quality",
+    "workspace": {
+      "eyebrow": "Service parts planning",
+      "description": "Check demand, compare forecasts and plan inventory for every location.",
+      "tools": "Planning tools",
+      "tasks": {
+        "readiness": "Validate historical demand",
+        "quality": "Inspect saved forecast scores",
+        "workbench": "Review inventory policies",
+        "classify": "Understand demand patterns",
+        "forecast": "Generate a new forecast",
+        "prepare": "Combine related demand"
+      },
+      "locationPlaceholder": "Enter a location code",
+      "readyTitle": "Ready to check your demand data?",
+      "readyDescription": "Validate historical demand for one active location and a period of up to 1,096 days.",
+      "start": "Run demand data check",
+      "safeNote": "This check does not create forecasts or change inventory.",
+      "activeTitle": "Your planning run is in progress",
+      "readOnlyTitle": "Review your planning results",
+      "readOnlyDescription": "You can inspect saved runs, forecast quality and inventory policies. A planner, owner or administrator can start a new run.",
+      "inspectRuns": "Inspect run details",
+      "latest": "Latest runs",
+      "viewAll": "View all {count} recent runs",
+      "historyNote": "Saved results and source evidence"
+    }
   },
   "Classification": {
     "title": "Classify demand",

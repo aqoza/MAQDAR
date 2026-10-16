@@ -262,3 +262,7 @@ PR #28 was reviewed and merged as `5dcd979`. Authenticated frontend checks then 
 ### Compact typography and quieter planning screens (2026-10-17)
 
 PR #30 was reviewed with all three CI jobs passing and merged as `e14a528`. The owner approved a UI standardisation PR after reviewing the live application and a local comparison: 20px page titles, 16px section headings, 14px body/labels, and optional expandable methodology. Actionable warnings, unavailable evidence and required confirmations remain visible. Syncron's public D2D screen informs the compact hierarchy; its exact font tokens were not verified. See [ui-typography.md](ui-typography.md) for the scale, reference and notice rules.
+
+### Forecasts workspace design pilot (2026-10-17)
+
+After PR #31 was merged as `428ce46`, the owner supplied a MAQDAR mockup and requested its visual direction on the Forecasts page before other pages. This pilot uses soft blue/lilac surfaces, six task cards, a focused readiness form and a recent-runs panel backed by actual records. Preserve the compact type scale, guarded actions and complete run evidence; keep visual accents scoped to `/forecasts`. See [forecast-workspace-design.md](forecast-workspace-design.md) for the reference interpretation, scope and verification contract.

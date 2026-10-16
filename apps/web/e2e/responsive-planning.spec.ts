@@ -3,6 +3,7 @@ import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
 const screens = [
+  { path: '/forecasts', title: 'Forecasts and planning runs', reset: null },
   { path: '/forecasts/quality', title: 'Saved forecast quality', reset: 'Reset' },
   { path: '/forecasts/workbench', title: 'Policy review workbench', reset: 'Reset filters' },
   { path: '/forecasts/new', title: 'Create forecast', reset: null },
@@ -52,6 +53,20 @@ for (const width of [375, 768, 1440]) {
         ).toBeVisible()
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
+        if (screen.path === '/forecasts') {
+          await expect(
+            page.getByRole('navigation', { name: 'Planning tools' }).getByRole('link'),
+          ).toHaveCount(6)
+          await page.getByRole('link', { name: 'Check demand data', exact: true }).focus()
+          await page.keyboard.press('Enter')
+          await expect(
+            page.getByRole('form', { name: 'Check demand data', exact: true }),
+          ).toBeFocused()
+          await expect(page.locator('main')).not.toHaveCSS('background-image', 'none')
+        } else {
+          // Other planning routes retain their existing surface.
+          await expect(page.locator('main')).toHaveCSS('background-image', 'none')
+        }
         for (const control of await page
           .locator('main select, main input:not([type=hidden]):not([type=checkbox]), main textarea')
           .all()) {
@@ -107,6 +122,14 @@ for (const width of [375, 768, 1440]) {
           path: testInfo.outputPath(`${screen.path.replaceAll('/', '-')}.png`),
           fullPage: true,
         })
+        if (screen.path === '/forecasts') {
+          await page.getByRole('link', { name: 'Saved forecast quality', exact: true }).click()
+          await expect(
+            page.getByRole('heading', { name: 'Saved forecast quality', exact: true }),
+          ).toBeVisible()
+          // The route-scoped accents must disappear after client navigation as well.
+          await expect(page.locator('main')).toHaveCSS('background-image', 'none')
+        }
       })
     }
 

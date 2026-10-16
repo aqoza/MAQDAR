@@ -2,10 +2,26 @@
 
 import { useActionState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { LockKeyhole, MapPin, Play, RotateCw } from 'lucide-react'
 import { enqueueRun, cancelRun } from '@/app/(app)/forecasts/actions'
 import { idleState } from '@/lib/forms'
+import { DemandCheckIllustration } from '@/components/forecast-illustrations'
+import { HelpDisclosure } from '@/components/help-disclosure'
+import styles from '@/components/forecast-workspace.module.css'
 
-type Labels = { location: string; from: string; to: string; submit: string; pending: string }
+type Labels = {
+  location: string
+  from: string
+  to: string
+  submit: string
+  pending: string
+  locationPlaceholder: string
+  readyTitle: string
+  readyDescription: string
+  start: string
+  safeNote: string
+  scope: string
+}
 
 export function PlanningForm({
   organizationId,
@@ -22,50 +38,74 @@ export function PlanningForm({
 }) {
   const [state, action, pending] = useActionState(enqueueRun, idleState)
   return (
-    <form action={action} className="flex flex-wrap items-end gap-4 rounded-xl border p-4">
+    <form
+      action={action}
+      id="demand-check"
+      aria-label={labels.submit}
+      tabIndex={-1}
+      className={styles.readinessForm}
+    >
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="request_id" value={requestId} />
-      <label className="grid gap-1 text-sm">
-        {labels.location}
-        <input
-          name="location_code"
-          required
-          maxLength={64}
-          defaultValue={state.values?.location_code ?? ''}
-          className="rounded-md border bg-background p-2"
-        />
-      </label>
-      <label className="grid gap-1 text-sm">
-        {labels.from}
-        <input
-          name="from_date"
-          type="date"
-          required
-          defaultValue={state.values?.from_date ?? from}
-          className="rounded-md border bg-background p-2"
-        />
-      </label>
-      <label className="grid gap-1 text-sm">
-        {labels.to}
-        <input
-          name="to_date"
-          type="date"
-          required
-          defaultValue={state.values?.to_date ?? to}
-          className="rounded-md border bg-background p-2"
-        />
-      </label>
-      <button
-        disabled={pending}
-        className="rounded-md bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
-      >
-        {pending ? labels.pending : labels.submit}
-      </button>
-      {state.message && (
-        <p role="alert" className="w-full text-sm">
-          {state.message}
+      <div className={styles.toolbar}>
+        <label className={`${styles.field} ${styles.locationField}`}>
+          {labels.location}
+          <span className={styles.locationInput}>
+            <MapPin aria-hidden="true" />
+            <input
+              name="location_code"
+              required
+              maxLength={64}
+              defaultValue={state.values?.location_code ?? ''}
+              placeholder={labels.locationPlaceholder}
+            />
+          </span>
+        </label>
+        <label className={styles.field}>
+          {labels.from}
+          <input
+            name="from_date"
+            type="date"
+            required
+            defaultValue={state.values?.from_date ?? from}
+          />
+        </label>
+        <label className={styles.field}>
+          {labels.to}
+          <input name="to_date" type="date" required defaultValue={state.values?.to_date ?? to} />
+        </label>
+        <button disabled={pending} className={styles.primaryButton}>
+          <Play aria-hidden="true" />
+          {pending ? labels.pending : labels.submit}
+        </button>
+        {state.message && (
+          <p role="alert" className={styles.feedback}>
+            {state.message}
+          </p>
+        )}
+      </div>
+      <section className={styles.readinessPanel} aria-labelledby="readiness-title">
+        <div className={styles.readinessArt}>
+          <DemandCheckIllustration />
+        </div>
+        <h2 id="readiness-title" className="text-section-title">
+          {labels.readyTitle}
+        </h2>
+        <p>{labels.readyDescription}</p>
+        <button disabled={pending} className={styles.primaryButton}>
+          <Play aria-hidden="true" />
+          {pending ? labels.pending : labels.start}
+        </button>
+        <p className={styles.safeNote}>
+          <LockKeyhole aria-hidden="true" />
+          {labels.safeNote}
         </p>
-      )}
+      </section>
+      <div className={styles.method}>
+        <HelpDisclosure>
+          <p>{labels.scope}</p>
+        </HelpDisclosure>
+      </div>
     </form>
   )
 }
@@ -95,7 +135,15 @@ export function CancelPlanningRun({
   )
 }
 
-export function PlanningRefresh({ active, label }: { active: boolean; label: string }) {
+export function PlanningRefresh({
+  active,
+  label,
+  compact = false,
+}: {
+  active: boolean
+  label: string
+  compact?: boolean
+}) {
   const router = useRouter()
   useEffect(() => {
     if (!active) return
@@ -105,8 +153,13 @@ export function PlanningRefresh({ active, label }: { active: boolean; label: str
     return () => clearInterval(timer)
   }, [active, router])
   return (
-    <button className="text-sm underline" onClick={() => router.refresh()}>
-      {label}
+    <button
+      className={styles.refresh}
+      title={compact ? label : undefined}
+      onClick={() => router.refresh()}
+    >
+      <RotateCw aria-hidden="true" />
+      <span className={compact ? 'sr-only' : undefined}>{label}</span>
     </button>
   )
 }

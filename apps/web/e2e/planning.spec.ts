@@ -403,6 +403,12 @@ test('planner queues a readiness check, the worker completes it, and another run
   ])
   await page.goto('/forecasts')
   await expect(page.getByRole('heading', { name: 'Forecasts and planning runs' })).toBeVisible()
+  await page.getByLabel('Location code', { exact: true }).fill('MISSING')
+  await page.getByRole('button', { name: 'Check demand data', exact: true }).click()
+  await expect(
+    page.getByRole('form', { name: 'Check demand data', exact: true }).getByRole('alert'),
+  ).toContainText('Choose an active location code')
+  await expect(page.getByLabel('Location code', { exact: true })).toHaveValue('MISSING')
   await page.getByLabel('Location code', { exact: true }).fill('TEST')
   await page.getByRole('button', { name: 'Check demand data', exact: true }).click()
   await expect(page.getByText('Queued', { exact: true })).toBeVisible()
@@ -421,7 +427,7 @@ test('planner queues a readiness check, the worker completes it, and another run
   await expect(page.getByText('Completed', { exact: true })).toBeVisible()
   await expect(page.getByText('No stored demand records were found in this window.')).toBeVisible()
   await page.getByLabel('Location code', { exact: true }).fill('TEST')
-  await page.getByRole('button', { name: 'Check demand data', exact: true }).click()
+  await page.getByRole('button', { name: 'Run demand data check', exact: true }).click()
   await expect(page.getByText('Queued', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Cancel run' }).click()
   await expect(page.getByText('Canceled', { exact: true })).toBeVisible()
