@@ -85,7 +85,9 @@ test('a revoked invitation is refused when its invitee opens the link', async ({
   const context = await browser.newContext()
   const invitedPage = await context.newPage()
   await completeInviteLink(invitedPage, link, null)
-  await expect(invitedPage.getByText('This invitation is for someone else')).toBeVisible()
+  await expect(
+    invitedPage.getByRole('heading', { name: 'This invitation is for someone else', exact: true }),
+  ).toBeVisible()
   await expect(invitedPage.getByRole('button', { name: 'Accept and continue' })).toHaveCount(0)
   await context.close()
 })
