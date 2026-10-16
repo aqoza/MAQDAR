@@ -82,9 +82,9 @@ export default async function PurchaseReviewDetail({
       <Link href="/replenishment/review" className="underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('detailTitle', { item: row.item_code })}</h1>
+      <h1 className="text-page-title">{t('detailTitle', { item: row.item_code })}</h1>
       <p>{t('description')}</p>
-      <h2 className="text-xl font-semibold">
+      <h2 className="text-section-title">
         {t('revision', { revision: proposal.revision })} · {t(`statuses.${row.status}`)}
       </h2>
       {row.selected && <p role="status">{t('selected')}</p>}

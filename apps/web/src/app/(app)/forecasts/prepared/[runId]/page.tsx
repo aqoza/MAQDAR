@@ -1,3 +1,4 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
@@ -75,12 +76,14 @@ export default async function PreparedResults({
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('results')}</h1>
+      <h1 className="text-page-title">{t('results')}</h1>
       <p>
         {run.locations?.code} · {run.from_date} – {run.to_date}
       </p>
       <p>{t('rules')}</p>
-      <p className="text-sm text-muted-foreground">{t('calendarNote')}</p>
+      <HelpDisclosure>
+        <p>{t('calendarNote')}</p>
+      </HelpDisclosure>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('groups')}</caption>
@@ -135,7 +138,7 @@ export default async function PreparedResults({
               />
             </NextIntlClientProvider>
           )}
-          <h2 className="text-xl font-semibold">{t('contributions')}</h2>
+          <h2 className="text-section-title">{t('contributions')}</h2>
           <p className="text-sm">{t('contributionNote')}</p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -180,7 +183,7 @@ export default async function PreparedResults({
           )}
           {!!detail.daily.length && (
             <>
-              <h2 className="text-xl font-semibold">{t('daily')}</h2>
+              <h2 className="text-section-title">{t('daily')}</h2>
               <p className="text-sm">{t('lifecycleNote')}</p>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">

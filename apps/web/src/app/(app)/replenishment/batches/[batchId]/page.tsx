@@ -1,3 +1,4 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
@@ -40,14 +41,14 @@ export default async function BatchDetail({ params }: { params: Promise<{ batchI
       <Link className="underline" href="/replenishment/batches">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">
+      <h1 className="text-page-title">
         {t('detailTitle', { supplier: payload.summary.supplier_code })}
       </h1>
       <p>{t('description')}</p>
       <p className="break-all">{t('batchIdentity', { id: batchId })}</p>
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
       <section className="space-y-2 rounded-xl border p-4" aria-label={t('currentContext')}>
-        <h2 className="font-semibold">{t('currentContext')}</h2>
+        <h2 className="text-section-title">{t('currentContext')}</h2>
         <p role="status">{t(current.data.selected ? 'current' : 'historical')}</p>
         <p>{t('immutableNote')}</p>
       </section>
@@ -59,7 +60,9 @@ export default async function BatchDetail({ params }: { params: Promise<{ batchI
           {t('csv')}
         </a>
       </div>
-      <p>{t('csvNote')}</p>
+      <HelpDisclosure>
+        <p>{t('csvNote')}</p>
+      </HelpDisclosure>
       <HandoffBatchEvidence report={payload} />
       <HandoffBatchOverlap
         organizationId={context.active.id}

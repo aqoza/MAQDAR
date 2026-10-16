@@ -37,7 +37,7 @@ export function InvitationsCard({ invitations, roles }: InvitationsCardProps) {
         <InviteForm roles={roles} />
         <Separator />
         <section className="flex flex-col gap-3" aria-labelledby="pending-invitations-heading">
-          <h3 id="pending-invitations-heading" className="text-sm font-medium">
+          <h3 id="pending-invitations-heading" className="text-subsection-title">
             {t('pending')}
           </h3>
           {invitations.length === 0 ? (

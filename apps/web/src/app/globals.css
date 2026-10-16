@@ -5,6 +5,20 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Compact application type roles. Keep numeric metrics separate from headings. */
+  --text-page-title: 1.25rem;
+  --text-page-title--line-height: 1.75rem;
+  --text-page-title--font-weight: 600;
+  --text-page-title--letter-spacing: -0.025em;
+  --text-section-title: 1rem;
+  --text-section-title--line-height: 1.5rem;
+  --text-section-title--font-weight: 600;
+  --text-subsection-title: 0.875rem;
+  --text-subsection-title--line-height: 1.25rem;
+  --text-subsection-title--font-weight: 600;
+  --text-metric: 1.75rem;
+  --text-metric--line-height: 2.25rem;
+  --text-metric--font-weight: 600;
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -45,6 +59,21 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  /* Native planning controls share the shadcn input's mobile/desktop type sizes. */
+  [data-app-content] :where(input, select, textarea) {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  @media (width >= 48rem) {
+    [data-app-content] :where(input, select, textarea) {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+  }
 }
 
 :root {

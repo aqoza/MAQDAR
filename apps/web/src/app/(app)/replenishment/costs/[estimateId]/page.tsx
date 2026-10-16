@@ -38,7 +38,7 @@ export default async function SavedPurchaseCost({
   const report = purchaseCostReportSchema.parse(data.report)
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-semibold">{t('saved')}</h1>
+      <h1 className="text-page-title">{t('saved')}</h1>
       <p>
         {t('savedBy', {
           actor: data.submitted_by === context.userId ? t('you') : data.submitted_by,

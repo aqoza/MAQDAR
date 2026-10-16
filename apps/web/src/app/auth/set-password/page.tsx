@@ -30,7 +30,7 @@ export default async function SetPasswordPage({
     <main className="bg-muted/40 flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <h1 className="text-xl font-semibold tracking-tight">{t('title')}</h1>
+          <h1 className="text-page-title">{t('title')}</h1>
           <p className="text-muted-foreground text-sm">{t('description')}</p>
         </CardHeader>
         <CardContent>

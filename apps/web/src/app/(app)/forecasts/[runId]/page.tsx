@@ -1,3 +1,4 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
@@ -60,11 +61,13 @@ export default async function ClassificationResults({
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('results')}</h1>
+      <h1 className="text-page-title">{t('results')}</h1>
       <p>
         {run.locations?.code} · {run.from_date} – {run.to_date}
       </p>
-      <p className="text-sm text-muted-foreground">{t('methodNote')}</p>
+      <HelpDisclosure>
+        <p>{t('methodNote')}</p>
+      </HelpDisclosure>
       <details>
         <summary className="cursor-pointer">{t('thresholds')}</summary>
         <dl className="mt-2 grid gap-2 sm:grid-cols-3">

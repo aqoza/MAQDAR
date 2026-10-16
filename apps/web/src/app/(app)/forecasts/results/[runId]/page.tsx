@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HelpDisclosure } from '@/components/help-disclosure'
 import { DemandUnitEvidence } from '@/components/demand-unit-evidence'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
@@ -80,14 +81,14 @@ export default async function ForecastResults({
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('results')}</h1>
+      <h1 className="text-page-title">{t('results')}</h1>
       <p>
         {run.locations?.code} · {run.from_date} – {run.to_date}
       </p>
-      <p className="text-sm text-muted-foreground">
-        {regional ? prepared('method') : t(expanded ? 'expandedMethod' : 'method')}
-      </p>
-      {regional && <p>{prepared('comparisonNote')}</p>}
+      <HelpDisclosure label={regional ? prepared('comparisonLabel') : undefined}>
+        <p>{regional ? prepared('method') : t(expanded ? 'expandedMethod' : 'method')}</p>
+        {regional && <p>{prepared('comparisonNote')}</p>}
+      </HelpDisclosure>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('results')}</caption>
@@ -145,7 +146,7 @@ export default async function ForecastResults({
       </div>
       {detail && (
         <section className="space-y-4" aria-label={t('details')}>
-          <h2 className="text-xl font-semibold">
+          <h2 className="text-section-title">
             {t('details')} · {rows?.find((r) => r.item_id === item)?.item_code}
           </h2>
           {selected?.status === 'selected' && isEditorRole(context.role) && (
@@ -190,8 +191,10 @@ export default async function ForecastResults({
                   })}
                 </p>
               )}
-              <h3 className="font-semibold">{t('comparison')}</h3>
-              <p className="text-sm">{t('scoreNote')}</p>
+              <h3 className="text-subsection-title">{t('comparison')}</h3>
+              <HelpDisclosure>
+                <p>{t('scoreNote')}</p>
+              </HelpDisclosure>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <caption className="sr-only">{t('comparison')}</caption>
@@ -244,11 +247,13 @@ export default async function ForecastResults({
                   </div>
                 ))}
               </details>
-              <h3 className="font-semibold">{t('daily')}</h3>
+              <h3 className="text-subsection-title">{t('daily')}</h3>
               {detail.output.uncertainty && (
                 <div className="space-y-2">
-                  <h3 className="font-semibold">{t('uncertainty')}</h3>
-                  <p className="text-sm">{t('uncertaintyNote')}</p>
+                  <h3 className="text-subsection-title">{t('uncertainty')}</h3>
+                  <HelpDisclosure>
+                    <p>{t('uncertaintyNote')}</p>
+                  </HelpDisclosure>
                   <p>{t(`uncertaintyStatuses.${detail.output.uncertainty.status}`)}</p>
                   {detail.output.uncertainty.residual_count !== undefined && (
                     <p>
@@ -288,8 +293,10 @@ export default async function ForecastResults({
               </table>
               {detail.output.evaluation && (
                 <section className="space-y-2" aria-label={t('coverage')}>
-                  <h3 className="font-semibold">{t('coverage')}</h3>
-                  <p className="text-sm">{t('coverageNote')}</p>
+                  <h3 className="text-subsection-title">{t('coverage')}</h3>
+                  <HelpDisclosure>
+                    <p>{t('coverageNote')}</p>
+                  </HelpDisclosure>
                   <p>{t(`evaluationStatuses.${detail.output.evaluation.status}`)}</p>
                   {detail.output.evaluation.status === 'available' &&
                     detail.output.evaluation.model && (

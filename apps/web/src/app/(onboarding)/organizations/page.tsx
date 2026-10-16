@@ -92,7 +92,7 @@ export default async function OrganizationsPage({
 
       <section className="flex flex-col gap-3" aria-labelledby="pending-invitations">
         <div className="flex flex-col gap-1">
-          <h2 id="pending-invitations" className="text-lg font-semibold tracking-tight">
+          <h2 id="pending-invitations" className="text-section-title">
             {t('pendingTitle')}
           </h2>
           <p className="text-muted-foreground text-sm">

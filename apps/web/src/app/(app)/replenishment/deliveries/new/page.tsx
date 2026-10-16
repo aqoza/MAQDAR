@@ -1,3 +1,5 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
@@ -62,8 +64,7 @@ export default async function NewDeliveryScenario({
       <Link className="underline" href={`/replenishment/suppliers/${scenario.data}`}>
         {t('source')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('new')}</h1>
-      <p>{t('description')}</p>
+      <PageHeader title={t('new')} description={t('description')} />
       <p>
         {saved.source.item_code} · {saved.source.location_code} · {saved.requested_supplier_code} ·{' '}
         {t('cutoff', { date: saved.source.cutoff })}
@@ -97,7 +98,9 @@ export default async function NewDeliveryScenario({
           />
           {t('confirmation')}
         </label>
-        <p className="text-sm text-muted-foreground">{t('scenarioNote')}</p>
+        <HelpDisclosure>
+          <p>{t('scenarioNote')}</p>
+        </HelpDisclosure>
         <button className="rounded-md bg-primary px-4 py-2 text-primary-foreground">
           {t('preview')}
         </button>

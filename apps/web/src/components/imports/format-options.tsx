@@ -177,7 +177,7 @@ export function FormatOptions({ file, disabled, onChange, onApplyToAll }: Format
       ) : null}
       {inspect ? (
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-medium">{t('format.preview')}</h3>
+          <h3 className="text-subsection-title">{t('format.preview')}</h3>
           {inspect.preview.length === 0 ? (
             <p className="text-muted-foreground text-sm">{t('format.noRows')}</p>
           ) : (

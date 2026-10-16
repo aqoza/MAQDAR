@@ -1136,7 +1136,7 @@ export function ImportWizard({
               (file) => (file.state?.error_count ?? 0) + (file.state?.warning_count ?? 0) > 0,
             ) ? (
               <section className="flex flex-col gap-2">
-                <h3 className="text-base font-medium">{t('summary.title')}</h3>
+                <h3 className="text-subsection-title">{t('summary.title')}</h3>
                 <ErrorSummary files={summaryFiles(run)} examples={[]} labels={displayLabels} />
               </section>
             ) : null}
@@ -1421,7 +1421,7 @@ function MappedPreview({
   if (!preview || preview.columns.length === 0 || preview.rows.length === 0) return null
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="text-sm font-medium">{t('map.preview')}</h3>
+      <h3 className="text-subsection-title">{t('map.preview')}</h3>
       <p className="text-muted-foreground text-xs">
         {t('map.previewHint', { count: preview.rows.length })}
       </p>
@@ -1544,7 +1544,7 @@ function CheckResults({
       </Table>
       {filesWithReadIssues.length > 0 ? (
         <section className="flex flex-col gap-2">
-          <h3 className="text-sm font-medium">{t('check.readIssues')}</h3>
+          <h3 className="text-subsection-title">{t('check.readIssues')}</h3>
           <p className="text-muted-foreground text-xs">{t('check.readIssuesHint')}</p>
           {filesWithReadIssues.map((file) => (
             <div key={file.id} className="flex flex-col gap-1">
@@ -1556,7 +1556,7 @@ function CheckResults({
       ) : null}
       {errors + warnings > 0 ? (
         <section className="flex flex-col gap-2">
-          <h3 className="text-base font-medium">{t('summary.title')}</h3>
+          <h3 className="text-subsection-title">{t('summary.title')}</h3>
           <ErrorSummary files={summaryFiles(run)} examples={run.examples} labels={labels} />
         </section>
       ) : null}

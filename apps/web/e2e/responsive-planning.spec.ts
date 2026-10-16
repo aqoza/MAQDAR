@@ -50,6 +50,26 @@ for (const width of [375, 768, 1440]) {
         await expect(
           page.getByRole('heading', { level: 1, name: screen.title, exact: true }),
         ).toBeVisible()
+        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
+        for (const control of await page
+          .locator('main select, main input:not([type=hidden]):not([type=checkbox]), main textarea')
+          .all()) {
+          await expect(control).toHaveCSS('font-size', width < 768 ? '16px' : '14px')
+        }
+        if (screen.path === '/forecasts/quality') {
+          const help = page.locator('summary').filter({ hasText: 'About these scores' })
+          const explanation = page.getByText('RMSE and MAE measure error', { exact: false })
+          await expect(explanation).toBeHidden()
+          await help.focus()
+          await page.keyboard.press('Enter')
+          await expect(explanation).toBeVisible()
+          await page.keyboard.press('Space')
+          await expect(explanation).toBeHidden()
+          await expect(
+            page.getByText('Historical model-selection scores', { exact: true }),
+          ).toBeVisible()
+        }
         await expectContainedLayout(page)
 
         // Long native options caused the original overflow, even in an empty organization.

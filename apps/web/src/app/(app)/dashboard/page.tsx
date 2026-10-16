@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getLocale, getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import Form from 'next/form'
+import { HelpDisclosure } from '@/components/help-disclosure'
 import { notFound, redirect } from 'next/navigation'
 import { DashboardDemandChart } from '@/components/dashboard-demand-chart'
 import {
@@ -52,7 +53,7 @@ export default async function DashboardPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+          <h1 className="text-page-title">{t('title')}</h1>
           <p className="text-muted-foreground">{t('asOf', { date: day })}</p>
         </div>
         <div className="flex gap-4 text-sm underline">
@@ -95,14 +96,23 @@ export default async function DashboardPage({
           {t('reset')}
         </Link>
       </Form>
-      <p className="text-sm text-muted-foreground">{t('cohort')}</p>
-      {summary.observed_pairs === 0 && (
-        <p className="rounded-xl border border-dashed p-6">{t('empty')}</p>
-      )}
+      <HelpDisclosure label={t('metricDetails')}>
+        <p>{t('cohort')}</p>
+        <dl className="space-y-2">
+          {(['availability', 'value', 'stockOuts', 'coverage', 'missing'] as const).map((key) => (
+            <div key={key}>
+              <dt className="font-medium text-foreground">{t(key)}</dt>
+              <dd>{t(`${key}Note`)}</dd>
+            </div>
+          ))}
+        </dl>
+        <p>{t('trendNote')}</p>
+      </HelpDisclosure>
+      {summary.observed_pairs === 0 && <p className="text-muted-foreground">{t('empty')}</p>}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <section className={metricClass}>
           <h2 className="text-sm text-muted-foreground">{t('availability')}</h2>
-          <p className="mt-2 text-3xl font-semibold tabular-nums">
+          <p className="mt-2 text-metric tabular-nums">
             {ratio === null ? t('unavailable') : percent.format(ratio)}
           </p>
           <p className="mt-2 text-sm">
@@ -111,7 +121,6 @@ export default async function DashboardPage({
               observed: summary.observed_pairs,
             })}
           </p>
-          <p className="mt-2 text-xs text-muted-foreground">{t('availabilityNote')}</p>
         </section>
         <section className={metricClass}>
           <h2 className="text-sm text-muted-foreground">{t('value')}</h2>
@@ -126,19 +135,17 @@ export default async function DashboardPage({
           ) : (
             <p className="mt-2 text-2xl">—</p>
           )}
-          <p className="mt-2 text-xs text-muted-foreground">{t('valueNote')}</p>
         </section>
         {(
           [
-            ['stockOuts', summary.stock_outs, 'stockOutsNote'],
-            ['coverage', summary.observed_pairs, 'coverageNote'],
-            ['missing', summary.unobserved_pairs, 'missingNote'],
+            ['stockOuts', summary.stock_outs],
+            ['coverage', summary.observed_pairs],
+            ['missing', summary.unobserved_pairs],
           ] as const
-        ).map(([label, value, note]) => (
+        ).map(([label, value]) => (
           <section key={label} className={metricClass}>
             <h2 className="text-sm text-muted-foreground">{t(label)}</h2>
-            <p className="mt-2 text-3xl font-semibold tabular-nums">{number.format(value)}</p>
-            <p className="mt-2 text-xs text-muted-foreground">{t(note)}</p>
+            <p className="mt-2 text-metric tabular-nums">{number.format(value)}</p>
           </section>
         ))}
       </div>
@@ -154,8 +161,7 @@ export default async function DashboardPage({
         </p>
       )}
       <section className={metricClass}>
-        <h2 className="text-lg font-semibold">{t('trend')}</h2>
-        <p className="mb-6 text-sm text-muted-foreground">{t('trendNote')}</p>
+        <h2 className="text-section-title">{t('trend')}</h2>
         <DashboardDemandChart
           data={summary.demand}
           locale={locale}

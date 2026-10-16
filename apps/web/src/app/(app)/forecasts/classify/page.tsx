@@ -1,3 +1,5 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
+import { PageHeader } from '@/components/page-header'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound, redirect } from 'next/navigation'
@@ -19,9 +21,10 @@ export default async function ClassifyPage() {
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p className="text-muted-foreground">{t('description')}</p>
-      <p className="text-sm">{t('scope')}</p>
+      <PageHeader title={t('title')} description={t('description')} />
+      <HelpDisclosure>
+        <p>{t('scope')}</p>
+      </HelpDisclosure>
       <NextIntlClientProvider messages={{ Classification: messages.Classification }}>
         <ClassificationForm
           key={context.active.id}

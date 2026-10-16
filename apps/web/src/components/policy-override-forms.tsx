@@ -18,7 +18,7 @@ export function PolicyProposalForm({
   const [state, action, pending] = useActionState(submitOverride, idleState)
   return (
     <form action={action} aria-label={t('propose')} className="space-y-4 rounded-xl border p-4">
-      <h2 className="text-xl font-semibold">{t('propose')}</h2>
+      <h2 className="text-section-title">{t('propose')}</h2>
       <p>{t('proposalNote')}</p>
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="policy_id" value={policyId} />
@@ -76,7 +76,7 @@ export function PolicyDecisionForm({
       aria-label={t(withdrawal ? 'withdraw' : 'review')}
       className="space-y-3 rounded-lg border p-3"
     >
-      <h3 className="font-semibold">{t(withdrawal ? 'withdraw' : 'review')}</h3>
+      <h3 className="text-subsection-title">{t(withdrawal ? 'withdraw' : 'review')}</h3>
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="override_id" value={overrideId} />
       <input type="hidden" name="request_id" value={requestId} />

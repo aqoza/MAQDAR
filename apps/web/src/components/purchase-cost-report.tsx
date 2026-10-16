@@ -11,7 +11,7 @@ export async function PurchaseCostReport({ report, locale }: { report: Report; l
   const price = report.price
   return (
     <section className="space-y-4" aria-label={t('result')}>
-      <h2 className="text-xl font-semibold">{t('result')}</h2>
+      <h2 className="text-section-title">{t('result')}</h2>
       <p role="status">{t(`statuses.${report.status}`)}</p>
       <p>
         {report.source.item_code} · {report.source.location_code} · {report.source.supplier_code}
@@ -54,9 +54,9 @@ export async function PurchaseCostReport({ report, locale }: { report: Report; l
       )}
       <p>{t(report.price_confirmed ? 'confirmed' : 'unconfirmed')}</p>
       <p>{t('limits')}</p>
-      <p className="text-sm text-muted-foreground">{t('priceNote')}</p>
       <details className="space-y-2">
         <summary>{t('evidence')}</summary>
+        <p className="text-muted-foreground">{t('priceNote')}</p>
         <p>
           {t('rounding', {
             product: formatCostDecimal(report.exact_product, locale),

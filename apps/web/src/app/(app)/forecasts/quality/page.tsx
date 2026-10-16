@@ -1,3 +1,5 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
+import { PageHeader } from '@/components/page-header'
 import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -77,9 +79,13 @@ export default async function ForecastQuality({
         <Link href="/dashboard">{t('dashboard')}</Link>
         <Link href="/forecasts">{t('planning')}</Link>
       </div>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p>{t('description')}</p>
-      <p className="text-sm text-muted-foreground">{t('scoreNote')}</p>
+      <div className="space-y-1">
+        <PageHeader title={t('title')} description={t('context')} />
+        <HelpDisclosure label={t('aboutScores')}>
+          <p>{t('description')}</p>
+          <p>{t('scoreNote')}</p>
+        </HelpDisclosure>
+      </div>
       <Form
         action="/forecasts/quality"
         className="flex flex-wrap items-end gap-3"
@@ -216,7 +222,7 @@ export default async function ForecastQuality({
                           ? t('individualUnit', { unit: row.unit })
                           : t('individual')}
                     </p>
-                    <h2 className="mt-3 font-semibold">{t('folds')}</h2>
+                    <h2 className="text-section-title mt-3">{t('folds')}</h2>
                     {row.folds.length ? (
                       <ol className="space-y-2">
                         {row.folds.map((fold) => (
@@ -226,7 +232,7 @@ export default async function ForecastQuality({
                     ) : (
                       <p>{t('unavailable')}</p>
                     )}
-                    <h2 className="mt-3 font-semibold">{t('coverage')}</h2>
+                    <h2 className="text-section-title mt-3">{t('coverage')}</h2>
                     <p>{t('coverageNote')}</p>
                     <p>{t(`coverageStatuses.${row.evaluation.status}`)}</p>
                     {row.evaluation.status === 'available' && (

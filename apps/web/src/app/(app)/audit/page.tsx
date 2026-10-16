@@ -22,7 +22,7 @@ export default async function AuditPage() {
   if (error) throw new Error('Audit data unavailable')
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      <h1 className="text-page-title">{t('title')}</h1>
       <p className="text-sm text-muted-foreground">{t('description')}</p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">

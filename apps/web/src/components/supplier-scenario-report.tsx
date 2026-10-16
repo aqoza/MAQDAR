@@ -1,3 +1,4 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { formatScore } from '@/lib/forecast-quality'
@@ -14,7 +15,7 @@ export async function SupplierScenarioReport({
   const amount = (v: string | null | undefined) => formatScore(v, locale)
   return (
     <section className="space-y-4" aria-label={t('result')}>
-      <h2 className="text-xl font-semibold">{t('result')}</h2>
+      <h2 className="text-section-title">{t('result')}</h2>
       <p role="status">{t(`statuses.${report.status}`)}</p>
       <p>
         {report.source.item_code} · {report.source.location_code} ·{' '}
@@ -23,7 +24,10 @@ export async function SupplierScenarioReport({
       <p>
         {report.requested_supplier_code} {report.supplier && `· ${report.supplier.name}`}
       </p>
-      <p className="text-sm">{t('formula')}</p>
+      <HelpDisclosure>
+        <p>{t('formula')}</p>
+        <p>{t('scenarioNote')}</p>
+      </HelpDisclosure>
       <div className="grid gap-3 sm:grid-cols-3">
         {(
           [
@@ -49,7 +53,7 @@ export async function SupplierScenarioReport({
         })}
       </p>
       <p>{t(report.terms_confirmed ? 'confirmed' : 'unconfirmed')}</p>
-      <p className="text-sm text-muted-foreground">{t('scenarioNote')}</p>
+
       <details>
         <summary>{t('identity')}</summary>
         <p>{t('draftId', { id: report.source.draft_id })}</p>

@@ -18,7 +18,7 @@ export function PreparedForecastForm({
   const [state, action, pending] = useActionState(enqueuePreparedForecast, idleState)
   return (
     <form action={action} className="space-y-4 rounded-xl border p-4">
-      <h2 className="text-xl font-semibold">{t('title')}</h2>
+      <h2 className="text-section-title">{t('title')}</h2>
       <p className="text-sm">{t('description')}</p>
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="preparation_id" value={preparationId} />

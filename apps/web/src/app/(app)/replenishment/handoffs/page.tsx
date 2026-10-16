@@ -1,3 +1,5 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
+import { PageHeader } from '@/components/page-header'
 import { formatCostDecimal, formatPurchaseCost } from '@/lib/purchase-costs'
 import Form from 'next/form'
 import Link from 'next/link'
@@ -67,8 +69,12 @@ export default async function PurchaseHandoffs({
       <Link className="inline-block underline" href="/replenishment/batches">
         {t('batches')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p>{t('description')}</p>
+      <div className="space-y-1">
+        <PageHeader title={t('title')} description={t('context')} />
+        <HelpDisclosure>
+          <p>{t('description')}</p>
+        </HelpDisclosure>
+      </div>
       <Form
         action="/replenishment/handoffs"
         className="flex flex-wrap items-end gap-3"

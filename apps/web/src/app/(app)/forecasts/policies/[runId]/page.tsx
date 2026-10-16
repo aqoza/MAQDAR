@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HelpDisclosure } from '@/components/help-disclosure'
 import { DemandUnitEvidence } from '@/components/demand-unit-evidence'
 import { notFound, redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
@@ -44,7 +45,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      <h1 className="text-page-title">{t('title')}</h1>
       <Link href={`/forecasts/workbench/${data.id}`} className="inline-block underline">
         {t('reviewPolicy')}
       </Link>
@@ -59,11 +60,14 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
           service: number(Number(options.service_level) * 100),
         })}
       </p>
-      <p className="rounded-lg border p-3">{t('assumptions')}</p>
+      <HelpDisclosure>
+        <p>{t('assumptions')}</p>
+        <p>{t('rulesNote')}</p>
+        {forecast.method === 'regional-v1' && <p>{t('groupNote')}</p>}
+      </HelpDisclosure>
       {forecast.method !== 'regional-v1' && (
         <DemandUnitEvidence evidence={forecast.source?.unit_provenance} />
       )}
-      {forecast.method === 'regional-v1' && <p>{t('groupNote')}</p>}
       <p role="status">{t(`statuses.${output.status}`)}</p>
       {output.lead_time && output.protection && (
         <div className="overflow-x-auto">
@@ -100,7 +104,6 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
           </table>
         </div>
       )}
-      <p>{t('rulesNote')}</p>
       <p>
         {t('evidenceCounts', {
           residuals: output.residual_count,

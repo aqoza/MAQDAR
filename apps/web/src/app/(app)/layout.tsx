@@ -33,7 +33,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <Separator orientation="vertical" className="h-4" />
           <span className="text-muted-foreground text-sm">{t('tagline')}</span>
         </header>
-        <div className="flex flex-1 flex-col gap-6 p-6">
+        <div data-app-content className="flex flex-1 flex-col gap-6 p-6 text-sm">
           {pendingInvitationCount > 0 ? (
             <PendingInvitationsBanner count={pendingInvitationCount} />
           ) : null}

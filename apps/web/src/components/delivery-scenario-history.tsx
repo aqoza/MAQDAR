@@ -56,7 +56,7 @@ export async function DeliveryScenarioHistory({
   const rows = range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])
   return (
     <section className="space-y-3" aria-label={t('history')}>
-      <h2 className="text-xl font-semibold">{t('history')}</h2>
+      <h2 className="text-section-title">{t('history')}</h2>
       <p>{t('count', { total })}</p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">

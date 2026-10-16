@@ -20,7 +20,7 @@ export function InventoryPolicyForm({
   const [state, action, pending] = useActionState(enqueuePolicy, idleState)
   return (
     <form action={action} className="space-y-4 rounded-xl border p-4">
-      <h2 className="text-xl font-semibold">{t('create')}</h2>
+      <h2 className="text-section-title">{t('create')}</h2>
       <p>{t('formNote', { horizon })}</p>
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="forecast_id" value={forecastId} />

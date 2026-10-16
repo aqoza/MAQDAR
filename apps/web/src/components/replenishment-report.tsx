@@ -1,3 +1,4 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { DemandUnitEvidence } from './demand-unit-evidence'
@@ -11,7 +12,7 @@ export async function ReplenishmentReport({ report, locale }: { report: Report; 
   const stock = p.snapshot
   return (
     <section className="space-y-4" aria-label={t('result')}>
-      <h2 className="text-xl font-semibold">{t('result')}</h2>
+      <h2 className="text-section-title">{t('result')}</h2>
       <p role="status">{t(`statuses.${report.status}`)}</p>
       <p>
         {p.item_code} · {p.location_code} · {t('cutoff', { date: p.cutoff })}
@@ -20,7 +21,9 @@ export async function ReplenishmentReport({ report, locale }: { report: Report; 
         {p.basis === 'approved' ? t('approved', { revision: p.revision! }) : t('calculated')} ·{' '}
         {amount(p.maximum)} {p.unit ?? '—'}
       </p>
-      <p className="text-sm">{t('formula')}</p>
+      <HelpDisclosure>
+        <p>{t('formula')}</p>
+      </HelpDisclosure>
       <div className="grid gap-3 sm:grid-cols-3">
         {(
           [

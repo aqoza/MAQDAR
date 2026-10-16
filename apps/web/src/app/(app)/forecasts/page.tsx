@@ -1,3 +1,5 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
@@ -43,12 +45,13 @@ export default async function ForecastsPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">{t('title')}</h1>
-          <p className="text-muted-foreground">{t('description')}</p>
+          <PageHeader title={t('title')} description={t('description')} />
         </div>
         <PlanningRefresh active={active} label={t('refresh')} />
       </div>
-      <p className="text-sm text-muted-foreground">{t('scope')}</p>
+      <HelpDisclosure>
+        <p>{t('scope')}</p>
+      </HelpDisclosure>
       <Link href="/forecasts/quality" className="inline-block rounded-md border px-4 py-2">
         {t('quality')}
       </Link>
@@ -92,14 +95,14 @@ export default async function ForecastsPage() {
         </p>
       )}
       {!data.length && <p className="rounded-xl border border-dashed p-6">{t('empty')}</p>}
-      <h2 className="text-lg font-semibold">{t('recent')}</h2>
+      <h2 className="text-section-title">{t('recent')}</h2>
       {data.map((run) => {
         const parsed = readinessSchema.safeParse(run.result)
         const result = run.kind === 'readiness' && parsed.success ? parsed.data : null
         return (
           <article key={run.id} className="space-y-3 rounded-xl border p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h3 className="font-semibold">
+              <h3 className="text-subsection-title">
                 {t(
                   `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation' | 'policy'}`,
                 )}{' '}

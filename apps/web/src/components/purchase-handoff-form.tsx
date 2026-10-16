@@ -16,7 +16,7 @@ export function PurchaseHandoffForm({
   const [state, action, pending] = useActionState(createHandoff, idleState)
   return (
     <form action={action} aria-label={t('create')} className="space-y-3 rounded-xl border p-4">
-      <h2 className="text-xl font-semibold">{t('create')}</h2>
+      <h2 className="text-section-title">{t('create')}</h2>
       <p>{t('createNote')}</p>
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="proposal_id" value={proposalId} />

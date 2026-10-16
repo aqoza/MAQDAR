@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
@@ -20,8 +21,7 @@ export default async function PreparePage() {
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p>{t('description')}</p>
+      <PageHeader title={t('title')} description={t('description')} />
       <NextIntlClientProvider messages={{ Preparation: messages.Preparation }}>
         <PreparationForm
           key={context.active.id}

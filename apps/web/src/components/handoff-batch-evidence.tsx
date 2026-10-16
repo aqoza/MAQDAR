@@ -17,7 +17,7 @@ export async function HandoffBatchEvidence({
   const s = report.summary
   return (
     <section className="space-y-3" aria-label={t('evidence')}>
-      <h2 className="text-xl font-semibold">{t('evidence')}</h2>
+      <h2 className="text-section-title">{t('evidence')}</h2>
       <dl className="grid gap-3 rounded-xl border p-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           [t('supplier'), s.supplier_code],

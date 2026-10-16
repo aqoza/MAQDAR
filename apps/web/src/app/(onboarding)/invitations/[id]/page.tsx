@@ -47,7 +47,7 @@ export default async function InvitationPage({ params }: Props) {
       <Card>
         <CardHeader>
           <CardTitle>
-            <h1>{t('mismatchTitle')}</h1>
+            <h1 className="text-page-title">{t('mismatchTitle')}</h1>
           </CardTitle>
           <CardDescription>{t('mismatchDescription')}</CardDescription>
         </CardHeader>
@@ -71,7 +71,9 @@ export default async function InvitationPage({ params }: Props) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h1>{t('acceptTitle', { organization: invitation.organization_name })}</h1>
+          <h1 className="text-page-title">
+            {t('acceptTitle', { organization: invitation.organization_name })}
+          </h1>
         </CardTitle>
         <CardDescription>{t('acceptDescription', { role })}</CardDescription>
       </CardHeader>

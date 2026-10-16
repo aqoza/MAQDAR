@@ -12,7 +12,8 @@
     "saving": "Saving…",
     "pendingInvitations": "{count, plural, one {You have # pending invitation.} other {You have # pending invitations.}}",
     "viewInvitations": "View invitations",
-    "staleOrganization": "The active organization changed in another tab or window. Reload this page and try again."
+    "staleOrganization": "The active organization changed in another tab or window. Reload this page and try again.",
+    "methodDetails": "Method and assumptions"
   },
   "Auth": {
     "title": "Sign in to MAQDAR",
@@ -92,7 +93,8 @@
     "availabilityCounts": "{available, number} of {observed, number} observed item/location pairs have positive available stock.",
     "availabilityNote": "Latest quantity minus allocations is positive. Stale observations remain included and flagged; missing snapshots are unknown. This is not order fill rate or achieved cycle service.",
     "cohort": "Stock metrics use the current non-discontinued item catalog and active visible locations, with the latest snapshots on or before the reporting date. This does not reconstruct the historical catalog. Blank location includes all visible locations; the demand trend includes their recorded history, including inactive items and locations.",
-    "freshness": "Snapshots older than seven days: {stale, number}. Oldest included snapshot: {oldest}."
+    "freshness": "Snapshots older than seven days: {stale, number}. Oldest included snapshot: {oldest}.",
+    "metricDetails": "How these metrics are calculated"
   },
   "Items": {
     "title": "Items",
@@ -654,7 +656,8 @@
     },
     "supplierScenario": "Create supplier MOQ/pack scenario",
     "purchaseReview": "Purchase proposal review",
-    "purchaseHandoffs": "Purchase handoffs"
+    "purchaseHandoffs": "Purchase handoffs",
+    "context": "Saved planning drafts"
   },
   "Organizations": {
     "title": "Your organizations",
@@ -1809,6 +1812,7 @@
     "from": "From date"
   },
   "PreparedForecast": {
+    "comparisonLabel": "Fixed-group comparisons",
     "title": "Forecast this prepared group",
     "description": "Compare ten candidates using the saved combined sold demand and units. This includes a bounded weekday, holiday and Ramadan model. Lost sales remain separate.",
     "horizon": "Forecast horizon (days)",
@@ -1966,7 +1970,8 @@
     "compareStock": "Compare stock with calculated maximum",
     "compareRevision": "Compare stock using revision {revision}",
     "draftCalculated": "Draft replenishment with calculated maximum",
-    "draftRevision": "Draft replenishment with revision {revision}"
+    "draftRevision": "Draft replenishment with revision {revision}",
+    "context": "Saved recommendations and review decisions"
   },
   "ForecastQuality": {
     "title": "Saved forecast quality",
@@ -2021,7 +2026,9 @@
     "previous": "Previous",
     "next": "Next",
     "page": "Page {page} of {pages}",
-    "individualUnit": "Individual-item comparison in saved source unit {unit}."
+    "individualUnit": "Individual-item comparison in saved source unit {unit}.",
+    "aboutScores": "About these scores",
+    "context": "Historical model-selection scores"
   },
   "StockComparison": {
     "title": "Available stock above selected policy maximum",
@@ -2359,7 +2366,8 @@
     "pendingNote": "This original replenishment draft already has a pending proposal. Review or withdraw it before submitting another estimate.",
     "policyRequired": "Approval is unavailable because saved delivery evidence requires policy recalculation or does not establish policy compatibility. Submit a compatible replacement scenario. Rejection and withdrawal remain available.",
     "priceCurrent": "Price evidence matched when this page loaded. Approval checks it again.",
-    "historicalApproval": "Earlier approval retained in history. A later approval is now selected for this draft."
+    "historicalApproval": "Earlier approval retained in history. A later approval is now selected for this draft.",
+    "context": "Purchase proposals and decision history"
   },
   "PurchaseHandoffs": {
     "title": "Purchase handoffs",
@@ -2406,7 +2414,8 @@
     "previous": "Previous",
     "next": "Next",
     "page": "Page {page} of {pages}",
-    "batches": "Purchase handoff batches"
+    "batches": "Purchase handoff batches",
+    "context": "Planning evidence for manual handoff"
   },
   "HandoffBatches": {
     "title": "Purchase handoff batches",
@@ -2482,6 +2491,7 @@
     "selectionChanged": "One or more approvals are no longer selected. Choose their currently selected replacements.",
     "priceChanged": "Current price evidence no longer matches at least one handoff. Create and approve a new estimate before adding its handoff.",
     "policyRequired": "A selected line requires policy recalculation. Choose an approved compatible replacement.",
-    "unavailable": "The batch or a selected handoff is unavailable. Refresh and check your selection."
+    "unavailable": "The batch or a selected handoff is unavailable. Refresh and check your selection.",
+    "context": "Planning packages for manual handoff"
   }
 }

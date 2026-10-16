@@ -103,10 +103,10 @@ export default async function BatchSelection({
       <Link className="underline" href="/replenishment/batches">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('choose')}</h1>
+      <h1 className="text-page-title">{t('choose')}</h1>
       <p>{t('grouping')}</p>
       <section aria-label={t('selection')} className="space-y-3 rounded-xl border p-4">
-        <h2 className="font-semibold">{t('selectedCount', { total: ids.length })}</h2>
+        <h2 className="text-section-title">{t('selectedCount', { total: ids.length })}</h2>
         {chosen.length !== ids.length && <p role="alert">{t('sourceInvalid')}</p>}
         <ul className="space-y-2">
           {ids.map((id) => {

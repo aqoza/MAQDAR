@@ -1,3 +1,4 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
@@ -61,7 +62,7 @@ export default async function PolicyReview({
       <Link href="/forecasts/workbench" className="text-sm underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('detailTitle', { item: row.item_code })}</h1>
+      <h1 className="text-page-title">{t('detailTitle', { item: row.item_code })}</h1>
       <p>
         {row.location_code} · {row.to_date} · {row.unit ?? policy('itemUnits')}
       </p>
@@ -71,7 +72,9 @@ export default async function PolicyReview({
       >
         {t('compareStock')}
       </Link>
-      <p>{t('manualNote')}</p>
+      <HelpDisclosure>
+        <p>{t('manualNote')}</p>
+      </HelpDisclosure>
       <Link
         href={`/replenishment/new?policy=${policyId}&basis=calculated`}
         className="inline-block underline"
@@ -115,11 +118,11 @@ export default async function PolicyReview({
             />
           )}
         {row.review_status === 'pending' && <p>{t('pendingNote')}</p>}
-        <h2 className="text-xl font-semibold">{t('history')}</h2>
+        <h2 className="text-section-title">{t('history')}</h2>
         {!history.data?.length && <p>{t('noHistory')}</p>}
         {history.data?.map((proposal) => (
           <article className="space-y-3 rounded-xl border p-4" key={proposal.id}>
-            <h3 className="font-semibold">
+            <h3 className="text-subsection-title">
               {t('revision', { revision: proposal.revision ?? 0 })} ·{' '}
               {t(
                 `statuses.${proposal.status as 'pending' | 'approved' | 'rejected' | 'withdrawn'}`,
