@@ -27,7 +27,7 @@ export async function HandoffBatchOverlap({
   if (result.error) throw new Error('Batch overlap unavailable')
   return (
     <section className="space-y-2 rounded-xl border p-4" aria-label={t('overlap')}>
-      <h2 className="font-semibold">{t('overlap')}</h2>
+      <h2 className="text-section-title">{t('overlap')}</h2>
       <p>{t('overlapCount', { total: result.count ?? 0 })}</p>
       <p>{t('overlapNote')}</p>
       <ul className="space-y-2">

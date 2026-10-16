@@ -1,3 +1,5 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
+import { PageHeader } from '@/components/page-header'
 import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -73,8 +75,12 @@ export default async function PolicyWorkbench({
       <Link href="/forecasts" className="text-sm underline">
         {t('planning')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p>{t('description')}</p>
+      <div className="space-y-1">
+        <PageHeader title={t('title')} description={t('context')} />
+        <HelpDisclosure>
+          <p>{t('description')}</p>
+        </HelpDisclosure>
+      </div>
       <Form
         action="/forecasts/workbench"
         className="flex flex-wrap items-end gap-3"

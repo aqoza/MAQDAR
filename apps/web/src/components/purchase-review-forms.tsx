@@ -18,7 +18,7 @@ export function PurchaseProposalForm({
   const [state, action, pending] = useActionState(submitProposal, idleState)
   return (
     <form action={action} aria-label={t('propose')} className="space-y-4 rounded-xl border p-4">
-      <h2 className="text-xl font-semibold">{t('propose')}</h2>
+      <h2 className="text-section-title">{t('propose')}</h2>
       <p>{t('proposalNote')}</p>
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="estimate_id" value={estimateId} />
@@ -65,7 +65,7 @@ export function PurchaseDecisionForm({
       aria-label={t(withdrawal ? 'withdraw' : 'review')}
       className="space-y-3 rounded-lg border p-3"
     >
-      <h3 className="font-semibold">{t(withdrawal ? 'withdraw' : 'review')}</h3>
+      <h3 className="text-subsection-title">{t(withdrawal ? 'withdraw' : 'review')}</h3>
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="proposal_id" value={proposalId} />
       <input type="hidden" name="request_id" value={requestId} />

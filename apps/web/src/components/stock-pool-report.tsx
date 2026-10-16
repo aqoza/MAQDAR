@@ -17,7 +17,7 @@ export async function StockPoolReport({
   const amount = (value: string | null) => formatScore(value, locale)
   return (
     <section className="space-y-4" aria-label={t('pool.members')}>
-      <h3 className="text-lg font-semibold">{t('pool.members')}</h3>
+      <h3 className="text-subsection-title">{t('pool.members')}</h3>
       <p>{t('pool.description')}</p>
       <p>{t('pool.available', { value: amount(pool.available), unit: unit ?? '—' })}</p>
       <div className="overflow-x-auto rounded-xl border">

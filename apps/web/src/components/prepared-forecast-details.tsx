@@ -35,7 +35,7 @@ export async function PreparedForecastDetails({
       </Link>
       {model && (
         <>
-          <h3 className="font-semibold">{t('effectsTitle')}</h3>
+          <h3 className="text-subsection-title">{t('effectsTitle')}</h3>
           <p className="text-sm">{t('effectsNote')}</p>
           <p>
             {t(detail.output.model === 'calendar' ? 'candidateSelected' : 'candidateNotSelected')}

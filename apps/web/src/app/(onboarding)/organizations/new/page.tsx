@@ -55,7 +55,7 @@ export default async function NewOrganizationPage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            <h1>{t('title')}</h1>
+            <h1 className="text-page-title">{t('title')}</h1>
           </CardTitle>
           <CardDescription>{t('description')}</CardDescription>
         </CardHeader>

@@ -99,7 +99,7 @@ export function ApiKeysCard({
         <Separator />
         <section className="flex flex-col gap-3" aria-labelledby="api-keys-heading">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 id="api-keys-heading" className="text-sm font-medium">
+            <h3 id="api-keys-heading" className="text-subsection-title">
               {t('list.heading')}
             </h3>
             <p className="text-muted-foreground text-xs">

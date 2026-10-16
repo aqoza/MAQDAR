@@ -1,3 +1,5 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
+import { PageHeader } from '@/components/page-header'
 import type { Metadata } from 'next'
 import Form from 'next/form'
 import Link from 'next/link'
@@ -70,8 +72,12 @@ export default async function ReplenishmentPage({
       <Link href="/replenishment/handoffs" className="block underline">
         {t('purchaseHandoffs')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
-      <p>{t('description')}</p>
+      <div className="space-y-1">
+        <PageHeader title={t('title')} description={t('context')} />
+        <HelpDisclosure>
+          <p>{t('description')}</p>
+        </HelpDisclosure>
+      </div>
       <Link className="inline-block underline" href="/forecasts/workbench">
         {t('choosePolicy')}
       </Link>

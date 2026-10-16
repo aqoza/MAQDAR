@@ -83,7 +83,7 @@ export function ErrorSummary({
         const capped = file.errors_stored >= STORED_DETAILS_PER_FILE
         return (
           <section key={file.file_no} className="flex flex-col gap-2">
-            <h3 className="flex flex-wrap items-baseline gap-x-2 text-sm font-medium">
+            <h3 className="text-subsection-title flex flex-wrap items-baseline gap-x-2">
               <bdi>{t('summary.file', { fileNo: file.file_no, name: file.name })}</bdi>
               <span className="text-muted-foreground font-normal">
                 {t(`entities.${file.entity}`)}

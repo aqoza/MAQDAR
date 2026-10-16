@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
@@ -34,7 +35,7 @@ export default async function NewDraft({
   if (!selection.success)
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">{t('new')}</h1>
+        <h1 className="text-page-title">{t('new')}</h1>
         <p>{t('choosePolicy')}</p>
         <Link className="underline" href="/forecasts/workbench">
           {t('policies')}
@@ -70,8 +71,7 @@ export default async function NewDraft({
       <Link className="underline" href="/replenishment">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('new')}</h1>
-      <p>{t('description')}</p>
+      <PageHeader title={t('new')} description={t('description')} />
       <p>
         {policy.data.item_code} · {policy.data.location_code} ·{' '}
         {t('cutoff', { date: policy.data.to_date ?? '—' })}

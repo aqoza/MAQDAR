@@ -1,3 +1,4 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { formatScore } from '@/lib/forecast-quality'
@@ -13,7 +14,7 @@ export async function DeliveryScenarioReport({
   const t = await getTranslations('DeliveryScenarios')
   return (
     <section className="space-y-4" aria-label={t('result')}>
-      <h2 className="text-xl font-semibold">{t('result')}</h2>
+      <h2 className="text-section-title">{t('result')}</h2>
       <p role="status">{t(`statuses.${report.status}`)}</p>
       {report.blocked_stage && <p>{t('blockedStage', { stage: t(report.blocked_stage) })}</p>}
       <p>
@@ -49,14 +50,16 @@ export async function DeliveryScenarioReport({
         </p>
       )}
       <p>{t(report.calendars_confirmed ? 'confirmed' : 'unconfirmed')}</p>
-      <p className="text-sm text-muted-foreground">{t('scenarioNote')}</p>
+      <HelpDisclosure>
+        <p>{t('scenarioNote')}</p>
+      </HelpDisclosure>
       {(['supplier', 'receiver'] as const).map((stage) => {
         const cal = report[`${stage}_calendar`]
         const search = stage === 'supplier' ? report.order_search : report.receipt_search
         if (!cal) return null
         return (
           <section className="space-y-3 rounded-xl border p-4" key={stage} aria-label={t(stage)}>
-            <h3 className="font-semibold">
+            <h3 className="text-subsection-title">
               {t(stage)} · {cal.calendar_code ?? t('countryDefault')} · {cal.country}
             </h3>
             <p>

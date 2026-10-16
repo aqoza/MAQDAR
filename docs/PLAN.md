@@ -258,3 +258,7 @@ Require a matching-unit snapshot for every member at the policy cutoff, no more 
 ### Responsive planning screens approved scope (2026-10-16)
 
 PR #28 was reviewed and merged as `5dcd979`. Authenticated frontend checks then found page-level horizontal overflow on forecast quality, policy review, forecast creation, replenishment drafts and handoff batches. The owner approved one corrective PR before further feature development: constrain form controls to the available width, retain horizontal scrolling inside wide tables, and verify keyboard access and mobile navigation at 375, 768 and 1440px. Planning calculations, persistence and review rules remain unchanged.
+
+### Compact typography and quieter planning screens (2026-10-17)
+
+PR #30 was reviewed with all three CI jobs passing and merged as `e14a528`. The owner approved a UI standardisation PR after reviewing the live application and a local comparison: 20px page titles, 16px section headings, 14px body/labels, and optional expandable methodology. Actionable warnings, unavailable evidence and required confirmations remain visible. Syncron's public D2D screen informs the compact hierarchy; its exact font tokens were not verified. See [ui-typography.md](ui-typography.md) for the scale, reference and notice rules.

@@ -25,7 +25,7 @@ export function SetPasswordCard({ email }: { email: string }) {
       <CardContent>
         <form action={formAction} className="flex max-w-sm flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <h3 className="text-sm font-medium">{t('setPassword')}</h3>
+            <h3 className="text-subsection-title">{t('setPassword')}</h3>
             <p className="text-muted-foreground text-sm">{t('setPasswordDescription')}</p>
           </div>
           <Field data-invalid={error ? true : undefined}>

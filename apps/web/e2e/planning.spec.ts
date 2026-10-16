@@ -192,6 +192,10 @@ test('preparation preserves contributions and forecasts a saved group with fixed
   })
   await page.getByRole('button', { name: 'Refresh runs' }).click()
   await page.getByRole('link', { name: 'View forecast results', exact: true }).click()
+  const comparisonHelp = page.locator('summary').filter({ hasText: 'Fixed-group comparisons' })
+  await expect(comparisonHelp).toBeVisible()
+  await expect(page.getByText(/^Fixed-group comparisons:/)).toBeHidden()
+  await comparisonHelp.click()
   await expect(page.getByText(/^Fixed-group comparisons:/)).toBeVisible()
   await page.getByRole('link', { name: 'Inspect NEW', exact: true }).click()
   await expect(

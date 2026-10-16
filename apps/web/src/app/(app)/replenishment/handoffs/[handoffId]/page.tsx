@@ -1,3 +1,4 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { HandoffBatchOverlap } from '@/components/handoff-batch-overlap'
 import { notFound, redirect } from 'next/navigation'
@@ -58,14 +59,14 @@ export default async function HandoffDetail({
       <Link className="underline" href="/replenishment/handoffs">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">
+      <h1 className="text-page-title">
         {t('detailTitle', { item: payload.estimate.source.item_code })}
       </h1>
       <p>{t('description')}</p>
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
       <p className="break-all">{t('identity', { id: payload.handoff_id })}</p>
       <section className="space-y-2 rounded-xl border p-4" aria-label={t('currentContext')}>
-        <h2 className="font-semibold">{t('currentContext')}</h2>
+        <h2 className="text-section-title">{t('currentContext')}</h2>
         <p role="status">{t(current.data.selected ? 'current' : 'historical')}</p>
         <p>{t(priceState)}</p>
         <p>{t('immutableNote')}</p>
@@ -84,7 +85,9 @@ export default async function HandoffDetail({
           {t('estimate')}
         </Link>
       </div>
-      <p>{t('csvNote')}</p>
+      <HelpDisclosure>
+        <p>{t('csvNote')}</p>
+      </HelpDisclosure>
       <PurchaseCostReport report={payload.estimate} locale={locale} />
       <HandoffBatchOverlap organizationId={context.active.id} handoffIds={[handoffId]} />
     </div>

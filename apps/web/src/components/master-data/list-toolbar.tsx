@@ -74,7 +74,7 @@ export function ListToolbar({
       ) : null}
       {filters.map((filter) => (
         <div key={filter.param} className="flex flex-col gap-1">
-          <label htmlFor={`filter-${filter.param}`} className="text-muted-foreground text-xs">
+          <label htmlFor={`filter-${filter.param}`} className="text-sm font-medium">
             {filter.label}
           </label>
           <NativeSelect

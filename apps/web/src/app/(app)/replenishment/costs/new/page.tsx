@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
@@ -61,8 +62,7 @@ export default async function NewPurchaseCost({
       <Link className="underline" href={`/replenishment/deliveries/${delivery.data}`}>
         {t('source')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('new')}</h1>
-      <p>{t('description')}</p>
+      <PageHeader title={t('new')} description={t('description')} />
       <p>
         {saved.source.item_code} · {saved.source.location_code} · {saved.source.supplier_code}
       </p>

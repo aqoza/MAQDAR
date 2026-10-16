@@ -58,7 +58,7 @@ export default async function StockComparison({
       <Link href={back} className="underline">
         {t('back')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      <h1 className="text-page-title">{t('title')}</h1>
       <p>
         {policy.data.item_code} · {policy.data.location_code}
       </p>
@@ -111,7 +111,7 @@ export default async function StockComparison({
       )}
       {report && (
         <section className="space-y-4" aria-label={t('result')}>
-          <h2 className="text-xl font-semibold">{t('result')}</h2>
+          <h2 className="text-section-title">{t('result')}</h2>
           <p role="status">{t(`statuses.${report.status}`)}</p>
           <p>
             {report.basis === 'approved'

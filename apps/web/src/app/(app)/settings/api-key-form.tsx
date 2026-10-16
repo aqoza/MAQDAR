@@ -70,7 +70,7 @@ export function ApiKeyForm({
         aria-labelledby="api-key-form-heading"
       >
         <ActiveOrganizationField />
-        <h3 id="api-key-form-heading" className="text-sm font-medium">
+        <h3 id="api-key-form-heading" className="text-subsection-title">
           {t('create.title')}
         </h3>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start">

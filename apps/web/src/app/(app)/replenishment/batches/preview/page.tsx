@@ -47,7 +47,7 @@ export default async function BatchPreview({
   if (result.error)
     return (
       <div className="space-y-3">
-        <h1 className="text-2xl font-semibold">{t('preview')}</h1>
+        <h1 className="text-page-title">{t('preview')}</h1>
         <p role="alert">{t(batchErrorKey(result.error.hint))}</p>
         <Link className="underline" href={batchSelectionHref(parsed.data)}>
           {t('editSelection')}
@@ -60,7 +60,7 @@ export default async function BatchPreview({
       <Link className="underline" href={batchSelectionHref(parsed.data)}>
         {t('editSelection')}
       </Link>
-      <h1 className="text-2xl font-semibold">{t('preview')}</h1>
+      <h1 className="text-page-title">{t('preview')}</h1>
       <p>{t('description')}</p>
       <HandoffBatchEvidence report={report} />
       <HandoffBatchOverlap
