@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { PurchaseHandoffForm } from '@/components/purchase-handoff-form'
+import { isEditorRole } from '@/lib/auth/roles'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getFormatter, getLocale, getMessages, getTranslations } from 'next-intl/server'
@@ -42,6 +44,14 @@ export default async function PurchaseReviewDetail({
   ])
   if (record.error || list.error) throw new Error('Purchase review unavailable')
   if (!record.data || !list.data) notFound()
+  const ht = await getTranslations('PurchaseHandoffs')
+  const handoff = await db
+    .from('purchase_handoffs')
+    .select('id')
+    .eq('organization_id', context.active.id)
+    .eq('proposal_id', proposalId)
+    .maybeSingle()
+  if (handoff.error) throw new Error('Handoff unavailable')
   const proposal = record.data
   const row = workbenchRowSchema.parse(list.data)
   const source = await db
@@ -113,6 +123,18 @@ export default async function PurchaseReviewDetail({
         </Link>
       </div>
       <PurchaseCostReport report={report} locale={locale} />
+      {handoff.data ? (
+        <Link
+          className="inline-block underline"
+          href={`/replenishment/handoffs/${handoff.data.id}`}
+        >
+          {ht('open')}
+        </Link>
+      ) : row.selected && isEditorRole(context.role) ? (
+        <NextIntlClientProvider messages={{ PurchaseHandoffs: messages.PurchaseHandoffs }}>
+          <PurchaseHandoffForm organizationId={context.active.id} proposalId={proposal.id} />
+        </NextIntlClientProvider>
+      ) : null}
       {proposal.status === 'pending' && (
         <>
           <p role="status">{t(priceMatches ? 'priceCurrent' : 'priceChanged')}</p>
