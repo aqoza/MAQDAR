@@ -1605,7 +1605,22 @@
       "inspectRuns": "Inspect run details",
       "latest": "Latest runs",
       "viewAll": "View all {count} recent runs",
-      "historyNote": "Saved results and source evidence"
+      "historyNote": "Latest 20 runs · Saved results and source evidence",
+      "details": "Run details",
+      "search": "Search recent runs",
+      "status": "Run status",
+      "allStatuses": "All statuses",
+      "locationRun": "Location / run",
+      "window": "History window",
+      "requested": "Requested",
+      "noMatch": "No recent runs match these filters.",
+      "reset": "Reset filters",
+      "selectRun": "Reset the filters to inspect a saved run.",
+      "inspectRun": "Inspect {location}, {kind}, {time}",
+      "moreEvidence": "More saved evidence",
+      "savedNote": "Saved as-of this run. Later imports are not included.",
+      "canceledNote": "This run was canceled. No results were published.",
+      "runId": "Run ID: {id}"
     }
   },
   "Classification": {
