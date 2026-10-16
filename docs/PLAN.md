@@ -58,7 +58,7 @@ Step 10b acceptance, fixed-group comparison interpretation, calendar model and r
 
 ## Phase 3 build steps
 
-Steps 13, 13b, 13c, 13d, 14 and 15 were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
+Steps 13, 13b, 13c, 13d, 14, 15 and 15b were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
 
 | Step | Scope                                                                                                                                                                                              | Status    |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
@@ -67,7 +67,8 @@ Steps 13, 13b, 13c, 13d, 14 and 15 were scoped and approved by the owner on 2026
 | 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | Merged    |
 | 13d  | **Purchase-cost estimates:** confirmed supplier-price evidence for saved delivery quantities and dates, exact multiplication, one currency rounding step and immutable estimates.                  | Merged    |
 | 14   | **Purchase-proposal review:** independent reasoned decisions, per-draft selection history, current-price checks and policy-recalculation approval gate.                                            | Merged    |
-| 15   | **Purchase handoffs:** immutable single-proposal CSV/JSON exports, selected-approval and price gates, historical evidence, stable retries and member-scoped downloads.                             | In review |
+| 15   | **Purchase handoffs:** immutable single-proposal CSV/JSON exports, selected-approval and price gates, historical evidence, stable retries and member-scoped downloads.                             | Merged    |
+| 15b  | **Purchase handoff batches:** compatible multi-line CSV/JSON packages, atomic evidence gates, exact cost totals, canonical set retries and visible overlap.                                        | In review |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -245,3 +246,11 @@ Require a matching-unit snapshot for every member at the policy cutoff, no more 
 - Owners/admins/planners create; authorized members inspect/download. New records require current selection, matching current price evidence and a saved policy-recalculation flag of false.
 - One immutable handoff per proposal; repeated creation/download preserves identity and content. Later approvals can have new handoffs while earlier records become historical.
 - Files remain as-of planning evidence. Downloads do not place orders or add inbound. Batching, ERP mappings, transmission and execution remain later increments. See [purchase-handoffs.md](purchase-handoffs.md).
+
+### Step 15b approved decisions (2026-10-16)
+
+- PR #27 was reviewed and merged as `92c8480`. Build saved batches of up to 50 handoffs for one supplier, receiving location, currency and adjusted order date, with CSV/JSON downloads and searchable history.
+- Preserve each line's quantity, unit, receipt date and evidence. Sum the already-rounded line subtotals; never combine quantities across units.
+- Require every line's proposal to remain selected, current price evidence to match, and saved policy compatibility to be explicitly false for recalculation. Reject repeated items; any invalid line rejects the entire new batch.
+- Use the exact handoff set as retry identity regardless of selection order. Allow visible overlap between different packages so unchanged lines may be reused. Existing downloads retain their original evidence.
+- Batches remain planning packages; they do not reserve quantities, prevent duplicate external orders or create inbound. ERP transmission and execution follow later. See [handoff-batches.md](handoff-batches.md).
