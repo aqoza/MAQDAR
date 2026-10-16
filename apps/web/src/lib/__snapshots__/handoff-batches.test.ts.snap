@@ -1,0 +1,180 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`exports two distinct CSV lines with exact amounts, units, dates and evidence references > purchase-handoff-batch-v1 CSV 1`] = `
+"﻿"schema_version","purpose","notice","batch_id","organization_id","created_at","created_by","batch_subtotal","batch_line_count","line_number","handoff_id","proposal_id","proposal_revision","estimate_id","draft_id","policy_id","forecast_id","item_id","item_code","supplier_id","supplier_code","location_id","location_code","quantity","unit","cutoff","order_date","receipt_date","unit_price","currency","currency_minor_units","line_subtotal","exact_product","rounding","price_terms_id","price_valid_from","price_updated_at","submitted_by","submitted_at","proposal_reason","approved_by","approved_at","approval_reason","delivery_id","supplier_scenario_id","draft_fingerprint","estimate_fingerprint","delivery_fingerprint","supplier_fingerprint"
+"purchase-handoff-batch-v1","planning_only","As-of planning package only. Overlapping packages may contain the same lines. Not an order, reservation or inbound quantity.","93000000-0000-4000-8000-000000000003","93000000-0000-4000-8000-000000000001","2026-10-16T14:00:00.000000Z","93000000-0000-4000-8000-000000000001","1999999999999999.998","2","1","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","1","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","000123","93000000-0000-4000-8000-000000000001","SUP","93000000-0000-4000-8000-000000000001","BRANCH","999999999999999.999","EA","2026-10-10","2026-10-10","2026-10-13","1.000","KWD","3","999999999999999.999","999999999999999.999000","half-up-currency-minor-units","93000000-0000-4000-8000-000000000001","2026-10-10","2026-10-16T14:00:00.000000Z","93000000-0000-4000-8000-000000000001","2026-10-16T14:00:00.000000Z","'=""quoted"",
+قطعة","93000000-0000-4000-8000-000000000001","2026-10-16T14:00:00.000000Z","Reviewed","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+"purchase-handoff-batch-v1","planning_only","As-of planning package only. Overlapping packages may contain the same lines. Not an order, reservation or inbound quantity.","93000000-0000-4000-8000-000000000003","93000000-0000-4000-8000-000000000001","2026-10-16T14:00:00.000000Z","93000000-0000-4000-8000-000000000001","1999999999999999.998","2","2","93000000-0000-4000-8000-000000000002","93000000-0000-4000-8000-000000000001","1","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000002","000124","93000000-0000-4000-8000-000000000001","SUP","93000000-0000-4000-8000-000000000001","BRANCH","999999999999999.999","KG","2026-10-10","2026-10-10","2026-10-15","1.000","KWD","3","999999999999999.999","999999999999999.999000","half-up-currency-minor-units","93000000-0000-4000-8000-000000000001","2026-10-10","2026-10-16T14:00:00.000000Z","93000000-0000-4000-8000-000000000001","2026-10-16T14:00:00.000000Z","'=""quoted"",
+قطعة","93000000-0000-4000-8000-000000000001","2026-10-16T14:00:00.000000Z","Reviewed","93000000-0000-4000-8000-000000000001","93000000-0000-4000-8000-000000000001","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+"
+`;
+
+exports[`preserves complete exact evidence with deterministic JSON serialization > purchase-handoff-batch-v1 JSON 1`] = `
+"{
+  "schema_version": "purchase-handoff-batch-v1",
+  "purpose": "planning_only",
+  "notice": "As-of planning package only. Overlapping packages may contain the same lines. Not an order, reservation or inbound quantity.",
+  "batch_id": "93000000-0000-4000-8000-000000000003",
+  "organization_id": "93000000-0000-4000-8000-000000000001",
+  "created_by": "93000000-0000-4000-8000-000000000001",
+  "created_at": "2026-10-16T14:00:00.000000Z",
+  "summary": {
+    "supplier_id": "93000000-0000-4000-8000-000000000001",
+    "supplier_code": "SUP",
+    "location_id": "93000000-0000-4000-8000-000000000001",
+    "location_code": "BRANCH",
+    "currency": "KWD",
+    "minor_units": 3,
+    "order_date": "2026-10-10",
+    "line_count": 2,
+    "subtotal": "1999999999999999.998"
+  },
+  "lines": [
+    {
+      "schema_version": "purchase-handoff-v1",
+      "purpose": "planning_only",
+      "notice": "As-of planning evidence only. Not an order, supplier acceptance or inbound quantity.",
+      "handoff_id": "93000000-0000-4000-8000-000000000001",
+      "organization_id": "93000000-0000-4000-8000-000000000001",
+      "created_by": "93000000-0000-4000-8000-000000000001",
+      "created_at": "2026-10-16T14:00:00.000000Z",
+      "proposal": {
+        "id": "93000000-0000-4000-8000-000000000001",
+        "revision": 1,
+        "estimate_id": "93000000-0000-4000-8000-000000000001",
+        "draft_id": "93000000-0000-4000-8000-000000000001",
+        "submitted_by": "93000000-0000-4000-8000-000000000001",
+        "submitted_at": "2026-10-16T14:00:00.000000Z",
+        "reason": "=\\"quoted\\",\\nقطعة",
+        "approved_by": "93000000-0000-4000-8000-000000000001",
+        "approved_at": "2026-10-16T14:00:00.000000Z",
+        "approval_reason": "Reviewed"
+      },
+      "evidence": {
+        "policy_id": "93000000-0000-4000-8000-000000000001",
+        "forecast_id": "93000000-0000-4000-8000-000000000001",
+        "draft_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "estimate": {
+        "method": "purchase-cost-v1",
+        "status": "available",
+        "location_id": "93000000-0000-4000-8000-000000000001",
+        "price_confirmed": true,
+        "source": {
+          "delivery_id": "93000000-0000-4000-8000-000000000001",
+          "delivery_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "supplier_scenario_id": "93000000-0000-4000-8000-000000000001",
+          "supplier_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "draft_id": "93000000-0000-4000-8000-000000000001",
+          "item_id": "93000000-0000-4000-8000-000000000001",
+          "item_code": "000123",
+          "location_code": "BRANCH",
+          "supplier_id": "93000000-0000-4000-8000-000000000001",
+          "supplier_code": "SUP",
+          "unit": "EA",
+          "quantity": "999999999999999.999",
+          "cutoff": "2026-10-10",
+          "order_date": "2026-10-10",
+          "receipt_date": "2026-10-13",
+          "policy_recalculation_required": false
+        },
+        "supplier": {
+          "id": "93000000-0000-4000-8000-000000000001",
+          "code": "SUP",
+          "active": true,
+          "updated_at": "2026-10-16T14:00:00.000000Z"
+        },
+        "price": {
+          "terms_id": "93000000-0000-4000-8000-000000000001",
+          "item_id": "93000000-0000-4000-8000-000000000001",
+          "supplier_id": "93000000-0000-4000-8000-000000000001",
+          "unit": "EA",
+          "unit_price": "1.000",
+          "raw_unit_price": "1.000",
+          "currency": "KWD",
+          "minor_units": 3,
+          "valid_from": "2026-10-10",
+          "updated_at": "2026-10-16T14:00:00.000000Z"
+        },
+        "exact_product": "999999999999999.999000",
+        "subtotal": "999999999999999.999",
+        "rounding": "half-up-currency-minor-units",
+        "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "schema_version": "purchase-handoff-v1",
+      "purpose": "planning_only",
+      "notice": "As-of planning evidence only. Not an order, supplier acceptance or inbound quantity.",
+      "handoff_id": "93000000-0000-4000-8000-000000000002",
+      "organization_id": "93000000-0000-4000-8000-000000000001",
+      "created_by": "93000000-0000-4000-8000-000000000001",
+      "created_at": "2026-10-16T14:00:00.000000Z",
+      "proposal": {
+        "id": "93000000-0000-4000-8000-000000000001",
+        "revision": 1,
+        "estimate_id": "93000000-0000-4000-8000-000000000001",
+        "draft_id": "93000000-0000-4000-8000-000000000001",
+        "submitted_by": "93000000-0000-4000-8000-000000000001",
+        "submitted_at": "2026-10-16T14:00:00.000000Z",
+        "reason": "=\\"quoted\\",\\nقطعة",
+        "approved_by": "93000000-0000-4000-8000-000000000001",
+        "approved_at": "2026-10-16T14:00:00.000000Z",
+        "approval_reason": "Reviewed"
+      },
+      "evidence": {
+        "policy_id": "93000000-0000-4000-8000-000000000001",
+        "forecast_id": "93000000-0000-4000-8000-000000000001",
+        "draft_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "estimate": {
+        "method": "purchase-cost-v1",
+        "status": "available",
+        "location_id": "93000000-0000-4000-8000-000000000001",
+        "price_confirmed": true,
+        "source": {
+          "delivery_id": "93000000-0000-4000-8000-000000000001",
+          "delivery_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "supplier_scenario_id": "93000000-0000-4000-8000-000000000001",
+          "supplier_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "draft_id": "93000000-0000-4000-8000-000000000001",
+          "item_id": "93000000-0000-4000-8000-000000000002",
+          "item_code": "000124",
+          "location_code": "BRANCH",
+          "supplier_id": "93000000-0000-4000-8000-000000000001",
+          "supplier_code": "SUP",
+          "unit": "KG",
+          "quantity": "999999999999999.999",
+          "cutoff": "2026-10-10",
+          "order_date": "2026-10-10",
+          "receipt_date": "2026-10-15",
+          "policy_recalculation_required": false
+        },
+        "supplier": {
+          "id": "93000000-0000-4000-8000-000000000001",
+          "code": "SUP",
+          "active": true,
+          "updated_at": "2026-10-16T14:00:00.000000Z"
+        },
+        "price": {
+          "terms_id": "93000000-0000-4000-8000-000000000001",
+          "item_id": "93000000-0000-4000-8000-000000000001",
+          "supplier_id": "93000000-0000-4000-8000-000000000001",
+          "unit": "EA",
+          "unit_price": "1.000",
+          "raw_unit_price": "1.000",
+          "currency": "KWD",
+          "minor_units": 3,
+          "valid_from": "2026-10-10",
+          "updated_at": "2026-10-16T14:00:00.000000Z"
+        },
+        "exact_product": "999999999999999.999000",
+        "subtotal": "999999999999999.999",
+        "rounding": "half-up-currency-minor-units",
+        "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ]
+}
+"
+`;

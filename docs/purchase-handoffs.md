@@ -12,7 +12,7 @@ The proposal itself is the retry identity. Concurrent creation returns one recor
 
 A later approved proposal can have its own handoff. Older handoffs remain historical; their original contents are preserved. The detail page shows current selection and the price check at page load separately from the saved evidence. An unavailable current-price check does not hide the saved download or imply a match.
 
-Handoffs are **as-of planning evidence only**. Creation/download never places an order, contacts a supplier, records acceptance, reserves stock, changes a proposal decision or adds inbound. It does not refresh stock, inbound, policy or calendar assumptions. Identity is scoped to a saved proposal/draft; it does not prevent duplicate orders across different drafts or revoke already downloaded files. Batching, ERP mappings, transmission, acknowledgment and execution require later increments.
+Handoffs are **as-of planning evidence only**. Creation/download never places an order, contacts a supplier, records acceptance, reserves stock, changes a proposal decision or adds inbound. It does not refresh stock, inbound, policy or calendar assumptions. Identity is scoped to a saved proposal/draft; it does not prevent duplicate orders across different drafts or revoke already downloaded files. Saved multi-line [handoff batches](handoff-batches.md) group compatible handoffs and show overlapping packages. ERP mappings, transmission, acknowledgment and execution require later increments.
 
 ## File contract: `purchase-handoff-v1`
 

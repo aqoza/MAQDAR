@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HandoffBatchOverlap } from '@/components/handoff-batch-overlap'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -85,6 +86,7 @@ export default async function HandoffDetail({
       </div>
       <p>{t('csvNote')}</p>
       <PurchaseCostReport report={payload.estimate} locale={locale} />
+      <HandoffBatchOverlap organizationId={context.active.id} handoffIds={[handoffId]} />
     </div>
   )
 }

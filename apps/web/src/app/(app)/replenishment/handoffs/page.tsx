@@ -64,6 +64,9 @@ export default async function PurchaseHandoffs({
       <Link href="/replenishment" className="text-sm underline">
         {t('planning')}
       </Link>
+      <Link className="inline-block underline" href="/replenishment/batches">
+        {t('batches')}
+      </Link>
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
       <p>{t('description')}</p>
       <Form
