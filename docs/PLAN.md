@@ -58,7 +58,7 @@ Step 10b acceptance, fixed-group comparison interpretation, calendar model and r
 
 ## Phase 3 build steps
 
-Steps 13, 13b, 13c, 13d and 14 were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
+Steps 13, 13b, 13c, 13d, 14 and 15 were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
 
 | Step | Scope                                                                                                                                                                                              | Status    |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
@@ -66,7 +66,8 @@ Steps 13, 13b, 13c, 13d and 14 were scoped and approved by the owner on 2026-10-
 | 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | Merged    |
 | 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | Merged    |
 | 13d  | **Purchase-cost estimates:** confirmed supplier-price evidence for saved delivery quantities and dates, exact multiplication, one currency rounding step and immutable estimates.                  | Merged    |
-| 14   | **Purchase-proposal review:** independent reasoned decisions, per-draft selection history, current-price checks and policy-recalculation approval gate.                                            | In review |
+| 14   | **Purchase-proposal review:** independent reasoned decisions, per-draft selection history, current-price checks and policy-recalculation approval gate.                                            | Merged    |
+| 15   | **Purchase handoffs:** immutable single-proposal CSV/JSON exports, selected-approval and price gates, historical evidence, stable retries and member-scoped downloads.                             | In review |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -237,3 +238,10 @@ Require a matching-unit snapshot for every member at the policy cutoff, no more 
 - Editors submit; a different owner/admin/approver reviews; authors withdraw. Reasons are required, with one pending proposal per original draft. Latest approval becomes selected while earlier decisions remain.
 - Recheck current price evidence at submission and approval. Changed prices require a new estimate. Saved delivery requiring policy recalculation blocks approval while allowing inspection, rejection and withdrawal.
 - Approval records a planning selection only. Order creation, ERP export and automatic approval follow later. See [purchase-review.md](purchase-review.md).
+
+### Step 15 approved decisions (2026-10-16)
+
+- PR #26 was reviewed and merged as `ec05209`. Build saved handoffs from one selected approved proposal with CSV/JSON downloads and exact evidence references.
+- Owners/admins/planners create; authorized members inspect/download. New records require current selection, matching current price evidence and a saved policy-recalculation flag of false.
+- One immutable handoff per proposal; repeated creation/download preserves identity and content. Later approvals can have new handoffs while earlier records become historical.
+- Files remain as-of planning evidence. Downloads do not place orders or add inbound. Batching, ERP mappings, transmission and execution remain later increments. See [purchase-handoffs.md](purchase-handoffs.md).

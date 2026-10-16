@@ -66,6 +66,9 @@ export default async function ReplenishmentPage({
       <Link href="/replenishment/review" className="block underline">
         {t('purchaseReview')}
       </Link>
+      <Link href="/replenishment/handoffs" className="block underline">
+        {t('purchaseHandoffs')}
+      </Link>
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
       <p>{t('description')}</p>
       <Link className="inline-block underline" href="/forecasts/workbench">
