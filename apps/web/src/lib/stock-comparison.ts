@@ -10,11 +10,46 @@ export const unitProvenanceSchema = z.object({
   units: z.array(z.enum(['EA', 'SET', 'L', 'KG'])),
 })
 const decimal = z.string().regex(/^-?\d+(\.\d+)?$/)
+export const stockSnapshotSchema = z.object({
+  id: z.uuid(),
+  date: z.iso.date(),
+  updated_at: z.string(),
+  age: z.number().int(),
+  unit: z.string().nullable(),
+  quantity: decimal,
+  allocated: decimal,
+  available: decimal,
+  unit_cost: decimal,
+  currency: z.string(),
+})
+export const stockPoolSchema = z.object({
+  available: decimal.nullable(),
+  inventory_values: z.array(z.object({ currency: z.string(), value: decimal })),
+  members: z
+    .array(
+      z.object({
+        item_id: z.uuid(),
+        item_code: z.string(),
+        unit_provenance: unitProvenanceSchema.nullable(),
+        status: z.enum([
+          'available',
+          'stock_missing',
+          'stock_stale',
+          'stock_unit_unknown',
+          'unit_mismatch',
+        ]),
+        inventory_value: decimal.nullable(),
+        snapshot: stockSnapshotSchema.nullable(),
+      }),
+    )
+    .max(100),
+})
 export const comparisonSchema = z.object({
   status: z.enum([
     'available',
     'policy_unavailable',
     'prepared_group',
+    'group_not_interchangeable',
     'date_mismatch',
     'policy_unit_unknown',
     'stock_missing',
@@ -37,20 +72,8 @@ export const comparisonSchema = z.object({
   maximum: decimal.nullable(),
   quantity_above: decimal.nullable(),
   value_above: decimal.nullable(),
-  snapshot: z
-    .object({
-      id: z.uuid(),
-      date: z.iso.date(),
-      updated_at: z.string(),
-      age: z.number().int(),
-      unit: z.string().nullable(),
-      quantity: decimal,
-      allocated: decimal,
-      available: decimal,
-      unit_cost: decimal,
-      currency: z.string(),
-    })
-    .nullable(),
+  snapshot: stockSnapshotSchema.nullable(),
+  pool: stockPoolSchema.optional(),
 })
 export function comparisonParams(raw: RawSearchParams) {
   const first = (key: string) => (Array.isArray(raw[key]) ? raw[key][0] : raw[key])

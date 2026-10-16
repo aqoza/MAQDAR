@@ -1959,13 +1959,39 @@
     "statuses": {
       "available": "Comparison available",
       "policy_unavailable": "Unavailable: this policy has no usable maximum.",
-      "prepared_group": "Unavailable: prepared-group stock pooling is not supported in this release.",
+      "prepared_group": "Unavailable: this group lacks captured stock-pooling evidence. Create a new preparation, forecast and policy with labeled demand history.",
+      "group_not_interchangeable": "Unavailable: every saved member must be two-way interchangeable at 1:1 in the same unit. Supersession history conversion alone does not establish stock interchangeability.",
       "date_mismatch": "Unavailable: choose the policy forecast cutoff as the comparison date.",
       "policy_unit_unknown": "Unavailable: this policy has no consistent source-unit evidence.",
-      "stock_missing": "Unavailable: no stock snapshot exists on or before this date.",
-      "stock_stale": "Unavailable: the latest snapshot is more than seven days old.",
-      "stock_unit_unknown": "Unavailable: the stock snapshot has no supplied unit.",
-      "unit_mismatch": "Unavailable: snapshot and policy units differ."
+      "stock_missing": "Unavailable: at least one item has no stock snapshot on or before this date.",
+      "stock_stale": "Unavailable: at least one latest snapshot is more than seven days old.",
+      "stock_unit_unknown": "Unavailable: at least one stock snapshot has no supplied unit.",
+      "unit_mismatch": "Unavailable: at least one snapshot unit differs from the policy unit."
+    },
+    "memberStatuses": {
+      "available": "Snapshot eligible",
+      "stock_missing": "Snapshot missing",
+      "stock_stale": "Snapshot older than seven days",
+      "stock_unit_unknown": "Snapshot unit unknown",
+      "unit_mismatch": "Snapshot unit differs from policy"
+    },
+    "pool": {
+      "members": "Group stock members",
+      "description": "Uses saved group membership and two-way 1:1 interchangeability at this location. Every member requires a matching-unit snapshot no more than seven days old. Member deficits reduce pooled availability; incomplete groups have no comparison total.",
+      "formula": "Quantity above maximum = max(sum of each member’s on-hand minus allocations − selected periodic maximum, 0).",
+      "available": "Pooled available stock: {value} {unit}",
+      "itemId": "Saved item {id}",
+      "valuation": "Physical inventory values use each eligible snapshot’s on-hand quantity × unit cost, grouped separately by currency. Group totals appear only for an available comparison. These values are not the value above maximum; valuing pooled excess requires a cost-allocation rule and is deferred.",
+      "values": "Physical inventory value by currency",
+      "columns": {
+        "item": "Saved member",
+        "observation": "Snapshot eligibility",
+        "quantity": "On hand",
+        "allocated": "Allocated",
+        "available": "Available",
+        "unit_cost": "Unit cost",
+        "inventoryValue": "Physical inventory value"
+      }
     }
   }
 }

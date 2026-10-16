@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { DemandUnitEvidence } from '@/components/demand-unit-evidence'
+import { StockPoolReport } from '@/components/stock-pool-report'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { comparisonParams, comparisonSchema } from '@/lib/stock-comparison'
@@ -119,16 +120,28 @@ export default async function StockComparison({
             · {amount(report.maximum)} {report.unit ?? '—'}
           </p>
           <DemandUnitEvidence evidence={report.unit_provenance} />
-          <p>{t('formula')}</p>
+          <p>{t(report.pool ? 'pool.formula' : 'formula')}</p>
           {report.status === 'available' && (
             <div className="rounded-xl border p-5">
               <p className="text-3xl font-semibold tabular-nums">
                 {amount(report.quantity_above)} {report.unit}
               </p>
-              <p>
-                {t('value', { value: amount(report.value_above), currency: snapshot!.currency })}
-              </p>
+              {snapshot && (
+                <p>
+                  {t('value', { value: amount(report.value_above), currency: snapshot.currency })}
+                </p>
+              )}
             </div>
+          )}
+          {report.pool && (
+            <>
+              <StockPoolReport pool={report.pool} unit={report.unit} locale={locale} />
+              <details>
+                <summary>{t('identity')}</summary>
+                <p>{t('policyId', { id: report.policy_id })}</p>
+                {report.override_id && <p>{t('overrideId', { id: report.override_id })}</p>}
+              </details>
+            </>
           )}
           {snapshot && (
             <>
