@@ -774,6 +774,50 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"purchase_proposals": {
+                  Row: {
+                    "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"decision_request_id": string | null,"draft_id": string,"estimate_id": string,"id": string,"location_id": string,"organization_id": string,"reason": string,"request_id": string,"revision": number,"status": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"decision_request_id"?: string | null,"draft_id": string,"estimate_id": string,"id"?: string,"location_id": string,"organization_id": string,"reason": string,"request_id": string,"revision": number,"status"?: string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"decision_request_id"?: string | null,"draft_id"?: string,"estimate_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"reason"?: string,"request_id"?: string,"revision"?: number,"status"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "purchase_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "purchase_cost_estimates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "purchase_cost_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"ramadan_windows": {
                   Row: {
                     "arafat_day": string,"country_code": string,"eid_al_adha": string,"eid_al_fitr": string,"hijri_year": number,"ramadan_end": string,"ramadan_start": string,"source": string
@@ -1171,6 +1215,44 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"purchase_review_list": {
+                  Row: {
+                    "created_at": string | null,"currency": string | null,"draft_id": string | null,"estimate_id": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"minor_units": number | null,"order_date": string | null,"organization_id": string | null,"quantity": string | null,"receipt_date": string | null,"revision": number | null,"search_text": string | null,"selected": boolean | null,"status": string | null,"subtotal": string | null,"supplier_code": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "purchase_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "purchase_cost_estimates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "purchase_cost_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"replenishment_draft_list": {
                   Row: {
                     "basis": string | null,"created_at": string | null,"cutoff": string | null,"gap": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"policy_id": string | null,"search_text": string | null,"status": string | null,"submitted_by": string | null,"unit": string | null
@@ -1352,6 +1434,12 @@ isOneToOne: false
                            },
 "purchase_cost_save":
 { Args: { "p_delivery_id": string,"p_fingerprint": string,"p_organization_id": string,"p_price_confirmed": boolean,"p_request_id": string }; Returns: string
+                           },
+"purchase_proposal_decide":
+{ Args: { "p_decision": string,"p_organization_id": string,"p_proposal_id": string,"p_reason": string,"p_request_id": string }; Returns: string
+                           },
+"purchase_proposal_submit":
+{ Args: { "p_estimate_id": string,"p_organization_id": string,"p_reason": string,"p_request_id": string }; Returns: string
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined

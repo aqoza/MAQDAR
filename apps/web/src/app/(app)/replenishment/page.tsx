@@ -63,6 +63,9 @@ export default async function ReplenishmentPage({
   const rows = range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])
   return (
     <div className="space-y-5">
+      <Link href="/replenishment/review" className="block underline">
+        {t('purchaseReview')}
+      </Link>
       <h1 className="text-2xl font-semibold">{t('title')}</h1>
       <p>{t('description')}</p>
       <Link className="inline-block underline" href="/forecasts/workbench">

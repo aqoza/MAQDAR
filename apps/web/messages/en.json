@@ -652,7 +652,8 @@
       "orders_unconfirmed": "Unavailable: confirm order completeness and synchronization.",
       "quantity_out_of_range": "Unavailable: the replenishment gap exceeds the supported quantity range."
     },
-    "supplierScenario": "Create supplier MOQ/pack scenario"
+    "supplierScenario": "Create supplier MOQ/pack scenario",
+    "purchaseReview": "Purchase proposal review"
   },
   "Organizations": {
     "title": "Your organizations",
@@ -2300,5 +2301,63 @@
       "price_unconfirmed": "Confirm that the displayed price applies to the saved quantity and adjusted order date",
       "amount_out_of_range": "Unavailable: the rounded subtotal exceeds the supported monetary range"
     }
+  },
+  "PurchaseReview": {
+    "title": "Purchase proposal review",
+    "description": "Review saved estimates and their decision history. Approval records a planning selection for the original draft; it does not create an order or inbound stock.",
+    "planning": "Back to replenishment",
+    "back": "Back to purchase review",
+    "search": "Search item code",
+    "location": "Location code",
+    "supplier": "Supplier code",
+    "status": "Proposal status",
+    "all": "All",
+    "filter": "Apply filters",
+    "reset": "Reset",
+    "count": "{total} proposals",
+    "item": "Item",
+    "quantity": "Quantity",
+    "subtotal": "Saved subtotal",
+    "selection": "Draft selection",
+    "selected": "Selected approval for this draft",
+    "inspect": "Inspect",
+    "inspectItem": "Review {item}",
+    "empty": "No proposals match these filters.",
+    "pagination": "Review pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}",
+    "statuses": {
+      "pending": "Awaiting review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "detailTitle": "Purchase review · {item}",
+    "revision": "Proposal {revision}",
+    "you": "You",
+    "member": "Member {id}",
+    "submitted": "Submitted by {actor} · {time}",
+    "decided": "Decided by {actor} · {time}",
+    "reason": "Proposal reason",
+    "decisionReason": "Decision reason",
+    "propose": "Propose purchase estimate",
+    "proposalNote": "Submit this immutable estimate for independent review. Current price evidence is checked again; submission does not place an order.",
+    "submit": "Submit proposal",
+    "saving": "Saving…",
+    "withdraw": "Withdraw proposal",
+    "review": "Review proposal",
+    "decision": "Decision",
+    "approve": "Approve",
+    "reject": "Reject",
+    "recordDecision": "Record decision",
+    "draftHistory": "All proposals for this draft",
+    "estimate": "Inspect saved purchase-cost estimate",
+    "sourceDraft": "Inspect original replenishment draft",
+    "priceChanged": "Current price evidence differs from this saved estimate. Save a new estimate before submitting or approving. You may still reject or withdraw this proposal.",
+    "pendingNote": "This original replenishment draft already has a pending proposal. Review or withdraw it before submitting another estimate.",
+    "policyRequired": "Approval is unavailable because saved delivery evidence requires policy recalculation or does not establish policy compatibility. Submit a compatible replacement scenario. Rejection and withdrawal remain available.",
+    "priceCurrent": "Price evidence matched when this page loaded. Approval checks it again.",
+    "historicalApproval": "Earlier approval retained in history. A later approval is now selected for this draft."
   }
 }
