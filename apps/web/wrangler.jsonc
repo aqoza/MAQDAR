@@ -12,6 +12,8 @@
   // minified: 3.21 / 2.81 MiB at Step 4, 3.72 / 3.27 MiB with the Step 5a import wizard (measured
   // with wrangler 4.149.0; SheetJS in the server bundle is about 156 KiB of that).
   "minify": true,
+  // Keep application execution near the Supabase database in AWS Mumbai.
+  "placement": { "region": "aws:ap-south-1" },
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
