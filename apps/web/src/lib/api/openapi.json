@@ -2123,7 +2123,8 @@
                     "quantity": "20",
                     "unit_cost": "172.25",
                     "currency": "AED",
-                    "status": "open"
+                    "status": "open",
+                    "unit_of_measure": "EA"
                   }
                 ]
               }
@@ -6142,6 +6143,7 @@
           "unit_cost",
           "currency",
           "status",
+          "unit_of_measure",
           "updated_at"
         ],
         "properties": {
@@ -6219,6 +6221,21 @@
               "canceled"
             ],
             "description": "Current line status.",
+            "x-maqdar-kind": "enum"
+          },
+          "unit_of_measure": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "EA",
+              "SET",
+              "L",
+              "KG",
+              null
+            ],
+            "description": "Source unit for remaining quantity and unit cost; absent means unknown.",
             "x-maqdar-kind": "enum"
           },
           "updated_at": {
@@ -6344,6 +6361,27 @@
             "description": "Current line status.",
             "x-maqdar-kind": "enum",
             "x-maqdar-default-for-new": "open"
+          },
+          "unit_of_measure": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "EA",
+                  "SET",
+                  "L",
+                  "KG"
+                ]
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": ""
+              }
+            ],
+            "description": "Source unit for remaining quantity and unit cost; absent means unknown.",
+            "x-maqdar-kind": "enum"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."

@@ -30,6 +30,12 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('replenishment_drafts', 'anon', 'r', ''),
+    ('replenishment_drafts', 'authenticated', 'r', 'SELECT'),
+    ('replenishment_drafts', 'service_role', 'r', ''),
+    ('replenishment_draft_list', 'anon', 'v', ''),
+    ('replenishment_draft_list', 'authenticated', 'v', 'SELECT'),
+    ('replenishment_draft_list', 'service_role', 'v', ''),
     ('policy_overrides', 'anon', 'r', ''),
     ('policy_overrides', 'authenticated', 'r', 'SELECT'),
     ('policy_overrides', 'service_role', 'r', ''),
@@ -232,6 +238,9 @@ select set_eq(
     where n.nspname in ('public', 'app') and p.prokind in ('f', 'p')$$,
   $$values
     ('public.policy_override_submit(uuid, uuid, uuid, text, text, text)', 'authenticated'),
+    ('public.replenishment_preview(uuid, uuid, text, uuid, text, boolean)', 'authenticated'),
+    ('public.replenishment_save(uuid, uuid, uuid, text, uuid, text, boolean, text)', 'authenticated'),
+    ('app.import_rows_open_orders_units(uuid, uuid, smallint, integer, integer)', ''),
     ('public.policy_override_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
     ('public.policy_enqueue(uuid, uuid, uuid, integer, integer, numeric)', 'authenticated'),
     ('app.policy_task(uuid, uuid)', ''),

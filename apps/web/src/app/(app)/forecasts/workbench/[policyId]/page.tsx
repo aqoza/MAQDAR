@@ -72,6 +72,12 @@ export default async function PolicyReview({
         {t('compareStock')}
       </Link>
       <p>{t('manualNote')}</p>
+      <Link
+        href={`/replenishment/new?policy=${policyId}&basis=calculated`}
+        className="inline-block underline"
+      >
+        {t('draftCalculated')}
+      </Link>
       <p role="status">{policy(`statuses.${row.status}`)}</p>
       <table className="w-full text-sm">
         <caption className="text-start font-semibold">{t('comparison')}</caption>
@@ -164,6 +170,14 @@ export default async function PolicyReview({
                   withdrawal={proposal.submitted_by === context.userId}
                 />
               )}
+            {proposal.status === 'approved' && (
+              <Link
+                href={`/replenishment/new?policy=${policyId}&basis=approved&override=${proposal.id}`}
+                className="inline-block underline"
+              >
+                {t('draftRevision', { revision: proposal.revision! })}
+              </Link>
+            )}
           </article>
         ))}
       </NextIntlClientProvider>

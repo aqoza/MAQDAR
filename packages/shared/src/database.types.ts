@@ -550,14 +550,14 @@ isOneToOne: false
                   ]
                 },"open_orders": {
                   Row: {
-                    "created_at": string,"currency": string,"expected_date": string,"id": string,"item_id": string,"line_code": string,"location_id": string,"order_code": string,"organization_id": string,"quantity": number,"status": string,"supplier_id": string,"unit_cost": number,"updated_at": string
+                    "created_at": string,"currency": string,"expected_date": string,"id": string,"item_id": string,"line_code": string,"location_id": string,"order_code": string,"organization_id": string,"quantity": number,"status": string,"supplier_id": string,"unit_cost": number,"unit_of_measure": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"currency": string,"expected_date": string,"id"?: string,"item_id": string,"line_code": string,"location_id": string,"order_code": string,"organization_id": string,"quantity": number,"status"?: string,"supplier_id": string,"unit_cost": number,"updated_at"?: string
+                    "created_at"?: string,"currency": string,"expected_date": string,"id"?: string,"item_id": string,"line_code": string,"location_id": string,"order_code": string,"organization_id": string,"quantity": number,"status"?: string,"supplier_id": string,"unit_cost": number,"unit_of_measure"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"currency"?: string,"expected_date"?: string,"id"?: string,"item_id"?: string,"line_code"?: string,"location_id"?: string,"order_code"?: string,"organization_id"?: string,"quantity"?: number,"status"?: string,"supplier_id"?: string,"unit_cost"?: number,"updated_at"?: string
+                    "created_at"?: string,"currency"?: string,"expected_date"?: string,"id"?: string,"item_id"?: string,"line_code"?: string,"location_id"?: string,"order_code"?: string,"organization_id"?: string,"quantity"?: number,"status"?: string,"supplier_id"?: string,"unit_cost"?: number,"unit_of_measure"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -774,6 +774,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"replenishment_drafts": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 },"stock_snapshots": {
                   Row: {
                     "allocated_quantity": number,"created_at": string,"currency": string,"id": string,"item_id": string,"location_id": string,"organization_id": string,"quantity": number,"snapshot_date": string,"unit_cost": number,"unit_of_measure": string | null,"updated_at": string
@@ -985,6 +1011,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"replenishment_draft_list": {
+                  Row: {
+                    "basis": string | null,"created_at": string | null,"cutoff": string | null,"gap": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"policy_id": string | null,"search_text": string | null,"status": string | null,"submitted_by": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "basis"?: never,"created_at"?: string | null,"cutoff"?: never,"gap"?: never,"id"?: string | null,"item_code"?: never,"location_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"policy_id"?: string | null,"search_text"?: never,"status"?: never,"submitted_by"?: string | null,"unit"?: never
+                         }
+                        Update: {
+                           "basis"?: never,"created_at"?: string | null,"cutoff"?: never,"gap"?: never,"id"?: string | null,"item_code"?: never,"location_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"policy_id"?: string | null,"search_text"?: never,"status"?: never,"submitted_by"?: string | null,"unit"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 }
           }
           Functions: {
@@ -1099,6 +1151,12 @@ isOneToOne: false
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined
+                           },
+"replenishment_preview":
+{ Args: { "p_backorders"?: string,"p_basis": string,"p_orders_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_policy_id": string }; Returns: Json
+                           },
+"replenishment_save":
+{ Args: { "p_backorders"?: string,"p_basis": string,"p_fingerprint"?: string,"p_orders_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_policy_id": string,"p_request_id": string }; Returns: string
                            },
 "revoke_api_key":
 { Args: { "p_key_id": string }; Returns: undefined

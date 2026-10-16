@@ -34,19 +34,19 @@ Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: S
 
 Steps 7, 8, 9, 9b, 10, 10b, 11 and 12a were scoped and approved by the owner on 2026-10-15. Steps 12b, 12c and 12d were scoped and approved on 2026-10-16. Later steps are proposed sequencing and will be scoped before implementation. One step per PR.
 
-| Step | Scope                                                                                                                                                                                      | Status    |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
-| 7    | **Planning-run foundation:** durable pgmq jobs, restricted Python worker, bounded retries and crash recovery, location-scoped demand readiness results and Forecasts run history.          | Merged    |
-| 8    | **Demand classification:** define observation windows and missing-data semantics, ADI/CV squared, ABC-XYZ and lifecycle evidence, with persisted versioned classifications.                | Merged    |
-| 9    | **Forecast baselines and selection:** mean, naive, weekly seasonal naive, SES, Croston, SBA and TSB; three rolling backtests, versioned daily forecasts and inspectable model comparisons. | Merged    |
-| 9b   | **Forecast model expansion:** bounded automatic ETS/ARIMA, seeded daily bootstrap bands and an independent historical coverage check.                                                      | Merged    |
-| 10   | **Demand preparation:** saved related-part groups, source contributions, exact daily sold/lost totals and verified calendar evidence.                                                      | Merged    |
-| 10b  | **Prepared-group forecasts:** fixed saved groups, bounded learned weekday/verified holiday/Ramadan candidate, rolling comparisons, daily bands and independent coverage.                   | Merged    |
-| 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Merged    |
-| 12a  | **Policy review workbench:** searchable saved recommendations, reasoned manual thresholds and independent approval history.                                                                | Merged    |
-| 12b  | **KPI foundation:** observed availability, inventory value by currency, snapshot freshness/coverage and searchable saved forecast quality.                                                 | Merged    |
-| 12c  | **Individual-item stock comparison:** supplied unit provenance, explicit cutoff and calculated/approved maximum selection, with quantity/value above that maximum.                         | Merged    |
-| 12d  | **Prepared-group stock comparison:** saved two-way 1:1 groups, captured demand units, complete snapshot coverage and quantity above the explicitly selected maximum.                       | In review |
+| Step | Scope                                                                                                                                                                                      | Status |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| 7    | **Planning-run foundation:** durable pgmq jobs, restricted Python worker, bounded retries and crash recovery, location-scoped demand readiness results and Forecasts run history.          | Merged |
+| 8    | **Demand classification:** define observation windows and missing-data semantics, ADI/CV squared, ABC-XYZ and lifecycle evidence, with persisted versioned classifications.                | Merged |
+| 9    | **Forecast baselines and selection:** mean, naive, weekly seasonal naive, SES, Croston, SBA and TSB; three rolling backtests, versioned daily forecasts and inspectable model comparisons. | Merged |
+| 9b   | **Forecast model expansion:** bounded automatic ETS/ARIMA, seeded daily bootstrap bands and an independent historical coverage check.                                                      | Merged |
+| 10   | **Demand preparation:** saved related-part groups, source contributions, exact daily sold/lost totals and verified calendar evidence.                                                      | Merged |
+| 10b  | **Prepared-group forecasts:** fixed saved groups, bounded learned weekday/verified holiday/Ramadan candidate, rolling comparisons, daily bands and independent coverage.                   | Merged |
+| 11   | **Inventory policies:** service targets, safety stock, reorder point and maximum stock with explainable inputs.                                                                            | Merged |
+| 12a  | **Policy review workbench:** searchable saved recommendations, reasoned manual thresholds and independent approval history.                                                                | Merged |
+| 12b  | **KPI foundation:** observed availability, inventory value by currency, snapshot freshness/coverage and searchable saved forecast quality.                                                 | Merged |
+| 12c  | **Individual-item stock comparison:** supplied unit provenance, explicit cutoff and calculated/approved maximum selection, with quantity/value above that maximum.                         | Merged |
+| 12d  | **Prepared-group stock comparison:** saved two-way 1:1 groups, captured demand units, complete snapshot coverage and quantity above the explicitly selected maximum.                       | Merged |
 
 Step 7 criteria, operational limits and owner-run rollout are in [planning-runs.md](planning-runs.md).
 
@@ -55,6 +55,16 @@ Step 9b acceptance, numerical definitions and rollout are in [forecast-expansion
 Step 10 acceptance, grouping/calendar semantics, bounds and rollout are in [demand-preparation.md](demand-preparation.md).
 
 Step 10b acceptance, fixed-group comparison interpretation, calendar model and rollout are in [prepared-forecasts.md](prepared-forecasts.md).
+
+## Phase 3 build steps
+
+Step 13 was scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
+
+| Step | Scope                                                                                                                                                                                              | Status    |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | In review |
+
+Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
 ## Decision log
 
@@ -186,3 +196,10 @@ Use `max(on-hand − allocations − selected periodic maximum, 0)`, valued at t
 PR #20 was reviewed and merged as `856f67b`. The owner approved stock comparisons for saved prepared groups whose members are all two-way interchangeable at 1:1 in the same unit, with captured demand-unit evidence in new runs. Groups requiring directed supersession conversions and legacy artifacts lacking evidence remain unavailable.
 
 Require a matching-unit snapshot for every member at the policy cutoff, no more than seven days old. Compare pooled on-hand minus allocations with the explicitly selected calculated or approved maximum. Show quantity above maximum and physical member inventory values separately by currency. Pooled-excess valuation is deferred pending a cost-allocation rule. See [prepared-stock-comparison.md](prepared-stock-comparison.md) for acceptance, provenance, exact arithmetic and owner-run rollout.
+
+### Step 13 approved decisions (2026-10-16)
+
+- PR #21 merged as `edf397b`; start replenishment with saved individual-item drafts. Supplier constraints, calendars, prepared groups and execution follow later.
+- Gap is `max(maximum − (on-hand − allocations + all remaining open inbound − additional unallocated backorders), 0)`, using an explicitly selected calculated or approved maximum.
+- Require matching known units, stock dated at the policy cutoff, explicit backorders (zero allowed), and confirmation that the recorded order book is complete and synchronized to that cutoff. Missing evidence remains unavailable.
+- Include every positive remaining open line regardless of arrival date, flag overdue/late arrivals, and never subtract receipts again. Save immutable evidence and reject changes since preview.

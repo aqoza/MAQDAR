@@ -904,6 +904,7 @@ ENTITIES += (
             Column("unit_cost", "money", "Cost per unit.", min_value=0),
             Column("currency", "currency", "Cost currency.", references="currencies.code"),
             Column("status", "enum", "Current line status.", enum=("open", "closed", "canceled"), default="open"),
+            Column("unit_of_measure", "enum", "Source unit for remaining quantity and unit cost; absent means unknown.", nullable=True, omittable=True, enum=("EA", "SET", "L", "KG")),
         ), column_groups=(("unit_cost", "currency"),),
     ),
     Entity(

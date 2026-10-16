@@ -451,7 +451,7 @@ export const COLUMN_LABEL_PATHS: {
     unit_of_measure: ['Items.fields.unit_of_measure'],
   },
   stock_snapshots: { unit_of_measure: ['Items.fields.unit_of_measure'] },
-  open_orders: {},
+  open_orders: { unit_of_measure: ['Items.fields.unit_of_measure'] },
   receipts: {},
 }
 
