@@ -158,6 +158,7 @@ export const EXAMPLES: { readonly [E in EntityName]: readonly ExampleRecord[] } 
       currency: 'AED',
       is_preferred: true,
       valid_from: '2026-01-01',
+      unit_of_measure: 'EA',
     },
   ],
   fx_rates: [

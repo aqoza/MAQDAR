@@ -840,14 +840,14 @@ isOneToOne: false
                   ]
                 },"supplier_items": {
                   Row: {
-                    "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"supplier_id": string,"supplier_part_number": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
+                    "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"supplier_id": string,"supplier_part_number": string | null,"unit_of_measure": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"currency": string,"id"?: string,"is_preferred"?: boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id": string,"pack_size"?: number,"supplier_id": string,"supplier_part_number"?: string | null,"unit_price": number,"updated_at"?: string,"valid_from"?: string | null
+                    "created_at"?: string,"currency": string,"id"?: string,"is_preferred"?: boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id": string,"pack_size"?: number,"supplier_id": string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price": number,"updated_at"?: string,"valid_from"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"currency"?: string,"id"?: string,"is_preferred"?: boolean,"item_id"?: string,"lead_time_days"?: number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id"?: string,"pack_size"?: number,"supplier_id"?: string,"supplier_part_number"?: string | null,"unit_price"?: number,"updated_at"?: string,"valid_from"?: string | null
+                    "created_at"?: string,"currency"?: string,"id"?: string,"is_preferred"?: boolean,"item_id"?: string,"lead_time_days"?: number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id"?: string,"pack_size"?: number,"supplier_id"?: string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price"?: number,"updated_at"?: string,"valid_from"?: string | null
                   }
                   Relationships: [
                     {
@@ -873,6 +873,38 @@ isOneToOne: false
       columns: ["organization_id","supplier_id"]
 isOneToOne: false
       referencedRelation: "suppliers"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"supplier_scenarios": {
+                  Row: {
+                    "created_at": string,"draft_id": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"draft_id": string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"draft_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "supplier_scenarios_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_scenarios_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
       referencedColumns: ["organization_id","id"]
     }
                   ]
@@ -1037,6 +1069,38 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"supplier_scenario_list": {
+                  Row: {
+                    "created_at": string | null,"draft_id": string | null,"id": string | null,"location_id": string | null,"organization_id": string | null,"overage": string | null,"quantity": string | null,"status": string | null,"supplier_code": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"draft_id"?: string | null,"id"?: string | null,"location_id"?: string | null,"organization_id"?: string | null,"overage"?: never,"quantity"?: never,"status"?: never,"supplier_code"?: never,"unit"?: never
+                         }
+                        Update: {
+                           "created_at"?: string | null,"draft_id"?: string | null,"id"?: string | null,"location_id"?: string | null,"organization_id"?: string | null,"overage"?: never,"quantity"?: never,"status"?: never,"supplier_code"?: never,"unit"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "supplier_scenarios_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_scenarios_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 }
           }
           Functions: {
@@ -1172,6 +1236,12 @@ isOneToOne: false
                            },
 "set_member_role":
 { Args: { "p_organization_id": string,"p_role": string,"p_user_id": string }; Returns: undefined
+                           },
+"supplier_scenario_preview":
+{ Args: { "p_draft_id": string,"p_organization_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: Json
+                           },
+"supplier_scenario_save":
+{ Args: { "p_draft_id": string,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: string
                            },
 "update_organization_preferences":
 { Args: { "p_default_locale": string,"p_numbering_system": string,"p_organization_id": string,"p_time_zone": string }; Returns: undefined

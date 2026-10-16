@@ -7,6 +7,7 @@ import {
   moneySchema,
   optionalDateSchema,
   optionalText,
+  UNITS_OF_MEASURE,
 } from '../schemas'
 import {
   defineEntity,
@@ -37,6 +38,10 @@ export const supplierItemSchema = z
     currency: z.string().trim().min(1).pipe(currencyCodeSchema),
     is_preferred: z.boolean(),
     valid_from: optionalDateSchema,
+    unit_of_measure: z
+      .union([z.literal(''), z.enum(UNITS_OF_MEASURE)])
+      .optional()
+      .transform((v) => v || null),
   })
   .refine(
     (input) =>
@@ -110,8 +115,8 @@ export const supplierItems = defineEntity({
   tab: 'supplierItems',
   basePath: '/suppliers/supplier-items',
   importEntity: 'supplier_items',
-  listSelect: `id, supplier_part_number, lead_time_days, min_order_quantity, pack_size, unit_price, currency, is_preferred, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code, name_en, name_ar)`,
-  editSelect: `id, supplier_id, supplier_part_number, lead_time_days, lead_time_days_p90, min_order_quantity, pack_size, unit_price, currency, is_preferred, valid_from, updated_at, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code)`,
+  listSelect: `id, supplier_part_number, lead_time_days, min_order_quantity, pack_size, unit_of_measure, unit_price, currency, is_preferred, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code, name_en, name_ar)`,
+  editSelect: `id, supplier_id, supplier_part_number, lead_time_days, lead_time_days_p90, min_order_quantity, pack_size, unit_of_measure, unit_price, currency, is_preferred, valid_from, updated_at, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code)`,
   list: {
     // Default order follows supplier_items_organization_id_supplier_id_item_id_key (rows of one
     // supplier together; an incremental sort by id breaks ties).
@@ -135,6 +140,7 @@ export const supplierItems = defineEntity({
     { key: 'lead_time_days', kind: 'integer', sortable: true },
     { key: 'min_order_quantity', kind: 'quantity' },
     { key: 'pack_size', kind: 'quantity' },
+    { key: 'unit_of_measure', kind: 'text' },
     { key: 'unit_price', kind: 'money', currencyField: 'currency', sortable: true },
     { key: 'is_preferred', kind: 'boolean' },
   ],
@@ -151,6 +157,12 @@ export const supplierItems = defineEntity({
     { name: 'lead_time_days_p90', kind: 'integer', hint: true },
     { name: 'min_order_quantity', kind: 'decimal', required: true, hint: true },
     { name: 'pack_size', kind: 'decimal', required: true, hint: true },
+    {
+      name: 'unit_of_measure',
+      kind: 'select',
+      hint: true,
+      options: { source: 'enum', values: UNITS_OF_MEASURE },
+    },
     { name: 'unit_price', kind: 'decimal', required: true, hint: true },
     { name: 'currency', kind: 'select', required: true, options: { source: 'currencies' } },
     { name: 'is_preferred', kind: 'switch', hint: true, wide: true },
@@ -177,6 +189,7 @@ export const supplierItems = defineEntity({
         lead_time_days_p90: input.lead_time_days_p90,
         min_order_quantity: input.min_order_quantity,
         pack_size: input.pack_size,
+        unit_of_measure: input.unit_of_measure,
         unit_price: input.unit_price,
         currency: input.currency,
         is_preferred: input.is_preferred,

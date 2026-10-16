@@ -261,7 +261,8 @@
       "min_order_quantity": "Min. order qty",
       "pack_size": "Pack size",
       "unit_price": "Unit price",
-      "is_preferred": "Preferred"
+      "is_preferred": "Preferred",
+      "unit_of_measure": "Supplied unit"
     },
     "fields": {
       "supplier_id": "Supplier",
@@ -274,7 +275,8 @@
       "pack_size": "Pack size",
       "unit_price": "Unit price",
       "currency": "Currency",
-      "is_preferred": "Preferred supplier for this part"
+      "is_preferred": "Preferred supplier for this part",
+      "unit_of_measure": "Supplied unit"
     },
     "filters": {
       "supplier": "Supplier",
@@ -287,7 +289,16 @@
       "min_order_quantity": "0 means no minimum.",
       "pack_size": "Orders are placed in multiples of this quantity.",
       "unit_price": "In the price currency, with up to 3 decimals.",
-      "is_preferred": "A part has one preferred supplier. Choosing this one clears the previous choice."
+      "is_preferred": "A part has one preferred supplier. Choosing this one clears the previous choice.",
+      "unit_of_measure": "Unit supplied for MOQ, pack multiple and unit price. Leave empty when unknown; catalog units are not inferred."
+    },
+    "options": {
+      "unit_of_measure": {
+        "EA": "Each (EA)",
+        "SET": "Set (SET)",
+        "L": "Litre (L)",
+        "KG": "Kilogram (KG)"
+      }
     }
   },
   "Locations": {
@@ -640,7 +651,8 @@
       "inbound_unit_mismatch": "Unavailable: inbound and policy units differ.",
       "orders_unconfirmed": "Unavailable: confirm order completeness and synchronization.",
       "quantity_out_of_range": "Unavailable: the replenishment gap exceeds the supported quantity range."
-    }
+    },
+    "supplierScenario": "Create supplier MOQ/pack scenario"
   },
   "Organizations": {
     "title": "Your organizations",
@@ -2078,6 +2090,63 @@
         "unit_cost": "Unit cost",
         "inventoryValue": "Physical inventory value"
       }
+    }
+  },
+  "SupplierScenarios": {
+    "new": "Supplier MOQ/pack scenario",
+    "saved": "Saved supplier scenario",
+    "result": "Supplier scenario result",
+    "description": "Apply one explicitly selected supplier’s minimum order quantity and pack multiple to this saved replenishment gap.",
+    "source": "Inspect source replenishment draft",
+    "newFromDraft": "Start a new supplier scenario from this draft",
+    "findTerms": "Find supplier-item terms",
+    "supplier": "Supplier code",
+    "cutoff": "Draft cutoff: {date}",
+    "confirmation": "I confirm that these current MOQ/pack terms apply at the draft cutoff {date}.",
+    "scenarioNote": "This uses the saved draft gap and an attestation about current supplier terms. It does not reconstruct historical terms or recalculate stock, policy targets, arrival dates or prices.",
+    "formula": "For a positive gap, round the greater of the gap and MOQ up to a pack multiple. A zero gap stays zero. Overage is the rounded quantity minus the saved gap.",
+    "preview": "Refresh supplier preview",
+    "invalid": "Enter a valid supplier code.",
+    "gap": "Saved gap",
+    "moq": "Minimum order quantity",
+    "pack": "Pack multiple",
+    "quantity": "Rounded quantity",
+    "overage": "Overage above gap",
+    "leadTimes": "Lead time in calendar days — saved policy: {policy}; supplier item: {supplier}.",
+    "confirmed": "Applicability of the MOQ/pack terms at the draft cutoff confirmed for this scenario.",
+    "unconfirmed": "Applicability of the terms at the draft cutoff has not been confirmed.",
+    "identity": "Inspect source identities",
+    "draftId": "Source draft: {id}",
+    "termsId": "Supplier-item terms: {id} · updated {time}",
+    "supplierId": "Supplier: {id} · updated {time}",
+    "save": "Save supplier scenario",
+    "saving": "Saving…",
+    "saveNote": "Save this result and its input evidence, including unavailable diagnoses. This does not create or reserve an order.",
+    "changed": "The terms or request changed. Refresh the supplier preview before saving.",
+    "immutable": "This record retains the evidence captured when it was saved. Later supplier changes do not alter it. It does not place an order.",
+    "savedBy": "Saved by {actor} on {time}",
+    "you": "you",
+    "history": "Saved supplier scenarios",
+    "count": "{total, plural, one {# saved scenario} other {# saved scenarios}}",
+    "empty": "No supplier scenarios have been saved for this draft.",
+    "inspect": "Inspect",
+    "inspectSupplier": "Inspect {supplier}",
+    "pagination": "Supplier scenario pages",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}",
+    "statuses": {
+      "available": "Supplier scenario available",
+      "draft_unavailable": "Unavailable: the source must be an available individual-item draft.",
+      "policy_unavailable": "Unavailable: the saved policy lead time is unknown.",
+      "supplier_missing": "Unavailable: supplier code not found.",
+      "supplier_inactive": "Unavailable: the selected supplier is inactive.",
+      "terms_missing": "Unavailable: this supplier has no terms for the saved item.",
+      "unit_unknown": "Unavailable: the supplier or draft unit is unknown.",
+      "unit_mismatch": "Unavailable: the supplied units do not match.",
+      "lead_time_mismatch": "Unavailable: supplier-item lead time differs from the saved policy. Create a policy and draft with matching lead time.",
+      "terms_unconfirmed": "Unavailable: confirm that the MOQ/pack terms apply at the draft cutoff.",
+      "quantity_out_of_range": "Unavailable: the rounded quantity exceeds the supported range."
     }
   }
 }

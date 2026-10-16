@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
-test('replenishment previews, detects changed inputs and retains saved evidence', async ({
+test('replenishment and supplier scenarios retain evidence and reject changed previews', async ({
   page,
 }, testInfo) => {
   test.setTimeout(180_000)
@@ -91,11 +91,66 @@ with psycopg.connect(sys.argv[1]) as db:
     page.getByRole('heading', { name: 'Saved replenishment draft', exact: true }),
   ).toBeVisible()
   const savedUrl = page.url()
+  const { stdout: termsId } = await runPython(`import sys,psycopg
+with psycopg.connect(sys.argv[1]) as db:
+    print(db.execute("insert into public.supplier_items(organization_id,supplier_id,item_id,lead_time_days,min_order_quantity,pack_size,unit_price,currency) select %s,s.id,i.id,3,10,6,1,'SAR' from public.suppliers s join public.items i on i.organization_id=s.organization_id where s.organization_id=%s returning id",(sys.argv[2],sys.argv[2])).fetchone()[0])`)
+  await page.getByRole('link', { name: 'Create supplier MOQ/pack scenario', exact: true }).click()
+  await expect(page).toHaveURL(/\/replenishment\/suppliers\/new\?draft=/)
+  const supplierPreviewUrl = page.url()
+  await page.getByLabel('Supplier code', { exact: true }).fill('SUP')
+  await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: 'Refresh supplier preview', exact: true }).click()
+  await expect(
+    page.getByText('Unavailable: the supplier or draft unit is unknown.', { exact: true }),
+  ).toBeVisible()
+  // Supplying units through maintenance enables the scenario without catalog inference.
+  await page.goto(`/suppliers/supplier-items/${termsId.trim()}`)
+  await page.getByLabel('Supplied unit', { exact: true }).selectOption('EA')
+  await page.getByRole('button', { name: 'Save changes', exact: true }).click()
+  await expect(page.getByText('Saved.', { exact: true })).toBeVisible()
+  await page.goto(`${supplierPreviewUrl}&supplier=SUP`)
+  await expect(
+    page.getByText('Unavailable: confirm that the MOQ/pack terms apply at the draft cutoff.', {
+      exact: true,
+    }),
+  ).toBeVisible()
+  await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: 'Refresh supplier preview', exact: true }).click()
+  await expect(page.getByText('12 EA', { exact: true })).toBeVisible()
+  await runPython(`import sys,psycopg
+with psycopg.connect(sys.argv[1]) as db:
+    db.execute('update public.supplier_items set pack_size=7 where organization_id=%s',(sys.argv[2],))`)
+  await page.getByRole('button', { name: 'Save supplier scenario', exact: true }).click()
+  await expect(
+    page.getByRole('alert').filter({ hasText: 'Refresh the supplier preview' }),
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Refresh supplier preview', exact: true }).click()
+  await expect(page.getByText('14 EA', { exact: true })).toBeVisible()
+  await expect(page.getByText('11 EA', { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Save supplier scenario', exact: true }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Saved supplier scenario', exact: true }),
+  ).toBeVisible()
+  const scenarioUrl = page.url()
   await runPython(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('update public.stock_snapshots set quantity=99 where organization_id=%s',(sys.argv[2],))
+    db.execute('update public.supplier_items set pack_size=100 where organization_id=%s',(sys.argv[2],))
     db.execute("update public.memberships set role='viewer' where organization_id=%s and user_id=%s",(sys.argv[2],sys.argv[3]))`)
   await page.reload()
+  await expect(page.getByText('14 EA', { exact: true })).toBeVisible()
+  await page.screenshot({ path: testInfo.outputPath('supplier-scenario.png'), fullPage: true })
+  await page.getByRole('link', { name: 'Inspect source replenishment draft', exact: true }).click()
+  await expect(page).toHaveURL(savedUrl)
+  await expect(page.getByText('1 saved scenario', { exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Inspect SUP', exact: true }).click()
+  await expect(page).toHaveURL(scenarioUrl)
+  await page.goto(`${supplierPreviewUrl}&supplier=SUP&confirmed=true`)
+  await expect(page.getByText('Supplier scenario available', { exact: true })).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: 'Save supplier scenario', exact: true }),
+  ).toHaveCount(0)
+  await page.goto(savedUrl)
   await expect(page.getByText('3 EA', { exact: true })).toBeVisible()
   await page.screenshot({ path: testInfo.outputPath('replenishment-draft.png'), fullPage: true })
   await page.getByRole('link', { name: 'All replenishment drafts', exact: true }).click()
