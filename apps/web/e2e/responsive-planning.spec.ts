@@ -34,6 +34,11 @@ const screens = [
     reset: 'Clear filters',
   },
   { path: '/settings', title: 'Settings', reset: null },
+  {
+    path: '/replenishment/redistribution/review',
+    title: 'Transfer proposal review',
+    reset: 'Reset',
+  },
 ] as const
 
 async function expectContainedLayout(page: Page) {

@@ -74,7 +74,8 @@ Steps 13, 13b, 13c, 13d, 14, 15 and 15b were scoped and approved by the owner on
 | 15e  | **Integration workbench:** member-scoped package search, latest reports per exact system label, explicit absence and direct evidence/history links.                                                 | Merged                       |
 | 16   | **Redistribution drafts:** saved individual-item transfer quantities, explicit source maxima, exact-cutoff stock, confirmed commitments and lanes, immutable evidence and access to both locations. | Merged                       |
 | 16b  | **Transfer date scenarios:** saved dispatch and separate p50/p90 receipts, calendar evidence, timing-review flags, immutable history and access to both locations.                                  | Merged                       |
-| 16c  | **Transfer freight estimates:** saved per-unit or one-shipment subtotals, supplied unit/effective-date evidence, exact currency rounding and both-location history.                                 | Implemented — review pending |
+| 16c  | **Transfer freight estimates:** saved per-unit or one-shipment subtotals, supplied unit/effective-date evidence, exact currency rounding and both-location history.                                 | Merged                       |
+| 16d  | **Transfer proposal review:** independent reasoned decisions on saved freight estimates, current-evidence and timing gates, per-draft selection and both-location history.                          | Implemented — review pending |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -312,3 +313,11 @@ PR #38 was reviewed without blocking findings and merged as `2888553` after all 
 - Add optional source-supplied freight units and valid-from dates to lane maintenance, imports and API. Require matching units for per-unit pricing, a known valid-from no later than saved dispatch, explicit applicability confirmation, active locations and the same active lane with matching saved leads.
 - Preserve immutable evidence, stale-preview detection, retries and both-location access. Compact green screens cover all five approved widths. Taxes, FX, consolidation, approvals and execution follow separately.
 - Acceptance, compatibility and owner-run rollout are in [transfer-freight-estimates.md](transfer-freight-estimates.md).
+
+### Step 16d — approved 2026-10-17
+
+- PR #41 was reviewed without blocking findings and merged as `3b4cfde` after all three CI jobs passed.
+- The owner approved a transfer-proposal review workbench for positive saved freight estimates, with full quantity/date/freight evidence and compact green layouts at all five widths.
+- Owners/admins/planners submit; a different owner/admin/approver approves or rejects; authors may withdraw. Reasons and access to both locations are required. One proposal may be pending per original redistribution draft, across alternative estimates. Later approval selects that draft's proposal while retaining earlier decisions; separate drafts can overlap stock.
+- Submission and approval recheck current freight, active lane and active locations. Changed evidence requires a new estimate. Both saved p50/p90 timing-review flags must explicitly be false to approve; flagged proposals can still be inspected, rejected or withdrawn.
+- Saved stock commitments remain as-of evidence. Approval records a planning selection without confirming live availability, reserving stock, consolidating shipments, creating transfer orders or executing transfers. See [transfer-review.md](transfer-review.md).
