@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('planned_event_scenarios', 'anon', 'r', ''),
+    ('planned_event_scenarios', 'authenticated', 'r', 'SELECT'),
+    ('planned_event_scenarios', 'service_role', 'r', ''),
     ('container_capacity_scenarios', 'anon', 'r', ''),
     ('container_capacity_scenarios', 'authenticated', 'r', 'SELECT'),
     ('container_capacity_scenarios', 'service_role', 'r', ''),
@@ -481,6 +484,10 @@ select set_eq(
     ('public.purchase_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.purchase_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),
     ('public.purchase_proposal_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
+    ('public.planned_event_source(uuid, uuid)', 'authenticated'),
+    ('app.planned_event_input(text, text, text, text, jsonb, boolean)', ''),
+    ('public.planned_event_preview(uuid, uuid, text, text, text, text, jsonb, boolean)', 'authenticated'),
+    ('public.planned_event_save(uuid, uuid, text, text, text, text, jsonb, boolean, uuid, text)', 'authenticated'),
     ('public.container_capacity_preview(uuid, uuid, text, text, boolean)', 'authenticated'),
     ('public.container_capacity_save(uuid, uuid, text, text, boolean, uuid, text)', 'authenticated'),
     ('app.import_rows_supplier_items_shipping(uuid, uuid, smallint, integer, integer)', ''),

@@ -702,6 +702,38 @@ isOneToOne: false
       referencedColumns: ["code"]
     }
                   ]
+                },"planned_event_scenarios": {
+                  Row: {
+                    "created_at": string,"event_type": string,"forecast_id": string,"id": string,"location_id": string,"name": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"event_type": string,"forecast_id": string,"id"?: string,"location_id": string,"name": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"event_type"?: string,"forecast_id"?: string,"id"?: string,"location_id"?: string,"name"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "planned_event_scenarios_organization_id_forecast_id_fkey"
+      columns: ["organization_id","forecast_id"]
+isOneToOne: false
+      referencedRelation: "forecast_quality"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "planned_event_scenarios_organization_id_forecast_id_fkey"
+      columns: ["organization_id","forecast_id"]
+isOneToOne: false
+      referencedRelation: "forecast_results"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "planned_event_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"planning_runs": {
                   Row: {
                     "attempts": number,"created_at": string,"created_by": string | null,"error_code": string | null,"finished_at": string | null,"from_date": string,"id": string,"kind": string,"location_id": string,"options": NonNullable<Json>,"organization_id": string,"request_id": string,"result": Json | null,"started_at": string | null,"status": string,"to_date": string
@@ -2234,6 +2266,15 @@ isOneToOne: false
 { Args: { "p_organization_id": string }; Returns: {
               "created_at": string,"email": string,"location_ids": (string)[],"role": string,"user_id": string
             }[]
+                           },
+"planned_event_preview":
+{ Args: { "p_additions": Json,"p_confirmed": boolean,"p_forecast_id": string,"p_name": string,"p_organization_id": string,"p_reason": string,"p_type": string,"p_unit": string }; Returns: Json
+                           },
+"planned_event_save":
+{ Args: { "p_additions": Json,"p_confirmed": boolean,"p_fingerprint": string,"p_forecast_id": string,"p_name": string,"p_organization_id": string,"p_reason": string,"p_request_id": string,"p_type": string,"p_unit": string }; Returns: string
+                           },
+"planned_event_source":
+{ Args: { "p_forecast_id": string,"p_organization_id": string }; Returns: Json
                            },
 "planning_cancel":
 { Args: { "p_organization_id": string,"p_run_id": string }; Returns: undefined
