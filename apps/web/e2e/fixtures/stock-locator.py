@@ -47,11 +47,25 @@ with psycopg.connect(dsn) as db:
             db.execute("insert into public.item_interchanges(organization_id,item_id,alternate_item_id,direction) values(%s,%s,%s,%s)", (org, origin, alternate, direction))
         for code, location, day, quantity, unit in [("ALT-B", "NEAR", "2026-10-17", "900719925474099.001", "EA"), ("ALT-B", "FAR", "2026-10-10", "5.125", "EA"), ("ALT-C", "NO-GEO", "2026-10-17", "2", "EA"), ("ALT-C", "NEAR", "2026-10-17", "20", "KG"), ("ALT-C", "STALE", "2026-10-09", "20", "EA"), ("ONE-WAY", "NEAR", "2026-10-17", "900", "EA"), ("BEHIND-KG", "NEAR", "2026-10-17", "900", "EA")]:
             db.execute("insert into public.stock_snapshots(organization_id,item_id,location_id,snapshot_date,quantity,unit_cost,currency,unit_of_measure) select %s,%s,id,%s,%s,1,'SAR',%s from public.locations where organization_id=%s and code=%s", (org, items[code], day, quantity, unit, org, location))
-    elif action == "oversize":
+    elif action == "substitutes":
+        db.execute("update public.items set unit_of_measure='EA' where organization_id=%s and code='PART/1'", (org,))
+        seed = db.execute("select id from public.items where organization_id=%s and code='PART/1'", (org,)).fetchone()[0]
+        items = {code: uuid4() for code in ["SUB-B", "SUB-C", "CHAIN", "INCOMING", "TWO-WAY", "BRIDGED", "KG"]}
+        for code, item in items.items():
+            unit = "KG" if code == "KG" else "EA"
+            status = "phase_out" if code == "SUB-B" else "discontinued" if code == "SUB-C" else "active"
+            db.execute("insert into public.items(id,organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency,status) values(%s,%s,%s,%s,'Test',%s,1,'SAR',%s)", (item, org, code, "Substitute filter " + code, unit, status))
+        for origin, alternate, direction, priority, note in [(seed, items["SUB-B"], "one_way", 99, "Check application <b>before issue</b>."), (seed, items["SUB-C"], "one_way", 1, None), (items["SUB-B"], items["CHAIN"], "one_way", 1, None), (items["INCOMING"], seed, "one_way", 1, None), (seed, items["TWO-WAY"], "two_way", 1, None), (items["TWO-WAY"], items["BRIDGED"], "one_way", 1, None), (seed, items["KG"], "one_way", 1, None)]:
+            db.execute("insert into public.item_interchanges(organization_id,item_id,alternate_item_id,direction,priority,note) values(%s,%s,%s,%s,%s,%s)", (org, origin, alternate, direction, priority, note))
+        observations = [("SUB-B", "NEAR", "2026-10-17", "900719925474099.001", "EA"), ("SUB-B", "FAR", "2026-10-10", "5.125", "EA"), ("SUB-C", "NO-GEO", "2026-10-17", "2", "EA"), ("SUB-C", "NEAR", "2026-10-17", "20", "KG"), ("SUB-C", "STALE", "2026-10-09", "20", "EA")]
+        observations += [(code, "NEAR", "2026-10-17", "900", "EA") for code in ["CHAIN", "INCOMING", "TWO-WAY", "BRIDGED", "KG"]]
+        for code, location, day, quantity, unit in observations:
+            db.execute("insert into public.stock_snapshots(organization_id,item_id,location_id,snapshot_date,quantity,unit_cost,currency,unit_of_measure) select %s,%s,id,%s,%s,1,'SAR',%s from public.locations where organization_id=%s and code=%s", (org, items[code], day, quantity, unit, org, location))
+    elif action in ("oversize", "substitute-oversize"):
         seed = db.execute("select id from public.items where organization_id=%s and code='PART/1'", (org,)).fetchone()[0]
         for index in range(100):
             item = uuid4()
             db.execute("insert into public.items(id,organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency) values(%s,%s,%s,'Limit item','Test','EA',1,'SAR')", (item, org, f"LIMIT-{index}"))
-            db.execute("insert into public.item_interchanges(organization_id,item_id,alternate_item_id,direction) values(%s,%s,%s,'two_way')", (org, seed, item))
+            db.execute("insert into public.item_interchanges(organization_id,item_id,alternate_item_id,direction) values(%s,%s,%s,%s)", (org, seed, item, "one_way" if action == "substitute-oversize" else "two_way"))
     else:
         raise SystemExit("Unknown fixture action")

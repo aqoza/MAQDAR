@@ -55,7 +55,7 @@ export default async function StockLocator({
     .limit(200)
   if (locations.error) throw new Error('Location suggestions unavailable')
   let result: StockLocatorResult | null = null
-  let error: 'invalid' | 'unavailable' | 'groupLimit' | null = null
+  let error: 'invalid' | 'unavailable' | 'groupLimit' | 'substituteLimit' | null = null
   if (parsed.success) {
     const input = parsed.data
     const response = await db.rpc('stock_locator', {
@@ -70,7 +70,12 @@ export default async function StockLocator({
     })
     if (response.error?.code === 'MQ404') error = 'unavailable'
     else if (response.error?.code === 'MQ422')
-      error = response.error.hint === 'group_limit' ? 'groupLimit' : 'invalid'
+      error =
+        response.error.hint === 'group_limit'
+          ? 'groupLimit'
+          : response.error.hint === 'substitute_limit'
+            ? 'substituteLimit'
+            : 'invalid'
     else if (response.error) throw new Error('Stock locator unavailable')
     else result = stockLocatorResultSchema.parse(response.data)
     if (result && result.page !== params.page) redirect(stockLocatorHref(params, result.page))
@@ -139,14 +144,15 @@ export default async function StockLocator({
           </label>
         </div>
         <div className="flex min-w-0 flex-wrap items-end gap-3">
-          <label className="grid min-w-0 flex-[1_1_12rem] gap-1">
+          <label className="grid min-w-0 flex-[1_1_13rem] gap-1">
             {t('scope')}
             <select name="scope" defaultValue={params.scope} className={inputClass}>
               <option value="exact">{t('scopes.exact')}</option>
               <option value="interchangeable">{t('scopes.interchangeable')}</option>
+              <option value="substitutes">{t('scopes.substitutes')}</option>
             </select>
           </label>
-          <label className="grid min-w-0 flex-[1_1_15rem] gap-1">
+          <label className="grid min-w-0 flex-[1_1_14rem] gap-1">
             {t('search')}
             <input name="q" maxLength={100} defaultValue={params.q} className={inputClass} />
           </label>
@@ -202,14 +208,16 @@ export default async function StockLocator({
               </p>
             </div>
           </div>
-          {result.scope === 'interchangeable' && (
+          {result.scope !== 'exact' && (
             <p
               className="text-xs text-muted-foreground"
               role={result.relationship_status === 'unit_mismatch' ? 'status' : undefined}
             >
               {result.relationship_status === 'unit_mismatch'
                 ? t('catalogMismatch')
-                : t('relationshipContext', { count: result.item_count })}
+                : t(result.scope === 'substitutes' ? 'substituteContext' : 'relationshipContext', {
+                    count: result.item_count,
+                  })}
             </p>
           )}
           <TableScrollRegion label={t('results')}>
@@ -316,13 +324,22 @@ export default async function StockLocator({
                           </div>
                           {row.relationship_path.length > 0 && (
                             <div>
-                              <dt>{t('relationshipPath')}</dt>
+                              <dt>
+                                {t(
+                                  row.match_kind === 'substitute'
+                                    ? 'substituteRelationship'
+                                    : 'relationshipPath',
+                                )}
+                              </dt>
                               <dd>
                                 <ol className="space-y-3">
                                   {row.relationship_path.map((edge) => (
                                     <li key={edge.id}>
                                       <p>
-                                        {edge.from_code} ⇄ {edge.to_code}
+                                        <bdi dir="ltr">
+                                          {edge.from_code}{' '}
+                                          {edge.direction === 'one_way' ? '→' : '⇄'} {edge.to_code}
+                                        </bdi>
                                       </p>
                                       <p>
                                         {t('relationshipRatio', {
@@ -331,6 +348,11 @@ export default async function StockLocator({
                                         })}
                                       </p>
                                       <p className="break-all">{edge.id}</p>
+                                      {edge.note && (
+                                        <p className="whitespace-pre-wrap break-words">
+                                          {t('relationshipNote', { note: edge.note })}
+                                        </p>
+                                      )}
                                       <p>
                                         {t('relationshipUpdated', {
                                           time: format.dateTime(new Date(edge.updated_at), 'long'),
