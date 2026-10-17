@@ -75,10 +75,10 @@ print(batch)`)
   await page.getByRole('button', { name: 'Check capacity' }).click()
   await expect(page.getByRole('main').getByRole('alert')).toContainText('Capacity unavailable')
   await expect(page.getByRole('button', { name: 'Save capacity scenario' })).toHaveCount(0)
-  const measurements = async (volume = '0.000001') =>
+  const measurements = async (volume = '0.000001', weight = '2.5') =>
     python(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
-    db.execute("update public.supplier_items set shipping_weight_kg=2.5,shipping_volume_m3=%s,shipping_valid_from='2026-10-10' where organization_id=%s",('${volume}',sys.argv[2]))`)
+    db.execute("update public.supplier_items set shipping_weight_kg=%s,shipping_volume_m3=%s,shipping_valid_from='2026-10-10' where organization_id=%s",('${weight}','${volume}',sys.argv[2]))`)
   await measurements()
   await page.reload()
   await expect(page.locator('tbody')).toContainText('Confirm measurement applicability')
@@ -117,6 +117,13 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.evaluate(() => window.scrollTo(0, 0))
     await page.screenshot({ path: testInfo.outputPath(`capacity-${width}.png`), fullPage: true })
   }
+  await measurements('999999999.999999', '999999999.999999')
+  await page.goto(`${url}&volume=0.000001&payload=0.000001&confirmed=true`)
+  for (const width of [375, 768]) {
+    await page.setViewportSize({ width, height: 900 })
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
+  }
+  await page.goto(preview)
   await measurements('0.2')
   await page.getByRole('button', { name: 'Save capacity scenario' }).click()
   await expect(page.getByRole('main').getByRole('alert')).toContainText('changed')
