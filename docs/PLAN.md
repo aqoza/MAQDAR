@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Dashboard unavailable typography — approved 2026-10-17
+
+Fix the oversized inventory “Unavailable” status highlighted in the owner's desktop screenshot. Keep status typography consistent across breakpoints while preserving numeric value styling. See [dashboard-unavailable-typography.md](dashboard-unavailable-typography.md) for the regression and browser evidence.
+
 ## Laptop dashboard density — approved 2026-10-17
 
 The owner reported oversized icons/type on 13-inch laptops after the heading refinement. Compact the full dashboard at common laptop viewport widths and fix the unavailable-value wrapping shown in the supplied screenshot. Preserve mobile accessibility and the large reference layout. See [dashboard-laptop-density.md](dashboard-laptop-density.md).
