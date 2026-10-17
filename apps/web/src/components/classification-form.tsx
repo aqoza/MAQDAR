@@ -21,7 +21,7 @@ export function ClassificationForm({
   const [state, action, pending] = useActionState(enqueueClassification, idleState)
   const inputClass = 'rounded-md border bg-background p-2'
   return (
-    <form action={action} className="space-y-5 rounded-xl border p-5">
+    <form action={action} className="space-y-4 workspace-panel">
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="request_id" value={requestId} />
       <div className="grid gap-4 sm:grid-cols-3">

@@ -77,7 +77,7 @@ export function ErrorSummary({
     tErrors.has(code as ImportErrorKey) ? tErrors(code as ImportErrorKey) : code
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {withIssues.map((file) => {
         const groups = groupsOf(file, examples)
         const capped = file.errors_stored >= STORED_DETAILS_PER_FILE

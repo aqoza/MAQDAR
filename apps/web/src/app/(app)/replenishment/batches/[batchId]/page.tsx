@@ -37,7 +37,7 @@ export default async function BatchDetail({ params }: { params: Promise<{ batchI
   if (!saved.data || !current.data) notFound()
   const payload = batchPayloadSchema.parse(saved.data.payload)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href="/replenishment/batches">
         {t('back')}
       </Link>
@@ -47,7 +47,7 @@ export default async function BatchDetail({ params }: { params: Promise<{ batchI
       <p>{t('description')}</p>
       <p className="break-all">{t('batchIdentity', { id: batchId })}</p>
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
-      <section className="space-y-2 rounded-xl border p-4" aria-label={t('currentContext')}>
+      <section className="space-y-2 workspace-panel" aria-label={t('currentContext')}>
         <h2 className="text-section-title">{t('currentContext')}</h2>
         <p role="status">{t(current.data.selected ? 'current' : 'historical')}</p>
         <p>{t('immutableNote')}</p>

@@ -17,7 +17,7 @@ export default async function PreparePage() {
   const to = new Date(Date.parse(today) - 86400000).toISOString().slice(0, 10)
   const from = new Date(Date.parse(to) - 364 * 86400000).toISOString().slice(0, 10)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>

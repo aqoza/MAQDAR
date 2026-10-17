@@ -71,19 +71,22 @@ export default async function PolicyWorkbench({
   const amount = (value: string | null) =>
     value === null ? '—' : number.format(value as unknown as number)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/forecasts" className="text-sm underline">
         {t('planning')}
       </Link>
-      <div className="space-y-1">
-        <PageHeader title={t('title')} description={t('context')} />
-        <HelpDisclosure>
-          <p>{t('description')}</p>
-        </HelpDisclosure>
-      </div>
+      <PageHeader
+        title={t('title')}
+        description={t('context')}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+          </HelpDisclosure>
+        }
+      />
       <Form
         action="/forecasts/workbench"
-        className="flex flex-wrap items-end gap-3"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
         <label className="grid min-w-0 max-w-full gap-1">

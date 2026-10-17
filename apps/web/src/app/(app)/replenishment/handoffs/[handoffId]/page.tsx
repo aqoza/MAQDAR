@@ -55,7 +55,7 @@ export default async function HandoffDetail({
       ? 'priceCurrent'
       : 'priceChanged'
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href="/replenishment/handoffs">
         {t('back')}
       </Link>
@@ -65,7 +65,7 @@ export default async function HandoffDetail({
       <p>{t('description')}</p>
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
       <p className="break-all">{t('identity', { id: payload.handoff_id })}</p>
-      <section className="space-y-2 rounded-xl border p-4" aria-label={t('currentContext')}>
+      <section className="space-y-2 workspace-panel" aria-label={t('currentContext')}>
         <h2 className="text-section-title">{t('currentContext')}</h2>
         <p role="status">{t(current.data.selected ? 'current' : 'historical')}</p>
         <p>{t(priceState)}</p>

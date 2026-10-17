@@ -20,7 +20,7 @@ export function ForecastForm({
   const [state, action, pending] = useActionState(enqueueForecast, idleState)
   const inputClass = 'w-full min-w-0 max-w-full rounded-md border bg-background p-2'
   return (
-    <form action={action} className="space-y-5 rounded-xl border p-5">
+    <form action={action} className="space-y-4 workspace-panel">
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="request_id" value={requestId} />
       <label className="grid min-w-0 gap-1 text-sm">

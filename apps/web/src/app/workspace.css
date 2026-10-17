@@ -1,0 +1,186 @@
+/* Shared compact application surfaces. Generated UI components remain untouched. */
+.app-shell [data-slot='sidebar-inset'] {
+  background: var(--canvas);
+}
+.app-shell [data-sidebar='menu-button'][data-active] {
+  color: var(--sidebar-accent-foreground);
+  background: var(--sidebar-accent);
+  border-inline-start: 2px solid var(--primary);
+}
+[data-app-content] {
+  min-inline-size: 0;
+}
+[data-app-content] > * {
+  min-inline-size: 0;
+}
+.workspace-toolbar,
+.workspace-panel {
+  min-inline-size: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+.workspace-toolbar {
+  padding: 12px 14px;
+}
+.workspace-panel {
+  padding: 16px;
+}
+.workspace-toolbar > :is(label, div),
+.workspace-toolbar :is(input, select) {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.workspace-toolbar > label {
+  flex: 1 1 150px;
+}
+.workspace-toolbar > label > :is(input, select) {
+  inline-size: 100%;
+}
+.workspace-navigation {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  border-block-end: 1px solid var(--border);
+  padding: 3px;
+  scrollbar-width: thin;
+}
+.workspace-navigation a {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  min-block-size: 40px;
+  padding: 8px 12px;
+  border-block-end: 2px solid transparent;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.workspace-navigation a:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.workspace-navigation a[aria-current='page'] {
+  color: var(--primary);
+  background: var(--accent);
+  border-color: var(--primary);
+  font-weight: 600;
+}
+.workspace-table,
+[data-app-content] [data-slot='table-container'] {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+.workspace-table thead,
+[data-app-content] [data-slot='table-header'] {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.workspace-table :is(th, td),
+[data-app-content] :is([data-slot='table-head'], [data-slot='table-cell']) {
+  padding: 8px 12px;
+}
+.workspace-table thead th,
+[data-app-content] [data-slot='table-head'] {
+  font-size: 12px;
+  font-weight: 500;
+}
+.workspace-table tbody tr:hover {
+  background: var(--muted);
+}
+[data-slot='button'] {
+  min-block-size: 36px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.page-actions > a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 36px;
+  font-size: 14px;
+}
+[data-slot='card'] {
+  min-inline-size: 0;
+  border-radius: 10px;
+}
+[data-slot='field-group'] {
+  gap: 16px;
+}
+[data-slot='card-title'] {
+  font-weight: 600;
+}
+[data-app-content] :where(input:not([type='hidden'], [type='checkbox'], [type='radio']), select) {
+  min-block-size: 36px;
+  background-color: var(--background);
+}
+[data-app-content] :where(button:not([data-slot], [aria-pressed]), a.bg-primary) {
+  min-block-size: 36px;
+}
+[data-app-content] :where(input[type='checkbox'], input[type='radio']) {
+  accent-color: var(--primary);
+}
+[data-app-content] :where(a.underline, a.hover\:underline) {
+  color: var(--primary);
+  text-underline-offset: 3px;
+}
+.help-disclosure > summary {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+:where(
+  .workspace-navigation a,
+  .workspace-toolbar,
+  [data-app-content] a,
+  [data-app-content] button,
+  [data-app-content] input,
+  [data-app-content] select,
+  [data-app-content] textarea,
+  [data-app-content] summary
+):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+@media (width < 48rem) {
+  [data-app-content]
+    :where(input:not([type='hidden'], [type='checkbox'], [type='radio']), select, textarea) {
+    font-size: 16px;
+  }
+  [data-slot='button'],
+  .page-actions > a,
+  [data-app-content]
+    :where(
+      button,
+      a.bg-primary,
+      input:not([type='hidden'], [type='checkbox'], [type='radio']),
+      select
+    ),
+  .workspace-navigation a,
+  .help-disclosure > summary {
+    min-block-size: 44px;
+  }
+  [data-app-content] [data-slot='button']:has(> svg:only-child) {
+    min-inline-size: 44px;
+  }
+  .workspace-toolbar {
+    padding: 12px;
+  }
+  .workspace-toolbar > label {
+    flex-basis: calc(50% - 6px);
+  }
+  .workspace-toolbar > label:first-of-type {
+    flex-basis: 100%;
+  }
+  .help-disclosure > summary {
+    padding-block: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='button'],
+  .workspace-navigation a {
+    transition: none;
+  }
+}

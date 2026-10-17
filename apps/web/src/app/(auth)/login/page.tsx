@@ -27,7 +27,7 @@ export default async function LoginPage({
   const errorKey = error && isErrorQuery(error) ? ERROR_KEYS[error] : null
 
   return (
-    <main className="bg-muted/40 flex min-h-svh items-center justify-center p-6">
+    <main className="bg-canvas flex min-h-svh items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <h1 className="text-page-title">{t('title')}</h1>

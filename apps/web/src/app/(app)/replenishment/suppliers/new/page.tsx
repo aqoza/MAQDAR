@@ -56,7 +56,7 @@ export default async function NewSupplierScenario({
     report = supplierScenarioReportSchema.parse(data)
   }
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href={`/replenishment/${draft.data}`}>
         {t('source')}
       </Link>
@@ -74,7 +74,7 @@ export default async function NewSupplierScenario({
       <form
         action="/replenishment/suppliers/new"
         method="get"
-        className="space-y-4 rounded-xl border p-4"
+        className="space-y-4 workspace-panel"
         key={JSON.stringify(values)}
       >
         <input type="hidden" name="draft" value={draft.data} />

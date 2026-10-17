@@ -38,7 +38,7 @@ export async function SupplierScenarioReport({
             ['overage', report.overage, report.source.unit],
           ] as const
         ).map(([key, value, unit]) => (
-          <div className="rounded-xl border p-4" key={key}>
+          <div className="workspace-panel" key={key}>
             <p className="text-sm text-muted-foreground">{t(key)}</p>
             <p className="text-2xl font-semibold tabular-nums">
               {amount(value)} {unit ?? '—'}

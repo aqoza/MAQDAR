@@ -67,7 +67,7 @@ export default async function NewDraft({
     report = replenishmentReportSchema.parse(data)
   }
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href="/replenishment">
         {t('back')}
       </Link>
@@ -83,7 +83,7 @@ export default async function NewDraft({
       <form
         action="/replenishment/new"
         method="get"
-        className="space-y-4 rounded-xl border p-4"
+        className="space-y-4 workspace-panel"
         key={JSON.stringify(values)}
       >
         <input type="hidden" name="policy" value={v.policy} />

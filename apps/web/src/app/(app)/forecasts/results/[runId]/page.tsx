@@ -77,7 +77,7 @@ export default async function ForecastResults({
     detail = parsed.data
   }
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
@@ -89,7 +89,7 @@ export default async function ForecastResults({
         <p>{regional ? prepared('method') : t(expanded ? 'expandedMethod' : 'method')}</p>
         {regional && <p>{prepared('comparisonNote')}</p>}
       </HelpDisclosure>
-      <div className="overflow-x-auto">
+      <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('results')}</caption>
           <thead>
@@ -195,7 +195,7 @@ export default async function ForecastResults({
               <HelpDisclosure>
                 <p>{t('scoreNote')}</p>
               </HelpDisclosure>
-              <div className="overflow-x-auto">
+              <div className="workspace-table overflow-x-auto">
                 <table className="w-full text-sm">
                   <caption className="sr-only">{t('comparison')}</caption>
                   <thead>

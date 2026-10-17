@@ -566,6 +566,13 @@
     "description": "Demand classification, forecast models and planner overrides.",
     "empty": "Forecasting arrives in Phase 2."
   },
+  "PurchasingNav": {
+    "label": "Purchasing workspaces",
+    "drafts": "Replenishment drafts",
+    "review": "Purchase proposal review",
+    "handoffs": "Purchase handoffs",
+    "batches": "Purchase handoff batches"
+  },
   "Replenishment": {
     "title": "Replenishment drafts",
     "description": "Inspect the stock-and-inbound position against a saved policy maximum. These drafts show an unrounded gap; supplier constraints, arrival scheduling and order execution follow separately.",

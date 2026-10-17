@@ -74,21 +74,24 @@ export default async function ForecastQuality({
   const inputClass = 'w-full min-w-0 max-w-full rounded-md border bg-background p-2'
   const amount = (value: string | null | undefined) => formatScore(value, locale)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div className="flex gap-4 text-sm underline">
         <Link href="/dashboard">{t('dashboard')}</Link>
         <Link href="/forecasts">{t('planning')}</Link>
       </div>
-      <div className="space-y-1">
-        <PageHeader title={t('title')} description={t('context')} />
-        <HelpDisclosure label={t('aboutScores')}>
-          <p>{t('description')}</p>
-          <p>{t('scoreNote')}</p>
-        </HelpDisclosure>
-      </div>
+      <PageHeader
+        title={t('title')}
+        description={t('context')}
+        help={
+          <HelpDisclosure label={t('aboutScores')}>
+            <p>{t('description')}</p>
+            <p>{t('scoreNote')}</p>
+          </HelpDisclosure>
+        }
+      />
       <Form
         action="/forecasts/quality"
-        className="flex flex-wrap items-end gap-3"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
         <label className="grid min-w-0 max-w-full gap-1">

@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import Form from 'next/form'
 import { HelpDisclosure } from '@/components/help-disclosure'
+import { PageHeader } from '@/components/page-header'
 import { notFound, redirect } from 'next/navigation'
 import { DashboardDemandChart } from '@/components/dashboard-demand-chart'
 import {
@@ -48,26 +49,50 @@ export default async function DashboardPage({
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
   const ratio = availability(summary.available_pairs, summary.observed_pairs)
   const percent = new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 })
-  const metricClass = 'rounded-xl border bg-card p-5'
+  const metricClass = 'workspace-panel'
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-page-title">{t('title')}</h1>
-          <p className="text-muted-foreground">{t('asOf', { date: day })}</p>
-        </div>
-        <div className="flex gap-4 text-sm underline">
-          <Link href="/forecasts/quality">{t('quality')}</Link>
-          {context.role && isEditorRole(context.role) && (
-            <Link href="/imports">{t('importData')}</Link>
-          )}
-          {context.role && isAdminRole(context.role) && <Link href="/audit">{t('audit')}</Link>}
-        </div>
-      </div>
+    <div className="space-y-4">
+      <PageHeader
+        title={t('title')}
+        description={t('asOf', { date: day })}
+        help={
+          <HelpDisclosure label={t('metricDetails')}>
+            <p>{t('cohort')}</p>
+            <dl className="space-y-2">
+              {(['availability', 'value', 'stockOuts', 'coverage', 'missing'] as const).map(
+                (key) => (
+                  <div key={key}>
+                    <dt className="font-medium text-foreground">{t(key)}</dt>
+                    <dd>{t(`${key}Note`)}</dd>
+                  </div>
+                ),
+              )}
+            </dl>
+            <p>{t('trendNote')}</p>
+          </HelpDisclosure>
+        }
+        actions={
+          <>
+            <Link className="underline" href="/forecasts/quality">
+              {t('quality')}
+            </Link>
+            {context.role && isEditorRole(context.role) && (
+              <Link className="underline" href="/imports">
+                {t('importData')}
+              </Link>
+            )}
+            {context.role && isAdminRole(context.role) && (
+              <Link className="underline" href="/audit">
+                {t('audit')}
+              </Link>
+            )}
+          </>
+        }
+      />
       <Form
         action="/dashboard"
         key={`${day}:${location}`}
-        className="flex flex-wrap items-end gap-3"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
       >
         <label className="grid gap-1">
           {t('reportingDate')}
@@ -96,21 +121,9 @@ export default async function DashboardPage({
           {t('reset')}
         </Link>
       </Form>
-      <HelpDisclosure label={t('metricDetails')}>
-        <p>{t('cohort')}</p>
-        <dl className="space-y-2">
-          {(['availability', 'value', 'stockOuts', 'coverage', 'missing'] as const).map((key) => (
-            <div key={key}>
-              <dt className="font-medium text-foreground">{t(key)}</dt>
-              <dd>{t(`${key}Note`)}</dd>
-            </div>
-          ))}
-        </dl>
-        <p>{t('trendNote')}</p>
-      </HelpDisclosure>
       {summary.observed_pairs === 0 && <p className="text-muted-foreground">{t('empty')}</p>}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <section className={metricClass}>
+      <div className="grid gap-3 sm:grid-cols-6 xl:grid-cols-5">
+        <section className="workspace-panel sm:col-span-3 xl:col-span-1">
           <h2 className="text-sm text-muted-foreground">{t('availability')}</h2>
           <p className="mt-2 text-metric tabular-nums">
             {ratio === null ? t('unavailable') : percent.format(ratio)}
@@ -122,7 +135,7 @@ export default async function DashboardPage({
             })}
           </p>
         </section>
-        <section className={metricClass}>
+        <section className="workspace-panel sm:col-span-3 xl:col-span-1">
           <h2 className="text-sm text-muted-foreground">{t('value')}</h2>
           {summary.inventory_value.length ? (
             <ul className="mt-2 space-y-1">
@@ -143,7 +156,7 @@ export default async function DashboardPage({
             ['missing', summary.unobserved_pairs],
           ] as const
         ).map(([label, value]) => (
-          <section key={label} className={metricClass}>
+          <section key={label} className="workspace-panel sm:col-span-2 xl:col-span-1">
             <h2 className="text-sm text-muted-foreground">{t(label)}</h2>
             <p className="mt-2 text-metric tabular-nums">{number.format(value)}</p>
           </section>
@@ -156,7 +169,7 @@ export default async function DashboardPage({
         })}
       </p>
       {summary.stale_pairs > 0 && (
-        <p role="status" className="rounded-lg border p-3 text-sm">
+        <p role="status" className="rounded-lg border bg-card p-3 text-sm">
           {t('stale', { count: summary.stale_pairs })}
         </p>
       )}

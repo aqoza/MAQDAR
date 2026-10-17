@@ -18,7 +18,7 @@ export async function PreparedForecastDetails({
   const flag = (value: boolean | null) => t(value === null ? 'unknown' : value ? 'yes' : 'no')
   const model = detail.output.calendar_model
   return (
-    <div className="space-y-4 rounded-xl border p-4">
+    <div className="space-y-4 workspace-panel">
       <p>{t('units', { unit: source.unit })}</p>
       <p className="text-sm">
         {t('window', {
@@ -46,7 +46,7 @@ export async function PreparedForecastDetails({
               future: model.unknown_future_days,
             })}
           </p>
-          <div className="overflow-x-auto">
+          <div className="workspace-table overflow-x-auto">
             <table className="w-full text-sm">
               <caption className="sr-only">{t('effectsTitle')}</caption>
               <thead>

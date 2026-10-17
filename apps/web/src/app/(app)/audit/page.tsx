@@ -24,7 +24,7 @@ export default async function AuditPage() {
     <div className="space-y-4">
       <h1 className="text-page-title">{t('title')}</h1>
       <p className="text-sm text-muted-foreground">{t('description')}</p>
-      <div className="overflow-x-auto">
+      <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('title')}</caption>
           <thead>

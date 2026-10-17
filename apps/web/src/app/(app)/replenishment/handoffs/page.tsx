@@ -1,5 +1,6 @@
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { PageHeader } from '@/components/page-header'
+import { ReplenishmentNav } from '@/components/replenishment-nav'
 import { formatCostDecimal, formatPurchaseCost } from '@/lib/purchase-costs'
 import Form from 'next/form'
 import Link from 'next/link'
@@ -62,22 +63,20 @@ export default async function PurchaseHandoffs({
     (row) => handoffRowSchema.parse(row),
   )
   return (
-    <div className="space-y-5">
-      <Link href="/replenishment" className="text-sm underline">
-        {t('planning')}
-      </Link>
-      <Link className="inline-block underline" href="/replenishment/batches">
-        {t('batches')}
-      </Link>
-      <div className="space-y-1">
-        <PageHeader title={t('title')} description={t('context')} />
-        <HelpDisclosure>
-          <p>{t('description')}</p>
-        </HelpDisclosure>
-      </div>
+    <div className="space-y-4">
+      <PageHeader
+        title={t('title')}
+        description={t('context')}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+          </HelpDisclosure>
+        }
+      />
+      <ReplenishmentNav current="handoffs" />
       <Form
         action="/replenishment/handoffs"
-        className="flex flex-wrap items-end gap-3"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
         <label className="grid gap-1">
@@ -130,7 +129,7 @@ export default async function PurchaseHandoffs({
         </Link>
       </Form>
       <p>{t('count', { total })}</p>
-      <div className="overflow-x-auto">
+      <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('title')}</caption>
           <thead>

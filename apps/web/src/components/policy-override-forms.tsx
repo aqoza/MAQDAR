@@ -17,7 +17,7 @@ export function PolicyProposalForm({
   const t = useTranslations('PolicyWorkbench')
   const [state, action, pending] = useActionState(submitOverride, idleState)
   return (
-    <form action={action} aria-label={t('propose')} className="space-y-4 rounded-xl border p-4">
+    <form action={action} aria-label={t('propose')} className="space-y-4 workspace-panel">
       <h2 className="text-section-title">{t('propose')}</h2>
       <p>{t('proposalNote')}</p>
       <input type="hidden" name="organization_id" value={organizationId} />
@@ -74,7 +74,7 @@ export function PolicyDecisionForm({
     <form
       action={action}
       aria-label={t(withdrawal ? 'withdraw' : 'review')}
-      className="space-y-3 rounded-lg border p-3"
+      className="space-y-3 rounded-lg border bg-card p-3"
     >
       <h3 className="text-subsection-title">{t(withdrawal ? 'withdraw' : 'review')}</h3>
       <input type="hidden" name="organization_id" value={organizationId} />

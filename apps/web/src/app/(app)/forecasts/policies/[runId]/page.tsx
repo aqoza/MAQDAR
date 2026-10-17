@@ -41,7 +41,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
   const formatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
   const number = (value: string | number) => formatter.format(value as number)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
@@ -70,7 +70,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
       )}
       <p role="status">{t(`statuses.${output.status}`)}</p>
       {output.lead_time && output.protection && (
-        <div className="overflow-x-auto">
+        <div className="workspace-table overflow-x-auto">
           <table className="w-full text-sm">
             <caption className="text-start font-semibold">{t('thresholds')}</caption>
             <thead>
@@ -141,7 +141,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
         <details>
           <summary className="cursor-pointer">{t('calibration')}</summary>
           <p>{t('calibrationNote')}</p>
-          <div className="overflow-x-auto">
+          <div className="workspace-table overflow-x-auto">
             <table className="w-full text-sm">
               <caption className="sr-only">{t('calibration')}</caption>
               <thead>

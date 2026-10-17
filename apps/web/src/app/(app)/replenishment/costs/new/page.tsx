@@ -58,7 +58,7 @@ export default async function NewPurchaseCost({
     else report = purchaseCostReportSchema.parse(data)
   }
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href={`/replenishment/deliveries/${delivery.data}`}>
         {t('source')}
       </Link>
@@ -70,7 +70,7 @@ export default async function NewPurchaseCost({
       <form
         action="/replenishment/costs/new"
         method="get"
-        className="space-y-4 rounded-xl border p-4"
+        className="space-y-4 workspace-panel"
         key={JSON.stringify(values)}
       >
         <input type="hidden" name="delivery" value={delivery.data} />

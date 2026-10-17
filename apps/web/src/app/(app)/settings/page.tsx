@@ -120,47 +120,47 @@ export default async function SettingsPage() {
   return (
     <>
       <PageHeader title={t('title')} description={t('description')} />
+      <div className="grid items-start gap-4 xl:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('organization.title')}</CardTitle>
+            <CardDescription>{t('organization.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {admin ? (
+              <OrganizationSettingsForm
+                organization={organization}
+                currencies={currencies}
+                countries={countries}
+              />
+            ) : (
+              <OrganizationSummary
+                organization={organization}
+                currencies={currencies}
+                countries={countries}
+              />
+            )}
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('organization.title')}</CardTitle>
-          <CardDescription>{t('organization.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {admin ? (
-            <OrganizationSettingsForm
-              organization={organization}
-              currencies={currencies}
-              countries={countries}
-            />
-          ) : (
-            <OrganizationSummary
-              organization={organization}
-              currencies={currencies}
-              countries={countries}
-            />
-          )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('preferences.title')}</CardTitle>
-          <CardDescription>{t('preferences.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {admin ? (
-            <OrganizationPreferencesForm
-              organization={organization}
-              homeTimeZone={homeTimeZone}
-              timeZones={timeZones}
-            />
-          ) : (
-            <PreferencesSummary organization={organization} homeTimeZone={homeTimeZone} />
-          )}
-        </CardContent>
-      </Card>
-
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('preferences.title')}</CardTitle>
+            <CardDescription>{t('preferences.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {admin ? (
+              <OrganizationPreferencesForm
+                organization={organization}
+                homeTimeZone={homeTimeZone}
+                timeZones={timeZones}
+              />
+            ) : (
+              <PreferencesSummary organization={organization} homeTimeZone={homeTimeZone} />
+            )}
+          </CardContent>
+        </Card>
+      </div>
       {admin && context.role ? (
         <>
           <MembersCard
@@ -184,21 +184,23 @@ export default async function SettingsPage() {
         </>
       ) : null}
 
-      <SetPasswordCard email={context.email ?? ''} />
+      <div className="grid items-start gap-4 xl:grid-cols-2">
+        <SetPasswordCard email={context.email ?? ''} />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('language.title')}</CardTitle>
-          <CardDescription>{t('language.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {organization.arabic_enabled ? (
-            <LocaleSwitcher />
-          ) : (
-            <p className="text-muted-foreground text-sm">{t('language.disabled')}</p>
-          )}
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('language.title')}</CardTitle>
+            <CardDescription>{t('language.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {organization.arabic_enabled ? (
+              <LocaleSwitcher />
+            ) : (
+              <p className="text-muted-foreground text-sm">{t('language.disabled')}</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </>
   )
 }

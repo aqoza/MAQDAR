@@ -58,7 +58,7 @@ export default async function PolicyReview({
     id === context.userId ? t('you') : t('member', { id: id ?? '—' })
   const reviewer = ['owner', 'admin', 'approver'].includes(context.role ?? '')
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/forecasts/workbench" className="text-sm underline">
         {t('back')}
       </Link>
@@ -121,7 +121,7 @@ export default async function PolicyReview({
         <h2 className="text-section-title">{t('history')}</h2>
         {!history.data?.length && <p>{t('noHistory')}</p>}
         {history.data?.map((proposal) => (
-          <article className="space-y-3 rounded-xl border p-4" key={proposal.id}>
+          <article className="space-y-3 workspace-panel" key={proposal.id}>
             <h3 className="text-subsection-title">
               {t('revision', { revision: proposal.revision ?? 0 })} ·{' '}
               {t(

@@ -26,7 +26,7 @@ export async function HandoffBatchOverlap({
   const result = await query.order('created_at', { ascending: false }).order('id').limit(25)
   if (result.error) throw new Error('Batch overlap unavailable')
   return (
-    <section className="space-y-2 rounded-xl border p-4" aria-label={t('overlap')}>
+    <section className="space-y-2 workspace-panel" aria-label={t('overlap')}>
       <h2 className="text-section-title">{t('overlap')}</h2>
       <p>{t('overlapCount', { total: result.count ?? 0 })}</p>
       <p>{t('overlapNote')}</p>

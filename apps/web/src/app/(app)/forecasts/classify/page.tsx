@@ -17,7 +17,7 @@ export default async function ClassifyPage() {
   const to = reportingDay(new Date(), context.active.effective_time_zone)
   const from = new Date(Date.parse(to) - 364 * 86_400_000).toISOString().slice(0, 10)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>

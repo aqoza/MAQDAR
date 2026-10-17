@@ -35,7 +35,7 @@ export async function ReplenishmentReport({ report, locale }: { report: Report; 
             ['gap', report.gap],
           ] as const
         ).map(([key, value]) => (
-          <div className="rounded-xl border p-4" key={key}>
+          <div className="workspace-panel" key={key}>
             <p className="text-sm text-muted-foreground">{t(key)}</p>
             <p className="text-2xl font-semibold tabular-nums">
               {amount(value)} {(key === 'available' ? stock?.unit : p.unit) ?? '—'}
@@ -60,7 +60,7 @@ export async function ReplenishmentReport({ report, locale }: { report: Report; 
       <DemandUnitEvidence evidence={p.unit_provenance} />
       {report.orders_truncated && <p role="alert">{t('truncated')}</p>}
       {report.status !== 'prepared_group' && (
-        <div className="overflow-x-auto">
+        <div className="workspace-table overflow-x-auto">
           <table className="w-full text-sm">
             <caption className="text-start font-semibold">{t('orders')}</caption>
             <thead>

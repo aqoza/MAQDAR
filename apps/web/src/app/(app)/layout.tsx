@@ -18,7 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const pendingInvitationCount = context.invitations.length
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="app-shell">
       <AppSidebar
         user={{ email: context.email ?? '' }}
         organizations={context.organizations}
@@ -28,12 +28,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       />
       {/* min-w-0 lets wide tables scroll inside their container instead of widening the page. */}
       <SidebarInset className="min-w-0">
-        <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+        <header className="flex h-11 shrink-0 items-center gap-2 border-b bg-background px-4">
           <SidebarTrigger aria-label={t('toggleSidebar')} />
           <Separator orientation="vertical" className="h-4" />
           <span className="text-muted-foreground text-sm">{t('tagline')}</span>
         </header>
-        <div data-app-content className="flex flex-1 flex-col gap-6 p-6 text-sm">
+        <div data-app-content className="flex flex-1 flex-col gap-4 p-4 text-sm">
           {pendingInvitationCount > 0 ? (
             <PendingInvitationsBanner count={pendingInvitationCount} />
           ) : null}

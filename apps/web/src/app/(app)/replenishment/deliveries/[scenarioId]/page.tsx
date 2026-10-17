@@ -37,7 +37,7 @@ export default async function SavedDeliveryScenario({
   const report = deliveryScenarioReportSchema.parse(data.report)
   const costT = await getTranslations('PurchaseCosts')
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <h1 className="text-page-title">{t('saved')}</h1>
       <p>
         {t('savedBy', {

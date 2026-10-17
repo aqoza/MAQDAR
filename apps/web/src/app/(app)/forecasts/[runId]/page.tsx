@@ -57,7 +57,7 @@ export default async function ClassificationResults({
   const pageHref = (n: number) =>
     `/forecasts/${runId}?${new URLSearchParams({ page: String(n), ...(pattern ? { pattern } : {}) })}`
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
@@ -79,7 +79,7 @@ export default async function ClassificationResults({
           ))}
         </dl>
       </details>
-      <form className="flex flex-wrap items-end gap-3">
+      <form className="workspace-toolbar flex flex-wrap items-end gap-3">
         <label className="grid gap-1 text-sm">
           {t('pattern')}
           <select
@@ -98,7 +98,7 @@ export default async function ClassificationResults({
         <button className="rounded-md border px-3 py-2">{t('filter')}</button>
       </form>
       <p>{t('total', { count: count ?? 0 })}</p>
-      <div className="overflow-x-auto">
+      <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('results')}</caption>
           <thead>
