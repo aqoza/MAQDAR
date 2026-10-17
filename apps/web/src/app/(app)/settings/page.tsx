@@ -119,7 +119,7 @@ export default async function SettingsPage() {
 
   return (
     <>
-      <PageHeader title={t('title')} description={t('description')} />
+      <PageHeader pattern="settings" title={t('title')} description={t('description')} />
       <div className="grid items-start gap-4 xl:grid-cols-2">
         <Card>
           <CardHeader>

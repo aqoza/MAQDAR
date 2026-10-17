@@ -70,6 +70,8 @@ export default async function PurchaseReview({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
+        navigation={<ReplenishmentNav current="review" />}
         title={t('title')}
         description={t('context')}
         help={
@@ -78,7 +80,6 @@ export default async function PurchaseReview({
           </HelpDisclosure>
         }
       />
-      <ReplenishmentNav current="review" />
       <Form
         action="/replenishment/review"
         className="workspace-toolbar flex flex-wrap items-end gap-3"

@@ -65,6 +65,8 @@ export default async function PurchaseHandoffs({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
+        navigation={<ReplenishmentNav current="handoffs" />}
         title={t('title')}
         description={t('context')}
         help={
@@ -73,7 +75,6 @@ export default async function PurchaseHandoffs({
           </HelpDisclosure>
         }
       />
-      <ReplenishmentNav current="handoffs" />
       <Form
         action="/replenishment/handoffs"
         className="workspace-toolbar flex flex-wrap items-end gap-3"

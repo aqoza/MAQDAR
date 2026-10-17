@@ -78,6 +78,8 @@ export default async function TransferReview({
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
+        pattern="replenishment"
+        navigation={<ReplenishmentNav current="redistribution" />}
         title={t('title')}
         description={t('context')}
         help={
@@ -86,7 +88,6 @@ export default async function TransferReview({
           </HelpDisclosure>
         }
       />
-      <ReplenishmentNav current="redistribution" />
       <Link href="/replenishment/redistribution/handoffs" className="inline-block underline">
         {handoffT('title')}
       </Link>

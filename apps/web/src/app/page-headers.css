@@ -1,0 +1,102 @@
+/* Approved compact header family. Typography remains in design.MD and globals.css. */
+.app-shell:has([data-page-banner]) [data-slot='sidebar-inset'] > header {
+  position: relative;
+  z-index: 1;
+  border-color: transparent;
+  background: transparent;
+}
+.app-shell:has([data-page-banner]) header [data-slot='separator'] {
+  visibility: hidden;
+  margin-inline: -3px;
+}
+.app-shell:has([data-page-banner]) header [data-sidebar='trigger'] {
+  background: #fff;
+  border-radius: 8px;
+  min-inline-size: 32px;
+  min-block-size: 32px;
+}
+.app-shell:has([data-page-banner]) [data-app-content] {
+  padding-block-start: 8px;
+}
+.page-banner {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-inline-size: 0;
+  padding-block-end: 8px;
+}
+.page-banner-backdrop {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset-block: -52px 0;
+  inset-inline: -16px;
+  overflow: hidden;
+  background: linear-gradient(110deg, #f0f8f6 5%, #edf8f4 62%, #edf6f4);
+}
+.page-banner-art {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 220px;
+  inline-size: min(850px, 70vw);
+  block-size: 100%;
+}
+.page-banner .page-heading-row {
+  min-block-size: 52px;
+  align-items: center;
+}
+.page-banner > header {
+  min-block-size: 44px;
+  align-items: center;
+  margin-block-end: 0;
+}
+[data-forecast-workspace] > .page-banner {
+  margin-block-end: 16px;
+}
+.page-banner .page-heading-copy {
+  gap: 0;
+}
+.page-banner > .workspace-navigation,
+.page-banner > [role='tablist'] {
+  margin: 0;
+  padding-block: 0;
+  background: transparent;
+}
+.page-banner .workspace-navigation a {
+  min-block-size: 36px;
+  padding-block: 6px;
+}
+.page-banner .workspace-navigation a[aria-current='page'] {
+  background: #e5f2eb99;
+}
+[dir='rtl'] .page-banner-art {
+  transform: scaleX(-1);
+}
+@media (width < 1100px) {
+  .page-banner-art {
+    inset-inline-end: 0;
+    opacity: 0.7;
+  }
+}
+@media (width < 768px) {
+  .app-shell:has([data-page-banner]) header [data-sidebar='trigger'] {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+  }
+  .page-banner {
+    gap: 4px;
+  }
+  .page-banner-art {
+    inline-size: 100%;
+    opacity: 0.22;
+  }
+  .page-banner .page-heading-row {
+    gap: 8px;
+  }
+  .page-banner .workspace-navigation a {
+    min-block-size: 44px;
+    padding-block: 10px;
+  }
+}

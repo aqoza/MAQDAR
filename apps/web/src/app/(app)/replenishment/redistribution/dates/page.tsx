@@ -59,6 +59,8 @@ export default async function TransferDateHistory({
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
+        pattern="replenishment"
+        navigation={<ReplenishmentNav current="redistribution" />}
         title={t('title')}
         description={t('context')}
         help={
@@ -76,7 +78,6 @@ export default async function TransferDateHistory({
           </Link>
         }
       />
-      <ReplenishmentNav current="redistribution" />
       <Link className="inline-block underline" href="/replenishment/redistribution/freight">
         {t('freightHistory')}
       </Link>

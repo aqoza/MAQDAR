@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Clock, LockKeyhole } from 'lucide-react'
 import { ForecastTabs } from '@/components/forecast-tabs'
+import { PageHeaderArt } from '@/components/page-header-art'
 import { ForecastQuality } from '@/components/forecast-section-quality'
 import { PolicyWorkbench } from '@/components/forecast-section-workbench'
 import { ClassifyPage } from '@/components/forecast-section-classify'
@@ -178,15 +179,20 @@ export default async function ForecastsPage() {
   })
   return (
     <div className={styles.workspace} data-forecast-workspace>
-      <header className={styles.heading}>
-        <h1 className="text-page-title">{t('title')}</h1>
-        <div className={styles.method}>
-          <HelpDisclosure>
-            <p>{t('scope')}</p>
-          </HelpDisclosure>
-        </div>
-      </header>
       <ForecastTabs
+        header={
+          <>
+            <PageHeaderArt pattern="forecasts" />
+            <header className={styles.heading}>
+              <h1 className="text-page-title">{t('title')}</h1>
+              <div className={styles.method}>
+                <HelpDisclosure>
+                  <p>{t('scope')}</p>
+                </HelpDisclosure>
+              </div>
+            </header>
+          </>
+        }
         label={t('workspace.tools')}
         tabs={[
           { key: 'readiness', label: t('submit') },
