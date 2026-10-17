@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { codeSchema, dateSchema, UNITS_OF_MEASURE } from './master-data/schemas'
+import { codeSchema, dateSchema, ITEM_STATUSES, UNITS_OF_MEASURE } from './master-data/schemas'
 import {
   firstParam,
   parseListParams,
@@ -8,11 +8,13 @@ import {
 } from './master-data/list-params'
 
 export const stockLocatorPath = '/replenishment/stock-locator'
+const scopeSchema = z.enum(['exact', 'interchangeable'])
 export const stockLocatorInputSchema = z.object({
   item: codeSchema({ allowSlash: true }),
   receiving: codeSchema(),
   unit: z.enum(UNITS_OF_MEASURE),
   day: dateSchema.refine((value) => value >= '0001-01-01'),
+  scope: scopeSchema.default('exact'),
 })
 const listSpec: ListSpec = {
   sorts: ['distance'],
@@ -31,6 +33,7 @@ export function stockLocatorParams(raw: RawSearchParams, today: string) {
     receiving: (firstParam(raw.receiving) ?? '').trim().slice(0, 65),
     unit: firstParam(raw.unit) ?? '',
     day: firstParam(raw.day) ?? today,
+    scope: firstParam(raw.scope) ?? 'exact',
     q: list.q.replace(/[\u0000-\u001f\u007f-\u009f]/g, ' '),
     view: list.filters.view ?? 'matching',
     page: list.page,
@@ -45,6 +48,7 @@ export function stockLocatorHref(params: StockLocatorParams, page: number) {
     unit: params.unit,
     day: params.day,
   })
+  if (params.scope !== 'exact') query.set('scope', params.scope)
   if (params.q) query.set('q', params.q)
   if (params.view !== 'matching') query.set('view', params.view)
   if (params.size !== 25) query.set('size', String(params.size))
@@ -65,6 +69,9 @@ export const stockLocatorResultSchema = z.object({
   checked_at: z.string(),
   day: z.iso.date(),
   unit: z.enum(UNITS_OF_MEASURE),
+  scope: scopeSchema,
+  item_count: z.number().int().min(1).max(100),
+  relationship_status: z.enum(['not_requested', 'ready', 'unit_mismatch']),
   item: named,
   receiving: named.extend({ latitude: z.number().nullable(), longitude: z.number().nullable() }),
   counts: z.object({
@@ -74,6 +81,27 @@ export const stockLocatorResultSchema = z.object({
   rows: z
     .array(
       named.extend({
+        item: named.extend({
+          status: z.enum(ITEM_STATUSES),
+          unit: z.enum(UNITS_OF_MEASURE),
+          updated_at: z.string(),
+        }),
+        match_kind: scopeSchema,
+        relationship_path: z
+          .array(
+            z.object({
+              id: z.uuid(),
+              direction: z.literal('two_way'),
+              from_code: z.string(),
+              to_code: z.string(),
+              unit: z.enum(UNITS_OF_MEASURE),
+              priority: z.number().int().min(1).max(99),
+              updated_at: z.string(),
+              from_updated_at: z.string(),
+              to_updated_at: z.string(),
+            }),
+          )
+          .max(99),
         city: z.string().nullable(),
         country_code: z.string(),
         latitude: z.number().nullable(),

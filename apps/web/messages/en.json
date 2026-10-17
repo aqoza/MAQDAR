@@ -3087,6 +3087,26 @@
     "integrations": "Transfer integration workbench"
   },
   "StockLocator": {
+    "scope": "Item scope",
+    "scopes": { "exact": "Exact item only", "interchangeable": "Exact + interchangeable" },
+    "stockItem": "Observed item",
+    "matchKinds": { "exact": "Exact item", "interchangeable": "Two-way interchangeable" },
+    "itemStatus": "Current status: {status}",
+    "itemStatuses": {
+      "new": "New",
+      "active": "Active",
+      "phase_out": "Phase out",
+      "discontinued": "Discontinued"
+    },
+    "catalogUnit": "Current catalog unit and last updated",
+    "relationshipPath": "Current two-way connection path",
+    "relationshipRatio": "1:1 {unit} · Recorded priority {priority, number}",
+    "relationshipUpdated": "Relationship updated {time}",
+    "catalogUpdated": "Catalog updated: from {from} · to {to}",
+    "relationshipContext": "{count, plural, one {# item searched; no eligible alternatives in the current catalog.} other {# items searched using current two-way relationships.}} Each item/location observation is separate.",
+    "catalogMismatch": "Alternatives are unavailable because the requested item's current catalog unit differs from your requested unit. Exact-item observations remain visible in their supplied units.",
+    "groupLimit": "This connected group exceeds the 100-item search limit. No partial group is shown. Use exact-item search or review the catalog relationships.",
+    "relationshipHelp": "Optional alternatives follow current two-way relationships at 1:1, with every catalog unit along the connection matching the requested unit. One-way substitutes and supersession conversions are excluded. Each item appears once per location; quantities are never pooled. Inspect evidence for one deterministic shortest connection path; recorded priorities do not change distance ranking. Item statuses are shown without inferring permission to issue or transfer stock. Relationships have no historical versions and do not reconstruct the catalog at your stock date. Groups over 100 items return a visible limit instead of partial results.",
     "title": "Stock locator",
     "description": "Observed stock across permitted locations, ranked by distance",
     "stockHelp": "Matching stock is positive on-hand minus allocations in the requested source-supplied unit, observed no more than seven days before your as-of date. Missing, stale, unknown-unit and different-unit observations stay separate. Inbound, additional commitments and source policy protection are excluded; this is not transferable surplus or a reservation.",
@@ -3146,11 +3166,11 @@
     "sourceCoordinates": "Current source coordinates",
     "receivingCoordinates": "Current receiving coordinates",
     "laneId": "Current lane ID and last updated",
-    "empty": "No locations match these filters. Other observations may contain missing or incompatible evidence.",
+    "empty": "No observations match these filters. Other observations may contain missing or incompatible evidence.",
     "pagination": "Stock locator result pages",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {page, number} of {pages, number} · {count, number} locations"
+    "page": "Page {page, number} of {pages, number} · {count, number} observations"
   },
   "TransferBatches": {
     "title": "Transfer handoff batches",

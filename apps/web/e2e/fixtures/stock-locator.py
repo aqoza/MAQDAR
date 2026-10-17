@@ -35,5 +35,23 @@ with psycopg.connect(dsn) as db:
             unit = None if code == "UNIT-UNKNOWN" else "KG" if code == "UNIT-KG" else "EA"
             db.execute("insert into public.stock_snapshots(organization_id,item_id,location_id,snapshot_date,quantity,allocated_quantity,unit_cost,currency,unit_of_measure) values(%s,%s,%s,%s,%s,%s,1,'SAR',%s)", (org, item, location, day, quantity, allocated, unit))
         db.execute("insert into public.network_links(organization_id,from_location_id,to_location_id,lead_time_days_p50,lead_time_days_p90,freight_basis) values(%s,%s,%s,0,3,'none')", (org, locations["NEAR"], locations["RECEIVER"]))
+    elif action == "alternatives":
+        db.execute("update public.items set unit_of_measure='EA' where organization_id=%s and code='PART/1'", (org,))
+        seed = db.execute("select id from public.items where organization_id=%s and code='PART/1'", (org,)).fetchone()[0]
+        items = {code: uuid4() for code in ["ALT-B", "ALT-C", "ONE-WAY", "KG-BRIDGE", "BEHIND-KG"]}
+        for code, item in items.items():
+            unit = "KG" if code == "KG-BRIDGE" else "EA"
+            status = "phase_out" if code == "ALT-B" else "discontinued" if code == "ALT-C" else "active"
+            db.execute("insert into public.items(id,organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency,status) values(%s,%s,%s,%s,'Test',%s,1,'SAR',%s)", (item, org, code, "Alternative filter " + code, unit, status))
+        for origin, alternate, direction in [(seed, items["ALT-B"], "two_way"), (items["ALT-C"], items["ALT-B"], "two_way"), (seed, items["ONE-WAY"], "one_way"), (seed, items["KG-BRIDGE"], "two_way"), (items["KG-BRIDGE"], items["BEHIND-KG"], "two_way")]:
+            db.execute("insert into public.item_interchanges(organization_id,item_id,alternate_item_id,direction) values(%s,%s,%s,%s)", (org, origin, alternate, direction))
+        for code, location, day, quantity, unit in [("ALT-B", "NEAR", "2026-10-17", "900719925474099.001", "EA"), ("ALT-B", "FAR", "2026-10-10", "5.125", "EA"), ("ALT-C", "NO-GEO", "2026-10-17", "2", "EA"), ("ALT-C", "NEAR", "2026-10-17", "20", "KG"), ("ALT-C", "STALE", "2026-10-09", "20", "EA"), ("ONE-WAY", "NEAR", "2026-10-17", "900", "EA"), ("BEHIND-KG", "NEAR", "2026-10-17", "900", "EA")]:
+            db.execute("insert into public.stock_snapshots(organization_id,item_id,location_id,snapshot_date,quantity,unit_cost,currency,unit_of_measure) select %s,%s,id,%s,%s,1,'SAR',%s from public.locations where organization_id=%s and code=%s", (org, items[code], day, quantity, unit, org, location))
+    elif action == "oversize":
+        seed = db.execute("select id from public.items where organization_id=%s and code='PART/1'", (org,)).fetchone()[0]
+        for index in range(100):
+            item = uuid4()
+            db.execute("insert into public.items(id,organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency) values(%s,%s,%s,'Limit item','Test','EA',1,'SAR')", (item, org, f"LIMIT-{index}"))
+            db.execute("insert into public.item_interchanges(organization_id,item_id,alternate_item_id,direction) values(%s,%s,%s,'two_way')", (org, seed, item))
     else:
         raise SystemExit("Unknown fixture action")
