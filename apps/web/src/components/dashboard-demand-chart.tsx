@@ -90,11 +90,16 @@ export function DashboardDemandChart({
             contentStyle={{
               border: '1px solid #d4dfe8',
               borderRadius: 6,
-              fontSize: 11,
+              fontSize: 'var(--text-xs)',
+              lineHeight: 'var(--text-xs--line-height)',
               color: '#0e1b35',
               boxShadow: '0 3px 8px #163b4b12',
             }}
-            labelStyle={{ fontWeight: 600, fontSize: 13 }}
+            labelStyle={{
+              fontWeight: 600,
+              fontSize: 'var(--text-sm)',
+              lineHeight: 'var(--text-sm--line-height)',
+            }}
           />
           <Legend
             itemSorter={() => 0}

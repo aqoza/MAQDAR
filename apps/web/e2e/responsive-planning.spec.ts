@@ -69,9 +69,6 @@ for (const { width, height } of [
   { width: 1440, height: 900 },
   { width: 1920, height: 1080 },
 ]) {
-  const compactLaptop = width >= 1100 && width <= 1536
-  const dashboardFontSize = width < 768 || compactLaptop ? '24px' : '28px'
-  const dashboardLineHeight = width < 768 ? '32px' : compactLaptop ? '30px' : '36px'
   test(`application screens fit ${width}px with keyboard-accessible tables`, async ({
     page,
   }, testInfo) => {
@@ -84,21 +81,70 @@ for (const { width, height } of [
     await createOrganization(page, { name: `Responsive ${run}`, slug: `responsive-${run}` })
     await page.setViewportSize({ width, height })
     if (width === 1024) await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/items')
+    const itemsTitle = page.getByRole('heading', { level: 1, name: 'Items', exact: true })
+    await expect(itemsTitle).toBeVisible()
+    await page.evaluate(() => document.fonts.ready)
+    const itemsFontFamily = await itemsTitle.evaluate(
+      (element) => getComputedStyle(element).fontFamily,
+    )
+    const sidebar = page.locator('[data-sidebar="group"]')
+    const sidebarLinks = sidebar.locator('[data-sidebar="menu-button"]:visible')
+    const itemsSidebarWidth =
+      width >= 768
+        ? await page
+            .locator('[data-slot="sidebar-container"]')
+            .evaluate((el) => el.getBoundingClientRect().width)
+        : null
 
     for (const screen of screens) {
       await test.step(screen.path, async () => {
-        await page.goto(screen.path)
+        // Exercise the reported route switch with the persistent shared shell.
+        if (width >= 768 && ['/dashboard', '/items'].includes(screen.path)) {
+          await sidebar.locator(`a[href="${screen.path}"]`).click()
+        } else {
+          await page.goto(screen.path)
+        }
         await expect(
           page.getByRole('heading', { level: 1, name: screen.title, exact: true }),
         ).toBeVisible()
+        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
+        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-weight', '600')
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
-          'font-size',
-          screen.path === '/dashboard' ? dashboardFontSize : '20px',
+          'font-family',
+          itemsFontFamily,
         )
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
-          'line-height',
-          screen.path === '/dashboard' ? dashboardLineHeight : '28px',
-        )
+        await expect(page.locator('header > span')).toHaveCSS('font-size', '14px')
+        if (['/dashboard', '/items'].includes(screen.path)) {
+          const subtitle = page
+            .getByRole('heading', { level: 1 })
+            .locator('..')
+            .locator('p')
+            .first()
+          await expect(subtitle).toHaveCSS('font-size', '14px')
+          await expect(subtitle).toHaveCSS('line-height', '20px')
+        }
+        if (width >= 768) {
+          await expect(sidebarLinks).toHaveCount(8)
+          for (const link of await sidebarLinks.all()) {
+            await expect(link).toHaveCSS('font-size', '14px')
+            await expect(link).toHaveCSS('line-height', '20px')
+            await expect(link).toHaveCSS('font-family', itemsFontFamily)
+            await expect(link).toHaveCSS('height', '32px')
+            await expect(link.locator('svg')).toHaveCSS('width', '16px')
+            await expect(link.locator('svg')).toHaveCSS('height', '16px')
+          }
+          await expect(sidebar.locator('[data-sidebar="menu-button"][data-active]')).toHaveCSS(
+            'font-weight',
+            '500',
+          )
+          expect(
+            await page
+              .locator('[data-slot="sidebar-container"]')
+              .evaluate((el) => el.getBoundingClientRect().width),
+          ).toBe(itemsSidebarWidth)
+        }
         if (screen.path !== '/dashboard')
           await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')
         if (width === 1024 && screen.path === '/items') {
@@ -131,8 +177,7 @@ for (const { width, height } of [
             'main select:visible, main input:not([type=hidden]):not([type=checkbox]):visible, main textarea:visible',
           )
           .all()) {
-          const controlFontSize =
-            width < 768 ? '16px' : screen.path === '/dashboard' && compactLaptop ? '12px' : '14px'
+          const controlFontSize = width < 768 ? '16px' : '14px'
           await expect(control).toHaveCSS('font-size', controlFontSize)
         }
         if (screen.path === '/forecasts/quality') {
@@ -205,6 +250,11 @@ for (const { width, height } of [
       await page.keyboard.press('Enter')
       const drawer = page.getByRole('dialog')
       await expect(drawer).toBeVisible()
+      for (const link of await drawer.locator('[data-sidebar="group"] a').all()) {
+        await expect(link).toHaveCSS('font-size', '14px')
+        await expect(link).toHaveCSS('line-height', '20px')
+        await expect(link.locator('svg')).toHaveCSS('width', '16px')
+      }
       await drawer.getByRole('link', { name: 'Forecasts', exact: true }).focus()
       await page.keyboard.press('Enter')
       await expect(page).toHaveURL(/\/forecasts$/)

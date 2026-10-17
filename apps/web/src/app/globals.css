@@ -6,8 +6,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  /* Compact application type roles. Keep numeric metrics separate from headings. */
+/* Shared with dashboard.css. design.MD defines the required application type scale. */
+@theme static {
   --text-page-title: 1.25rem;
   --text-page-title--line-height: 1.75rem;
   --text-page-title--font-weight: 600;
@@ -21,6 +21,13 @@
   --text-metric: 1.75rem;
   --text-metric--line-height: 2.25rem;
   --text-metric--font-weight: 600;
+  --text-kpi: 1.5rem;
+  --text-kpi--line-height: 1.75rem;
+  --text-kpi-compact: 1.25rem;
+  --text-kpi-compact--line-height: 1.5rem;
+}
+
+@theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);

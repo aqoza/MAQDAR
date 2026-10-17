@@ -10,13 +10,11 @@ import {
   ShoppingCart,
   TrendingUp,
   Truck,
-  UsersRound,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { OrganizationSwitcher } from '@/components/organization-switcher'
-import { MaqdarMark } from '@/components/maqdar-mark'
 import { RoleBadge } from '@/components/role-badge'
 import { Button } from '@/components/ui/button'
 import { useDirection } from '@/components/ui/direction'
@@ -78,7 +76,6 @@ export function AppSidebar({
           href="/dashboard"
           className="app-brand px-2 pt-1 font-semibold tracking-tight group-data-[collapsible=icon]:hidden"
         >
-          <MaqdarMark className="dashboard-brand-mark" />
           {tCommon('appName')}
         </Link>
         <OrganizationSwitcher
@@ -101,10 +98,7 @@ export function AppSidebar({
                       isActive={isActive}
                       tooltip={t(key)}
                     >
-                      <Icon
-                        className={key === 'suppliers' ? 'standard-supplier-icon' : undefined}
-                      />
-                      {key === 'suppliers' && <UsersRound className="dashboard-supplier-icon" />}
+                      <Icon />
                       <span>{t(key)}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -117,9 +111,6 @@ export function AppSidebar({
       <SidebarFooter>
         <SidebarSeparator />
         <div className="app-account flex flex-col gap-1 px-2 group-data-[collapsible=icon]:hidden">
-          <span className="dashboard-account-avatar" aria-hidden="true">
-            {active.name.slice(0, 1).toLocaleUpperCase()}
-          </span>
           <p className="text-muted-foreground truncate text-xs" title={user.email}>
             <span className="sr-only">{tCommon('signedInAs')} </span>
             {user.email}
