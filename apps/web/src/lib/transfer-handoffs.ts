@@ -34,14 +34,14 @@ export function handoffJson(payload: TransferHandoffPayload): string {
   return JSON.stringify(handoffPayloadSchema.parse(payload), null, 2) + '\n'
 }
 
-export function handoffCsv(payload: TransferHandoffPayload): string {
+export function handoffCsvFields(payload: TransferHandoffPayload) {
   const p = handoffPayloadSchema.parse(payload)
   const freight = p.estimate
   const dates = freight.source
   const redistribution = dates.source
   const destination = redistribution.destination
   const sourcePolicy = redistribution.source_policy
-  const fields = {
+  return {
     schema_version: p.schema_version,
     purpose: p.purpose,
     notice: p.notice,
@@ -110,6 +110,10 @@ export function handoffCsv(payload: TransferHandoffPayload): string {
     redistribution_fingerprint: redistribution.fingerprint,
     destination_draft_fingerprint: destination.fingerprint,
   }
+}
+
+export function handoffCsv(payload: TransferHandoffPayload): string {
+  const fields = handoffCsvFields(payload)
   return [...csvReport(Object.keys(fields), [Object.values(fields)])].join('')
 }
 

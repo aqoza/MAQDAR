@@ -78,6 +78,9 @@ export default async function TransferHandoffs({
       <Link href="/replenishment/redistribution/review" className="inline-block underline">
         {t('review')}
       </Link>
+      <Link href="/replenishment/redistribution/batches" className="inline-block underline">
+        {t('batches')}
+      </Link>
       <Form
         action="/replenishment/redistribution/handoffs"
         className="workspace-toolbar flex flex-wrap items-end gap-3"
