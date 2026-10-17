@@ -1,12 +1,6 @@
-/* The reference treatment is scoped by the rendered dashboard, including during client navigation. */
-.dashboard-brand-mark,
-.dashboard-supplier-icon,
-.dashboard-account-avatar,
-.dashboard-organization-initial {
-  display: none;
-}
+/* Dashboard layout uses the shared application typography and sidebar. */
+
 .app-shell:has([data-dashboard]) {
-  --sidebar-width: 248px !important;
   --dashboard-ink: #0b1730;
   --dashboard-muted: #5d769b;
   --dashboard-green: #075d49;
@@ -18,7 +12,6 @@
   position: relative;
 }
 .app-shell:has([data-dashboard]) [data-slot='sidebar-inset'] > header {
-  block-size: 58px;
   border: 0;
   background: transparent;
   padding-inline: 27px 21px;
@@ -37,142 +30,11 @@
 }
 .app-shell:has([data-dashboard]) header > span {
   color: #183255;
-  font-size: 14px;
 }
 .app-shell:has([data-dashboard]) [data-app-content] {
   padding-block: 0 18px;
   padding-inline: 27px 21px;
   gap: 0;
-}
-.app-shell:has([data-dashboard]) [data-slot='sidebar-inner'] {
-  background: #fdfefe;
-}
-.app-shell:has([data-dashboard]) .app-sidebar-header {
-  padding: 16px 24px 14px;
-  gap: 18px;
-}
-.app-shell:has([data-dashboard]) .app-brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 0;
-  font-size: 21px;
-  letter-spacing: -0.4px;
-  color: #062634;
-  line-height: 32px;
-}
-.app-shell:has([data-dashboard]) .dashboard-brand-mark {
-  display: block;
-  inline-size: 32px;
-  block-size: 34px;
-}
-.app-shell:has([data-dashboard]) .app-sidebar-header [data-sidebar='menu-button'] {
-  padding: 0;
-  block-size: 52px;
-  gap: 12px;
-}
-.app-shell:has([data-dashboard])
-  .app-sidebar-header
-  [data-sidebar='menu-button']
-  > div:first-child {
-  inline-size: 35px;
-  block-size: 35px;
-  border-radius: 9px;
-  background: radial-gradient(at 30% 20%, #117b62, #004936);
-  box-shadow:
-    inset 0 0 0 2px #ffffff10,
-    0 2px 5px #00493615;
-}
-.app-shell:has([data-dashboard]) .standard-organization-icon,
-.app-shell:has([data-dashboard]) .standard-supplier-icon {
-  display: none;
-}
-.app-shell:has([data-dashboard]) .dashboard-organization-initial {
-  display: inline;
-  font-size: 18px;
-}
-.app-shell:has([data-dashboard]) .dashboard-supplier-icon {
-  display: block;
-}
-.app-shell:has([data-dashboard]) [data-sidebar='group'] {
-  padding-block: 4px 8px;
-  padding-inline: 7px 11px;
-}
-.app-shell:has([data-dashboard]) [data-sidebar='menu'] {
-  gap: 1px;
-}
-.app-shell:has([data-dashboard]) [data-sidebar='group'] [data-sidebar='menu-button'] {
-  block-size: 43px;
-  gap: 20px;
-  padding-inline: 19px 12px;
-  font-size: 15px;
-  border-radius: 8px;
-  color: #29436b;
-}
-.app-shell:has([data-dashboard]) [data-sidebar='group'] [data-sidebar='menu-button'] svg {
-  inline-size: 21px;
-  block-size: 21px;
-  stroke-width: 1.8;
-}
-.app-shell:has([data-dashboard]) [data-sidebar='menu-button'][data-active] {
-  color: #00543b;
-  background: #e5f3ed;
-  font-weight: 600;
-  border-inline-start: 2px solid #008347;
-  padding-inline-start: 17px;
-}
-.app-shell:has([data-dashboard]) [data-slot='sidebar-footer'] {
-  padding: 12px 24px 28px;
-  gap: 13px;
-}
-.app-shell:has([data-dashboard]) .app-account {
-  position: relative;
-  padding-inline: 43px 0;
-  min-block-size: 43px;
-  justify-content: center;
-  gap: 2px;
-}
-.app-shell:has([data-dashboard]) .app-account > p {
-  font-size: 12px;
-  color: #536c92;
-}
-.app-shell:has([data-dashboard]) .app-account [data-slot='badge'] {
-  border: 0;
-  padding: 0;
-  font-weight: 400;
-  color: #536c92;
-  font-size: 12px;
-}
-.app-shell:has([data-dashboard]) .dashboard-account-avatar {
-  display: grid;
-  place-items: center;
-  position: absolute;
-  inset-inline-start: 0;
-  inline-size: 32px;
-  block-size: 32px;
-  border-radius: 50%;
-  background: #075b49;
-  color: #fff;
-  font-size: 16px;
-}
-.app-shell:has([data-dashboard]) [data-slot='sidebar-footer'] button {
-  padding-inline: 0;
-  gap: 20px;
-  font-size: 14px;
-  color: #29436b;
-}
-.app-shell:has([data-dashboard]) [data-state='collapsed'] .app-brand,
-.app-shell:has([data-dashboard]) [data-state='collapsed'] .app-account {
-  display: none;
-}
-.app-shell:has([data-dashboard]) [data-state='collapsed'] .app-sidebar-header {
-  padding-inline: 6px;
-}
-.app-shell:has([data-dashboard]) [data-state='collapsed'] [data-sidebar='group'] {
-  padding-inline: 6px;
-}
-.app-shell:has([data-dashboard]) [data-state='collapsed'] [data-sidebar='menu-button'] {
-  padding-inline: 8px;
 }
 .dashboard-workspace {
   min-inline-size: 0;
@@ -196,7 +58,7 @@
   border: 1px solid #dce5ed;
   border-radius: 7px;
   background: #ffffffed;
-  font-size: 11px;
+
   box-shadow: 0 2px 5px #183b4b05;
 }
 .dashboard-actions a svg {
@@ -223,20 +85,12 @@
   isolation: isolate;
 }
 .dashboard-hero h1 {
-  font-size: 28px;
-  line-height: 36px;
-  font-weight: 600;
-  letter-spacing: -0.75px;
   margin: 0;
 }
 .dashboard-hero p {
-  font-size: 13px;
-  line-height: 20px;
   color: #536d94;
 }
 .dashboard-hero .dashboard-tagline {
-  font-size: 13px;
-  line-height: 17px;
   color: #508d80;
   margin-block-start: 4px;
 }
@@ -264,8 +118,6 @@
   display: grid;
   gap: 5px;
   min-inline-size: 0;
-  font-size: 12px;
-  font-weight: 500;
 }
 .dashboard-field {
   display: flex;
@@ -290,8 +142,7 @@
   min-inline-size: 0;
   inline-size: 100%;
   background: transparent !important;
-  font-size: 14px;
-  font-weight: 400;
+
   color: #112748;
 }
 .dashboard-field input::placeholder {
@@ -309,8 +160,6 @@
   justify-content: center;
   gap: 10px;
   border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
 }
 .dashboard-apply {
   background: linear-gradient(115deg, #0c6751, #04533f);
@@ -381,9 +230,6 @@
   flex: 1;
 }
 .dashboard-metric h2 {
-  font-size: 13px;
-  line-height: 20px;
-  font-weight: 600;
   white-space: nowrap;
 }
 .dashboard-metric-line {
@@ -393,15 +239,10 @@
   margin-block: 4px 3px;
 }
 .dashboard-metric-value {
-  font-size: 24px;
-  line-height: 28px;
-  letter-spacing: -0.5px;
-  font-weight: 650;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 .dashboard-trend {
-  font-size: 12px;
   color: #607a73;
   background: #eef6f2;
   border-radius: 20px;
@@ -409,23 +250,15 @@
 }
 .dashboard-metric-value[data-unavailable],
 .dashboard-valuation .dashboard-metric-value[data-unavailable] {
-  font-size: 16px;
-  line-height: 24px;
   overflow-wrap: normal;
 }
 .dashboard-metric-note {
-  font-size: 12px;
-  line-height: 16px;
   color: var(--dashboard-muted);
 }
 .dashboard-valuation {
   margin-block: 4px 3px;
 }
-.dashboard-valuation .dashboard-metric-value {
-  font-size: clamp(15px, 1.35vw, 23px);
-}
 .dashboard-currencies {
-  font-size: 11px;
   position: relative;
 }
 .dashboard-currencies summary {
@@ -438,7 +271,6 @@
 }
 .dashboard-currency-code {
   color: var(--dashboard-muted);
-  font-size: 10px;
 }
 .dashboard-currency-popover {
   position: absolute;
@@ -454,7 +286,6 @@
   z-index: 5;
 }
 .dashboard-currencies .dashboard-metric-value {
-  font-size: 24px;
   white-space: nowrap;
 }
 .dashboard-row-coverage summary {
@@ -502,18 +333,11 @@
   gap: 12px;
   margin-block-end: 6px;
 }
-.dashboard-chart-heading h2 {
-  font-size: 20px;
-  line-height: 32px;
-  font-weight: 600;
-  letter-spacing: -0.45px;
-}
 .dashboard-chart-heading > div {
   display: flex;
   gap: 8px;
   align-items: center;
   color: var(--dashboard-muted);
-  font-size: 11px;
 }
 .dashboard-chart-heading a {
   display: grid;
@@ -565,10 +389,6 @@
   display: flex;
   gap: 9px;
   align-items: center;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 23px;
-  letter-spacing: -0.35px;
 }
 .dashboard-panel-heading h2 svg {
   inline-size: 21px;
@@ -581,7 +401,7 @@
   align-items: center;
   gap: 6px;
   color: #006649;
-  font-size: 11px;
+
   white-space: nowrap;
 }
 .dashboard-panel-heading > a svg {
@@ -596,12 +416,10 @@
   inline-size: 100%;
   text-align: start;
   border-collapse: collapse;
-  font-size: 13px;
-  line-height: 17px;
 }
 .dashboard-workspace th {
   text-align: start;
-  font-weight: 400;
+
   background: #f6f8fa;
   color: #354f78;
   padding: 8px 10px;
@@ -677,17 +495,13 @@
 }
 .dashboard-coverage-note {
   display: block;
-  font-size: 9px;
-  line-height: 12px;
 }
 .dashboard-panel-footnote {
-  font-size: 9px;
   color: var(--dashboard-muted);
   margin-block-start: 5px;
 }
 .dashboard-unavailable-label {
   color: var(--dashboard-muted);
-  font-size: 10px;
 }
 .dashboard-risk-empty {
   display: flex;
@@ -708,20 +522,17 @@
 }
 .dashboard-risk-empty strong {
   color: #213450;
-  font-size: 12px;
-  font-weight: 500;
 }
 .dashboard-risk-empty p {
   color: var(--dashboard-muted);
-  font-size: 11px;
-  line-height: 16px;
+
   max-inline-size: 340px;
 }
 .dashboard-risk-empty a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+
   color: #006649;
 }
 .dashboard-risk-empty a svg {
@@ -743,7 +554,6 @@
   margin-block-end: 7px;
 }
 .dashboard-insights .dashboard-panel-heading h2 {
-  font-size: 14px;
   gap: 9px;
 }
 .dashboard-insights .dashboard-panel-heading h2 svg {
@@ -780,14 +590,10 @@
 }
 .dashboard-insights strong {
   display: block;
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 500;
 }
 .dashboard-insights li a > span:nth-child(2) > span {
   display: block;
-  font-size: 13px;
-  line-height: 16px;
+
   color: var(--dashboard-muted);
   margin-block-start: 2px;
 }
@@ -826,17 +632,14 @@
   flex: 1;
 }
 .dashboard-information strong {
-  font-size: 12px;
-  line-height: 16px;
   display: block;
-  font-weight: 600;
+
   max-inline-size: 150px;
   margin-block: 2px 5px;
 }
 .dashboard-information > span:nth-child(3) > span {
   display: block;
-  font-size: 11px;
-  line-height: 16px;
+
   color: #4e7486;
 }
 .dashboard-information > svg:last-child {
@@ -858,7 +661,7 @@
   display: flex;
   align-items: start;
   gap: 18px;
-  font-size: 11px;
+
   color: var(--dashboard-muted);
   margin-block-start: 10px;
 }
@@ -879,7 +682,6 @@
   margin-block: 10px;
 }
 .dashboard-details dt {
-  font-weight: 600;
   color: #183252;
   margin-block-start: 8px;
 }
@@ -889,13 +691,13 @@
   border: 1px solid #cbded5;
   background: #f5fbf7;
   border-radius: 8px;
-  font-size: 12px;
+
   color: #31594c;
 }
 .dashboard-panel-empty {
   padding-block: 30px;
   color: var(--dashboard-muted);
-  font-size: 12px;
+
   text-align: center;
 }
 .dashboard-skeleton {
@@ -948,17 +750,10 @@
     gap: 7px;
   }
   .dashboard-metric h2 {
-    font-size: 11px;
     white-space: normal;
-  }
-  .dashboard-metric-note {
-    font-size: 10px;
   }
   .dashboard-chart-heading > div > span:first-child {
     display: none;
-  }
-  .dashboard-panel-heading h2 {
-    font-size: 14px;
   }
   .dashboard-bottom-grid {
     grid-template-columns: 1fr;
@@ -966,56 +761,13 @@
 }
 /* Compact desktop density covers common 13-inch laptop CSS viewports, including scaled displays. */
 @media (1100px <= width <= 1536px) {
-  .app-shell:has([data-dashboard]) {
-    --sidebar-width: 208px !important;
-  }
   .app-shell:has([data-dashboard]) [data-slot='sidebar-inset'] > header {
-    block-size: 48px;
     padding-inline: 20px;
     gap: 12px;
-  }
-  .app-shell:has([data-dashboard]) header > span {
-    font-size: 12px;
   }
   .app-shell:has([data-dashboard]) [data-app-content] {
     padding-inline: 20px;
     padding-block-end: 12px;
-  }
-  .app-shell:has([data-dashboard]) .app-sidebar-header {
-    padding: 12px 18px;
-    gap: 10px;
-  }
-  .app-shell:has([data-dashboard]) .app-brand {
-    font-size: 18px;
-    gap: 8px;
-    line-height: 28px;
-  }
-  .app-shell:has([data-dashboard]) .dashboard-brand-mark {
-    inline-size: 27px;
-    block-size: 28px;
-  }
-  .app-shell:has([data-dashboard]) .app-sidebar-header [data-sidebar='menu-button'] {
-    block-size: 44px;
-    gap: 10px;
-    font-size: 12px;
-  }
-  .app-shell:has([data-dashboard]) [data-sidebar='group'] [data-sidebar='menu-button'] {
-    block-size: 36px;
-    padding-inline: 13px 10px;
-    gap: 12px;
-    font-size: 13px;
-  }
-  .app-shell:has([data-dashboard]) [data-sidebar='group'] [data-sidebar='menu-button'] svg {
-    inline-size: 18px;
-    block-size: 18px;
-  }
-  .app-shell:has([data-dashboard]) [data-slot='sidebar-footer'] {
-    padding: 10px 18px 16px;
-    gap: 8px;
-  }
-  .app-shell:has([data-dashboard]) [data-slot='sidebar-footer'] button {
-    font-size: 12px;
-    gap: 12px;
   }
   .dashboard-actions {
     inset-block-start: 8px;
@@ -1035,17 +787,7 @@
     min-block-size: 56px;
     padding-inline: 4px 16px;
   }
-  .dashboard-hero h1 {
-    font-size: 24px;
-    line-height: 30px;
-  }
-  .dashboard-hero p {
-    font-size: 12px;
-    line-height: 18px;
-  }
   .dashboard-hero .dashboard-tagline {
-    font-size: 12px;
-    line-height: 16px;
     margin-block-start: 0;
   }
   .dashboard-hero-art {
@@ -1058,17 +800,12 @@
   }
   .dashboard-filters > label {
     gap: 3px;
-    font-size: 11px;
   }
   .dashboard-field,
   .dashboard-filters .dashboard-apply,
   .dashboard-reset {
     block-size: 34px;
     min-block-size: 34px;
-    font-size: 12px;
-  }
-  .dashboard-field input {
-    font-size: 12px;
   }
   .dashboard-metrics {
     grid-template-columns: 1.1fr 1.15fr 1fr 1.1fr 1.1fr;
@@ -1079,8 +816,6 @@
   .dashboard-notice {
     margin-block: 6px;
     padding: 6px 10px;
-    font-size: 11px;
-    line-height: 16px;
   }
   .dashboard-metric,
   .dashboard-metric:first-child {
@@ -1099,8 +834,6 @@
     block-size: 21px;
   }
   .dashboard-metric h2 {
-    font-size: 11px;
-    line-height: 16px;
     white-space: normal;
   }
   .dashboard-metric-line {
@@ -1108,21 +841,8 @@
     gap: 6px;
     flex-wrap: wrap;
   }
-  .dashboard-metric-value,
-  .dashboard-currencies .dashboard-metric-value {
-    font-size: 20px;
-    line-height: 24px;
-  }
-  .dashboard-metric-value[data-unavailable] {
-    font-size: 16px;
-  }
   .dashboard-trend {
-    font-size: 10px;
     padding-inline: 6px;
-  }
-  .dashboard-metric-note {
-    font-size: 11px;
-    line-height: 14px;
   }
   .dashboard-grid {
     grid-template-columns: minmax(0, 1fr) 244px;
@@ -1146,10 +866,6 @@
   .dashboard-chart-heading {
     margin-block-end: 4px;
   }
-  .dashboard-chart-heading h2 {
-    font-size: 16px;
-    line-height: 24px;
-  }
   .dashboard-chart-heading a {
     inline-size: 28px;
     block-size: 28px;
@@ -1171,8 +887,6 @@
   }
   .dashboard-panel-heading h2,
   .dashboard-insights .dashboard-panel-heading h2 {
-    font-size: 13px;
-    line-height: 20px;
     gap: 6px;
   }
   .dashboard-panel-heading h2 svg,
@@ -1180,16 +894,12 @@
     inline-size: 17px;
     block-size: 17px;
   }
-  .dashboard-workspace table {
-    font-size: 11px;
-    line-height: 16px;
-  }
   .dashboard-workspace th {
-    padding: 6px 5px;
+    padding: 5px;
     white-space: normal;
   }
   .dashboard-workspace td {
-    padding: 5px 3px;
+    padding: 4px 3px;
   }
   .dashboard-availability {
     gap: 6px;
@@ -1204,11 +914,6 @@
     min-block-size: 64px;
     gap: 8px;
     padding-block: 6px;
-  }
-  .dashboard-insights strong,
-  .dashboard-insights li a > span:nth-child(2) > span {
-    font-size: 12px;
-    line-height: 16px;
   }
   .dashboard-information {
     min-block-size: 112px;
@@ -1254,9 +959,6 @@
   .dashboard-filters {
     grid-template-columns: 1fr 1fr;
   }
-  .dashboard-valuation .dashboard-metric-value {
-    font-size: 19px;
-  }
 }
 @media (width < 768px) {
   .app-shell:has([data-dashboard]) [data-app-content] {
@@ -1268,16 +970,12 @@
   .dashboard-hero {
     min-block-size: 60px;
   }
-  .dashboard-hero h1 {
-    font-size: 24px;
-    line-height: 32px;
-  }
   .dashboard-actions {
     gap: 6px;
   }
   .dashboard-actions a {
     min-block-size: 44px;
-    font-size: 10px;
+
     padding-inline: 8px;
     gap: 6px;
   }
@@ -1296,9 +994,6 @@
   }
   .dashboard-field {
     block-size: 44px;
-  }
-  .dashboard-field input {
-    font-size: 16px;
   }
   .dashboard-filters .dashboard-apply,
   .dashboard-reset {
@@ -1320,9 +1015,6 @@
   .dashboard-metric:first-child {
     padding-inline-start: 12px;
   }
-  .dashboard-metric-value {
-    font-size: 22px;
-  }
   .dashboard-icon {
     inline-size: 36px;
     block-size: 36px;
@@ -1333,7 +1025,6 @@
     block-size: 23px;
   }
   .dashboard-valuation .dashboard-metric-value {
-    font-size: 16px;
     min-inline-size: 0;
     white-space: normal;
   }
@@ -1352,11 +1043,7 @@
   .dashboard-panel {
     padding-inline: 12px;
   }
-  .dashboard-chart-heading h2 {
-    font-size: 16px;
-  }
   .dashboard-period {
-    font-size: 10px;
     padding-inline: 6px;
   }
   .dashboard-chart-heading > div > a {
@@ -1379,5 +1066,89 @@
   }
   .dashboard-information {
     min-block-size: 139px;
+  }
+}
+
+/* Shared type roles follow Items. Breakpoints change layout, never the prose scale. */
+.dashboard-workspace,
+.dashboard-field input {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+}
+.dashboard-hero h1 {
+  font-size: var(--text-page-title);
+  line-height: var(--text-page-title--line-height);
+  font-weight: var(--text-page-title--font-weight);
+  letter-spacing: var(--text-page-title--letter-spacing);
+}
+.dashboard-chart-heading h2,
+.dashboard-panel-heading h2 {
+  font-size: var(--text-section-title);
+  line-height: var(--text-section-title--line-height);
+  font-weight: var(--text-section-title--font-weight);
+}
+.dashboard-metric h2,
+.dashboard-insights .dashboard-panel-heading h2 {
+  font-size: var(--text-subsection-title);
+  line-height: var(--text-subsection-title--line-height);
+  font-weight: var(--text-subsection-title--font-weight);
+}
+.dashboard-filters > label,
+.dashboard-filters .dashboard-apply,
+.dashboard-reset,
+.dashboard-insights strong,
+.dashboard-risk-empty strong {
+  font-weight: 500;
+}
+.dashboard-information strong {
+  font-weight: 600;
+}
+.dashboard-workspace th,
+.dashboard-chart-heading > div,
+.dashboard-metric-note,
+.dashboard-trend,
+.dashboard-currencies,
+.dashboard-currency-code,
+.dashboard-panel-heading > a,
+.dashboard-coverage-note,
+.dashboard-panel-footnote,
+.dashboard-unavailable-label,
+.dashboard-risk-empty p,
+.dashboard-risk-empty a,
+.dashboard-insights li a > span:nth-child(2) > span,
+.dashboard-information > span:nth-child(3) > span,
+.dashboard-details,
+.dashboard-hero .dashboard-tagline {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+}
+.dashboard-workspace th {
+  font-weight: 500;
+}
+.dashboard-metric-value,
+.dashboard-currencies .dashboard-metric-value {
+  font-size: var(--text-kpi);
+  line-height: var(--text-kpi--line-height);
+  font-weight: 600;
+}
+.dashboard-metric-value[data-unavailable],
+.dashboard-valuation .dashboard-metric-value[data-unavailable] {
+  font-size: var(--text-section-title);
+  line-height: var(--text-section-title--line-height);
+}
+.dashboard-details dt {
+  font-weight: 600;
+}
+@media (1100px <= width <= 1536px) {
+  .dashboard-metric-value,
+  .dashboard-currencies .dashboard-metric-value {
+    font-size: var(--text-kpi-compact);
+    line-height: var(--text-kpi-compact--line-height);
+  }
+}
+@media (width < 768px) {
+  .dashboard-field input {
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
   }
 }

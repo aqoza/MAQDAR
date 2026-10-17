@@ -153,8 +153,8 @@ test('dashboard reference renders real scoped data at the reference viewports', 
     })
     const strip = await page.locator('.dashboard-metrics').boundingBox()
     expect(strip?.height).toBe(107)
-    // The approved compact heading reclaims 27px above the original reference composition.
-    expect(strip?.y).toBeCloseTo(222, 0)
+    // Shared 44px header and Items typography replace the earlier dashboard-only scale.
+    expect(strip?.y).toBeCloseTo(211, 0)
     expect((await page.locator('.dashboard-demand').boundingBox())?.height).toBe(280)
   }
   await page.setViewportSize({ width: 1672, height: 941 })
@@ -294,6 +294,22 @@ test('dashboard reference renders real scoped data at the reference viewports', 
   await expect(page.locator('.dashboard-currencies summary')).toContainText('KWD')
   await expect(page.locator('.dashboard-currencies summary')).toContainText('2.250')
   await expect(page.locator('.dashboard-currency-popover li')).toHaveCount(2)
+  const arabicFontFamily = await page
+    .getByRole('heading', { level: 1 })
+    .evaluate((element) => getComputedStyle(element).fontFamily)
+  for (const href of ['/items', '/dashboard']) {
+    await page.locator(`[data-sidebar="group"] a[href="${href}"]`).click()
+    await expect(page).toHaveURL(new RegExp(`${href}$`))
+    const title = page.getByRole('heading', { level: 1 })
+    await expect(title).toBeVisible()
+    await expect(title).toHaveCSS('font-size', '20px')
+    await expect(title).toHaveCSS('line-height', '28px')
+    await expect(title).toHaveCSS('font-family', arabicFontFamily)
+    for (const link of await page.locator('[data-sidebar="group"] a').all()) {
+      await expect(link).toHaveCSS('font-size', '14px')
+      await expect(link).toHaveCSS('line-height', '20px')
+    }
+  }
   if (process.env.DASHBOARD_FAULT_CAPTURE === '1') {
     // Local-only failure drills reuse this session; test-results is ignored and never published.
     await page.context().storageState({ path: testInfo.outputPath('dashboard-session.json') })

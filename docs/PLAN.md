@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Shared application typography — approved 2026-10-17
+
+The owner selected Items as the typography reference after observing Dashboard/sidebar size changes between routes. Restore the shared sidebar, align dashboard text with the application type roles and record the required scale in [design.MD](../design.MD), linked from `CLAUDE.md`. Verify typography during Dashboard ↔ Items navigation across viewport sizes.
+
 ## Dashboard unavailable typography — approved 2026-10-17
 
 Fix the oversized inventory “Unavailable” status highlighted in the owner's desktop screenshot. Keep status typography consistent across breakpoints while preserving numeric value styling. See [dashboard-unavailable-typography.md](dashboard-unavailable-typography.md) for the regression and browser evidence.
