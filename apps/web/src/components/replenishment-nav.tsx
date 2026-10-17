@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 
-/** The four saved purchasing workspaces share navigation, not selection or mutation state. */
+/** Purchasing workspaces share navigation, not selection or mutation state. */
 export async function ReplenishmentNav({
   current,
 }: {
-  current: 'drafts' | 'review' | 'handoffs' | 'batches'
+  current: 'drafts' | 'review' | 'handoffs' | 'batches' | 'integrations'
 }) {
   const t = await getTranslations('PurchasingNav')
   const links = [
@@ -13,6 +13,7 @@ export async function ReplenishmentNav({
     ['review', '/replenishment/review'],
     ['handoffs', '/replenishment/handoffs'],
     ['batches', '/replenishment/batches'],
+    ['integrations', '/replenishment/integrations'],
   ] as const
   return (
     <nav className="workspace-navigation" aria-label={t('label')}>

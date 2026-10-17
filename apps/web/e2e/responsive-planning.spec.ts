@@ -17,6 +17,7 @@ const screens = [
   { path: '/replenishment/batches', title: 'Purchase handoff batches', reset: 'Reset' },
   { path: '/replenishment/review', title: 'Purchase proposal review', reset: null },
   { path: '/replenishment/handoffs', title: 'Purchase handoffs', reset: null },
+  { path: '/replenishment/integrations', title: 'Integration workbench', reset: 'Reset' },
   { path: '/settings', title: 'Settings', reset: null },
 ] as const
 

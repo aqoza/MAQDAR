@@ -1,6 +1,6 @@
 # Purchase handoff acknowledgements (Step 15d)
 
-Status: implemented, review pending. The owner approved this scope after PR #35 merged as `d6c04b3` on 2026-10-17.
+Status: merged in PR #36 as `6d99f9d` on 2026-10-17 after all three CI jobs passed. The owner approved this scope after PR #35 merged as `d6c04b3` on 2026-10-17.
 
 ## Contract and acceptance
 

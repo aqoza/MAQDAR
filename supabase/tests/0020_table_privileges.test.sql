@@ -337,6 +337,7 @@ select set_eq(
     ('app.admin_organizations()', 'authenticated,service_role'),
     ('app.api_authorize(bytea, text)', ''),
     ('app.api_authorize_check(bytea, text)', ''),
+    ('public.handoff_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('app.handoff_ack_json(purchase_handoff_acknowledgements)', ''),
     ('app.handoff_ack_location(uuid, text, uuid)', ''),
     ('public.api_handoff_acknowledge(bytea, text, uuid, jsonb)', 'service_role'),

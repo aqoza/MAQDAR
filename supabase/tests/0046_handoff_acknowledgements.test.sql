@@ -192,9 +192,9 @@ select throws_ok($$select public.api_handoff_acknowledgements(pg_temp.hash(40),'
 select throws_ok($$select public.api_handoff_acknowledgements(pg_temp.hash(44),'purchase-handoffs',(select id from lines where n=0))$$,'MQ404',null,'cross-tenant history denied');
 select throws_ok($$select public.api_handoff_acknowledgements(pg_temp.hash(40),'purchase-handoffs',(select id from lines where n=0),null,null,101)$$,'MQ422',null,'bounded list backstop');
 reset role;
-select is((select count(*) from public.purchase_handoff_acknowledgements),2::bigint,'retries and failures add no extra event');
-select is((select count(*) from public.audit_log where table_name='purchase_handoff_acknowledgements'),2::bigint,'one audit entry per new event');
-update public.purchase_handoff_acknowledgements set recorded_at=statement_timestamp()-interval '1 hour';
+select is((select count(*) from public.purchase_handoff_acknowledgements where organization_id=pg_temp.id(1)),2::bigint,'retries and failures add no extra event');
+select is((select count(*) from public.audit_log where organization_id=pg_temp.id(1) and table_name='purchase_handoff_acknowledgements'),2::bigint,'one audit entry per new event');
+update public.purchase_handoff_acknowledgements set recorded_at=statement_timestamp()-interval '1 hour' where organization_id=pg_temp.id(1);
 create temporary table pages(n integer,body jsonb);
 grant all on pages to service_role;
 set local role service_role;

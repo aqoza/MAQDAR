@@ -70,7 +70,8 @@ Steps 13, 13b, 13c, 13d, 14, 15 and 15b were scoped and approved by the owner on
 | 15   | **Purchase handoffs:** immutable single-proposal CSV/JSON exports, selected-approval and price gates, historical evidence, stable retries and member-scoped downloads.                             | Merged                       |
 | 15b  | **Purchase handoff batches:** compatible multi-line CSV/JSON packages, atomic evidence gates, exact cost totals, canonical set retries and visible overlap.                                        | Merged                       |
 | 15c  | **Purchase handoff read API:** explicit organization-wide key scope, paginated saved handoffs/batches and original JSON with live selection reported separately.                                   | Merged                       |
-| 15d  | **Integration acknowledgements:** explicitly scoped receipt/rejection reports, immutable event history, organization-wide retry identity and scoped member inspection.                             | Implemented — review pending |
+| 15d  | **Integration acknowledgements:** explicitly scoped receipt/rejection reports, immutable event history, organization-wide retry identity and scoped member inspection.                             | Merged                       |
+| 15e  | **Integration workbench:** member-scoped package search, latest reports per exact system label, explicit absence and direct evidence/history links.                                                | Implemented — review pending |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -284,3 +285,7 @@ PR #34 was reviewed and merged as `cfcd83d` with all three CI jobs passing, incl
 ### Step 15d approved decisions (2026-10-17)
 
 PR #35 was reviewed without blocking findings and merged as `d6c04b3` after all CI jobs passed, including Linux Cloudflare packaging. The owner approved append-only external received/rejected reports on saved handoffs and batches, with a new explicit organization-wide `purchase_handoffs:acknowledge` API-key permission. Owners/admins issue keys; existing keys gain nothing. Read access uses `purchase_handoffs:read`; members inspect history under existing tenant/location rules. Every event records the reporting key, supplied external system/reference, client event UUID and server time; rejection requires a reason. Identical retries return the original event and conflicting UUID reuse is refused. Historical packages remain eligible. Batch reports do not propagate to constituent handoffs or overlaps. Reports do not transmit, create purchase orders or update inbound. See [handoff-acknowledgements.md](handoff-acknowledgements.md).
+
+### Step 15e approved decisions (2026-10-17)
+
+PR #36 was reviewed without blocking findings and merged as `6d99f9d` after all three CI jobs passed, including full pgTAP and Linux Cloudflare packaging. The owner approved a read-only integration workbench for saved handoffs and batches, with search and filters for supplier, location, live selection and reported status. Select the latest server-recorded report independently for each exact external-system label. No report means absent evidence; never infer failed delivery or propagate reports across batches, members or overlaps. Keep rejection reasons and full evidence/history accessible, use the compact green design, and verify 375, 768, 1024, 1440 and 1920px. ERP transmission, alerts and order creation remain separate steps. See [integration-workbench.md](integration-workbench.md).

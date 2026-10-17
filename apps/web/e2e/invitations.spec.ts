@@ -45,7 +45,9 @@ test('a new user is invited as planner, accepts and can sign in with a password'
   const context = await browser.newContext()
   const invitedPage = await context.newPage()
   await completeInviteLink(invitedPage, link, inviteePassword)
-  await expect(invitedPage.getByText(`Join ${organization.name}`)).toBeVisible()
+  await expect(
+    invitedPage.getByRole('heading', { name: `Join ${organization.name}`, exact: true }),
+  ).toBeVisible()
   await invitedPage.getByRole('button', { name: 'Accept and continue', exact: true }).click()
   await invitedPage.waitForURL(DASHBOARD_URL)
   await expectActiveOrganization(invitedPage, organization.name)
