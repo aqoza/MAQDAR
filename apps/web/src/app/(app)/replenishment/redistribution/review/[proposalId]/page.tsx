@@ -6,6 +6,7 @@ import { getFormatter, getLocale, getMessages, getTranslations } from 'next-intl
 import { z } from 'zod'
 import { TransferDecisionForm } from '@/components/transfer-review-forms'
 import { TransferFreightReport } from '@/components/transfer-freight-report'
+import { TransferHandoffForm } from '@/components/transfer-handoff-form'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { transferFreightReportSchema } from '@/lib/transfer-freight'
@@ -53,6 +54,14 @@ export default async function TransferReviewDetail({
     .single()
   if (source.error) throw new Error('Transfer evidence unavailable')
   const report = transferFreightReportSchema.parse(source.data.report)
+  const handoff = await db
+    .from('transfer_handoffs')
+    .select('id')
+    .eq('organization_id', context.active.id)
+    .eq('proposal_id', proposal.id)
+    .maybeSingle()
+  if (handoff.error) throw new Error('Transfer handoff unavailable')
+  const handoffT = await getTranslations('TransferHandoffs')
   let freightMatches = false
   if (proposal.status === 'pending') {
     const current = await db.rpc('transfer_freight_preview', {
@@ -122,6 +131,18 @@ export default async function TransferReviewDetail({
         </Link>
       </div>
       <TransferFreightReport report={report} locale={locale} />
+      {handoff.data ? (
+        <Link
+          href={`/replenishment/redistribution/handoffs/${handoff.data.id}`}
+          className="underline"
+        >
+          {handoffT('open')}
+        </Link>
+      ) : row.selected && ['owner', 'admin', 'planner'].includes(context.role ?? '') ? (
+        <NextIntlClientProvider messages={{ TransferHandoffs: messages.TransferHandoffs }}>
+          <TransferHandoffForm organizationId={context.active.id} proposalId={proposal.id} />
+        </NextIntlClientProvider>
+      ) : null}
       {proposal.status === 'pending' && (
         <>
           <p role="status">{t(freightMatches ? 'freightCurrent' : 'freightChanged')}</p>
