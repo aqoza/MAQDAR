@@ -204,6 +204,9 @@
     },
     "fields": {
       "supplier_id": "المورد",
+      "shipping_weight_kg": "وزن الشحن لكل وحدة (كجم)",
+      "shipping_volume_m3": "حجم الشحن لكل وحدة (م³)",
+      "shipping_valid_from": "قياسات الشحن سارية من",
       "item_code": "رقم القطعة",
       "supplier_part_number": "رقم قطعة المورد",
       "valid_from": "السعر ساري من",

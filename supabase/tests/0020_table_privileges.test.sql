@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('container_capacity_scenarios', 'anon', 'r', ''),
+    ('container_capacity_scenarios', 'authenticated', 'r', 'SELECT'),
+    ('container_capacity_scenarios', 'service_role', 'r', ''),
     ('transfer_handoffs', 'anon', 'r', ''),
     ('transfer_handoffs', 'authenticated', 'r', 'SELECT'),
     ('transfer_handoffs', 'service_role', 'r', ''),
@@ -478,6 +481,9 @@ select set_eq(
     ('public.purchase_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.purchase_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),
     ('public.purchase_proposal_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
+    ('public.container_capacity_preview(uuid, uuid, text, text, boolean)', 'authenticated'),
+    ('public.container_capacity_save(uuid, uuid, text, text, boolean, uuid, text)', 'authenticated'),
+    ('app.import_rows_supplier_items_shipping(uuid, uuid, smallint, integer, integer)', ''),
     ('public.purchase_cost_preview(uuid, uuid, boolean)', 'authenticated'),
     ('public.purchase_cost_save(uuid, uuid, boolean, uuid, text)', 'authenticated'),
     ('public.delivery_scenario_preview(uuid, uuid, date, boolean)', 'authenticated'),
