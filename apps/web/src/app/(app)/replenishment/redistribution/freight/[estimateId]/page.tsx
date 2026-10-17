@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
+import { getFormatter, getLocale, getTranslations, getMessages } from 'next-intl/server'
+import { NextIntlClientProvider } from 'next-intl'
+import { TransferProposalForm } from '@/components/transfer-review-forms'
+import { isEditorRole } from '@/lib/auth/roles'
 import { z } from 'zod'
 import { PageHeader } from '@/components/page-header'
 import { TransferFreightReport } from '@/components/transfer-freight-report'
@@ -17,11 +20,13 @@ export default async function SavedTransferFreight({
   if (!context?.active) redirect('/organizations')
   const { estimateId } = await params
   if (!z.uuid().safeParse(estimateId).success) notFound()
-  const [db, t, locale, format] = await Promise.all([
+  const [db, t, locale, format, review, messages] = await Promise.all([
     createClient(),
     getTranslations('TransferFreight'),
     getLocale(),
     getFormatter(),
+    getTranslations('TransferReview'),
+    getMessages(),
   ])
   const result = await db
     .from('transfer_freight_estimates')
@@ -46,6 +51,21 @@ export default async function SavedTransferFreight({
       </p>
       <p>{t('noGuarantee')}</p>
       <TransferFreightReport report={report} locale={locale} />
+      <Link
+        className="inline-block underline"
+        href={`/replenishment/redistribution/review?draft=${report.source.redistribution_id}`}
+      >
+        {review('draftHistory')}
+      </Link>
+      {report.status === 'available' && isEditorRole(context.role) && (
+        <NextIntlClientProvider messages={{ TransferReview: messages.TransferReview }}>
+          <TransferProposalForm
+            organizationId={context.active.id}
+            estimateId={estimateId}
+            requestId={crypto.randomUUID()}
+          />
+        </NextIntlClientProvider>
+      )}
       <Link
         className="inline-block underline"
         href={`/replenishment/redistribution/freight/new?scenario=${report.scenario_id}`}

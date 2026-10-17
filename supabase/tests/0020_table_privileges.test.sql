@@ -30,6 +30,12 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('transfer_proposals', 'anon', 'r', ''),
+    ('transfer_proposals', 'authenticated', 'r', 'SELECT'),
+    ('transfer_proposals', 'service_role', 'r', ''),
+    ('transfer_review_list', 'anon', 'v', ''),
+    ('transfer_review_list', 'authenticated', 'v', 'SELECT'),
+    ('transfer_review_list', 'service_role', 'v', ''),
     ('transfer_freight_estimates', 'anon', 'r', ''),
     ('transfer_freight_estimates', 'authenticated', 'r', 'SELECT'),
     ('transfer_freight_estimates', 'service_role', 'r', ''),
@@ -359,6 +365,8 @@ select set_eq(
     ('app.api_authorize(bytea, text)', ''),
     ('app.api_authorize_check(bytea, text)', ''),
     ('public.handoff_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
+    ('public.transfer_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),
+    ('public.transfer_proposal_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
     ('public.transfer_freight_preview(uuid, uuid, boolean)', 'authenticated'),
     ('public.transfer_freight_save(uuid, uuid, boolean, uuid, text)', 'authenticated'),
     ('public.transfer_date_preview(uuid, uuid, date, boolean)', 'authenticated'),

@@ -35,6 +35,7 @@ export default async function TransferFreightHistory({
     getTranslations('TransferFreight'),
     getLocale(),
   ])
+  const review = await getTranslations('TransferReview')
   const query = (head: boolean) => {
     let query = db
       .from('transfer_freight_list')
@@ -82,6 +83,9 @@ export default async function TransferFreightHistory({
         }
       />
       <ReplenishmentNav current="redistribution" />
+      <Link className="inline-block underline" href="/replenishment/redistribution/review">
+        {review('title')}
+      </Link>
       <form
         method="get"
         action="/replenishment/redistribution/freight"

@@ -1288,6 +1288,56 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"transfer_proposals": {
+                  Row: {
+                    "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"decision_request_id": string | null,"draft_id": string,"estimate_id": string,"id": string,"location_id": string,"organization_id": string,"reason": string,"request_id": string,"revision": number,"source_location_id": string,"status": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"decision_request_id"?: string | null,"draft_id": string,"estimate_id": string,"id"?: string,"location_id": string,"organization_id": string,"reason": string,"request_id": string,"revision": number,"source_location_id": string,"status"?: string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"decision_request_id"?: string | null,"draft_id"?: string,"estimate_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"reason"?: string,"request_id"?: string,"revision"?: number,"source_location_id"?: string,"status"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "transfer_freight_estimates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "transfer_freight_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"user_settings": {
                   Row: {
                     "active_organization_id": string | null,"created_at": string,"updated_at": string,"user_id": string
@@ -1769,6 +1819,50 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"transfer_review_list": {
+                  Row: {
+                    "created_at": string | null,"currency": string | null,"dispatch_date": string | null,"draft_id": string | null,"estimate_id": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"minor_units": number | null,"organization_id": string | null,"quantity": string | null,"revision": number | null,"search_text": string | null,"selected": boolean | null,"slow_receipt": string | null,"source_code": string | null,"source_location_id": string | null,"status": string | null,"subtotal": string | null,"typical_receipt": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "transfer_freight_estimates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "transfer_freight_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 }
           }
           Functions: {
@@ -1970,6 +2064,12 @@ isOneToOne: false
                            },
 "transfer_freight_save":
 { Args: { "p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_scenario_id": string,"p_terms_confirmed": boolean }; Returns: string
+                           },
+"transfer_proposal_decide":
+{ Args: { "p_decision": string,"p_organization_id": string,"p_proposal_id": string,"p_reason": string,"p_request_id": string }; Returns: string
+                           },
+"transfer_proposal_submit":
+{ Args: { "p_estimate_id": string,"p_organization_id": string,"p_reason": string,"p_request_id": string }; Returns: string
                            },
 "update_organization_preferences":
 { Args: { "p_default_locale": string,"p_numbering_system": string,"p_organization_id": string,"p_time_zone": string }; Returns: undefined
