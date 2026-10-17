@@ -200,7 +200,7 @@ describe('structure', () => {
         resourcePath(resource, 'upsert'),
       ]),
       ...READ_HANDOFF_RESOURCES.flatMap((resource) => [`/${resource}`, `/${resource}/{id}`]),
-      ...HANDOFF_RESOURCES.flatMap((resource) => [
+      ...READ_HANDOFF_RESOURCES.flatMap((resource) => [
         `/${resource}/{id}/acknowledgements`,
         `/${resource}/{id}/acknowledgements/{eventId}`,
       ]),
@@ -234,7 +234,7 @@ describe('structure', () => {
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
         : path.startsWith('/transfer-handoff')
-          ? ['transfer_handoffs:read']
+          ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
           : path.startsWith('/purchase-handoff')
             ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
             : []
@@ -388,5 +388,5 @@ it('documents original transfer payloads, exact freight and source/destination i
     minor_units: { type: 'integer' },
   })
   expect((schema('TransferHandoffRecord').properties as Schema).payload).toBeUndefined()
-  expect(doc.paths['/transfer-handoffs/{id}/acknowledgements']).toBeUndefined()
+  expect(doc.paths['/transfer-handoffs/{id}/acknowledgements']?.post).toBeDefined()
 })

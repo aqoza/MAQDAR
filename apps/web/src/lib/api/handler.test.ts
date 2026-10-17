@@ -40,6 +40,7 @@ const LEAK = 'permission denied for function api_upsert (secret detail)'
 
 const ALL_SCOPES = [
   'transfer_handoffs:read',
+  'transfer_handoffs:acknowledge',
   'purchase_handoffs:read',
   'purchase_handoffs:acknowledge',
   'master_data:read',
@@ -178,7 +179,18 @@ function only<T>(items: T[]): T {
 
 beforeEach(() => resetRateLimitWarning())
 
-describe('handoff acknowledgements', () => {
+describe.each([
+  'purchase-handoffs',
+  'purchase-handoff-batches',
+  'transfer-handoffs',
+  'transfer-handoff-batches',
+] as const)('%s acknowledgements', (resource) => {
+  const writeRpc = resource.startsWith('transfer')
+    ? 'api_transfer_handoff_acknowledge'
+    : 'api_handoff_acknowledge'
+  const readRpc = resource.startsWith('transfer')
+    ? 'api_transfer_handoff_acknowledgements'
+    : 'api_handoff_acknowledgements'
   const id = '98000000-0000-4000-8000-000000000001'
   const event = '98000000-0000-4000-8000-000000000002'
   const value = {
@@ -187,7 +199,7 @@ describe('handoff acknowledgements', () => {
     external_reference: '00123',
     status: 'received',
   }
-  const base = `/purchase-handoffs/${id}/acknowledgements`
+  const base = `/${resource}/${id}/acknowledgements`
   const route = (
     state: Fake,
     method: ApiMethod,
@@ -202,7 +214,7 @@ describe('handoff acknowledgements', () => {
         ...(payload === undefined ? {} : { body: payload }),
       }),
       method,
-      'purchase-handoffs',
+      resource,
       [id, 'acknowledgements', ...(suffix.startsWith('/') ? [suffix.slice(1)] : [])],
       state.deps,
     )
@@ -210,7 +222,7 @@ describe('handoff acknowledgements', () => {
     'returns creation/retry status and a readable location (replayed %s)',
     async (replayed) => {
       const raw = JSON.stringify({ data: { id: event, external_reference: '00123' }, replayed })
-      const state = fake({ rpc: { api_handoff_acknowledge: ok(raw) } })
+      const state = fake({ rpc: { [writeRpc]: ok(raw) } })
       const response = await route(state, 'POST', '', JSON.stringify(value))
       expect(response.status).toBe(replayed ? 200 : 201)
       expect(response.headers.get('location')).toBe(`/api/v1${base}/${event}`)
@@ -218,8 +230,8 @@ describe('handoff acknowledgements', () => {
       expect(await response.text()).toBe(raw)
       expect(state.rpcCalls).toEqual([
         {
-          name: 'api_handoff_acknowledge',
-          args: { p_key_hash: HASH, p_resource: 'purchase-handoffs', p_id: id, p_body: value },
+          name: writeRpc,
+          args: { p_key_hash: HASH, p_resource: resource, p_id: id, p_body: value },
         },
       ])
       expect(JSON.stringify(state.logs)).not.toContain('00123')
@@ -228,7 +240,7 @@ describe('handoff acknowledgements', () => {
     },
   )
   it('uses the read RPC for lists, details and HEAD and refuses event mutations', async () => {
-    const state = fake({ rpc: { api_handoff_acknowledgements: ok('{"data":[]}') } })
+    const state = fake({ rpc: { [readRpc]: ok('{"data":[]}') } })
     expect((await route(state, 'GET', '?limit=2&cursor=abc')).status).toBe(200)
     expect(state.rpcCalls[0].args).toMatchObject({ p_limit: 2, p_after: 'abc', p_event_id: null })
     expect((await route(state, 'GET', `/${event}`)).status).toBe(200)
@@ -258,7 +270,7 @@ describe('handoff acknowledgements', () => {
     const state = fake({
       rpc: {
         api_organization: ok(organizationText()),
-        api_handoff_acknowledge: rpcError('MQ409', 'acknowledgement_conflict'),
+        [writeRpc]: rpcError('MQ409', 'acknowledgement_conflict'),
       },
     })
     expect(
@@ -285,7 +297,7 @@ describe('handoff acknowledgements', () => {
         headers: { cookie: 'session=ignored', 'content-type': 'application/json' },
       }),
       'POST',
-      'purchase-handoffs',
+      resource,
       [id, 'acknowledgements'],
       anonymous.deps,
     )
@@ -1610,17 +1622,17 @@ describe('GET /api/v1/openapi.json', () => {
 })
 
 it.each(['transfer-handoffs', 'transfer-handoff-batches'])(
-  'does not expose transfer acknowledgements on %s',
+  'does not expose unknown transfer subroutes on %s',
   async (resource) => {
     const state = fake()
     for (const method of ['GET', 'POST', 'OPTIONS'] as const) {
       expect(
         (
           await handleResourceDetail(
-            request(`/${resource}/id/acknowledgements`, { headers: AUTH }),
+            request(`/${resource}/id/unknown`, { headers: AUTH }),
             method,
             resource,
-            ['id', 'acknowledgements'],
+            ['id', 'unknown'],
             state.deps,
           )
         ).status,
