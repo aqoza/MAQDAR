@@ -720,6 +720,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "policy_workbench"
       referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_source_options"
+      referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
                 },"public_holidays": {
@@ -984,6 +990,56 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"redistribution_drafts": {
+                  Row: {
+                    "created_at": string,"draft_id": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"source_location_id": string,"source_policy_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"draft_id": string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"source_location_id": string,"source_policy_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"draft_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"source_location_id"?: string,"source_policy_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "redistribution_drafts_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_source_options"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 },"replenishment_drafts": {
                   Row: {
                     "created_at": string,"id": string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
@@ -1007,6 +1063,12 @@ isOneToOne: false
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
       referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_source_options"
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
@@ -1269,6 +1331,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "policy_workbench"
       referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_source_options"
+      referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
                 },"policy_workbench": {
@@ -1427,6 +1495,64 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"redistribution_draft_list": {
+                  Row: {
+                    "created_at": string | null,"cutoff": string | null,"destination_code": string | null,"draft_id": string | null,"id": string | null,"item_code": string | null,"location_id": string | null,"organization_id": string | null,"quantity": string | null,"search_text": string | null,"source_code": string | null,"source_location_id": string | null,"source_policy_id": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"cutoff"?: never,"destination_code"?: never,"draft_id"?: string | null,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"quantity"?: never,"search_text"?: never,"source_code"?: never,"source_location_id"?: string | null,"source_policy_id"?: string | null,"unit"?: never
+                         }
+                        Update: {
+                           "created_at"?: string | null,"cutoff"?: never,"destination_code"?: never,"draft_id"?: string | null,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"quantity"?: never,"search_text"?: never,"source_code"?: never,"source_location_id"?: string | null,"source_policy_id"?: string | null,"unit"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "redistribution_drafts_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "replenishment_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_source_options"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
+                },"redistribution_source_options": {
+                  Row: {
+                    "cutoff": string | null,"finished_at": string | null,"id": string | null,"item_code": string | null,"item_id": string | null,"lane_id": string | null,"lead_time_days_p50": number | null,"lead_time_days_p90": number | null,"location_id": string | null,"maximum": string | null,"organization_id": string | null,"search_text": string | null,"source_code": string | null,"to_location_id": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+
+                  ]
                 },"replenishment_draft_list": {
                   Row: {
                     "basis": string | null,"created_at": string | null,"cutoff": string | null,"gap": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"policy_id": string | null,"search_text": string | null,"status": string | null,"submitted_by": string | null,"unit": string | null
@@ -1450,6 +1576,12 @@ isOneToOne: false
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
       referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_source_options"
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
@@ -1638,6 +1770,12 @@ isOneToOne: false
                            },
 "purchase_proposal_submit":
 { Args: { "p_estimate_id": string,"p_organization_id": string,"p_reason": string,"p_request_id": string }; Returns: string
+                           },
+"redistribution_preview":
+{ Args: { "p_backorders"?: string,"p_basis": string,"p_commitments_confirmed"?: boolean,"p_draft_id": string,"p_lane_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_source_policy_id": string }; Returns: Json
+                           },
+"redistribution_save":
+{ Args: { "p_backorders"?: string,"p_basis": string,"p_commitments_confirmed"?: boolean,"p_draft_id": string,"p_fingerprint"?: string,"p_lane_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_request_id"?: string,"p_source_policy_id": string }; Returns: string
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined

@@ -1,6 +1,6 @@
 # Integration workbench (Step 15e)
 
-Status: implemented, review pending. PR #36 merged as `6d99f9d` on 2026-10-17 with all three CI jobs passing, including full pgTAP and Cloudflare packaging.
+Status: merged in PR #37 as `a16f232` on 2026-10-17 with all three CI jobs passing, including full database/browser tests and Cloudflare packaging.
 
 ## Approved scope
 

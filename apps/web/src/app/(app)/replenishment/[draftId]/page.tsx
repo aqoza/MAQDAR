@@ -51,6 +51,16 @@ export default async function SavedDraft({
       </p>
       <p>{t('immutable')}</p>
       <ReplenishmentReport report={report} locale={locale} />
+      <div className="flex flex-wrap gap-4">
+        {report.status === 'available' && (
+          <Link className="underline" href={`/replenishment/redistribution/new?draft=${draftId}`}>
+            {t('redistribution')}
+          </Link>
+        )}
+        <Link className="underline" href={`/replenishment/redistribution?draft=${draftId}`}>
+          {t('redistributionHistory')}
+        </Link>
+      </div>
       {report.status === 'available' && (
         <Link
           className="inline-block underline"

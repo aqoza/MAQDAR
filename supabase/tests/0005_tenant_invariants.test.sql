@@ -28,13 +28,13 @@ select format(
   '((organization_id = ANY (ARRAY( SELECT app.unscoped_organizations() AS unscoped_organizations))) OR (%s = ANY (ARRAY( SELECT app.scoped_locations() AS scoped_locations))))',
   column_name
 ) as predicate
-from unnest(array['id', 'location_id']) as column_name;
+from unnest(array['id', 'location_id', 'source_location_id']) as column_name;
 
 -- Tables written only through the security-definer RPCs (Step 3 tenancy, Step 5a imports, Step 5b
 -- API keys).
 create temporary table rpc_only_tables on commit drop as
 select unnest(array['organizations', 'memberships', 'membership_locations', 'organization_invitations', 'user_settings',
-                    'import_batches', 'import_files', 'import_errors', 'api_keys', 'planning_runs', 'demand_classifications', 'forecast_results', 'demand_preparations', 'inventory_policies', 'policy_overrides', 'replenishment_drafts', 'supplier_scenarios', 'delivery_scenarios', 'purchase_cost_estimates', 'purchase_proposals', 'purchase_handoffs', 'purchase_handoff_batches']) as table_name;
+                    'import_batches', 'import_files', 'import_errors', 'api_keys', 'planning_runs', 'demand_classifications', 'forecast_results', 'demand_preparations', 'inventory_policies', 'policy_overrides', 'replenishment_drafts', 'redistribution_drafts', 'supplier_scenarios', 'delivery_scenarios', 'purchase_cost_estimates', 'purchase_proposals', 'purchase_handoffs', 'purchase_handoff_batches']) as table_name;
 
 -- Columns no API role may read or write in any way (Step 5b: the SHA-256 of every API key).
 create temporary table secret_columns on commit drop as
