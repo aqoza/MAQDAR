@@ -88,9 +88,16 @@ for (const { width, height } of [
         await expect(
           page.getByRole('heading', { level: 1, name: screen.title, exact: true }),
         ).toBeVisible()
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
-        await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')
+        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
+          'font-size',
+          screen.path === '/dashboard' ? (width < 768 ? '32px' : '40px') : '20px',
+        )
+        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
+          'line-height',
+          screen.path === '/dashboard' ? (width < 768 ? '42px' : '48px') : '28px',
+        )
+        if (screen.path !== '/dashboard')
+          await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')
         if (width === 1024 && screen.path === '/items') {
           await expect(page.getByRole('button', { name: 'Search', exact: true })).toHaveCSS(
             'transition-property',

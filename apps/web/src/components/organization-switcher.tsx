@@ -68,7 +68,10 @@ export function OrganizationSwitcher({
             }
           >
             <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg">
-              <Building2 className="size-4" />
+              <Building2 className="size-4 standard-organization-icon" />
+              <span className="dashboard-organization-initial" aria-hidden="true">
+                {active.name.slice(0, 1).toLocaleUpperCase()}
+              </span>
             </div>
             <div className="grid flex-1 text-start text-sm leading-tight group-data-[collapsible=icon]:hidden">
               <span className="truncate font-semibold">{active.name}</span>
