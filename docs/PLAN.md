@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Laptop dashboard density — approved 2026-10-17
+
+The owner reported oversized icons/type on 13-inch laptops after the heading refinement. Compact the full dashboard at common laptop viewport widths and fix the unavailable-value wrapping shown in the supplied screenshot. Preserve mobile accessibility and the large reference layout. See [dashboard-laptop-density.md](dashboard-laptop-density.md).
+
 ## Dashboard typography refinement — approved 2026-10-17
 
 After PR #42 merged, the owner requested smaller dashboard heading/subheading typography and improved vertical space utilization. Reduce the title region while preserving panel dimensions and functionality; verify desktop, mobile and Arabic layouts. See [dashboard-typography.md](dashboard-typography.md).

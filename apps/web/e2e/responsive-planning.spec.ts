@@ -69,6 +69,9 @@ for (const { width, height } of [
   { width: 1440, height: 900 },
   { width: 1920, height: 1080 },
 ]) {
+  const compactLaptop = width >= 1100 && width <= 1536
+  const dashboardFontSize = width < 768 || compactLaptop ? '24px' : '28px'
+  const dashboardLineHeight = width < 768 ? '32px' : compactLaptop ? '30px' : '36px'
   test(`application screens fit ${width}px with keyboard-accessible tables`, async ({
     page,
   }, testInfo) => {
@@ -90,11 +93,11 @@ for (const { width, height } of [
         ).toBeVisible()
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
           'font-size',
-          screen.path === '/dashboard' ? (width < 768 ? '24px' : '28px') : '20px',
+          screen.path === '/dashboard' ? dashboardFontSize : '20px',
         )
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
           'line-height',
-          screen.path === '/dashboard' ? (width < 768 ? '32px' : '36px') : '28px',
+          screen.path === '/dashboard' ? dashboardLineHeight : '28px',
         )
         if (screen.path !== '/dashboard')
           await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')
@@ -128,7 +131,9 @@ for (const { width, height } of [
             'main select:visible, main input:not([type=hidden]):not([type=checkbox]):visible, main textarea:visible',
           )
           .all()) {
-          await expect(control).toHaveCSS('font-size', width < 768 ? '16px' : '14px')
+          const controlFontSize =
+            width < 768 ? '16px' : screen.path === '/dashboard' && compactLaptop ? '12px' : '14px'
+          await expect(control).toHaveCSS('font-size', controlFontSize)
         }
         if (screen.path === '/forecasts/quality') {
           const help = page.locator('summary').filter({ hasText: 'About these scores' })

@@ -407,6 +407,11 @@
   border-radius: 20px;
   padding: 1px 10px;
 }
+.dashboard-metric-value[data-unavailable] {
+  font-size: 16px;
+  line-height: 24px;
+  overflow-wrap: normal;
+}
 .dashboard-metric-note {
   font-size: 12px;
   line-height: 16px;
@@ -956,6 +961,258 @@
   }
   .dashboard-bottom-grid {
     grid-template-columns: 1fr;
+  }
+}
+/* Compact desktop density covers common 13-inch laptop CSS viewports, including scaled displays. */
+@media (1100px <= width <= 1536px) {
+  .app-shell:has([data-dashboard]) {
+    --sidebar-width: 208px !important;
+  }
+  .app-shell:has([data-dashboard]) [data-slot='sidebar-inset'] > header {
+    block-size: 48px;
+    padding-inline: 20px;
+    gap: 12px;
+  }
+  .app-shell:has([data-dashboard]) header > span {
+    font-size: 12px;
+  }
+  .app-shell:has([data-dashboard]) [data-app-content] {
+    padding-inline: 20px;
+    padding-block-end: 12px;
+  }
+  .app-shell:has([data-dashboard]) .app-sidebar-header {
+    padding: 12px 18px;
+    gap: 10px;
+  }
+  .app-shell:has([data-dashboard]) .app-brand {
+    font-size: 18px;
+    gap: 8px;
+    line-height: 28px;
+  }
+  .app-shell:has([data-dashboard]) .dashboard-brand-mark {
+    inline-size: 27px;
+    block-size: 28px;
+  }
+  .app-shell:has([data-dashboard]) .app-sidebar-header [data-sidebar='menu-button'] {
+    block-size: 44px;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .app-shell:has([data-dashboard]) [data-sidebar='group'] [data-sidebar='menu-button'] {
+    block-size: 36px;
+    padding-inline: 13px 10px;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .app-shell:has([data-dashboard]) [data-sidebar='group'] [data-sidebar='menu-button'] svg {
+    inline-size: 18px;
+    block-size: 18px;
+  }
+  .app-shell:has([data-dashboard]) [data-slot='sidebar-footer'] {
+    padding: 10px 18px 16px;
+    gap: 8px;
+  }
+  .app-shell:has([data-dashboard]) [data-slot='sidebar-footer'] button {
+    font-size: 12px;
+    gap: 12px;
+  }
+  .dashboard-actions {
+    inset-block-start: 8px;
+    inset-inline-end: 20px;
+    gap: 8px;
+  }
+  .dashboard-actions a {
+    min-block-size: 32px;
+    padding-inline: 10px;
+    gap: 7px;
+  }
+  .dashboard-actions a svg {
+    inline-size: 16px;
+    block-size: 16px;
+  }
+  .dashboard-hero {
+    min-block-size: 56px;
+    padding-inline: 4px 16px;
+  }
+  .dashboard-hero h1 {
+    font-size: 24px;
+    line-height: 30px;
+  }
+  .dashboard-hero p {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .dashboard-hero .dashboard-tagline {
+    font-size: 12px;
+    line-height: 16px;
+    margin-block-start: 0;
+  }
+  .dashboard-hero-art {
+    block-size: 135px;
+  }
+  .dashboard-filters {
+    min-block-size: 68px;
+    padding: 8px 14px;
+    gap: 10px;
+  }
+  .dashboard-filters > label {
+    gap: 3px;
+    font-size: 11px;
+  }
+  .dashboard-field,
+  .dashboard-filters .dashboard-apply,
+  .dashboard-reset {
+    block-size: 34px;
+    min-block-size: 34px;
+    font-size: 12px;
+  }
+  .dashboard-field input {
+    font-size: 12px;
+  }
+  .dashboard-metrics {
+    grid-template-columns: 1.1fr 1.15fr 1fr 1.1fr 1.1fr;
+    min-block-size: 80px;
+    padding-block: 10px;
+    margin-block: 10px 12px;
+  }
+  .dashboard-notice {
+    margin-block: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .dashboard-metric,
+  .dashboard-metric:first-child {
+    padding-inline: 10px 6px;
+    gap: 8px;
+  }
+  .dashboard-metric > .dashboard-icon,
+  .dashboard-insights .dashboard-icon {
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: 11px;
+  }
+  .dashboard-metric > .dashboard-icon svg,
+  .dashboard-insights .dashboard-icon svg {
+    inline-size: 21px;
+    block-size: 21px;
+  }
+  .dashboard-metric h2 {
+    font-size: 11px;
+    line-height: 16px;
+    white-space: normal;
+  }
+  .dashboard-metric-line {
+    margin-block: 3px 2px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .dashboard-metric-value,
+  .dashboard-currencies .dashboard-metric-value {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .dashboard-metric-value[data-unavailable] {
+    font-size: 16px;
+  }
+  .dashboard-trend {
+    font-size: 10px;
+    padding-inline: 6px;
+  }
+  .dashboard-metric-note {
+    font-size: 11px;
+    line-height: 14px;
+  }
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) 244px;
+    gap: 12px;
+  }
+  .dashboard-main-column,
+  .dashboard-bottom-grid {
+    gap: 12px;
+  }
+  .dashboard-bottom-grid {
+    grid-template-columns: 1.05fr 1fr;
+  }
+  .dashboard-panel {
+    padding: 10px 12px;
+    border-radius: 11px;
+  }
+  .dashboard-demand {
+    block-size: 222px;
+    padding-block: 10px 4px;
+  }
+  .dashboard-chart-heading {
+    margin-block-end: 4px;
+  }
+  .dashboard-chart-heading h2 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+  .dashboard-chart-heading a {
+    inline-size: 28px;
+    block-size: 28px;
+  }
+  .dashboard-period {
+    min-block-size: 28px;
+    padding-inline: 8px;
+  }
+  .dashboard-chart {
+    block-size: 174px;
+  }
+  .dashboard-locations,
+  .dashboard-risk {
+    min-block-size: 208px;
+  }
+  .dashboard-panel-heading {
+    gap: 6px;
+    margin-block-end: 6px;
+  }
+  .dashboard-panel-heading h2,
+  .dashboard-insights .dashboard-panel-heading h2 {
+    font-size: 13px;
+    line-height: 20px;
+    gap: 6px;
+  }
+  .dashboard-panel-heading h2 svg,
+  .dashboard-insights .dashboard-panel-heading h2 svg {
+    inline-size: 17px;
+    block-size: 17px;
+  }
+  .dashboard-workspace table {
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .dashboard-workspace th {
+    padding: 6px 5px;
+    white-space: normal;
+  }
+  .dashboard-workspace td {
+    padding: 5px 3px;
+  }
+  .dashboard-availability {
+    gap: 6px;
+  }
+  .dashboard-bar {
+    block-size: 12px;
+  }
+  .dashboard-insights {
+    min-block-size: 320px;
+  }
+  .dashboard-insights li > a {
+    min-block-size: 64px;
+    gap: 8px;
+    padding-block: 6px;
+  }
+  .dashboard-insights strong,
+  .dashboard-insights li a > span:nth-child(2) > span {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .dashboard-information {
+    min-block-size: 112px;
+    padding: 10px;
+    gap: 8px;
   }
 }
 @media (width < 1100px) {
