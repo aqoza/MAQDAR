@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Settings workspace redesign — approved 2026-10-17
+
+Implement the reviewed Settings mockup: searchable grouped navigation beside one focused panel, with Organization/Preferences, Members/Invitations/API keys, and Password/Interface language. Reuse existing server-rendered forms, preserve unsaved state between sections and keep current permissions, queries and actions. Retain shared Items typography, the compact illustrated header, mobile access and Arabic RTL. Verify real screenshots and existing workflows before a reviewable PR; no merge or deployment. See [settings-workspace.md](settings-workspace.md).
+
 ## Header loading consistency and spacing — approved 2026-10-17
 
 Fix the old white header shown while Import history streams, and close the global tagline-to-heading gap highlighted by the owner. Preserve the shared type scale, navigation, mobile targets and unrelated work. Match loading and settled header geometry, verify client navigation and reload, and open a reviewable PR without deployment. See [header-loading-spacing.md](header-loading-spacing.md).

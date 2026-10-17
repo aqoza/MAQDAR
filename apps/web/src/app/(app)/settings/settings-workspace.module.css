@@ -1,0 +1,201 @@
+.workspace {
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  min-inline-size: 0;
+}
+.menu {
+  position: sticky;
+  inset-block-start: 16px;
+  min-inline-size: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--card-foreground);
+}
+.menuContents {
+  padding: 12px 8px;
+}
+.menuToggle {
+  display: none;
+}
+.search {
+  position: relative;
+  margin-inline: 4px;
+  margin-block-end: 16px;
+}
+.search > svg {
+  position: absolute;
+  inset-inline-start: 10px;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  inline-size: 16px;
+  block-size: 16px;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+.search input {
+  inline-size: 100%;
+  padding-inline: 32px;
+}
+.search input::-webkit-search-cancel-button {
+  appearance: none;
+}
+.search > button {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block: 0;
+  display: grid;
+  place-items: center;
+  inline-size: 32px;
+  color: var(--muted-foreground);
+  border-radius: 6px;
+}
+.search > button svg {
+  inline-size: 16px;
+  block-size: 16px;
+}
+.group + .group {
+  margin-block-start: 20px;
+}
+.groupLabel {
+  padding: 4px 12px 8px;
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.sectionLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  inline-size: 100%;
+  min-block-size: 36px;
+  padding: 8px 12px;
+  border-inline-start: 2px solid transparent;
+  border-radius: 6px;
+  text-align: start;
+  font: inherit;
+  color: var(--foreground);
+}
+.sectionLink svg,
+.menuToggle svg {
+  inline-size: 16px;
+  block-size: 16px;
+  flex-shrink: 0;
+}
+.sectionLink:hover,
+.search > button:hover {
+  background: var(--muted);
+}
+.sectionLink[aria-selected='true'] {
+  border-inline-start-color: var(--primary);
+  color: var(--primary);
+  background: var(--sidebar-accent);
+  font-weight: 500;
+}
+.menu button:focus-visible,
+.panel:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.noResults {
+  padding: 8px 12px;
+  color: var(--muted-foreground);
+}
+.panels,
+.panel {
+  min-inline-size: 0;
+}
+.panel[hidden] {
+  display: none;
+}
+.panel > :global([data-slot='card']) {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: none;
+  --card-spacing: 20px;
+}
+.panel :global([data-slot='card-header']) {
+  padding-block-end: 16px;
+  border-block-end: 1px solid var(--border);
+}
+.panel :global([data-slot='card-title']) {
+  font-size: var(--text-section-title);
+  line-height: var(--text-section-title--line-height);
+  font-weight: var(--text-section-title--font-weight);
+}
+.panel :global(.workspace-table) > :global([data-slot='table-container']) {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+}
+.identityFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.formFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-block-start: 16px;
+  border-block-start: 1px solid var(--border);
+}
+.loadingMenu {
+  padding: 16px;
+  block-size: 440px;
+}
+@media (width < 1100px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .menu {
+    position: static;
+  }
+  .menuToggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    inline-size: 100%;
+    min-block-size: 44px;
+    padding: 10px 12px;
+    text-align: start;
+  }
+  .menuToggle span {
+    flex: 1;
+  }
+  .menuToggle[aria-expanded='true'] {
+    border-block-end: 1px solid var(--border);
+  }
+  .menuContents:not([data-open='true']) {
+    display: none;
+  }
+  .loadingMenu {
+    block-size: 44px;
+    padding: 12px;
+  }
+}
+@media (width < 768px) {
+  .search input {
+    padding-inline-start: 36px;
+    padding-inline-end: 44px;
+  }
+  .search > button {
+    inline-size: 44px;
+  }
+  .sectionLink {
+    min-block-size: 44px;
+  }
+  .identityFields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .panel > :global([data-slot='card']) {
+    --card-spacing: 16px;
+  }
+}

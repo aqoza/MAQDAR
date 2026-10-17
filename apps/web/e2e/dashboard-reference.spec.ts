@@ -8,6 +8,7 @@ import {
   signInWithPassword,
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { selectSettingsSection } from './helpers/settings'
 
 test('dashboard reference renders real scoped data at the reference viewports', async ({
   page,
@@ -255,6 +256,7 @@ test('dashboard reference renders real scoped data at the reference viewports', 
   await page.locator('.dashboard-currencies summary').click()
   await page.screenshot({ path: testInfo.outputPath('dashboard-mobile-375.png'), fullPage: true })
   await page.goto('/settings')
+  await selectSettingsSection(page, 'language')
   await page.getByRole('radio', { name: 'العربية' }).click()
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await page.goto('/dashboard?day=2026-10-17')

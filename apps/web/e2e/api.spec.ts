@@ -47,7 +47,7 @@ test('Settings shows a key once, enforces its scope and revokes access immediate
   const account = await owner()
   await signInWithPassword(page, account.email, account.password)
   await createOrganization(page, account)
-  await openSettings(page)
+  await openSettings(page, 'api-keys')
 
   // A rejected form must retain its name and allow correction without creating a key.
   await page.getByLabel('Key name', { exact: true }).fill('ERP read access')
