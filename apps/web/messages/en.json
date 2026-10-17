@@ -3088,9 +3088,22 @@
   },
   "StockLocator": {
     "scope": "Item scope",
-    "scopes": { "exact": "Exact item only", "interchangeable": "Exact + interchangeable" },
+    "scopes": {
+      "exact": "Exact item only",
+      "interchangeable": "Exact + interchangeable",
+      "substitutes": "Exact + direct substitutes"
+    },
     "stockItem": "Observed item",
-    "matchKinds": { "exact": "Exact item", "interchangeable": "Two-way interchangeable" },
+    "matchKinds": {
+      "exact": "Exact item",
+      "interchangeable": "Two-way interchangeable",
+      "substitute": "Direct one-way substitute"
+    },
+    "substituteRelationship": "Current direct one-way relationship",
+    "relationshipNote": "Recorded note: {note}",
+    "substituteContext": "{count, plural, one {# item searched; no eligible direct substitutes in the current catalog.} other {# items searched using current direct one-way relationships.}} Each item/location observation is separate.",
+    "substituteLimit": "This direct substitute search exceeds the 100-item limit. No partial results are shown. Use exact-item search or review the catalog relationships.",
+    "substituteHelp": "Direct substitutes follow only explicit one-way links from the requested item to its alternate, at 1:1 with matching catalog units. Reverse links, chains, two-way bridges and supersession conversions are excluded. These are current catalog records, including for historical stock dates. Recorded priorities and notes are evidence; matching rows rank by distance. Stock quantities stay separate and do not authorize issue, reservation or transfer.",
     "itemStatus": "Current status: {status}",
     "itemStatuses": {
       "new": "New",

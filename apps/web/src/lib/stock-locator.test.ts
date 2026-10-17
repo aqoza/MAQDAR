@@ -14,7 +14,7 @@ describe('stock locator URL inputs', () => {
     })
     for (const changes of [
       { unit: 'ea' },
-      { scope: 'substitutes' },
+      { scope: 'supersessions' },
       { unit: 'BOX' },
       { item: '%P%' },
       { receiving: 'DC/1' },
@@ -49,26 +49,30 @@ describe('stock locator URL inputs', () => {
       }).success,
     ).toBe(false)
   })
-  it('preserves evidence selection and filters while paging, including slash-containing items', () => {
-    const parsed = stockLocatorParams(
-      {
-        item: ['P/1', 'ignored'],
-        receiving: 'DC',
-        unit: 'KG',
-        day: '2026-09-01',
-        view: 'other',
-        q: 'North',
-        size: '50',
-        scope: 'interchangeable',
-      },
-      '2026-10-17',
-    )
-    const url = new URL(stockLocatorHref(parsed, 3), 'https://example.com')
-    expect(url.pathname).toBe('/replenishment/stock-locator')
-    expect(stockLocatorParams(Object.fromEntries(url.searchParams), '2026-10-17')).toEqual({
-      ...parsed,
-      page: 3,
-    })
-    expect(new URL(stockLocatorHref(parsed, 1), url.origin).searchParams.has('page')).toBe(false)
-  })
+  it.each(['exact', 'interchangeable', 'substitutes'] as const)(
+    'preserves %s selection and filters while paging, including slash-containing items',
+    (scope) => {
+      const parsed = stockLocatorParams(
+        {
+          item: ['P/1', 'ignored'],
+          receiving: 'DC',
+          unit: 'KG',
+          day: '2026-09-01',
+          view: 'other',
+          q: 'North',
+          size: '50',
+          scope,
+        },
+        '2026-10-17',
+      )
+      const url = new URL(stockLocatorHref(parsed, 3), 'https://example.com')
+      expect(stockLocatorInputSchema.parse(parsed).scope).toBe(scope)
+      expect(url.pathname).toBe('/replenishment/stock-locator')
+      expect(stockLocatorParams(Object.fromEntries(url.searchParams), '2026-10-17')).toEqual({
+        ...parsed,
+        page: 3,
+      })
+      expect(new URL(stockLocatorHref(parsed, 1), url.origin).searchParams.has('page')).toBe(false)
+    },
+  )
 })

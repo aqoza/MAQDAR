@@ -17,6 +17,7 @@ export async function StockLocatorHeader() {
           <p>{t('distanceHelp')}</p>
           <p>{t('historyHelp')}</p>
           <p>{t('relationshipHelp')}</p>
+          <p>{t('substituteHelp')}</p>
         </HelpDisclosure>
       }
     />

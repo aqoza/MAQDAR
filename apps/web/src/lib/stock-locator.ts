@@ -8,7 +8,7 @@ import {
 } from './master-data/list-params'
 
 export const stockLocatorPath = '/replenishment/stock-locator'
-const scopeSchema = z.enum(['exact', 'interchangeable'])
+const scopeSchema = z.enum(['exact', 'interchangeable', 'substitutes'])
 export const stockLocatorInputSchema = z.object({
   item: codeSchema({ allowSlash: true }),
   receiving: codeSchema(),
@@ -86,16 +86,17 @@ export const stockLocatorResultSchema = z.object({
           unit: z.enum(UNITS_OF_MEASURE),
           updated_at: z.string(),
         }),
-        match_kind: scopeSchema,
+        match_kind: z.enum(['exact', 'interchangeable', 'substitute']),
         relationship_path: z
           .array(
             z.object({
               id: z.uuid(),
-              direction: z.literal('two_way'),
+              direction: z.enum(['two_way', 'one_way']),
               from_code: z.string(),
               to_code: z.string(),
               unit: z.enum(UNITS_OF_MEASURE),
               priority: z.number().int().min(1).max(99),
+              note: z.string().nullable().optional(),
               updated_at: z.string(),
               from_updated_at: z.string(),
               to_updated_at: z.string(),

@@ -1,6 +1,6 @@
 # Interchangeable stock locator (Step 17b)
 
-Status: owner-approved on 2026-10-18; implemented and locally verified, ready for PR review and CI. PR #57 was reviewed without blocking findings and merged as `6a901e8` after all three CI jobs passed.
+Status: PR #59 was reviewed at `fc97ad3` without blocking findings and merged as `d9e16f9` after all three CI jobs passed. Direct one-way search follows separately in [Step 17c](direct-substitute-stock-locator.md); this two-way mode retains its approved scope.
 
 ## Approved scope
 
