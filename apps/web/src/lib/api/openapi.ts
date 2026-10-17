@@ -26,6 +26,7 @@ import {
 } from './resources'
 import { OPENAPI_DOCUMENT_VERSION, deprecationFor } from './versioning'
 import { handoffPaths, handoffSchemas } from './handoff-openapi'
+import { transferHandoffPaths, transferHandoffSchemas } from './transfer-handoff-openapi'
 import { acknowledgementPaths, acknowledgementSchemas } from './acknowledgement-openapi'
 
 /**
@@ -896,6 +897,7 @@ function organizationOperation(): Schema {
 
 const INFO_DESCRIPTION = [
   'Bulk upserts and lists of MAQDAR master data and demand history, per organization.',
+  'Read saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.',
   'Read saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.',
   '',
   `Authenticate with \`Authorization: Bearer ${API_KEY_PREFIX}…\`; an owner or admin creates keys in Settings. Keys are scoped (${API_SCOPES.join(', ')}), expire, and stop working when their creator is no longer an owner or admin.`,
@@ -926,9 +928,15 @@ export function buildOpenApi(): OpenApiDocument {
     schemas[names.request] = requestSchema(entity)
     schemas[names.page] = pageSchema(entity)
   }
-  Object.assign(paths, handoffPaths())
+  Object.assign(paths, handoffPaths(), transferHandoffPaths())
   Object.assign(paths, acknowledgementPaths())
-  Object.assign(schemas, sharedSchemas(), handoffSchemas(), acknowledgementSchemas())
+  Object.assign(
+    schemas,
+    sharedSchemas(),
+    handoffSchemas(),
+    transferHandoffSchemas(),
+    acknowledgementSchemas(),
+  )
 
   return {
     openapi: OPENAPI_VERSION,
@@ -944,6 +952,11 @@ export function buildOpenApi(): OpenApiDocument {
       { name: TAGS.organization, description: 'The key and its organization.' },
       { name: TAGS.master_data, description: 'Calendars, locations, items, suppliers and rates.' },
       { name: TAGS.transactions, description: 'Demand history.' },
+      {
+        name: 'Transfer handoffs',
+        description:
+          'Saved transfer planning packages; original evidence and live selection are separate.',
+      },
       {
         name: 'Purchase handoffs',
         description: 'Read-only saved planning evidence and live selection.',

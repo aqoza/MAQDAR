@@ -1,6 +1,6 @@
 # Transfer handoff batches (Step 16f)
 
-**Status:** Implemented and locally verified; review pending. Scope approved by the owner on 2026-10-17 after PR #46 merged as `3a97dc1`.
+**Status:** Merged in PR #48 as `bcbff02` on 2026-10-17 after review and all three CI jobs passed. Scope approved by the owner after PR #46 merged as `3a97dc1`.
 
 Open **Replenishment → Redistribution → Transfer proposal review → Transfer handoffs → Transfer handoff batches**. Choose batch lines, add checked lines before changing filters/pages, preview the saved evidence and overlap, then save and download CSV or JSON. Search history by item and filter source, destination or live selection. Compact green screens support 375, 768, 1024, 1440 and 1920px.
 

@@ -1,3 +1,5 @@
+import { handoffFixture as transferFixture } from '../transfer-handoffs.fixture'
+import { batchFixture as transferBatchFixture } from '../transfer-batches.fixture'
 import { describe, expect, it } from 'vitest'
 import { getEntity, ENTITY_NAMES } from '../imports/contract'
 import { scopeFor } from './auth'
@@ -14,7 +16,7 @@ import {
 import { PROBLEM_CODES } from './problem'
 import { validateUpsertBody } from './records'
 import { RESOURCES, allOperationIds, resourcePath } from './resources'
-import { HANDOFF_RESOURCES, HANDOFF_SCOPE } from './handoffs'
+import { HANDOFF_RESOURCES, READ_HANDOFF_RESOURCES, HANDOFF_SCOPE } from './handoffs'
 import { deprecationFor } from './versioning'
 import { handoffFixture } from '../purchase-handoffs.fixture'
 
@@ -197,7 +199,7 @@ describe('structure', () => {
         resourcePath(resource, 'list'),
         resourcePath(resource, 'upsert'),
       ]),
-      ...HANDOFF_RESOURCES.flatMap((resource) => [`/${resource}`, `/${resource}/{id}`]),
+      ...READ_HANDOFF_RESOURCES.flatMap((resource) => [`/${resource}`, `/${resource}/{id}`]),
       ...HANDOFF_RESOURCES.flatMap((resource) => [
         `/${resource}/{id}/acknowledgements`,
         `/${resource}/{id}/acknowledgements/{eventId}`,
@@ -231,9 +233,11 @@ describe('structure', () => {
       )
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
-        : path.startsWith('/purchase-handoff')
-          ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
-          : []
+        : path.startsWith('/transfer-handoff')
+          ? ['transfer_handoffs:read']
+          : path.startsWith('/purchase-handoff')
+            ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
+            : []
       expect(operation['x-maqdar-scopes'], operation.operationId).toEqual(scopes)
       expect(operation.deprecated === true).toBe(deprecationFor(operation.operationId) !== null)
     }
@@ -363,4 +367,26 @@ describe('entity schemas', () => {
     expect(valid(schema('FxRatesRecord'), { ...rate, rate: '0.0000000001' })).toBe(true)
     expect(valid(schema('FxRatesRecord'), { ...rate, rate: '3.750' })).toBe(false)
   })
+})
+
+it('documents original transfer payloads, exact freight and source/destination identities', () => {
+  expect(valid(schema('TransferHandoffPayload'), transferFixture)).toBe(true)
+  expect(valid(schema('TransferHandoffBatchPayload'), transferBatchFixture)).toBe(true)
+  expect(
+    valid(schema('TransferHandoffPayload'), {
+      ...transferFixture,
+      estimate: { ...transferFixture.estimate, subtotal: 123 },
+    }),
+  ).toBe(false)
+  const summary = schema('TransferHandoffSummary').properties as Record<string, Schema>
+  expect(summary).toMatchObject({
+    lane_id: { format: 'uuid' },
+    source_location_id: { format: 'uuid' },
+    location_id: { format: 'uuid' },
+    dispatch_date: { format: 'date' },
+    subtotal: { type: 'string' },
+    minor_units: { type: 'integer' },
+  })
+  expect((schema('TransferHandoffRecord').properties as Schema).payload).toBeUndefined()
+  expect(doc.paths['/transfer-handoffs/{id}/acknowledgements']).toBeUndefined()
 })
