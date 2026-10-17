@@ -15,7 +15,8 @@
     "check:logical": "node scripts/check-logical-utilities.mjs src",
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "test:tabs": "playwright test --config playwright.tabs.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",

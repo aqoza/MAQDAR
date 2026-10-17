@@ -537,3 +537,14 @@
     padding: 12px;
   }
 }
+
+.workflow[role='tab'] {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: start;
+}
+.workflow:focus-visible {
+  outline: 2px solid var(--workspace-accent);
+  outline-offset: -2px;
+}
