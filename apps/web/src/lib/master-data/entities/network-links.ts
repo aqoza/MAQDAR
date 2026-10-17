@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { integerSchema, optionalDecimalSchema } from '../numbers'
-import { uuidSchema } from '../schemas'
+import { optionalDateSchema, UNITS_OF_MEASURE, uuidSchema } from '../schemas'
 import { defineEntity } from '../types'
 
 /**
@@ -39,6 +39,11 @@ export const networkLinkSchema = z
     freight_basis: z.enum(FREIGHT_BASES),
     freight_cost: optionalDecimalSchema({ scale: 3, integerDigits: 12, min: 0 }),
     currency: optionalCurrencySchema,
+    freight_unit: z
+      .union([z.literal(''), z.enum(UNITS_OF_MEASURE)])
+      .optional()
+      .transform((value) => value || null),
+    freight_valid_from: optionalDateSchema.optional().transform((value) => value ?? null),
     is_active: z.boolean(),
   })
   .superRefine((link, ctx) => {
@@ -76,11 +81,13 @@ export type NetworkLinkInput = z.output<typeof networkLinkSchema>
 
 /** The row to write: without a cost basis, cost and currency are stored as null. */
 export function networkLinkRow(input: NetworkLinkInput): Record<string, unknown> {
-  const free = input.freight_basis === 'none'
+  const unconfigured = input.freight_basis === 'none'
   return {
     ...input,
-    freight_cost: free ? null : input.freight_cost,
-    currency: free ? null : input.currency,
+    freight_cost: unconfigured ? null : input.freight_cost,
+    currency: unconfigured ? null : input.currency,
+    freight_unit: unconfigured ? null : input.freight_unit,
+    freight_valid_from: unconfigured ? null : input.freight_valid_from,
   }
 }
 
@@ -97,7 +104,7 @@ export const networkLinks = defineEntity({
   basePath: '/locations/network',
   importEntity: 'network_links',
   listSelect: `id, lead_time_days_p50, lead_time_days_p90, freight_basis, freight_cost, currency, is_active, ${FROM_CODE}, to_location:locations!network_links_to_location_fkey(code, name_en)`,
-  editSelect: `id, from_location_id, to_location_id, lead_time_days_p50, lead_time_days_p90, freight_basis, freight_cost, currency, is_active, updated_at, ${FROM_CODE}, to_location:locations!network_links_to_location_fkey(code)`,
+  editSelect: `id, from_location_id, to_location_id, lead_time_days_p50, lead_time_days_p90, freight_basis, freight_cost, currency, freight_unit, freight_valid_from, is_active, updated_at, ${FROM_CODE}, to_location:locations!network_links_to_location_fkey(code)`,
   list: {
     // Lanes number in the hundreds per organization; network_links_lane_key and
     // network_links_to_idx serve the location filters.
@@ -140,6 +147,13 @@ export const networkLinks = defineEntity({
     },
     { name: 'freight_cost', kind: 'decimal', hint: true },
     { name: 'currency', kind: 'select', options: { source: 'currencies' }, hint: true },
+    {
+      name: 'freight_unit',
+      kind: 'select',
+      options: { source: 'enum', values: UNITS_OF_MEASURE },
+      hint: true,
+    },
+    { name: 'freight_valid_from', kind: 'date', hint: true },
     { name: 'is_active', kind: 'switch' },
   ],
   schema: networkLinkSchema,

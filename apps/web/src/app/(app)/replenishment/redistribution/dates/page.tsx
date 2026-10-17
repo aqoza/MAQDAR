@@ -77,6 +77,9 @@ export default async function TransferDateHistory({
         }
       />
       <ReplenishmentNav current="redistribution" />
+      <Link className="inline-block underline" href="/replenishment/redistribution/freight">
+        {t('freightHistory')}
+      </Link>
       <form
         method="get"
         action="/replenishment/redistribution/dates"

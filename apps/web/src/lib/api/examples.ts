@@ -74,6 +74,8 @@ export const EXAMPLES: { readonly [E in EntityName]: readonly ExampleRecord[] } 
       freight_cost: '350',
       currency: 'SAR',
       is_active: true,
+      freight_unit: null,
+      freight_valid_from: '2026-01-01',
     },
   ],
   brands: [

@@ -185,6 +185,8 @@ describe('networkLinkSchema', () => {
       lead_time_days_p50: 3,
       lead_time_days_p90: 7,
       freight_cost: 1250.5,
+      freight_unit: null,
+      freight_valid_from: null,
       currency: 'SAR',
     })
   })

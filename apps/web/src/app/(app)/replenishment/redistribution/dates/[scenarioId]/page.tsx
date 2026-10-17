@@ -45,6 +45,20 @@ export default async function SavedTransferDates({
         {t('savedAt', { time: format.dateTime(new Date(result.data.created_at), 'long') })}
       </p>
       <p>{t('noGuarantee')}</p>
+      <div className="flex flex-wrap gap-3">
+        <Link
+          className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+          href={`/replenishment/redistribution/freight/new?scenario=${scenarioId}`}
+        >
+          {t('estimateFreight')}
+        </Link>
+        <Link
+          className="inline-block underline"
+          href={`/replenishment/redistribution/freight?scenario=${scenarioId}`}
+        >
+          {t('freightHistory')}
+        </Link>
+      </div>
       <TransferDateReport report={report} locale={locale} />
       <Link
         className="inline-block underline"

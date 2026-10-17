@@ -28,6 +28,11 @@ const screens = [
     title: 'Transfer date scenarios',
     reset: 'Show all scenarios',
   },
+  {
+    path: '/replenishment/redistribution/freight',
+    title: 'Transfer freight estimates',
+    reset: 'Clear filters',
+  },
   { path: '/settings', title: 'Settings', reset: null },
 ] as const
 

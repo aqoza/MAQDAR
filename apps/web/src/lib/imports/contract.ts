@@ -356,6 +356,8 @@ export const COLUMN_LABEL_PATHS: {
     ],
     freight_basis: ['NetworkLinks.fields.freight_basis'],
     freight_cost: ['NetworkLinks.fields.freight_cost'],
+    freight_unit: ['NetworkLinks.fields.freight_unit'],
+    freight_valid_from: ['NetworkLinks.fields.freight_valid_from'],
     currency: ['NetworkLinks.fields.currency'],
     is_active: ['NetworkLinks.fields.is_active'],
   },
