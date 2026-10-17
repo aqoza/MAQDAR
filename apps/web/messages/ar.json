@@ -643,6 +643,21 @@
   "Settings": {
     "title": "الإعدادات",
     "description": "المنظمة والأعضاء والتفضيلات.",
+    "navigation": {
+      "label": "أقسام الإعدادات",
+      "searchLabel": "البحث عن إعداد",
+      "searchPlaceholder": "ابحث عن إعداد...",
+      "clearSearch": "مسح البحث في الإعدادات",
+      "noResults": "لا توجد إعدادات مطابقة. جرّب بحثًا آخر.",
+      "chooseSection": "قسم الإعدادات: {section}",
+      "password": "كلمة المرور",
+      "language": "لغة الواجهة",
+      "groups": {
+        "workspace": "مساحة العمل",
+        "access": "الأعضاء والوصول",
+        "account": "حسابك"
+      }
+    },
     "organization": {
       "title": "المنظمة",
       "description": "الاسم والعملة والدولة وخيارات اللغة.",

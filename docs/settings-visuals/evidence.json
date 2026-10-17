@@ -1,0 +1,80 @@
+{
+  "contract": "../settings-workspace.md: approved grouped Settings navigation and focused form panel; preserve shared Items typography, existing permissions/actions, drafts, URL history, compact illustrated loading shell, mobile access and Arabic RTL.",
+  "targetViewports": ["1920x900", "1366x768", "375x900"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Playwright exercised labelled search, empty-search recovery, Up/Down/Home/End section selection, roving focus, Tab into the active panel, a named collapsed chooser with at least a 44px target, and keyboard horizontal scrolling of the Members region in English and Arabic at 375px. Hidden panels remain out of the accessibility tree. Rendered type and icon sizes use shared tokens. Shared foreground/white and selected navigation colors were reviewed for legibility. This is targeted browser/visual verification, not an axe or assistive-technology audit; no coverage percentage is claimed. Section changes add no animation. Loading retains the existing shared pulse treatment."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "All seven sections were captured in English at 1920x900, 1366x768 and 375x900, and Arabic at 1366x768 and 375x900. Assertions check one visible panel, no document horizontal overflow, a 224px desktop menu aligned with its panel, a collapsed chooser below 1100px, 20px/28px page titles, 14px navigation and 16px icons. The existing responsive suite also passed at 375, 768, 1024, 1440 and 1920px."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "A throttled real server reload displayed the Settings loading boundary with its mint artwork at y=0 and height=100px before resolving to the Organization form. See settings-loading-1366.png."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Search with no matching settings shows a status message and clear control while retaining the active form; clearing restores all permitted sections. Fresh fixture organizations display the existing no-pending-invitations and no-API-keys messages."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "Submitting an API key without permissions shows the existing validation and preserves it plus the name across section changes/history. The existing stale-organization Settings mutation test still rejects submission from an old tab."
+    },
+    "partial": {
+      "status": "not-applicable",
+      "reason": "The new local section navigation has no partially loaded dataset: authorized panel slots arrive together from the existing server page. No query contracts, reference-data fallbacks or backend failure behavior change; those older fallbacks were not redefined or newly audited by this presentation work."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Saving Preferences reports success and persists on reload without resetting an unsaved Organization name. Existing invitation acceptance, member access, API-key one-time display, scope enforcement and revocation browser workflows pass through the new navigation."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "A real viewer receives only four sections and read-only Organization/Preferences explanations. An API-keys deep link resolves to Organization without rendering administrative controls; the viewer can still reach their own password panel. Existing tenant and stale-form workflows pass."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1920x900",
+      "artifact": "settings-organization-en-1920.png",
+      "observation": "Actual production build: compact shared header, grouped 224px settings menu and a focused two-column Organization form."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "settings-organization-en-1366.png",
+      "observation": "Laptop: menu and panel start at y=116, a 16px gap separates them, and the Organization save action fits in the viewport."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "settings-organization-en-375.png",
+      "observation": "Mobile: collapsed chooser, vertically stacked fields, readable shared text and a visible save action; no page horizontal overflow."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "settings-members-ar-1366.png",
+      "observation": "RTL mirrors the sidebar/menu/panel. Long fixture member data scrolls inside a named region; existing untranslated member strings fall back to English."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "settings-organization-ar-375.png",
+      "observation": "Arabic mobile: mirrored chooser, labels, input alignment and save action, with the existing Latin-identifier display."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "settings-loading-1366.png",
+      "observation": "Real throttled loading response retains the illustrated compact shell and menu/panel geometry."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "settings-search-empty-1366.png",
+      "observation": "No-results search feedback retains the selected Preferences form and provides a clear-search action."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "mockup-implementation.png",
+      "observation": "Approved concept scaled beside the real laptop viewport. Composition is retained while actual controls, canonical typography/sidebar dimensions and fixture content differ. This comparison does not claim a perceptual similarity percentage."
+    }
+  ]
+}

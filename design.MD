@@ -39,6 +39,12 @@ The approved page-header family uses a continuous pale mint surface from the sha
 - Use faint native SVG patterns: parts for Items, pins/network for Locations, partner supply nodes for Suppliers, column mapping for Imports, forecast envelope for Forecasts, inbound cartons for Replenishment, and sliders/permissions for Settings. Mirror decorative placement for RTL and reduce its prominence on narrow screens.
 - Keep shared typography, sidebar dimensions and 44px mobile targets. Allow wrapping on narrow screens instead of shrinking text or fixing the banner height.
 
+## Settings workspace
+
+Use grouped, searchable section navigation beside one focused panel. The desktop menu is 224px wide with a 16px panel gap; below 1100px use a collapsed section chooser with a 44px target. Keep the existing shared type roles and organization/account distinction.
+
+Render only authorized sections on the server. Keep allowed form panels mounted while switching so drafts and validation feedback survive. Section URLs contain only navigation state; never put field values, passwords or API secrets in URLs or browser storage. Preserve the compact illustrated header during loading, existing mutation guards and each form's own save action.
+
 ## Implementation and review
 
 `apps/web/src/app/globals.css` defines the semantic type tokens. Reuse them in app-owned components and styles. Generated `src/components/ui` primitives stay untouched. Additions or changes to the scale require an explicit design-rule update approved by the owner; do not create one-off pixel sizes in a feature stylesheet.

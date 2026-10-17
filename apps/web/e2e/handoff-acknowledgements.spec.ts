@@ -71,7 +71,7 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.request.get(`/api/purchase-handoffs/${lines[0].handoff}/json`)
   ).json()
   const originalBatch = await (await page.request.get(`/api/handoff-batches/${batch}/json`)).json()
-  await openSettings(page)
+  await openSettings(page, 'api-keys')
   await page.getByLabel('Key name', { exact: true }).fill('Acknowledgement integration')
   await page.getByLabel('Read purchase handoffs', { exact: true }).check()
   await page.getByLabel('Acknowledge purchase handoffs', { exact: true }).check()
@@ -262,7 +262,7 @@ with psycopg.connect(sys.argv[1]) as db:
     if (width === 375 || width === 1440)
       await page.screenshot({ path: `test-results/acknowledgements-batch-${width}.png` })
   }
-  await openSettings(page)
+  await openSettings(page, 'api-keys')
   await page
     .getByRole('row')
     .filter({ hasText: 'Acknowledgement integration' })

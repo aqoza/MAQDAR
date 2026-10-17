@@ -37,7 +37,7 @@ test('a seeded user creates an organization, uses the shell and mirrors for Arab
   await expectActiveOrganization(page, organization.name)
 
   // Arabic is enabled for this organization, so the switch mirrors the whole document.
-  await openSettings(page)
+  await openSettings(page, 'language')
   await page.getByRole('radio', { name: 'العربية' }).click()
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar')

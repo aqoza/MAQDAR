@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { inviteMember } from './helpers/invitations'
 import { waitForEmailLink } from './helpers/mailpit'
+import { selectSettingsSection } from './helpers/settings'
 import {
   DASHBOARD_URL,
   createOrganization,
@@ -74,6 +75,7 @@ test('an existing user invited as viewer joins by magic link and sees read-only 
   // Viewers see the language card but neither the organization form nor the members tools. The
   // second organization has Arabic switched off, so the card explains that instead of offering it.
   await openSettings(viewerPage)
+  await selectSettingsSection(viewerPage, 'language')
   await expect(
     viewerPage.getByText('Arabic is switched off for this organization.', { exact: false }),
   ).toBeVisible()
