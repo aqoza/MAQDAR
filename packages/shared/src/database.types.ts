@@ -1545,6 +1545,9 @@ isOneToOne: false
 "forecast_prepared_enqueue":
 { Args: { "p_fixed_group_confirmed": boolean,"p_horizon": number,"p_organization_id": string,"p_preparation_id": string,"p_request_id": string }; Returns: string
                            },
+"handoff_integration_workbench":
+{ Args: { "p_filters"?: Json,"p_organization_id": string,"p_page"?: number,"p_size"?: number }; Returns: Json
+                           },
 "import_cancel_step":
 { Args: { "p_batch_id": string }; Returns: Json
                            },
