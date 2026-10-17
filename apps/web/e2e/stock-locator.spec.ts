@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { selectSettingsSection } from './helpers/settings'
 
 test.use({ actionTimeout: 30_000 })
 
@@ -124,6 +125,7 @@ test('stock locator separates observation evidence, ranks distance and preserves
   await expect(rows).toHaveCount(1)
   await expect(rows.first()).toContainText('UNIT-KG')
   await page.goto('/settings')
+  await selectSettingsSection(page, 'language')
   await page.getByRole('radio', { name: 'العربية' }).click()
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await page.goto(path + query)

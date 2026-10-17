@@ -33,4 +33,5 @@ After review, the owner applies `20261017183944_stock_locator.sql` before deploy
 - All 1,320 web unit tests across 108 files passed. Repository formatting, lint, TypeScript, logical CSS and the production build passed.
 - The stock-locator browser workflow passed against a local production build with synthetic data: form submission, evidence disclosure, filters, paging, invalid inputs, viewer reads and receiver-only/source-only/both-location branch access. The five existing responsive-planning regression cases also passed.
 - Screenshots and layout checks cover 375, 768, 1024, 1440 and 1920px, plus Arabic RTL at 375 and 1440px. Page title/row typography, keyboard disclosure, local table scrolling and page overflow were checked. New copy uses the repository's English fallback in Arabic.
+- After syncing with the merged Settings workspace, both the locator and transfer integration-workbench browser scenarios passed without retries. Language selection follows the Settings section navigation; consecutive source-filter submissions wait for the previous rendered filter response.
 - No hosted migration or deployment was run. Full CI results are recorded on the PR.
