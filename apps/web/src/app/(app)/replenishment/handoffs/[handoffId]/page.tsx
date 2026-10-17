@@ -1,4 +1,5 @@
 import { HelpDisclosure } from '@/components/help-disclosure'
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import Link from 'next/link'
 import { HandoffBatchOverlap } from '@/components/handoff-batch-overlap'
 import { notFound, redirect } from 'next/navigation'
@@ -12,8 +13,10 @@ import { PurchaseCostReport } from '@/components/purchase-cost-report'
 
 export default async function HandoffDetail({
   params,
+  searchParams,
 }: {
   params: Promise<{ handoffId: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
@@ -89,6 +92,11 @@ export default async function HandoffDetail({
         <p>{t('csvNote')}</p>
       </HelpDisclosure>
       <PurchaseCostReport report={payload.estimate} locale={locale} />
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={handoffId}
+        pageValue={(await searchParams).ack_page}
+      />
       <HandoffBatchOverlap organizationId={context.active.id} handoffIds={[handoffId]} />
     </div>
   )

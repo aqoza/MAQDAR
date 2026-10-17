@@ -774,6 +774,56 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"purchase_handoff_acknowledgements": {
+                  Row: {
+                    "api_key_id": string,"batch_id": string | null,"client_event_id": string,"external_reference": string,"external_system": string,"handoff_id": string | null,"id": string,"location_id": string,"organization_id": string,"reason": string | null,"recorded_at": string,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "api_key_id": string,"batch_id"?: string | null,"client_event_id": string,"external_reference": string,"external_system": string,"handoff_id"?: string | null,"id"?: string,"location_id": string,"organization_id": string,"reason"?: string | null,"recorded_at"?: string,"status": string
+                  }
+                  Update: {
+                    "api_key_id"?: string,"batch_id"?: string | null,"client_event_id"?: string,"external_reference"?: string,"external_system"?: string,"handoff_id"?: string | null,"id"?: string,"location_id"?: string,"organization_id"?: string,"reason"?: string | null,"recorded_at"?: string,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "purchase_handoff_acknowledgeme_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_handoff_acknowledgemen_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoff_batch_candidates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_handoff_acknowledgemen_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoff_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_handoff_acknowledgemen_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoffs"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_handoff_acknowledgements_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoff_batch_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_handoff_acknowledgements_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoff_batches"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"purchase_handoff_batches": {
                   Row: {
                     "created_at": string,"created_by": string,"handoff_ids": (string)[],"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>
@@ -1440,6 +1490,12 @@ isOneToOne: false
           Functions: {
             "accept_invitation":
 { Args: { "p_invitation_id": string }; Returns: string
+                           },
+"api_handoff_acknowledge":
+{ Args: { "p_body": Json,"p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
+                           },
+"api_handoff_acknowledgements":
+{ Args: { "p_after"?: string,"p_event_id"?: string,"p_id": string,"p_key_hash": string,"p_limit"?: number,"p_resource": string }; Returns: Json
                            },
 "api_handoff_get":
 { Args: { "p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json

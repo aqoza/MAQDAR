@@ -22,6 +22,12 @@ import type { RequestIssue, UpsertBodyFailure } from './records'
  */
 
 export const PROBLEMS = {
+  acknowledgement_conflict: {
+    status: 409,
+    title: 'Acknowledgement conflict',
+    detail:
+      'This client event ID already identifies a different request. Retry the original request unchanged, or use a new event ID for a new report.',
+  },
   invalid_parameter: {
     status: 400,
     title: 'Invalid query parameter',
@@ -429,6 +435,8 @@ export function apiProblemFor(error: RpcErrorLike, context: RpcProblemContext): 
     case 'MQ404':
       return known(toProblem('not_found', requestId))
     case 'MQ409':
+      if (hint === 'acknowledgement_conflict')
+        return known(toProblem('acknowledgement_conflict', requestId))
       if (hint === 'import_in_progress') return known(toProblem('import_in_progress', requestId))
       if (hint === 'another_commit') {
         return known(

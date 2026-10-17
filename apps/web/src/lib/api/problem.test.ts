@@ -49,7 +49,7 @@ function rpc(code: string, hint?: string, details?: string): RpcErrorLike {
 
 describe('toProblem', () => {
   it('builds RFC 9457 members for every code, with status equal to the HTTP status', () => {
-    expect(PROBLEM_CODES).toHaveLength(21)
+    expect(PROBLEM_CODES).toHaveLength(22)
     for (const code of PROBLEM_CODES) {
       const problem = toProblem(code, REQUEST_ID, { allow: 'GET' })
       expect(problem.status).toBe(PROBLEMS[code].status)

@@ -1,4 +1,5 @@
 import { HelpDisclosure } from '@/components/help-disclosure'
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
@@ -9,7 +10,13 @@ import { batchPayloadSchema } from '@/lib/handoff-batches'
 import { HandoffBatchEvidence } from '@/components/handoff-batch-evidence'
 import { HandoffBatchOverlap } from '@/components/handoff-batch-overlap'
 
-export default async function BatchDetail({ params }: { params: Promise<{ batchId: string }> }) {
+export default async function BatchDetail({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ batchId: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
+}) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { batchId } = await params
@@ -64,6 +71,12 @@ export default async function BatchDetail({ params }: { params: Promise<{ batchI
         <p>{t('csvNote')}</p>
       </HelpDisclosure>
       <HandoffBatchEvidence report={payload} />
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={batchId}
+        batch
+        pageValue={(await searchParams).ack_page}
+      />
       <HandoffBatchOverlap
         organizationId={context.active.id}
         handoffIds={saved.data.handoff_ids}
