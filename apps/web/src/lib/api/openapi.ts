@@ -25,6 +25,7 @@ import {
   type ApiResource,
 } from './resources'
 import { OPENAPI_DOCUMENT_VERSION, deprecationFor } from './versioning'
+import { handoffPaths, handoffSchemas } from './handoff-openapi'
 
 /**
  * The OpenAPI 3.1.1 document of `/api/v1`, generated from the import contract
@@ -720,6 +721,7 @@ function codesFor(status: number): string {
 
 function responses(): Record<string, Schema> {
   return {
+    NotFound: problemResponse('No record with this ID in the key organization.', 'Problem'),
     InvalidParameter: problemResponse(
       'Bad query parameters (invalid_parameter, invalid_cursor).',
       'ParameterProblem',
@@ -893,6 +895,7 @@ function organizationOperation(): Schema {
 
 const INFO_DESCRIPTION = [
   'Bulk upserts and lists of MAQDAR master data and demand history, per organization.',
+  'Read saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.',
   '',
   `Authenticate with \`Authorization: Bearer ${API_KEY_PREFIX}…\`; an owner or admin creates keys in Settings. Keys are scoped (${API_SCOPES.join(', ')}), expire, and stop working when their creator is no longer an owner or admin.`,
   '',
@@ -922,7 +925,8 @@ export function buildOpenApi(): OpenApiDocument {
     schemas[names.request] = requestSchema(entity)
     schemas[names.page] = pageSchema(entity)
   }
-  Object.assign(schemas, sharedSchemas())
+  Object.assign(paths, handoffPaths())
+  Object.assign(schemas, sharedSchemas(), handoffSchemas())
 
   return {
     openapi: OPENAPI_VERSION,
@@ -938,6 +942,10 @@ export function buildOpenApi(): OpenApiDocument {
       { name: TAGS.organization, description: 'The key and its organization.' },
       { name: TAGS.master_data, description: 'Calendars, locations, items, suppliers and rates.' },
       { name: TAGS.transactions, description: 'Demand history.' },
+      {
+        name: 'Purchase handoffs',
+        description: 'Read-only saved planning evidence and live selection.',
+      },
     ],
     'x-maqdar-load-order': RESOURCES.map((resource) => resource.name),
     'x-maqdar-scopes': Object.fromEntries(

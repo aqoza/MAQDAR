@@ -312,6 +312,7 @@ const INVALID_TOKEN_DETAIL: Readonly<Record<string, string>> = {
 
 /** Query parameters an MQ422 on a list may name in its hint, with their English rule. */
 export const PARAMETER_TEXT: Readonly<Record<string, string>> = {
+  created_since: 'Must be an RFC 3339 date-time with an offset (2026-10-01T00:00:00Z).',
   limit: 'Must be a whole number within the list limits.',
   from: 'Must be a date (YYYY-MM-DD) on or before to.',
   to: 'Must be a date (YYYY-MM-DD) at most 365 days after from.',

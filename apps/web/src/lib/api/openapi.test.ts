@@ -14,7 +14,9 @@ import {
 import { PROBLEM_CODES } from './problem'
 import { validateUpsertBody } from './records'
 import { RESOURCES, allOperationIds, resourcePath } from './resources'
+import { HANDOFF_RESOURCES, HANDOFF_SCOPE } from './handoffs'
 import { deprecationFor } from './versioning'
+import { handoffFixture } from '../purchase-handoffs.fixture'
 
 const doc = buildOpenApi()
 
@@ -163,13 +165,39 @@ describe('openapi.json', () => {
 })
 
 describe('structure', () => {
-  it('has exactly the organization path plus a list and an upsert per resource', () => {
+  it('documents bounded read-only handoffs and validates original evidence values', () => {
+    for (const resource of HANDOFF_RESOURCES) {
+      expect(Object.keys(doc.paths[`/${resource}`])).toEqual(['get'])
+      expect(Object.keys(doc.paths[`/${resource}/{id}`])).toEqual(['get'])
+      const parameters = doc.paths[`/${resource}`].get.parameters as Schema[]
+      expect(parameters[0].schema).toEqual({
+        type: 'integer',
+        minimum: 1,
+        maximum: 100,
+        default: 25,
+      })
+      expect((doc.paths[`/${resource}/{id}`].get.responses as Schema)['404']).toBeDefined()
+    }
+    expect(valid(schema('PurchaseHandoffPayload'), handoffFixture)).toBe(true)
+    expect(valid(schema('PurchaseHandoffPayload'), { ...handoffFixture, purpose: 'order' })).toBe(
+      false,
+    )
+    expect(
+      valid(schema('PurchaseHandoffPayload'), {
+        ...handoffFixture,
+        estimate: { ...handoffFixture.estimate, subtotal: 123 },
+      }),
+    ).toBe(false)
+    expect((schema('HandoffRecord').properties as Schema).payload).toBeUndefined()
+  })
+  it('has organization, feed list/upsert and read-only handoff paths', () => {
     const expected = [
       '/organization',
       ...RESOURCES.flatMap((resource) => [
         resourcePath(resource, 'list'),
         resourcePath(resource, 'upsert'),
       ]),
+      ...HANDOFF_RESOURCES.flatMap((resource) => [`/${resource}`, `/${resource}/{id}`]),
     ]
     expect(Object.keys(doc.paths)).toEqual(expected)
     for (const resource of RESOURCES) {
@@ -199,7 +227,9 @@ describe('structure', () => {
       )
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
-        : []
+        : path.startsWith('/purchase-handoff')
+          ? [HANDOFF_SCOPE]
+          : []
       expect(operation['x-maqdar-scopes'], operation.operationId).toEqual(scopes)
       expect(operation.deprecated === true).toBe(deprecationFor(operation.operationId) !== null)
     }
