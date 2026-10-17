@@ -84,6 +84,9 @@ export default async function RedistributionHistory({
           </Link>
         }
       />
+      <Link className="inline-block underline" href="/replenishment/redistribution/integrations">
+        {t('integrations')}
+      </Link>
       <Link className="inline-block underline" href="/replenishment/redistribution/dates">
         {dates('title')}
       </Link>

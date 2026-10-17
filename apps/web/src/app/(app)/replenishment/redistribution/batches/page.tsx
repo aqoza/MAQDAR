@@ -88,6 +88,9 @@ export default async function TransferBatches({
           )
         }
       />
+      <Link className="inline-block underline" href="/replenishment/redistribution/integrations">
+        {t('integrations')}
+      </Link>
       <Link className="underline" href="/replenishment/redistribution/handoffs">
         {t('handoffs')}
       </Link>
