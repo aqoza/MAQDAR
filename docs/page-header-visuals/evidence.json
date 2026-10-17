@@ -1,0 +1,95 @@
+{
+  "contract": "Approved compact Items mockup and docs/page-headers.md: seven main section patterns, shared 20px/14px typography, continuous artwork through tabs, desktop subtitle-to-tabs gap at most 8px, Items header at most 160px, natural mobile wrapping and RTL placement.",
+  "targetViewports": ["1920x900", "1366x768", "375x900"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Browser checks verified hidden decorative artwork, pointer-events:none, keyboard focus from Import to New, existing Forecasts arrow-key/tab behavior, shared font sizes and keyboard-accessible table scrolling. Rendered desktop/mobile/Arabic text fit was inspected; mobile controls retain 44px targets. No automated axe audit was run."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "All seven sections rendered at English 1920/1366/375px and Arabic 1366/375px without page overflow or browser errors. Items measured 153px including global bar/tabs and a 6px subtitle gap. Existing responsive checks also passed at 768/1024/1440px."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "not-applicable",
+      "reason": "The decorative header has no asynchronous image fetch or data state: artwork is synchronous inline SVG. Existing page loading behavior is retained."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "The new seven-section visual test captured authenticated empty-organization pages with their existing empty messages and actions."
+    },
+    "error": {
+      "status": "not-applicable",
+      "reason": "The header introduces no network operation, mutation or error-state controller; existing page error handling remains outside this presentation scope."
+    },
+    "partial": {
+      "status": "not-applicable",
+      "reason": "Patterns contain no operational quantities, optional business datasets or metric statuses. Partial-data semantics remain in existing page content."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Existing master-data workflows passed creation, duplicate refusal, editing, money formatting and deletion while using the new list headers; all six Forecasts panels retained form state."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Existing viewer workflows passed read-only lists/settings, hidden New actions, disabled edit fields and refused new-form access. Organization-switch stale-form protection also passed."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1920x900",
+      "artifact": "items-en-1920.png",
+      "observation": "Compact header with bearing/gear/filter illustration extending through tabs; readable shared typography and right-aligned actions."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "items-en-1366.png",
+      "observation": "Laptop header keeps the same font sizes and compact subtitle/tab spacing."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "items-en-375.png",
+      "observation": "Actions wrap, section tabs scroll locally, controls remain usable, and faint artwork stays behind text."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "items-ar-1366.png",
+      "observation": "Arabic layout mirrors decoration while preserving the shared sidebar and type scale."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "items-ar-375.png",
+      "observation": "Arabic mobile header wraps with no horizontal page overflow."
+    },
+    {
+      "viewport": "1920x900",
+      "artifact": "locations-en-1920.png",
+      "observation": "Location-network motif continues through the area navigation."
+    },
+    {
+      "viewport": "1920x900",
+      "artifact": "suppliers-en-1920.png",
+      "observation": "Supplier/factory motif uses the same compact header surface."
+    },
+    {
+      "viewport": "1920x900",
+      "artifact": "imports-en-1920.png",
+      "observation": "Document and mapping motif preserves import history controls."
+    },
+    {
+      "viewport": "1920x900",
+      "artifact": "forecasts-en-1920.png",
+      "observation": "Decorative forecast envelope sits above the retained interactive planning tabs and forms."
+    },
+    {
+      "viewport": "1920x900",
+      "artifact": "replenishment-en-1920.png",
+      "observation": "Inbound cartons/checklist motif extends through existing purchasing navigation."
+    },
+    {
+      "viewport": "1920x900",
+      "artifact": "settings-en-1920.png",
+      "observation": "Settings motif preserves organization/account forms and their permissions."
+    }
+  ]
+}

@@ -132,6 +132,8 @@ export async function ListScreen({ entity, searchParams }: ListScreenProps) {
   return (
     <>
       <PageHeader
+        pattern={definition.area}
+        navigation={<AreaTabs area={definition.area} current={definition.tab} />}
         title={t('title')}
         description={t('description')}
         actions={
@@ -159,7 +161,6 @@ export async function ListScreen({ entity, searchParams }: ListScreenProps) {
           ) : null
         }
       />
-      <AreaTabs area={definition.area} current={definition.tab} />
       {deleted ? (
         <Alert role="status">
           <AlertDescription>{tForm('deleted')}</AlertDescription>

@@ -43,6 +43,8 @@ export default async function IntegrationWorkbench({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
+        navigation={<ReplenishmentNav current="integrations" />}
         title={t('title')}
         description={t('context')}
         help={
@@ -52,7 +54,6 @@ export default async function IntegrationWorkbench({
           </HelpDisclosure>
         }
       />
-      <ReplenishmentNav current="integrations" />
       <Form
         action="/replenishment/integrations"
         className="workspace-toolbar grid min-w-0 grid-cols-2 gap-3 xl:grid-cols-4"

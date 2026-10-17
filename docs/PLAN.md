@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Illustrated compact page headers — approved 2026-10-17
+
+Implement the reviewed Items mockup and coordinated patterns for the other main sections. Extend the mint artwork through section tabs, close the highlighted subtitle-to-tabs gap, and preserve the shared typography and sidebar. Scope: reusable presentation and existing navigation composition; no backend changes. See [page-headers.md](page-headers.md).
+
 ## Shared application typography — approved 2026-10-17
 
 The owner selected Items as the typography reference after observing Dashboard/sidebar size changes between routes. Restore the shared sidebar, align dashboard text with the application type roles and record the required scale in [design.MD](../design.MD), linked from `CLAUDE.md`. Verify typography during Dashboard ↔ Items navigation across viewport sizes.

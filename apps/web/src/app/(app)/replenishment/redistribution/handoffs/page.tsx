@@ -66,6 +66,8 @@ export default async function TransferHandoffs({
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
+        pattern="replenishment"
+        navigation={<ReplenishmentNav current="redistribution" />}
         title={t('title')}
         description={t('context')}
         help={
@@ -74,7 +76,6 @@ export default async function TransferHandoffs({
           </HelpDisclosure>
         }
       />
-      <ReplenishmentNav current="redistribution" />
       <Link href="/replenishment/redistribution/review" className="inline-block underline">
         {t('review')}
       </Link>

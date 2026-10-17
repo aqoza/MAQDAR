@@ -67,6 +67,8 @@ export default async function HandoffBatches({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
+        navigation={<ReplenishmentNav current="batches" />}
         title={t('title')}
         description={t('context')}
         help={
@@ -85,7 +87,6 @@ export default async function HandoffBatches({
           )
         }
       />
-      <ReplenishmentNav current="batches" />
       <Form
         action="/replenishment/batches"
         className="workspace-toolbar flex flex-wrap items-end gap-3"

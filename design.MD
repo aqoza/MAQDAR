@@ -28,6 +28,16 @@ Sizes are expressed in rem in the implementation so browser text scaling is resp
 - Keep prose at 12px or larger. Use natural wrapping or local table scrolling when content is constrained; do not hide text, clip the page, or shrink text to force a fit.
 - Keep numeric metrics separate from headings and status text. Currency formatting and precision follow existing business rules; font changes must not alter values.
 
+## Illustrated section headers
+
+The approved page-header family uses a continuous pale mint surface from the shared top bar through the section's tab navigation. Main Items, Locations and Suppliers lists use the same header on every area tab. Imports, Forecasts, Replenishment workspaces and Settings use their own related decorative patterns. Detail and editing screens keep their existing hierarchy unless explicitly opted in.
+
+- Use the shared `PageHeader` pattern and navigation slots; keep tab behavior and actions intact. Forecasts passes server-rendered heading/artwork into its existing client tab component.
+- Keep the subtitle-to-tabs gap at 4–8px on desktop. The Items header, including the 44px global bar and tab row, is at most 160px tall at the reference desktop/laptop viewports.
+- The artwork must continue behind the tabs. Keep it decorative, static, hidden from assistive technology and unable to intercept clicks. Forecast curves in this artwork are illustrations, not operational metrics.
+- Use faint native SVG patterns: parts for Items, pins/network for Locations, partner supply nodes for Suppliers, column mapping for Imports, forecast envelope for Forecasts, inbound cartons for Replenishment, and sliders/permissions for Settings. Mirror decorative placement for RTL and reduce its prominence on narrow screens.
+- Keep shared typography, sidebar dimensions and 44px mobile targets. Allow wrapping on narrow screens instead of shrinking text or fixing the banner height.
+
 ## Implementation and review
 
 `apps/web/src/app/globals.css` defines the semantic type tokens. Reuse them in app-owned components and styles. Generated `src/components/ui` primitives stay untouched. Additions or changes to the scale require an explicit design-rule update approved by the owner; do not create one-off pixel sizes in a feature stylesheet.
