@@ -2721,7 +2721,8 @@
       "lane_inactive": "Unavailable: the directed lane is inactive.",
       "commitments_unconfirmed": "Unavailable: confirm source commitments at the shared cutoff.",
       "lane_unconfirmed": "Unavailable: confirm lane applicability at the shared cutoff."
-    }
+    },
+    "integrations": "Transfer integration workbench"
   },
   "IntegrationWorkbench": {
     "title": "Integration workbench",
@@ -2766,7 +2767,17 @@
     "pagination": "Integration result pages",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {page} of {pages}"
+    "page": "Page {page} of {pages}",
+    "transferTitle": "Transfer integration workbench",
+    "transferContext": "Latest reported transfer receipt and rejection by system",
+    "transferMeaning": "Each result shows the latest server-recorded report for one transfer package and exact system label. System names are supplied by API key holders. No report means absent evidence, not failed delivery. Reports do not verify arrival, reserve stock, create transfer orders or update inbound.",
+    "source": "Source location code",
+    "destination": "Destination location code",
+    "sourceDestination": "Source / destination",
+    "transferLink": "Transfer integration workbench",
+    "purchaseLink": "Purchase integration workbench",
+    "transferHandoffs": "Transfer handoffs",
+    "transferBatches": "Transfer batches"
   },
   "HandoffAcknowledgements": {
     "title": "Integration acknowledgements",
@@ -3056,7 +3067,8 @@
     "approval": "Saved approval",
     "approvedAt": "Approved {time}",
     "approvalReason": "Approval reason",
-    "batches": "Transfer handoff batches"
+    "batches": "Transfer handoff batches",
+    "integrations": "Transfer integration workbench"
   },
   "TransferBatches": {
     "title": "Transfer handoff batches",
@@ -3134,6 +3146,7 @@
     "unavailable": "The batch or a selected handoff is unavailable. Refresh and check your selection.",
     "context": "Planning packages for manual handoff",
     "typicalReceipt": "Typical receipt (p50)",
-    "slowReceipt": "Slow receipt (p90)"
+    "slowReceipt": "Slow receipt (p90)",
+    "integrations": "Transfer integration workbench"
   }
 }

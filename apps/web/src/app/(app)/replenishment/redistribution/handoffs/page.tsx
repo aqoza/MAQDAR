@@ -76,6 +76,9 @@ export default async function TransferHandoffs({
           </HelpDisclosure>
         }
       />
+      <Link className="inline-block underline" href="/replenishment/redistribution/integrations">
+        {t('integrations')}
+      </Link>
       <Link href="/replenishment/redistribution/review" className="inline-block underline">
         {t('review')}
       </Link>

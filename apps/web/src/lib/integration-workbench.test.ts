@@ -55,4 +55,32 @@ describe('integration workbench URL state', () => {
       '/replenishment/batches/two#acknowledgements',
     )
   })
+
+  it('keeps transfer endpoint filters and evidence separate from purchasing', () => {
+    const params = integrationParams(
+      { source: 'SOURCE', location: 'DEST', supplier: 'SUP', system: ' ERP ', status: 'no_report' },
+      true,
+    )
+    expect(params.filters).toEqual({
+      source: 'SOURCE',
+      location: 'DEST',
+      system: ' ERP ',
+      status: 'no_report',
+    })
+    const url = new URL(integrationHref(params, 2, true), 'https://example.com')
+    expect(url.pathname).toBe('/replenishment/redistribution/integrations')
+    expect(integrationParams(Object.fromEntries(url.searchParams), true)).toMatchObject({
+      page: 2,
+      filters: params.filters,
+    })
+    expect(integrationParams({ source: 'SOURCE', supplier: 'SUP' }).filters).toEqual({
+      supplier: 'SUP',
+    })
+    expect(integrationEvidenceHref({ kind: 'handoff', id: 'one' }, true)).toBe(
+      '/replenishment/redistribution/handoffs/one#acknowledgements',
+    )
+    expect(integrationEvidenceHref({ kind: 'batch', id: 'two' }, true)).toBe(
+      '/replenishment/redistribution/batches/two#acknowledgements',
+    )
+  })
 })

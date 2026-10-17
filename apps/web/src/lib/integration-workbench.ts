@@ -40,8 +40,19 @@ export const integrationListSpec: ListSpec = {
   ],
 }
 
-export function integrationParams(raw: RawSearchParams): ListParams {
-  const parsed = parseListParams(raw, integrationListSpec)
+export const transferIntegrationListSpec: ListSpec = {
+  ...integrationListSpec,
+  filters: integrationListSpec.filters!.map((filter) =>
+    filter.param === 'supplier' ? { ...filter, param: 'source', column: 'source_code' } : filter,
+  ),
+}
+
+export function integrationPath(transfer = false) {
+  return `/replenishment/${transfer ? 'redistribution/' : ''}integrations`
+}
+
+export function integrationParams(raw: RawSearchParams, transfer = false): ListParams {
+  const parsed = parseListParams(raw, transfer ? transferIntegrationListSpec : integrationListSpec)
   const filters = Object.fromEntries(
     Object.entries(parsed.filters).filter(([key]) => key !== 'system'),
   )
@@ -59,8 +70,13 @@ export function integrationParams(raw: RawSearchParams): ListParams {
   }
 }
 
-export function integrationHref(params: ReturnType<typeof integrationParams>, page: number) {
-  return listHref('/replenishment/integrations', integrationListSpec, params, { page })
+export function integrationHref(params: ListParams, page: number, transfer = false) {
+  return listHref(
+    integrationPath(transfer),
+    transfer ? transferIntegrationListSpec : integrationListSpec,
+    params,
+    { page },
+  )
 }
 
 export const integrationResultSchema = z.object({
@@ -92,6 +108,19 @@ export const integrationResultSchema = z.object({
     .max(100),
 })
 
-export function integrationEvidenceHref(row: { kind: 'handoff' | 'batch'; id: string }) {
-  return `/replenishment/${row.kind === 'batch' ? 'batches' : 'handoffs'}/${row.id}#acknowledgements`
+export const transferIntegrationResultSchema = integrationResultSchema.extend({
+  rows: z
+    .array(
+      integrationResultSchema.shape.rows.element
+        .omit({ supplier_code: true })
+        .extend({ source_code: z.string() }),
+    )
+    .max(100),
+})
+
+export function integrationEvidenceHref(
+  row: { kind: 'handoff' | 'batch'; id: string },
+  transfer = false,
+) {
+  return `/replenishment/${transfer ? 'redistribution/' : ''}${row.kind === 'batch' ? 'batches' : 'handoffs'}/${row.id}#acknowledgements`
 }

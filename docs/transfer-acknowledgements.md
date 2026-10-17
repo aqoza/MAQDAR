@@ -1,6 +1,6 @@
 # Transfer handoff acknowledgements (Step 16h)
 
-Status: implemented; review pending. Approved after PR #50 was reviewed and merged as `6204f94` on 2026-10-17.
+Status: merged in PR #53 as `b26d099` on 2026-10-17 after review and all three CI jobs passed. Approved after PR #50 was reviewed and merged as `6204f94`.
 
 ## Contract and acceptance
 
