@@ -60,6 +60,38 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"container_capacity_scenarios": {
+                  Row: {
+                    "batch_id": string,"created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "batch_id": string,"created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "batch_id"?: string,"created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "container_capacity_scenarios_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoff_batch_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "container_capacity_scenarios_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoff_batches"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "container_capacity_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"countries": {
                   Row: {
                     "code": string,"currency_code": string,"holiday_coverage_from": string | null,"holiday_coverage_to": string | null,"name_ar": string | null,"name_en": string,"timezone": string,"utc_offset_minutes": number,"vat_rate": number,"weekend_days": (number)[]
@@ -1112,14 +1144,14 @@ isOneToOne: false
                   ]
                 },"supplier_items": {
                   Row: {
-                    "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"supplier_id": string,"supplier_part_number": string | null,"unit_of_measure": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
+                    "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"shipping_valid_from": string | null,"shipping_volume_m3": number | null,"shipping_weight_kg": number | null,"supplier_id": string,"supplier_part_number": string | null,"unit_of_measure": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"currency": string,"id"?: string,"is_preferred"?: boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id": string,"pack_size"?: number,"supplier_id": string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price": number,"updated_at"?: string,"valid_from"?: string | null
+                    "created_at"?: string,"currency": string,"id"?: string,"is_preferred"?: boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id": string,"pack_size"?: number,"shipping_valid_from"?: string | null,"shipping_volume_m3"?: number | null,"shipping_weight_kg"?: number | null,"supplier_id": string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price": number,"updated_at"?: string,"valid_from"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"currency"?: string,"id"?: string,"is_preferred"?: boolean,"item_id"?: string,"lead_time_days"?: number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id"?: string,"pack_size"?: number,"supplier_id"?: string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price"?: number,"updated_at"?: string,"valid_from"?: string | null
+                    "created_at"?: string,"currency"?: string,"id"?: string,"is_preferred"?: boolean,"item_id"?: string,"lead_time_days"?: number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id"?: string,"pack_size"?: number,"shipping_valid_from"?: string | null,"shipping_volume_m3"?: number | null,"shipping_weight_kg"?: number | null,"supplier_id"?: string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price"?: number,"updated_at"?: string,"valid_from"?: string | null
                   }
                   Relationships: [
                     {
@@ -2117,6 +2149,12 @@ isOneToOne: false
                            },
 "classification_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_location_code": string,"p_options": Json,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
+                           },
+"container_capacity_preview":
+{ Args: { "p_batch_id": string,"p_confirmed": boolean,"p_organization_id": string,"p_payload": string,"p_volume": string }; Returns: Json
+                           },
+"container_capacity_save":
+{ Args: { "p_batch_id": string,"p_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_payload": string,"p_request_id": string,"p_volume": string }; Returns: string
                            },
 "create_api_key":
 { Args: { "p_display_prefix": string,"p_expires_in_days": number,"p_key_hash": string,"p_last4": string,"p_name": string,"p_organization_id": string,"p_scopes": (string)[] }; Returns: string

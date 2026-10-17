@@ -805,6 +805,9 @@ ENTITIES: tuple[Entity, ...] = (
             Column("is_preferred", "boolean", "Preferred source for the item (at most one per item).", default="false"),
             Column("valid_from", "date", "Price valid from.", nullable=True),
             Column("unit_of_measure", "enum", "Source-supplied unit for MOQ, pack multiple and unit price; empty means unknown.", nullable=True, omittable=True, enum=("EA", "SET", "L", "KG")),
+            Column("shipping_weight_kg", "decimal", "Shipping weight in kg per supplied purchase unit, including apportioned packaging; empty means unknown.", nullable=True, omittable=True, scale=6, integer_digits=9, greater_than=0),
+            Column("shipping_volume_m3", "decimal", "Shipping volume in cubic metres per supplied purchase unit, including apportioned packaging; empty means unknown.", nullable=True, omittable=True, scale=6, integer_digits=9, greater_than=0),
+            Column("shipping_valid_from", "date", "Separate effective-from date for shipping measurements; empty means unknown.", nullable=True, omittable=True),
         ),
         column_groups=(("unit_price", "currency"),),
         row_rules=(

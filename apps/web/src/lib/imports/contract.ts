@@ -423,6 +423,9 @@ export const COLUMN_LABEL_PATHS: {
     work_calendar_code: ['Suppliers.fields.work_calendar_id', 'Suppliers.columns.calendar'],
   },
   supplier_items: {
+    shipping_weight_kg: ['SupplierItems.fields.shipping_weight_kg'],
+    shipping_volume_m3: ['SupplierItems.fields.shipping_volume_m3'],
+    shipping_valid_from: ['SupplierItems.fields.shipping_valid_from'],
     supplier_code: ['SupplierItems.fields.supplier_id', 'SupplierItems.columns.supplier'],
     item_code: ['SupplierItems.fields.item_code'],
     supplier_part_number: [

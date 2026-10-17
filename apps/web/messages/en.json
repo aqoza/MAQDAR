@@ -327,7 +327,10 @@
       "unit_price": "Unit price",
       "currency": "Currency",
       "is_preferred": "Preferred supplier for this part",
-      "unit_of_measure": "Supplied unit"
+      "unit_of_measure": "Supplied unit",
+      "shipping_weight_kg": "Shipping weight per unit (kg)",
+      "shipping_volume_m3": "Shipping volume per unit (m³)",
+      "shipping_valid_from": "Shipping measurements valid from"
     },
     "filters": {
       "supplier": "Supplier",
@@ -341,7 +344,10 @@
       "pack_size": "Orders are placed in multiples of this quantity.",
       "unit_price": "In the price currency, with up to 3 decimals.",
       "is_preferred": "A part has one preferred supplier. Choosing this one clears the previous choice.",
-      "unit_of_measure": "Unit supplied for MOQ, pack multiple and unit price. Leave empty when unknown; catalog units are not inferred."
+      "unit_of_measure": "Unit supplied for MOQ, pack multiple and unit price. Leave empty when unknown; catalog units are not inferred.",
+      "shipping_weight_kg": "Optional, positive, up to 6 decimals. Per supplied purchase unit, including apportioned packaging; not per pack.",
+      "shipping_volume_m3": "Optional, positive, up to 6 decimals. Per supplied purchase unit, including apportioned packaging; not a guarantee of physical fit.",
+      "shipping_valid_from": "Separate from the price date. Confirm applicability when planning capacity."
     },
     "options": {
       "unit_of_measure": {
@@ -2638,7 +2644,8 @@
     "priceChanged": "Current price evidence no longer matches at least one handoff. Create and approve a new estimate before adding its handoff.",
     "policyRequired": "A selected line requires policy recalculation. Choose an approved compatible replacement.",
     "unavailable": "The batch or a selected handoff is unavailable. Refresh and check your selection.",
-    "context": "Planning packages for manual handoff"
+    "context": "Planning packages for manual handoff",
+    "capacity": "Container capacity"
   },
   "Redistribution": {
     "title": "Redistribution drafts",
@@ -3263,5 +3270,62 @@
     "typicalReceipt": "Typical receipt (p50)",
     "slowReceipt": "Slow receipt (p90)",
     "integrations": "Transfer integration workbench"
+  },
+  "ContainerCapacity": {
+    "title": "Container capacity",
+    "new": "Plan container capacity",
+    "description": "Compare a fixed purchase batch with usable volume and payload limits.",
+    "source": "Purchase batch",
+    "history": "Saved capacity scenarios",
+    "empty": "No capacity scenarios saved yet.",
+    "volume": "Usable volume (m³)",
+    "payload": "Payload limit (kg)",
+    "confirmation": "I confirm these shipping measurements apply to every saved quantity and adjusted order date, including apportioned packaging.",
+    "preview": "Check capacity",
+    "save": "Save capacity scenario",
+    "saving": "Saving…",
+    "saveNote": "Saves this evidence and these limits with the approved quantities unchanged.",
+    "invalid": "Enter positive limits with up to 9 integer digits and 6 decimal places.",
+    "changed": "Batch selection or measurement evidence changed. Refresh the preview before saving.",
+    "unavailable": "Capacity unavailable. Resolve the line evidence below before saving.",
+    "within": "Within entered capacity limits",
+    "over": "Exceeds entered capacity limits",
+    "weightTotal": "Total shipping weight",
+    "volumeTotal": "Total shipping volume",
+    "utilization": "{value}% utilized",
+    "overage": "{value} over limit",
+    "weightValue": "{value} kg",
+    "volumeValue": "{value} m³",
+    "item": "Item",
+    "quantity": "Saved quantity",
+    "weight": "Weight (kg)",
+    "cube": "Volume (m³)",
+    "evidence": "Inspect measurements",
+    "lines": "Capacity line contributions",
+    "measurement": "{weight} kg · {volume} m³ per {unit}",
+    "effective": "Valid from {date}",
+    "updated": "Recorded update: {time}",
+    "orderDate": "Adjusted order date: {date}",
+    "receiptDate": "Saved receipt date: {date}",
+    "current": "All batch lines are currently selected.",
+    "historical": "This batch has historical or unavailable selections. The saved capacity evidence remains unchanged.",
+    "savedAt": "Saved {time}",
+    "historyPage": "Page {page} of {pages}",
+    "previous": "Previous",
+    "next": "Next",
+    "method": "Totals use saved quantity × supplied shipping measurement for each line. No pack multiplication, unit conversion, quantity filling or shipment splitting is inferred. A missing measurement makes the complete batch unavailable; partial totals are not presented as capacity results.",
+    "limitsNote": "Aggregate capacity is an estimate. It does not assess dimensions, stacking, incompatibilities or loading geometry, guarantee physical fit, or book a shipment. Enter usable limits appropriate to the proposed container.",
+    "precisionNote": "Products and totals retain their exact decimals. Utilization percentages are rounded to two decimals; the capacity decision uses unrounded totals.",
+    "statuses": {
+      "available": "Measurements available",
+      "selection_changed": "Proposal no longer selected",
+      "source_invalid": "Saved source unavailable",
+      "measurements_missing": "Shipping measurements missing",
+      "unit_unknown": "Supplied unit unknown",
+      "unit_mismatch": "Supplied unit differs",
+      "date_unknown": "Measurement date unknown",
+      "not_effective": "Measurements not yet effective",
+      "unconfirmed": "Confirm measurement applicability"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { HelpDisclosure } from '@/components/help-disclosure'
+import { ContainerCapacityHistory } from '@/components/container-capacity-history'
 import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -15,7 +16,7 @@ export default async function BatchDetail({
   searchParams,
 }: {
   params: Promise<{ batchId: string }>
-  searchParams: Promise<{ ack_page?: string | string[] }>
+  searchParams: Promise<{ ack_page?: string | string[]; capacity_page?: string | string[] }>
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
@@ -60,6 +61,9 @@ export default async function BatchDetail({
         <p>{t('immutableNote')}</p>
       </section>
       <div className="flex flex-wrap gap-4">
+        <Link className="underline" href={`/replenishment/capacity/new?batch=${batchId}`}>
+          {t('capacity')}
+        </Link>
         <a className="underline" href={`/api/handoff-batches/${batchId}/json`}>
           {t('json')}
         </a>
@@ -71,6 +75,11 @@ export default async function BatchDetail({
         <p>{t('csvNote')}</p>
       </HelpDisclosure>
       <HandoffBatchEvidence report={payload} />
+      <ContainerCapacityHistory
+        organizationId={context.active.id}
+        batchId={batchId}
+        pageValue={(await searchParams).capacity_page}
+      />
       <HandoffAcknowledgements
         organizationId={context.active.id}
         recordId={batchId}

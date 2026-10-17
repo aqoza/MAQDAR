@@ -131,8 +131,11 @@ def test_generator_headers_are_unchanged():
     ):
         entity = importformat.ENTITY_BY_NAME[name]
         assert entity.minimal_header == legacy
-        assert entity.header == legacy + ['unit_of_measure']
-        assert entity.accepted_headers == [legacy, entity.header]
+        extra = ['shipping_weight_kg', 'shipping_volume_m3', 'shipping_valid_from'] if name == 'supplier_items' else []
+        assert entity.header == legacy + ['unit_of_measure'] + extra
+        assert entity.accepted_headers[:2] == [legacy, legacy + ['unit_of_measure']]
+        assert entity.accepted_headers[-1] == entity.header
+        assert len(entity.accepted_headers) == 2 + len(extra)
         assert entity.column('unit_of_measure').nullable
 
 
@@ -208,7 +211,10 @@ def test_numeric_and_text_metadata():
         for column in entity.columns:
             if column.kind in ("decimal", "money"):
                 assert column.scale is not None and column.integer_digits is not None, (entity.name, column.name)
-                if column.name not in ("latitude", "longitude", "rate"):
+                if column.name in ('shipping_weight_kg', 'shipping_volume_m3'):
+                    assert (column.scale, column.integer_digits) == (6, 9)
+                    assert column.greater_than == 0 and column.nullable and column.omittable
+                elif column.name not in ("latitude", "longitude", "rate"):
                     assert (column.scale, column.integer_digits) == (3, 12), (entity.name, column.name)
             if column.kind == "money":
                 assert column.min_value == 0, (entity.name, column.name)
