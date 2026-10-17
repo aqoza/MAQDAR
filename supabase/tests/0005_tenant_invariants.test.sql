@@ -34,7 +34,7 @@ from unnest(array['id', 'location_id', 'source_location_id']) as column_name;
 -- API keys).
 create temporary table rpc_only_tables on commit drop as
 select unnest(array['organizations', 'memberships', 'membership_locations', 'organization_invitations', 'user_settings',
-                    'import_batches', 'import_files', 'import_errors', 'api_keys', 'planning_runs', 'demand_classifications', 'forecast_results', 'demand_preparations', 'inventory_policies', 'policy_overrides', 'replenishment_drafts', 'redistribution_drafts', 'transfer_date_scenarios', 'transfer_freight_estimates', 'transfer_proposals', 'transfer_handoffs', 'transfer_handoff_batches', 'transfer_handoff_acknowledgements', 'purchase_handoff_acknowledgements', 'supplier_scenarios', 'delivery_scenarios', 'purchase_cost_estimates', 'purchase_proposals', 'purchase_handoffs', 'purchase_handoff_batches', 'container_capacity_scenarios']) as table_name;
+                    'import_batches', 'import_files', 'import_errors', 'api_keys', 'planning_runs', 'demand_classifications', 'forecast_results', 'demand_preparations', 'inventory_policies', 'policy_overrides', 'replenishment_drafts', 'redistribution_drafts', 'transfer_date_scenarios', 'transfer_freight_estimates', 'transfer_proposals', 'transfer_handoffs', 'transfer_handoff_batches', 'transfer_handoff_acknowledgements', 'purchase_handoff_acknowledgements', 'supplier_scenarios', 'delivery_scenarios', 'purchase_cost_estimates', 'purchase_proposals', 'purchase_handoffs', 'purchase_handoff_batches', 'container_capacity_scenarios', 'planned_event_scenarios']) as table_name;
 
 -- Columns no API role may read or write in any way (Step 5b: the SHA-256 of every API key).
 create temporary table secret_columns on commit drop as
