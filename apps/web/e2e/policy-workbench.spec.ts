@@ -66,7 +66,7 @@ with psycopg.connect(dsn) as db:
     { cwd: resolve(process.cwd(), '../../engine'), timeout: 30_000 },
   )
   await page.goto('/forecasts')
-  await page.getByRole('link', { name: 'Policy review workbench', exact: true }).click()
+  await page.getByRole('tab', { name: 'Policy review workbench', exact: true }).click()
   const table = page.getByRole('table', { name: 'Policy review workbench', exact: true })
   await expect(table.getByRole('row')).toHaveCount(26)
   await page.getByRole('link', { name: 'Next', exact: true }).click()

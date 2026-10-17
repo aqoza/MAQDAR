@@ -89,14 +89,12 @@ test('an existing user invited as viewer joins by magic link and sees read-only 
   ).toBeVisible()
   await expect(viewerPage.getByRole('form', { name: 'Check demand data' })).toHaveCount(0)
   await expect(
-    viewerPage.getByRole('link', { name: 'Saved forecast quality', exact: true }),
+    viewerPage.getByRole('tab', { name: 'Saved forecast quality', exact: true }),
   ).toBeVisible()
   await expect(
-    viewerPage.getByRole('link', { name: 'Policy review workbench', exact: true }),
+    viewerPage.getByRole('tab', { name: 'Policy review workbench', exact: true }),
   ).toBeVisible()
-  await expect(
-    viewerPage.locator('[aria-disabled="true"]').filter({ hasText: 'Create forecast' }),
-  ).toBeVisible()
+  await expect(viewerPage.getByRole('tab', { name: 'Create forecast', exact: true })).toBeVisible()
   await context.close()
 })
 
