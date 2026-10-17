@@ -61,6 +61,7 @@ export const clientNamespaces = [
   'Validation',
   'RpcErrors',
   'MasterDataClient',
+  'DashboardState',
 ] as const satisfies ReadonlyArray<keyof Messages>
 
 /**

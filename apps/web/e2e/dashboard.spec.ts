@@ -21,7 +21,9 @@ test('dashboard explains empty stock and offers an accessible daily table and au
   await createOrganization(page, { name: `Dashboard ${id}`, slug: `dash-${id}` })
   await expect(page.getByText(/No stock observations yet/)).toBeVisible()
   await page.getByText('View daily data', { exact: true }).click()
-  await expect(page.locator('tbody tr')).toHaveCount(30)
+  await expect(
+    page.getByRole('table', { name: 'Demand over 30 days', exact: true }).locator('tbody tr'),
+  ).toHaveCount(30)
   await expect(page.getByRole('img', { name: 'Demand over 30 days' })).toBeVisible()
   await page.getByRole('link', { name: 'Audit log', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Audit log', exact: true })).toBeVisible()
@@ -89,7 +91,10 @@ test('dashboard loads below two seconds with 50,000 items and 40 locations', asy
     for (let sample = 0; sample < 3; sample++) {
       const start = Date.now()
       await page.goto('/dashboard')
-      await expect(page.getByText('101,250.000', { exact: false })).toBeVisible()
+      await page.locator('.dashboard-currencies summary').click()
+      await expect(
+        page.locator('.dashboard-currency-popover').getByText('101,250.000', { exact: false }),
+      ).toBeVisible()
       await expect(page.getByRole('img', { name: 'Demand over 30 days' })).toBeVisible()
       await expect(page.locator('svg.recharts-surface[role="application"]')).toBeVisible()
       const elapsed = Date.now() - start
@@ -102,7 +107,10 @@ test('dashboard loads below two seconds with 50,000 items and 40 locations', asy
     await expect(page.getByText('1,950,000', { exact: true })).toBeVisible()
     const filteredStart = Date.now()
     await page.goto(`/dashboard?day=${day}&location=L-1`)
-    await expect(page.getByText('2,812.500', { exact: false })).toBeVisible()
+    await page.locator('.dashboard-currencies summary').click()
+    await expect(
+      page.locator('.dashboard-currency-popover').getByText('2,812.500', { exact: false }),
+    ).toBeVisible()
     await expect(
       page.getByRole('heading', { name: 'Observed stock availability', exact: true }).locator('..'),
     ).toContainText('100%')
