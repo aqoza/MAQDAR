@@ -39,7 +39,10 @@ export const networkLinkSchema = z
     freight_basis: z.enum(FREIGHT_BASES),
     freight_cost: optionalDecimalSchema({ scale: 3, integerDigits: 12, min: 0 }),
     currency: optionalCurrencySchema,
-    freight_unit: z.union([z.literal(''), z.enum(UNITS_OF_MEASURE)]).optional().transform((value) => value || null),
+    freight_unit: z
+      .union([z.literal(''), z.enum(UNITS_OF_MEASURE)])
+      .optional()
+      .transform((value) => value || null),
     freight_valid_from: optionalDateSchema.optional().transform((value) => value ?? null),
     is_active: z.boolean(),
   })
@@ -78,13 +81,13 @@ export type NetworkLinkInput = z.output<typeof networkLinkSchema>
 
 /** The row to write: without a cost basis, cost and currency are stored as null. */
 export function networkLinkRow(input: NetworkLinkInput): Record<string, unknown> {
-  const free = input.freight_basis === 'none'
+  const unconfigured = input.freight_basis === 'none'
   return {
     ...input,
-    freight_cost: free ? null : input.freight_cost,
-    currency: free ? null : input.currency,
-    freight_unit: free ? null : input.freight_unit,
-    freight_valid_from: free ? null : input.freight_valid_from,
+    freight_cost: unconfigured ? null : input.freight_cost,
+    currency: unconfigured ? null : input.currency,
+    freight_unit: unconfigured ? null : input.freight_unit,
+    freight_valid_from: unconfigured ? null : input.freight_valid_from,
   }
 }
 
@@ -144,7 +147,12 @@ export const networkLinks = defineEntity({
     },
     { name: 'freight_cost', kind: 'decimal', hint: true },
     { name: 'currency', kind: 'select', options: { source: 'currencies' }, hint: true },
-    { name: 'freight_unit', kind: 'select', options: { source: 'enum', values: UNITS_OF_MEASURE }, hint: true },
+    {
+      name: 'freight_unit',
+      kind: 'select',
+      options: { source: 'enum', values: UNITS_OF_MEASURE },
+      hint: true,
+    },
     { name: 'freight_valid_from', kind: 'date', hint: true },
     { name: 'is_active', kind: 'switch' },
   ],

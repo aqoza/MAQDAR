@@ -5,7 +5,7 @@ alter table public.network_links add column freight_valid_from date;
 alter table public.network_links add constraint network_links_freight_unit_check
   check(freight_unit in ('EA','SET','L','KG')) not valid;
 alter table public.network_links add constraint network_links_freight_date_check
-  check(isfinite(freight_valid_from) and freight_valid_from between date '1900-01-01' and date '2100-12-31') not valid;
+  check(isfinite(freight_valid_from)) not valid;
 comment on column public.network_links.freight_unit is 'Source-supplied unit for per-unit freight. NULL is unknown; never inferred from item units.';
 comment on column public.network_links.freight_valid_from is 'Source-supplied effective date for freight terms. NULL is unknown; no historical rate reconstruction.';
 
@@ -252,7 +252,7 @@ $$;
 revoke all on function app.import_rows_network_links_freight(uuid,uuid,smallint,integer,integer) from public,anon,authenticated,service_role,maqdar_worker;
 alter type ingest.api_record_network_links drop attribute updated_at;
 alter type ingest.api_record_network_links add attribute freight_unit text;
-alter type ingest.api_record_network_links add attribute freight_valid_from text;
+alter type ingest.api_record_network_links add attribute freight_valid_from date;
 alter type ingest.api_record_network_links add attribute updated_at text;
 create or replace function public.api_list(
   p_key_hash bytea,
@@ -381,7 +381,7 @@ begin
     from (
       select t.id, row_number() over (order by t.id) as n,
              row(fl.code, tl.code, t.lead_time_days_p50, t.lead_time_days_p90, t.freight_basis, trim_scale(t.freight_cost)::text,
-                 t.currency::text, t.is_active, t.freight_unit, t.freight_valid_from::text,
+                 t.currency::text, t.is_active, t.freight_unit, t.freight_valid_from,
                  to_char(t.updated_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'))::ingest.api_record_network_links as rec
       from (
         select n.id, n.from_location_id, n.to_location_id, n.lead_time_days_p50, n.lead_time_days_p90, n.freight_basis,
@@ -708,4 +708,5 @@ select id,organization_id,scenario_id,location_id,source_location_id,created_at,
 from public.transfer_freight_estimates;
 revoke all on public.transfer_freight_list from public,anon,authenticated,service_role,maqdar_worker;
 grant select on public.transfer_freight_list to authenticated;
+do $$ begin if app.api_record_type_drift() is not null then raise exception 'API record type drift: %',app.api_record_type_drift(); end if; end; $$;
 reset lock_timeout;

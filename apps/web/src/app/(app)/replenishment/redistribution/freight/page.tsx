@@ -30,7 +30,11 @@ export default async function TransferFreightHistory({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const params = transferFreightListParams(await searchParams)
-  const [db, t, locale] = await Promise.all([createClient(), getTranslations('TransferFreight'), getLocale()])
+  const [db, t, locale] = await Promise.all([
+    createClient(),
+    getTranslations('TransferFreight'),
+    getLocale(),
+  ])
   const query = (head: boolean) => {
     let query = db
       .from('transfer_freight_list')
@@ -84,7 +88,9 @@ export default async function TransferFreightHistory({
         className="workspace-toolbar flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
-        {params.filters.scenario && <input type="hidden" name="scenario" value={params.filters.scenario} />}
+        {params.filters.scenario && (
+          <input type="hidden" name="scenario" value={params.filters.scenario} />
+        )}
         <label className="grid min-w-0 gap-1">
           {t('search')}
           <input
@@ -139,8 +145,14 @@ export default async function TransferFreightHistory({
                 <td className="p-2">{row.source_code}</td>
                 <td className="p-2">{row.destination_code}</td>
                 <td className="p-2 whitespace-nowrap tabular-nums">{row.dispatch_date ?? '—'}</td>
-                <td className="p-2">{row.basis === 'per_unit' || row.basis === 'per_shipment' ? t(`bases.${row.basis}`) : '—'}</td>
-                <td className="p-2 whitespace-nowrap tabular-nums">{formatPurchaseCost(row.subtotal, row.currency, row.minor_units, locale)}</td>
+                <td className="p-2">
+                  {row.basis === 'per_unit' || row.basis === 'per_shipment'
+                    ? t(`bases.${row.basis}`)
+                    : '—'}
+                </td>
+                <td className="p-2 whitespace-nowrap tabular-nums">
+                  {formatPurchaseCost(row.subtotal, row.currency, row.minor_units, locale)}
+                </td>
                 <td className="p-2">
                   <Link
                     className="underline"

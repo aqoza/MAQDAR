@@ -61,7 +61,10 @@ export default async function NewTransferFreight({
   }
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      <Link className="inline-block underline" href={`/replenishment/redistribution/dates/${draft.data}`}>
+      <Link
+        className="inline-block underline"
+        href={`/replenishment/redistribution/dates/${draft.data}`}
+      >
         {t('source')}
       </Link>
       <PageHeader

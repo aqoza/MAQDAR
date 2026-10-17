@@ -432,6 +432,7 @@ select set_eq(
     ('app.import_rows_items(uuid, uuid, smallint, integer, integer)', ''),
     ('app.import_rows_locations(uuid, uuid, smallint, integer, integer)', ''),
     ('app.import_rows_network_links(uuid, uuid, smallint, integer, integer)', ''),
+    ('app.import_rows_network_links_freight(uuid, uuid, smallint, integer, integer)', ''),
     ('app.import_rows_supplier_items(uuid, uuid, smallint, integer, integer)', ''),
     ('app.import_rows_supplier_items_units(uuid, uuid, smallint, integer, integer)', ''),
     ('app.delivery_calendar_context(uuid, text, uuid, date, date)', ''),

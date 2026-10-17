@@ -312,8 +312,8 @@ select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list
   {"location_code": "RUH-C", "name_en": "Riyadh central", "name_ar": "المركز", "location_type": "central", "country_code": "SA", "city": null, "latitude": null, "longitude": null, "timezone": "Asia/Riyadh", "parent_location_code": null, "is_active": true, "work_calendar_code": null}]$$),
   'locations: coordinates are canonical decimal strings, parent and calendar resolve to codes');
 select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list:network_links'))), pg_temp.sorted($$[
-  {"from_location_code": "RUH-C", "to_location_code": "RUH-B1", "lead_time_days_p50": 1, "lead_time_days_p90": 3, "freight_basis": "per_unit", "freight_cost": "0.75", "currency": "SAR", "is_active": true},
-  {"from_location_code": "RUH-B1", "to_location_code": "RUH-C", "lead_time_days_p50": 2, "lead_time_days_p90": 4, "freight_basis": "none", "freight_cost": null, "currency": null, "is_active": false}]$$),
+  {"from_location_code": "RUH-C", "to_location_code": "RUH-B1", "lead_time_days_p50": 1, "lead_time_days_p90": 3, "freight_basis": "per_unit", "freight_cost": "0.75", "currency": "SAR", "is_active": true, "freight_unit": null, "freight_valid_from": null},
+  {"from_location_code": "RUH-B1", "to_location_code": "RUH-C", "lead_time_days_p50": 2, "lead_time_days_p90": 4, "freight_basis": "none", "freight_cost": null, "currency": null, "is_active": false, "freight_unit": null, "freight_valid_from": null}]$$),
   'network_links: integers are JSON numbers, money is a canonical string, both ends resolve to codes');
 select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list:brands'))), pg_temp.sorted($$[
   {"brand_code": "BOSCH", "name_en": "Bosch", "name_ar": null, "brand_type": "aftermarket", "country_of_origin": "DE", "is_active": true},

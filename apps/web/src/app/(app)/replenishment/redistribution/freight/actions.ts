@@ -8,7 +8,10 @@ import { requireEditor, invalidState, rpcErrorState } from '@/lib/organizations/
 import { createClient } from '@/lib/supabase/server'
 import { transferFreightSaveSchema, transferFreightRpcInput } from '@/lib/transfer-freight'
 
-export async function saveTransferFreight(_state: ActionState, form: FormData): Promise<ActionState> {
+export async function saveTransferFreight(
+  _state: ActionState,
+  form: FormData,
+): Promise<ActionState> {
   const guard = await requireEditor(form)
   if (!guard.ok) return guard.state
   const values = fieldValues(form, ['scenario', 'confirmed', 'request_id', 'fingerprint'])

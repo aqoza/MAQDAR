@@ -306,7 +306,9 @@
       "freight_basis": "أساس احتساب الشحن",
       "freight_cost": "تكلفة الشحن",
       "currency": "عملة الشحن",
-      "is_active": "نشط"
+      "is_active": "نشط",
+      "freight_unit": "وحدة الشحن",
+      "freight_valid_from": "سريان تكلفة الشحن من"
     },
     "filters": {
       "from": "من",

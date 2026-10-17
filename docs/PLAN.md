@@ -73,7 +73,8 @@ Steps 13, 13b, 13c, 13d, 14, 15 and 15b were scoped and approved by the owner on
 | 15d  | **Integration acknowledgements:** explicitly scoped receipt/rejection reports, immutable event history, organization-wide retry identity and scoped member inspection.                              | Merged                       |
 | 15e  | **Integration workbench:** member-scoped package search, latest reports per exact system label, explicit absence and direct evidence/history links.                                                 | Merged                       |
 | 16   | **Redistribution drafts:** saved individual-item transfer quantities, explicit source maxima, exact-cutoff stock, confirmed commitments and lanes, immutable evidence and access to both locations. | Merged                       |
-| 16b  | **Transfer date scenarios:** saved dispatch and separate p50/p90 receipts, calendar evidence, timing-review flags, immutable history and access to both locations.                                  | Implemented — review pending |
+| 16b  | **Transfer date scenarios:** saved dispatch and separate p50/p90 receipts, calendar evidence, timing-review flags, immutable history and access to both locations.                                  | Merged                       |
+| 16c  | **Transfer freight estimates:** saved per-unit or one-shipment subtotals, supplied unit/effective-date evidence, exact currency rounding and both-location history.                                 | Implemented — review pending |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -299,3 +300,11 @@ PR #37 was reviewed without blocking findings and merged as `a16f232` after all 
 ### Step 16b approved decisions (2026-10-17)
 
 PR #38 was reviewed without blocking findings and merged as `2888553` after all three CI jobs passed. The owner approved saved transfer-date scenarios from redistribution drafts. Keep saved quantity and lane lead times fixed. Find the next known source working day on or after a requested date at least the draft cutoff, add p50/p90 calendar-day leads separately, then find each next known destination working day. Unknown coverage is unavailable; zero quantity needs no transfer. Require an active directed lane with matching leads, active locations and confirmed calendar applicability. Preserve existing warnings and flag each receipt beyond destination cutoff plus saved policy lead time. Retain immutable evidence, both-location access and editor-only saving. The compact green interface covers 375, 768, 1024, 1440 and 1920px. Freight, approvals and execution remain deferred; dates reserve nothing and guarantee no arrival. See [transfer-date-scenarios.md](transfer-date-scenarios.md) for acceptance, limits and owner-run rollout.
+
+### Step 16c — approved 2026-10-17
+
+- PR #40 was reviewed with no blocking findings and merged as `c3171b9` after all CI jobs passed.
+- The owner approved saved freight estimates from transfer-date scenarios, with fixed quantities/dates and preserved timing warnings. Per-unit rates multiply saved quantity; per-shipment rates apply one fee to one proposed transfer. Round once half-up to currency precision; zero transfer needs no freight, and unconfigured freight remains unknown.
+- Add optional source-supplied freight units and valid-from dates to lane maintenance, imports and API. Require matching units for per-unit pricing, a known valid-from no later than saved dispatch, explicit applicability confirmation, active locations and the same active lane with matching saved leads.
+- Preserve immutable evidence, stale-preview detection, retries and both-location access. Compact green screens cover all five approved widths. Taxes, FX, consolidation, approvals and execution follow separately.
+- Acceptance, compatibility and owner-run rollout are in [transfer-freight-estimates.md](transfer-freight-estimates.md).

@@ -46,8 +46,18 @@ export default async function SavedTransferDates({
       </p>
       <p>{t('noGuarantee')}</p>
       <div className="flex flex-wrap gap-3">
-        <Link className="rounded-md bg-primary px-3 py-2 text-primary-foreground" href={`/replenishment/redistribution/freight/new?scenario=${scenarioId}`}>{t('estimateFreight')}</Link>
-        <Link className="inline-block underline" href={`/replenishment/redistribution/freight?scenario=${scenarioId}`}>{t('freightHistory')}</Link>
+        <Link
+          className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+          href={`/replenishment/redistribution/freight/new?scenario=${scenarioId}`}
+        >
+          {t('estimateFreight')}
+        </Link>
+        <Link
+          className="inline-block underline"
+          href={`/replenishment/redistribution/freight?scenario=${scenarioId}`}
+        >
+          {t('freightHistory')}
+        </Link>
       </div>
       <TransferDateReport report={report} locale={locale} />
       <Link

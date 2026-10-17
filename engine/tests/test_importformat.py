@@ -121,7 +121,7 @@ def test_generator_headers_are_unchanged():
         column = entity.column("work_calendar_code")
         assert column.omittable and column.nullable and column.lookup == "work_calendars"
     for entity in importformat.ENTITIES:
-        if entity.name not in ("locations", "suppliers", "demand_history", "stock_snapshots", "open_orders", "supplier_items"):
+        if entity.name not in ("locations", "suppliers", "demand_history", "stock_snapshots", "open_orders", "supplier_items", "network_links"):
             assert entity.minimal_header == entity.header, entity.name
     for name, legacy in (
         ('demand_history', ['item_code','location_code','demand_date','quantity','lost_sales_quantity']),
@@ -417,3 +417,12 @@ def test_sql_seed_matches_the_latest_migration():
     assert block == importformat.to_sql(), (
         f"{path.name} is stale: run `uv run maqdar-synth format --sql` and replace the block between the markers"
     )
+
+
+def test_freight_provenance_is_additive_and_optional():
+    entity = importformat.ENTITY_BY_NAME['network_links']
+    assert entity.minimal_header == ['from_location_code', 'to_location_code', 'lead_time_days_p50', 'lead_time_days_p90', 'freight_basis', 'freight_cost', 'currency', 'is_active']
+    assert entity.header[-2:] == ['freight_unit', 'freight_valid_from']
+    for name in entity.header[-2:]:
+        assert entity.column(name).nullable
+        assert entity.column(name).omittable

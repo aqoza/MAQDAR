@@ -153,4 +153,6 @@ The owner runs `pnpm exec supabase db push` after migration review. For Cloudfla
 
 Version 1 changes are additive. Clients should tolerate new response fields and error codes. If an operation is deprecated, its OpenAPI entry and `Deprecation`, optional `Sunset`, and `Link` response headers identify the change. No operations are currently deprecated.
 
+Network-link records include nullable `freight_unit` and `freight_valid_from` fields for [transfer freight estimates](transfer-freight-estimates.md). When a write supplies freight basis/cost/currency but omits either provenance field, the omitted field is cleared. Unrelated updates preserve both fields. These remain ordinary master-data reads/writes; the API does not create freight estimates or execute transfers.
+
 The three Step 6 resources (`stock-snapshots`, `open-orders`, `receipts`) use transaction scopes with UUID cursor paging and `updated_since`, like master-data lists. Their list default is 100, maximum 1,000, and atomic writes accept up to 1,000 records. See [transaction semantics and dashboard definitions](transactions-dashboard.md).
