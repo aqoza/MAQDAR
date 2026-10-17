@@ -12,8 +12,8 @@ if (!process.env.SUPABASE_SECRET_KEY) {
   }
 }
 
-const port = 3000
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${port}`
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3000'
+const port = Number(new URL(baseURL).port) || 3000
 const isCI = Boolean(process.env.CI)
 
 export default defineConfig({

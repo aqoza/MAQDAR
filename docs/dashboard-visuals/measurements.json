@@ -1,0 +1,26 @@
+{
+  "dashboard-before-1672.png": {
+    "ssim": 0.681914,
+    "rgb_mae_0_255": 16.3757
+  },
+  "dashboard-final-1672.png": {
+    "ssim": 0.769123,
+    "rgb_mae_0_255": 10.2552
+  },
+  "dashboard-iteration-1-1672.png": {
+    "ssim": 0.701998,
+    "rgb_mae_0_255": 13.6527
+  },
+  "dashboard-iteration-2-1672.png": {
+    "ssim": 0.702127,
+    "rgb_mae_0_255": 13.3574
+  },
+  "dashboard-iteration-3-1672.png": {
+    "ssim": 0.756813,
+    "rgb_mae_0_255": 10.7709
+  },
+  "dashboard-final-1648.png": {
+    "ssim": 0.698528,
+    "rgb_mae_0_255": 13.1369
+  }
+}
