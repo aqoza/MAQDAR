@@ -407,7 +407,8 @@
   border-radius: 20px;
   padding: 1px 10px;
 }
-.dashboard-metric-value[data-unavailable] {
+.dashboard-metric-value[data-unavailable],
+.dashboard-valuation .dashboard-metric-value[data-unavailable] {
   font-size: 16px;
   line-height: 24px;
   overflow-wrap: normal;

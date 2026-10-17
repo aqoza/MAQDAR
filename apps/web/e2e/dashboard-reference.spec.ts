@@ -37,22 +37,35 @@ test('dashboard reference renders real scoped data at the reference viewports', 
   await page.goto('/dashboard?day=2026-10-17')
   await expect(page.locator('.dashboard-metric-value[data-unavailable]')).toHaveCount(2)
   await expect(page.locator('.dashboard-metric').first()).toBeVisible()
+  await expect(page.locator('svg.recharts-surface[role="application"]')).toBeVisible()
   await page.evaluate(() => document.fonts.ready)
-  for (const viewport of laptopViewports) {
+  const emptyViewports = [
+    { width: 1902, height: 914 },
+    ...laptopViewports,
+    { width: 375, height: 900 },
+    { width: 768, height: 1024 },
+    { width: 1024, height: 768 },
+    { width: 1648, height: 928 },
+    { width: 1672, height: 941 },
+    { width: 1920, height: 1080 },
+  ]
+  for (const viewport of emptyViewports) {
     await page.setViewportSize(viewport)
     await expect
       .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
       .toBe(viewport.width)
-    for (const status of await page.locator('.dashboard-metric-value[data-unavailable]').all()) {
-      await expect(status).toBeVisible()
-      expect((await status.boundingBox())!.height).toBeLessThanOrEqual(24)
-    }
     const capture = testInfo.outputPath(`dashboard-laptop-empty-${viewport.width}.png`)
     await page.screenshot({ path: capture })
     await testInfo.attach(`empty-laptop-${viewport.width}`, {
       path: capture,
       contentType: 'image/png',
     })
+    for (const status of await page.locator('.dashboard-metric-value[data-unavailable]').all()) {
+      await expect(status).toBeVisible()
+      await expect(status).toHaveCSS('font-size', '16px')
+      await expect(status).toHaveCSS('line-height', '24px')
+      expect((await status.boundingBox())!.height).toBeLessThanOrEqual(24)
+    }
   }
   const locations = ['DXB', 'LHR', 'JFK', 'SIN', 'FRA'].map((code, index) => ({
     id: randomUUID(),
