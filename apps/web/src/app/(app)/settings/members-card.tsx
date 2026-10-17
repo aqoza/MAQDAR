@@ -165,6 +165,7 @@ function RoleForm({ member, role, options }: { member: MemberRow; role: Role; op
       <NativeSelect
         name="role"
         size="sm"
+        className="min-w-36"
         aria-label={t('role')}
         defaultValue={role}
         disabled={pending}

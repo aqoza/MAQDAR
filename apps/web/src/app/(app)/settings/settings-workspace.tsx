@@ -54,8 +54,10 @@ export function SettingsWorkspace({ sections }: { sections: SettingsSection[] })
   const SelectedIcon = icons[selected.key]
 
   function selectSection(key: SettingsSection['key'], closeMenu: boolean) {
-    if (key !== selected.key) {
-      const next = new URLSearchParams(params.toString())
+    // Consecutive key events can arrive before useSearchParams reflects the last history push.
+    const next = new URLSearchParams(window.location.search)
+    const current = sections.find((section) => section.key === next.get('section')) ?? sections[0]
+    if (key !== current.key) {
       next.set('section', key)
       window.history.pushState(null, '', `?${next.toString()}`)
     }

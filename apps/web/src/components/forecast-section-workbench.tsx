@@ -74,15 +74,17 @@ export async function PolicyWorkbench({
     value === null ? '—' : number.format(value as unknown as number)
   return (
     <div className="space-y-4">
-      {!embedded && (
-        <Link href="/forecasts" className="text-sm underline">
-          {t('planning')}
-        </Link>
-      )}
-
       <PageHeader
+        pattern={embedded ? undefined : 'forecasts'}
         title={t('title')}
         description={t('context')}
+        actions={
+          !embedded ? (
+            <Link href="/forecasts" className="text-sm underline">
+              {t('planning')}
+            </Link>
+          ) : undefined
+        }
         help={
           <HelpDisclosure>
             <p>{t('description')}</p>
