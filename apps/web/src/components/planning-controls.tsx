@@ -2,11 +2,9 @@
 
 import { useActionState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { LockKeyhole, MapPin, Play, RotateCw } from 'lucide-react'
+import { MapPin, Play, RotateCw } from 'lucide-react'
 import { enqueueRun, cancelRun } from '@/app/(app)/forecasts/actions'
 import { idleState } from '@/lib/forms'
-import { DemandCheckIllustration } from '@/components/forecast-illustrations'
-import { HelpDisclosure } from '@/components/help-disclosure'
 import styles from '@/components/forecast-workspace.module.css'
 
 type Labels = {
@@ -16,11 +14,6 @@ type Labels = {
   submit: string
   pending: string
   locationPlaceholder: string
-  readyTitle: string
-  readyDescription: string
-  start: string
-  safeNote: string
-  scope: string
 }
 
 export function PlanningForm({
@@ -83,28 +76,6 @@ export function PlanningForm({
             {state.message}
           </p>
         )}
-      </div>
-      <section className={styles.readinessPanel} aria-labelledby="readiness-title">
-        <div className={styles.readinessArt}>
-          <DemandCheckIllustration />
-        </div>
-        <h2 id="readiness-title" className="text-section-title">
-          {labels.readyTitle}
-        </h2>
-        <p>{labels.readyDescription}</p>
-        <button disabled={pending} className={styles.primaryButton}>
-          <Play aria-hidden="true" />
-          {pending ? labels.pending : labels.start}
-        </button>
-        <p className={styles.safeNote}>
-          <LockKeyhole aria-hidden="true" />
-          {labels.safeNote}
-        </p>
-      </section>
-      <div className={styles.method}>
-        <HelpDisclosure>
-          <p>{labels.scope}</p>
-        </HelpDisclosure>
       </div>
     </form>
   )

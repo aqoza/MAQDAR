@@ -27,7 +27,7 @@ async function inspectPolicy(page: Page, dsn: string, compareStock = false) {
   ).toBeEnabled()
   await page.getByLabel('Review interval (calendar days)', { exact: true }).fill('4')
   await page.getByRole('button', { name: 'Queue inventory policy', exact: true }).click()
-  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
     cwd: resolve(process.cwd(), '../../engine'),
     env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
@@ -150,7 +150,7 @@ test('preparation preserves contributions and forecasts a saved group with fixed
   await expect(page).toHaveURL(/\/forecasts\/prepare$/)
   await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: 'Queue preparation', exact: true }).click()
-  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   const dsn =
     process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
@@ -184,7 +184,7 @@ test('preparation preserves contributions and forecasts a saved group with fixed
   await expect(page).toHaveURL(/\/forecasts\/prepared\/.+/)
   await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: 'Queue prepared-group forecast', exact: true }).click()
-  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
     cwd: resolve(process.cwd(), '../../engine'),
     env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
@@ -302,7 +302,7 @@ for (const method of ['baseline-v1', 'expanded-v1']) {
     await expect(page).toHaveURL(/\/forecasts\/new$/)
     await page.getByRole('checkbox').check()
     await page.getByRole('button', { name: 'Queue forecast', exact: true }).click()
-    await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+    await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
     const dsn =
       process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
     if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
@@ -411,7 +411,7 @@ test('planner queues a readiness check, the worker completes it, and another run
   await expect(page.getByLabel('Location code', { exact: true })).toHaveValue('MISSING')
   await page.getByLabel('Location code', { exact: true }).fill('TEST')
   await page.getByRole('button', { name: 'Check demand data', exact: true }).click()
-  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Check demand data', exact: true })).toHaveCount(0)
   // Runs only against the same loopback stack as seedRows, never a hosted worker.
   const dsn =
@@ -424,13 +424,40 @@ test('planner queues a readiness check, the worker completes it, and another run
     timeout: 100_000,
   })
   await page.getByRole('button', { name: 'Refresh runs' }).click()
-  await expect(page.getByText('Completed', { exact: true })).toBeVisible()
+  await expect(page.locator('#run-detail').getByText('Completed', { exact: true })).toBeVisible()
   await expect(page.getByText('No stored demand records were found in this window.')).toBeVisible()
+  await expect(page.getByRole('form', { name: 'Check demand data', exact: true })).toHaveCount(1)
+  // A new run must clear old history filters so its cancellation remains reachable.
+  await page.getByRole('combobox', { name: 'Run status', exact: true }).selectOption('succeeded')
   await page.getByLabel('Location code', { exact: true }).fill('TEST')
-  await page.getByRole('button', { name: 'Run demand data check', exact: true }).click()
-  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Check demand data', exact: true }).click()
+  await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Cancel run' }).click()
-  await expect(page.getByText('Canceled', { exact: true })).toBeVisible()
+  await expect(page.locator('#run-detail').getByText('Canceled', { exact: true })).toBeVisible()
+  await expect(page.getByRole('combobox', { name: 'Run status', exact: true })).toHaveValue('all')
+  const history = page.getByRole('table', { name: 'Latest 20 runs', exact: true })
+  await expect(history.getByRole('row')).toHaveCount(3)
+  await page
+    .getByRole('searchbox', { name: 'Search recent runs', exact: true })
+    .fill('not-a-location')
+  await expect(page.getByText('No recent runs match these filters.')).toBeVisible()
+  await expect(page.locator('#run-detail').getByText('Canceled', { exact: true })).toHaveCount(0)
+  await page.getByRole('button', { name: 'Reset filters', exact: true }).click()
+  const completed = history.getByRole('row').filter({ hasText: 'Completed' }).getByRole('button')
+  await completed.focus()
+  await page.keyboard.press('Enter')
+  await expect(completed).toBeFocused()
+  await expect(completed).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('#run-detail').getByText('Completed', { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Refresh runs' }).click()
+  await expect(completed).toHaveAttribute('aria-pressed', 'true')
+  await page.getByText('More saved evidence', { exact: true }).click()
+  await expect(
+    page.locator('#run-detail').getByText('Lost-sales quantity', { exact: true }),
+  ).toBeVisible()
+  await page.getByRole('combobox', { name: 'Run status', exact: true }).selectOption('canceled')
+  await expect(history.getByRole('row')).toHaveCount(2)
+  await expect(page.locator('#run-detail').getByText('Canceled', { exact: true })).toBeVisible()
 })
 
 test('confirmed history produces inspectable classifications with separate lost sales', async ({
@@ -492,7 +519,7 @@ test('confirmed history produces inspectable classifications with separate lost 
   await expect(page.getByLabel('Location code', { exact: true })).toHaveValue('CLASS')
   await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: 'Queue classification', exact: true }).click()
-  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   const dsn =
     process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))

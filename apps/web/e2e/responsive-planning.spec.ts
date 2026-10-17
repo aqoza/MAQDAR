@@ -62,10 +62,14 @@ for (const width of [375, 768, 1440]) {
           await expect(
             page.getByRole('form', { name: 'Check demand data', exact: true }),
           ).toBeFocused()
-          await expect(page.locator('main')).not.toHaveCSS('background-image', 'none')
+          await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')
+          await expect(
+            page.getByRole('button', { name: 'Check demand data', exact: true }),
+          ).toHaveCount(1)
         } else {
           // Other planning routes retain their existing surface.
           await expect(page.locator('main')).toHaveCSS('background-image', 'none')
+          await expect(page.locator('main')).not.toHaveCSS('background-color', 'rgb(245, 248, 246)')
         }
         for (const control of await page
           .locator('main select, main input:not([type=hidden]):not([type=checkbox]), main textarea')
@@ -129,6 +133,7 @@ for (const width of [375, 768, 1440]) {
           ).toBeVisible()
           // The route-scoped accents must disappear after client navigation as well.
           await expect(page.locator('main')).toHaveCSS('background-image', 'none')
+          await expect(page.locator('main')).not.toHaveCSS('background-color', 'rgb(245, 248, 246)')
         }
       })
     }

@@ -81,6 +81,22 @@ test('an existing user invited as viewer joins by magic link and sees read-only 
   await expect(viewerPage.getByLabel('Name', { exact: true })).toHaveCount(0)
   await expect(viewerPage.getByRole('button', { name: 'Send invitation' })).toHaveCount(0)
   await expect(viewerPage.getByText('People with access to this organization.')).toHaveCount(0)
+
+  // The compact Forecasts workspace keeps result navigation available without creation controls.
+  await viewerPage.goto('/forecasts')
+  await expect(
+    viewerPage.getByRole('heading', { name: 'Review your planning results' }),
+  ).toBeVisible()
+  await expect(viewerPage.getByRole('form', { name: 'Check demand data' })).toHaveCount(0)
+  await expect(
+    viewerPage.getByRole('link', { name: 'Saved forecast quality', exact: true }),
+  ).toBeVisible()
+  await expect(
+    viewerPage.getByRole('link', { name: 'Policy review workbench', exact: true }),
+  ).toBeVisible()
+  await expect(
+    viewerPage.locator('[aria-disabled="true"]').filter({ hasText: 'Create forecast' }),
+  ).toBeVisible()
   await context.close()
 })
 

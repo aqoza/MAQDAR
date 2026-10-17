@@ -266,3 +266,7 @@ PR #30 was reviewed with all three CI jobs passing and merged as `e14a528`. The 
 ### Forecasts workspace design pilot (2026-10-17)
 
 After PR #31 was merged as `428ce46`, the owner supplied a MAQDAR mockup and requested its visual direction on the Forecasts page before other pages. This pilot uses soft blue/lilac surfaces, six task cards, a focused readiness form and a recent-runs panel backed by actual records. Preserve the compact type scale, guarded actions and complete run evidence; keep visual accents scoped to `/forecasts`. See [forecast-workspace-design.md](forecast-workspace-design.md) for the reference interpretation, scope and verification contract.
+
+### Compact green Forecasts workspace (2026-10-17)
+
+PR #32 was already merged as `24791c7` when the owner approved the compact emerald/sage mockup. Apply it in a follow-up PR linked to #32: slim workflow navigation, one readiness action, searchable latest-20 history and selected-run evidence side by side. Preserve run permissions, refresh, cancellation and every saved metric. Keep the visual changes scoped to the Forecasts landing page; other pages follow later.
