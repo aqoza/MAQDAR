@@ -380,7 +380,9 @@
       "freight_basis": "Freight basis",
       "freight_cost": "Freight cost",
       "currency": "Freight currency",
-      "is_active": "Active"
+      "is_active": "Active",
+      "freight_unit": "Freight unit",
+      "freight_valid_from": "Freight valid from"
     },
     "filters": {
       "from": "From",
@@ -391,7 +393,9 @@
       "lead_time_days_p50": "Calendar days a typical transfer takes, from 0 to 3650.",
       "lead_time_days_p90": "Calendar days that 9 in 10 transfers stay within; at least the typical lead time.",
       "freight_cost": "Required unless the basis is None, with up to 3 decimals. Ignored when the basis is None.",
-      "currency": "Required unless the basis is None."
+      "currency": "Required unless the basis is None.",
+      "freight_unit": "Source-supplied unit for a per-unit rate. Leave empty when unknown.",
+      "freight_valid_from": "Source-supplied effective date for this freight rate. Leave empty when unknown."
     },
     "options": {
       "freight_basis": {
@@ -402,6 +406,12 @@
       "is_active": {
         "true": "Active",
         "false": "Inactive"
+      },
+      "freight_unit": {
+        "EA": "EA",
+        "SET": "SET",
+        "L": "L",
+        "KG": "KG"
       }
     },
     "deleteWarning": "Only the lane is removed; both locations and their parent links stay as they are."
@@ -2791,6 +2801,85 @@
       "calendar_unknown": "Calendar coverage unknown",
       "calendar_inactive": "Assigned calendar inactive",
       "search_exhausted": "No working day within 90 evaluated dates"
+    },
+    "estimateFreight": "Estimate transfer freight",
+    "freightHistory": "Freight estimate history"
+  },
+  "TransferFreight": {
+    "title": "Transfer freight estimates",
+    "new": "Estimate transfer freight",
+    "saved": "Saved transfer freight estimate",
+    "context": "Quoted freight for saved transfer quantities and dates.",
+    "source": "Back to transfer dates",
+    "back": "Back to freight estimates",
+    "another": "Create another freight estimate",
+    "chooseScenario": "Choose transfer dates",
+    "method": "Per-unit freight multiplies the saved quantity by the supplied rate. Per-shipment freight applies one fee to this proposed transfer. The total is rounded once, half-up, to the currency precision.",
+    "limits": "Excludes taxes, FX and shipment consolidation. Estimates do not approve transfers, reserve stock or execute shipments.",
+    "noGuarantee": "Saving retains a planning estimate; it does not book or execute a transfer.",
+    "termsNote": "Current lane terms are unversioned. Confirmation attests that they apply to the saved quantity and dispatch date; it does not reconstruct past prices or guarantee a carrier quote.",
+    "confirmation": "I confirm that these freight terms apply to the saved transfer quantity and adjusted dispatch date, treating this transfer as one shipment when charged per shipment.",
+    "preview": "Refresh freight preview",
+    "save": "Save freight estimate",
+    "saving": "Saving...",
+    "invalid": "Check the selected transfer scenario and confirmation.",
+    "changed": "Inputs changed. Refresh the preview and inspect the current freight evidence before saving.",
+    "result": "Transfer freight preview",
+    "quantity": "Saved transfer quantity",
+    "rate": "Supplied freight rate",
+    "subtotal": "Freight subtotal",
+    "dispatchOn": "Saved dispatch: {date} · Freight valid from: {valid}",
+    "existingWarning": "The destination draft contains overdue or late inbound. Review the saved supply timing.",
+    "p50": "Typical receipt (p50)",
+    "p90": "Slow receipt (p90)",
+    "timingWarning": "{scenario} is later than the destination policy lead-time reference. Timing review is still required.",
+    "termsEvidence": "Freight terms and calculation",
+    "dateEvidence": "Saved dates and quantity evidence",
+    "confirmed": "Freight applicability confirmed.",
+    "unconfirmed": "Freight applicability has not been confirmed.",
+    "unitEvidence": "Supplied freight unit: {unit}",
+    "oneShipment": "This estimate applies one shipment fee to this one proposed transfer. It does not consolidate other drafts.",
+    "rounding": "Exact amount before rounding: {product}. Rounded once to {digits} decimal places.",
+    "laneEvidence": "Lane {id} · Supplied rate {rate} · Terms updated {time}",
+    "locationEvidence": "Source {source} (updated {sourceTime}) · Destination {destination} (updated {destinationTime})",
+    "savedAt": "Saved {time}",
+    "search": "Search items or locations",
+    "filter": "Apply filters",
+    "reset": "Clear filters",
+    "count": "{count, plural, one {# freight estimate} other {# freight estimates}}",
+    "pagination": "Freight history pages",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}",
+    "empty": "No saved freight estimates match these filters.",
+    "item": "Item",
+    "sourceLocation": "Source",
+    "destination": "Destination",
+    "dispatch": "Dispatch",
+    "basis": "Freight basis",
+    "inspect": "Inspect",
+    "inspectItem": "Inspect {item}",
+    "bases": {
+      "none": "Unconfigured",
+      "per_unit": "Per unit",
+      "per_shipment": "Per shipment"
+    },
+    "statuses": {
+      "available": "Freight estimate available",
+      "no_transfer_needed": "No transfer needed — no freight required",
+      "source_unavailable": "Unavailable: saved transfer evidence is incomplete.",
+      "source_location_unavailable": "Unavailable: source location is inactive or missing.",
+      "destination_location_unavailable": "Unavailable: destination location is inactive or missing.",
+      "lane_unavailable": "Unavailable: the saved directed lane is inactive or missing.",
+      "lane_changed": "Unavailable: lane lead times changed. Create a new redistribution draft and date scenario.",
+      "freight_unconfigured": "Unavailable: freight terms are not configured.",
+      "unit_unknown": "Unavailable: a supplied freight unit is required for per-unit pricing.",
+      "unit_mismatch": "Unavailable: freight and saved quantity units differ.",
+      "rate_invalid": "Unavailable: a finite nonnegative rate and supported currency are required.",
+      "rate_date_unknown": "Unavailable: the freight valid-from date is unknown.",
+      "rate_not_effective": "Unavailable: freight terms start after saved dispatch.",
+      "terms_unconfirmed": "Unavailable: confirm freight applicability.",
+      "amount_out_of_range": "Unavailable: the rounded amount exceeds the supported range."
     }
   }
 }

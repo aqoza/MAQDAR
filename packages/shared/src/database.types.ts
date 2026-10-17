@@ -544,14 +544,14 @@ isOneToOne: false
                   ]
                 },"network_links": {
                   Row: {
-                    "created_at": string,"currency": string | null,"freight_basis": string,"freight_cost": number | null,"from_location_id": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at": string
+                    "created_at": string,"currency": string | null,"freight_basis": string,"freight_cost": number | null,"freight_unit": string | null,"freight_valid_from": string | null,"from_location_id": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"from_location_id": string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at"?: string
+                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"freight_unit"?: string | null,"freight_valid_from"?: string | null,"from_location_id": string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"from_location_id"?: string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50"?: number,"lead_time_days_p90"?: number,"organization_id"?: string,"to_location_id"?: string,"updated_at"?: string
+                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"freight_unit"?: string | null,"freight_valid_from"?: string | null,"from_location_id"?: string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50"?: number,"lead_time_days_p90"?: number,"organization_id"?: string,"to_location_id"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -1250,6 +1250,44 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"transfer_freight_estimates": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"source_location_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"source_location_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"scenario_id"?: string,"source_location_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_freight_estimates_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "transfer_date_scenario_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "transfer_date_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_source_location_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"user_settings": {
                   Row: {
                     "active_organization_id": string | null,"created_at": string,"updated_at": string,"user_id": string
@@ -1693,6 +1731,44 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"transfer_freight_list": {
+                  Row: {
+                    "basis": string | null,"created_at": string | null,"currency": string | null,"destination_code": string | null,"dispatch_date": string | null,"id": string | null,"item_code": string | null,"location_id": string | null,"minor_units": number | null,"organization_id": string | null,"scenario_id": string | null,"search_text": string | null,"source_code": string | null,"source_location_id": string | null,"status": string | null,"subtotal": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "basis"?: never,"created_at"?: string | null,"currency"?: never,"destination_code"?: never,"dispatch_date"?: never,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"minor_units"?: never,"organization_id"?: string | null,"scenario_id"?: string | null,"search_text"?: never,"source_code"?: never,"source_location_id"?: string | null,"status"?: never,"subtotal"?: never
+                         }
+                        Update: {
+                           "basis"?: never,"created_at"?: string | null,"currency"?: never,"destination_code"?: never,"dispatch_date"?: never,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"minor_units"?: never,"organization_id"?: string | null,"scenario_id"?: string | null,"search_text"?: never,"source_code"?: never,"source_location_id"?: string | null,"status"?: never,"subtotal"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "transfer_freight_estimates_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "transfer_date_scenario_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "transfer_date_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_source_location_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 }
           }
           Functions: {
@@ -1888,6 +1964,12 @@ isOneToOne: false
                            },
 "transfer_date_save":
 { Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_redistribution_id": string,"p_request_id": string,"p_requested_date": string }; Returns: string
+                           },
+"transfer_freight_preview":
+{ Args: { "p_organization_id": string,"p_scenario_id": string,"p_terms_confirmed": boolean }; Returns: Json
+                           },
+"transfer_freight_save":
+{ Args: { "p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_scenario_id": string,"p_terms_confirmed": boolean }; Returns: string
                            },
 "update_organization_preferences":
 { Args: { "p_default_locale": string,"p_numbering_system": string,"p_organization_id": string,"p_time_zone": string }; Returns: undefined

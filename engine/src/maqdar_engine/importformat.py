@@ -601,6 +601,8 @@ ENTITIES: tuple[Entity, ...] = (
                 references="currencies.code",
             ),
             _active_column("false for lanes no longer used."),
+            Column("freight_unit", "enum", "Source-supplied unit for per-unit freight; empty means unknown. Supplying freight terms without this field clears prior unit evidence.", nullable=True, omittable=True, enum=("EA", "SET", "L", "KG")),
+            Column("freight_valid_from", "date", "Source-supplied date from which the freight terms apply; empty means unknown. Supplying freight terms without this field clears prior date evidence.", nullable=True, omittable=True),
         ),
         column_groups=(("lead_time_days_p50", "lead_time_days_p90"), ("freight_basis", "freight_cost", "currency")),
         row_rules=(
