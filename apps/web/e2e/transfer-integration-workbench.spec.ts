@@ -212,9 +212,17 @@ with psycopg.connect(sys.argv[1]) as db:
   await page.getByLabel('Source location code').fill('SOURCE')
   await page.getByLabel('Destination location code').fill('DESTINATION')
   await page.getByRole('button', { name: 'Apply filters' }).click()
+  // Both filters still return one row. Wait for the new response/form before editing again.
+  await expect(page).toHaveURL(
+    (url) =>
+      url.searchParams.get('source') === 'SOURCE' &&
+      url.searchParams.get('location') === 'DESTINATION',
+  )
+  await expect(page.getByLabel('Source location code')).toHaveAttribute('value', 'SOURCE')
   await expect(rows).toHaveCount(1)
   await page.getByLabel('Source location code').fill('Unknown source')
   await page.getByRole('button', { name: 'Apply filters' }).click()
+  await expect(page).toHaveURL((url) => url.searchParams.get('source') === 'Unknown source')
   await expect(rows).toHaveCount(0)
 
   await python(`import sys,json,psycopg

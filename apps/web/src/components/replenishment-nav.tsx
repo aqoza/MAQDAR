@@ -5,12 +5,14 @@ import { getTranslations } from 'next-intl/server'
 export async function ReplenishmentNav({
   current,
 }: {
-  current: 'drafts' | 'review' | 'handoffs' | 'batches' | 'integrations' | 'redistribution'
+  current:
+    'drafts' | 'review' | 'handoffs' | 'batches' | 'integrations' | 'redistribution' | 'locator'
 }) {
   const t = await getTranslations('PurchasingNav')
   const links = [
     ['drafts', '/replenishment'],
     ['redistribution', '/replenishment/redistribution'],
+    ['locator', '/replenishment/stock-locator'],
     ['review', '/replenishment/review'],
     ['handoffs', '/replenishment/handoffs'],
     ['batches', '/replenishment/batches'],
