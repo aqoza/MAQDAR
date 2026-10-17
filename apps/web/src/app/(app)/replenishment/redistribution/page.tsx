@@ -30,9 +30,10 @@ export default async function RedistributionHistory({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const params = redistributionListParams(await searchParams)
-  const [db, t, locale] = await Promise.all([
+  const [db, t, dates, locale] = await Promise.all([
     createClient(),
     getTranslations('Redistribution'),
+    getTranslations('TransferDates'),
     getLocale(),
   ])
   const query = (head: boolean) => {
@@ -82,6 +83,9 @@ export default async function RedistributionHistory({
         }
       />
       <ReplenishmentNav current="redistribution" />
+      <Link className="inline-block underline" href="/replenishment/redistribution/dates">
+        {dates('title')}
+      </Link>
       <form
         method="get"
         action="/replenishment/redistribution"

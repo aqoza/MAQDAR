@@ -23,6 +23,11 @@ const screens = [
     title: 'Redistribution drafts',
     reset: 'Show all drafts',
   },
+  {
+    path: '/replenishment/redistribution/dates',
+    title: 'Transfer date scenarios',
+    reset: 'Show all scenarios',
+  },
   { path: '/settings', title: 'Settings', reset: null },
 ] as const
 

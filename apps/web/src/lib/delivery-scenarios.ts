@@ -30,7 +30,7 @@ export function deliveryScenarioParams(raw: RawSearchParams) {
     confirmed: first('confirmed') ?? 'false',
   }
 }
-const calendar = z.object({
+export const calendarEvidenceSchema = z.object({
   country: z.string(),
   calendar_id: z.uuid().nullable(),
   calendar_code: z.string().nullable(),
@@ -74,7 +74,7 @@ export const calendarReasons = [
   'weekend',
   'weekly_pattern',
 ] as const
-const search = z.object({
+export const calendarSearchSchema = z.object({
   status: z.enum(['resolved', 'calendar_unknown', 'calendar_inactive', 'search_exhausted']),
   date: date.nullable(),
   days: z
@@ -91,7 +91,7 @@ const search = z.object({
     )
     .max(90),
 })
-const entity = z.object({
+export const calendarEntitySchema = z.object({
   id: z.uuid(),
   code: z.string(),
   name: z.string(),
@@ -120,12 +120,12 @@ export const deliveryScenarioReportSchema = z.object({
     lead_time: z.number().int().nonnegative().nullable(),
     cutoff: date,
   }),
-  supplier: entity.nullable(),
-  receiver: entity.nullable(),
-  supplier_calendar: calendar.nullable(),
-  receiver_calendar: calendar.nullable(),
-  order_search: search.nullable(),
-  receipt_search: search.nullable(),
+  supplier: calendarEntitySchema.nullable(),
+  receiver: calendarEntitySchema.nullable(),
+  supplier_calendar: calendarEvidenceSchema.nullable(),
+  receiver_calendar: calendarEvidenceSchema.nullable(),
+  order_search: calendarSearchSchema.nullable(),
+  receipt_search: calendarSearchSchema.nullable(),
   order_date: date.nullable(),
   nominal_receipt: date.nullable(),
   receipt_date: date.nullable(),
