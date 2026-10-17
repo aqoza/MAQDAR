@@ -162,9 +162,7 @@ export async function ForecastQuality({
         <button className="rounded-md bg-primary px-4 py-2 text-primary-foreground">
           {t('filter')}
         </button>
-        <Link href="/forecasts/quality" className="underline">
-          {t('reset')}
-        </Link>
+        <Link href="/forecasts/quality">{t('reset')}</Link>
       </Form>
       <p>{t('count', { total })}</p>
       <TableScrollRegion label={t('title')}>
