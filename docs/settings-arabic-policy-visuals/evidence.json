@@ -1,0 +1,85 @@
+{
+  "contract": "../settings-arabic-policy-header.md: complete Arabic Members/InviteMembers messages and retain the shared forecast banner when selecting a policy from Replenishment, including list loading; preserve design.MD typography, routes, filters and authorization.",
+  "targetViewports": ["1920x900", "1366x768", "375x900"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Browser checks used translated accessible column/field/button names, the member-removal alertdialog and live error/status feedback. The selected Arabic role fits inside its control. The policy back link works with keyboard focus and Enter. Settings keyboard/history navigation and a deterministic key-burst regression keep focus, selected panel and URL synchronized. The shared 20px/28px heading is unchanged, mobile controls retain existing shared sizes, and decorative artwork remains hidden from assistive technology. This is targeted browser and rendered inspection, not a full screen-reader or axe audit."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "Actual production screenshots cover the policy list in English at 1920x900, 1366x768 and 375x900 and RTL at 1366x768 and 375x900. Arabic Members and Invitations are captured at laptop/mobile sizes. Browser assertions verify no document horizontal overflow, one forecast banner, 20px/28px titles and a 100px desktop banner including the global bar. Wide tables retain their existing local scroll region; mobile header actions wrap instead of shrinking text."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "A real throttled reload displayed the standalone policy-list loading boundary with forecast artwork at y=0 and height=100px before resolving to the loaded list. The loading boundary is scoped to the list route group and does not restyle policy details."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "A fresh fixture organization shows the existing empty policy list. Arabic Invitations displays its translated no-pending-invitations state, which returns after revoking the test invitation."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "Real local invitation actions display Arabic already-member and resend-cooldown errors at laptop/mobile sizes. The unit test checks all 36 Arabic leaves and the existing ICU test checks placeholder parity, including the remaining error variants. No production errors are simulated with fabricated UI data."
+    },
+    "partial": {
+      "status": "not-applicable",
+      "reason": "This change introduces no query, partial dataset, calculation or new error fallback. Existing data-access behavior and untranslated planning namespaces remain unchanged."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Assigning a member to a branch reports Arabic saved feedback. Sending an invitation displays its translated success message and populated pending row with translated role/date/action text. Filter submission, reset and back navigation work on the illustrated policy list."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "The existing browser scenarios verify viewer read-only Settings, stale-organization mutation rejection and independent policy review. No server authorization, member/invitation mutation, tenant/branch query or RPC contract changes are included."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1920x900",
+      "artifact": "policy-workbench-en-1920.png",
+      "observation": "Shared forecast artwork, compact title and back action align with the existing application shell and canonical type scale."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "policy-before-after.png",
+      "observation": "Unscaled actual laptop screenshots side by side. The back link moves into header actions, eliminating its separate row while retaining the policy filters and list. Fixture emails differ. No perceptual similarity percentage is claimed."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "policy-workbench-en-375.png",
+      "observation": "Mobile title and action row wrap naturally; filters remain reachable and the table scrolls locally without widening the document."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "policy-workbench-ar-1366.png",
+      "observation": "The shell, header artwork and controls mirror in RTL. The policy namespace retains its pre-existing English fallback; this task translates the two Settings namespaces only."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "members-ar-375.png",
+      "observation": "Arabic Members in the existing compact Settings workspace, with a named local table scroll region rather than reduced typography."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "invitations-ar-375.png",
+      "observation": "Translated invitation description, role, success feedback, pending row and actions fit the mobile panel with natural wrapping."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "member-dialog-ar-1366.png",
+      "observation": "Translated member-removal title/description and confirm/cancel controls retain the existing accessible alertdialog."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "invitation-error-ar-375.png",
+      "observation": "The already-member validation feedback appears in Arabic below the form without document overflow."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "policy-workbench-loading-1366.png",
+      "observation": "The real streamed loading response retains the forecast artwork and desktop banner geometry."
+    }
+  ]
+}

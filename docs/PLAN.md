@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Settings Arabic and policy-selection header — requested 2026-10-17
+
+Complete Arabic `Members` and `InviteMembers` translations and give the standalone policy-selection workbench the shared forecast header and matching list-only loading state. Preserve shared type roles, routes, filters, permissions and planning semantics. Verify Settings RTL workflows and navigation from Replenishment, then open a PR without merge or deployment. See [settings-arabic-policy-header.md](settings-arabic-policy-header.md).
+
 ## Settings workspace redesign — approved 2026-10-17
 
 Implement the reviewed Settings mockup: searchable grouped navigation beside one focused panel, with Organization/Preferences, Members/Invitations/API keys, and Password/Interface language. Reuse existing server-rendered forms, preserve unsaved state between sections and keep current permissions, queries and actions. Retain shared Items typography, the compact illustrated header, mobile access and Arabic RTL. Verify real screenshots and existing workflows before a reviewable PR; no merge or deployment. See [settings-workspace.md](settings-workspace.md).

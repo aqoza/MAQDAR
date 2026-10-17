@@ -23,7 +23,7 @@ The approved mockup establishes the grouped navigation and focused form composit
 
 Browser checks cover all seven panels at English 1920×900, 1366×768 and 375×900, plus Arabic 1366×768 and 375×900. Each panel is captured; the long API-key form uses full-page images. At laptop width the local menu is 224px, its gap is 16px, and both columns start at the same height. Page titles remain 20px/28px; navigation remains 14px/20px with 16px icons. Below 1100px the section chooser retains a target of at least 44px. Wide member rows scroll locally in either direction.
 
-Arabic mirrors the workspace and translates the new navigation. Some existing Members and Invitations content still uses the repository's English fallback; this redesign does not introduce a separate translation system or claim those older namespaces are fully translated.
+Arabic mirrors the workspace and translates the new navigation. The original redesign screenshots below retain the older English fallback in Members and Invitations. A [translation follow-up](settings-arabic-policy-header.md) now completes both namespaces, including actions, dialogs, feedback and errors, using the same next-intl system.
 
 No pixel-similarity percentage is claimed for a generated concept versus a live application. The review compares composition and measured layout/type constraints, with real application content and controls.
 
