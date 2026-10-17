@@ -8,12 +8,13 @@ The machine-readable OpenAPI 3.1.1 description is available at `/api/v1/openapi.
 
 An organization owner or administrator opens **Settings → API keys**, gives the key a name, chooses permissions and an expiry, and selects **Create key**. Copy the key from the dialog into the integration's secret store. It is shown once; Settings subsequently shows only a prefix and suffix. The database stores a SHA-256 hash, never the complete key.
 
-| Scope                | Operations                                               |
-| -------------------- | -------------------------------------------------------- |
-| `master_data:read`   | List all master-data resources                           |
-| `master_data:write`  | Upsert all master-data resources                         |
-| `transactions:read`  | List all four transaction feeds                          |
-| `transactions:write` | Upsert transaction feeds (clear by zero only for demand) |
+| Scope                    | Operations                                                                 |
+| ------------------------ | -------------------------------------------------------------------------- |
+| `master_data:read`       | List all master-data resources                                             |
+| `master_data:write`      | Upsert all master-data resources                                           |
+| `transactions:read`      | List all four transaction feeds                                            |
+| `transactions:write`     | Upsert transaction feeds (clear by zero only for demand)                   |
+| `purchase_handoffs:read` | List and retrieve saved handoffs and batches across the whole organization |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -22,6 +23,8 @@ Keys belong to one organization. The API never takes the organization from a coo
 Send the key only in the `Authorization` header over HTTPS. Browser session cookies and Supabase JWTs cannot authenticate this API. Authenticated endpoints do not enable cross-origin browser access; keep keys in your integration's backend.
 
 ## Quick start
+
+For saved purchasing evidence, see [the handoff read API](handoff-read-api.md). It has separate creation-based pagination and an explicit permission; the transaction scopes do not include this access.
 
 These shell examples assume `MAQDAR_ORIGIN` contains the application's origin and `MAQDAR_API_KEY` is supplied by your secret store. For local development, use `http://localhost:3000`.
 

@@ -43,7 +43,14 @@ describe('buildRpcRequest (J9)', () => {
   })
 
   it('admits api_* RPCs only', () => {
-    expect(API_RPC_NAMES).toEqual(['api_organization', 'api_list', 'api_list_demand', 'api_upsert'])
+    expect(API_RPC_NAMES).toEqual([
+      'api_handoff_list',
+      'api_handoff_get',
+      'api_organization',
+      'api_list',
+      'api_list_demand',
+      'api_upsert',
+    ])
     expect(isApiRpcName('api_upsert')).toBe(true)
     expect(isApiRpcName('import_commit_step')).toBe(false)
     expect(() =>

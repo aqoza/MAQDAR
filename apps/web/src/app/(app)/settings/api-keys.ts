@@ -15,6 +15,7 @@ export const SCOPE_MESSAGE_KEYS = {
   'master_data:write': 'masterDataWrite',
   'transactions:read': 'transactionsRead',
   'transactions:write': 'transactionsWrite',
+  'purchase_handoffs:read': 'purchaseHandoffsRead',
 } as const satisfies Record<ApiScope, string>
 
 export type ScopeMessageKey = (typeof SCOPE_MESSAGE_KEYS)[ApiScope]

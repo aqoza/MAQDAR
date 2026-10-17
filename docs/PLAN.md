@@ -60,15 +60,16 @@ Step 10b acceptance, fixed-group comparison interpretation, calendar model and r
 
 Steps 13, 13b, 13c, 13d, 14, 15 and 15b were scoped and approved by the owner on 2026-10-16. Later replenishment increments will be scoped before implementation. Deferred Phase 2 metrics and model refinements remain on the roadmap.
 
-| Step | Scope                                                                                                                                                                                              | Status |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | Merged |
-| 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | Merged |
-| 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | Merged |
-| 13d  | **Purchase-cost estimates:** confirmed supplier-price evidence for saved delivery quantities and dates, exact multiplication, one currency rounding step and immutable estimates.                  | Merged |
-| 14   | **Purchase-proposal review:** independent reasoned decisions, per-draft selection history, current-price checks and policy-recalculation approval gate.                                            | Merged |
-| 15   | **Purchase handoffs:** immutable single-proposal CSV/JSON exports, selected-approval and price gates, historical evidence, stable retries and member-scoped downloads.                             | Merged |
-| 15b  | **Purchase handoff batches:** compatible multi-line CSV/JSON packages, atomic evidence gates, exact cost totals, canonical set retries and visible overlap.                                        | Merged |
+| Step | Scope                                                                                                                                                                                              | Status                       |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| 13   | **Replenishment drafts:** explicit individual-item maximum selection, exact-cutoff stock, confirmed complete inbound, explicit additional backorders, immutable input evidence and unrounded gaps. | Merged                       |
+| 13b  | **Supplier MOQ/pack scenarios:** explicit active supplier selection, supplied units, matching lead time, confirmed terms at cutoff, rounded quantity and overage with immutable evidence.          | Merged                       |
+| 13c  | **Delivery-date scenarios:** confirmed supplier and receiving calendars, fixed saved lead time, inspectable date adjustments, immutable evidence and policy recalculation flags.                   | Merged                       |
+| 13d  | **Purchase-cost estimates:** confirmed supplier-price evidence for saved delivery quantities and dates, exact multiplication, one currency rounding step and immutable estimates.                  | Merged                       |
+| 14   | **Purchase-proposal review:** independent reasoned decisions, per-draft selection history, current-price checks and policy-recalculation approval gate.                                            | Merged                       |
+| 15   | **Purchase handoffs:** immutable single-proposal CSV/JSON exports, selected-approval and price gates, historical evidence, stable retries and member-scoped downloads.                             | Merged                       |
+| 15b  | **Purchase handoff batches:** compatible multi-line CSV/JSON packages, atomic evidence gates, exact cost totals, canonical set retries and visible overlap.                                        | Merged                       |
+| 15c  | **Purchase handoff read API:** explicit organization-wide key scope, paginated saved handoffs/batches and original JSON with live selection reported separately.                                   | Implemented — review pending |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -274,3 +275,7 @@ PR #32 was already merged as `24791c7` when the owner approved the compact emera
 ### Compact green application rollout (2026-10-17)
 
 PR #33 was reviewed without blocking findings and merged as `d76a93a` after all three CI jobs passed. The owner requested the same compact green design across the remaining pages. Promote the approved palette, spacing and table/form treatment into shared styles; compact Dashboard KPIs and section navigation while preserving workflows, roles and actionable warnings. See [compact-green-application.md](compact-green-application.md) for scope and rendered verification.
+
+### Step 15c approved decisions (2026-10-17)
+
+PR #34 was reviewed and merged as `cfcd83d` with all three CI jobs passing, including the expanded 1024/1920px responsive checks. The owner approved a read-only API for listing saved purchase handoffs/batches and retrieving their original JSON, with pagination, OpenAPI and integration tests. Include current and historical packages with live selection outside immutable evidence. Use the explicit organization-wide `purchase_handoffs:read` key permission; only owners/admins issue keys and existing keys gain no permission. Preserve expiry, revocation and creator-role checks. ERP mapping, transmission, acknowledgments and order creation follow separately. See [handoff-read-api.md](handoff-read-api.md).

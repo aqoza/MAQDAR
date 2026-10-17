@@ -22,12 +22,13 @@ function headers(authorization?: string): Headers {
 }
 
 describe('scopes', () => {
-  it('has the four scopes with descriptions', () => {
+  it('has explicit scopes with descriptions', () => {
     expect(API_SCOPES).toEqual([
       'master_data:read',
       'master_data:write',
       'transactions:read',
       'transactions:write',
+      'purchase_handoffs:read',
     ])
     expect(Object.keys(SCOPE_DESCRIPTIONS)).toEqual([...API_SCOPES])
     expect(isApiScope('master_data:read')).toBe(true)

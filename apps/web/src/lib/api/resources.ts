@@ -1,5 +1,6 @@
 import { entitiesInLoadOrder, getEntity, isEntityName, type EntityName } from '../imports/contract'
 import { isTransactionEntity } from './limits'
+import { HANDOFF_RESOURCES, handoffOperationId } from './handoffs'
 
 /**
  * The resources of `/api/v1`: one per contract entity, named like the entity with `-` for `_`
@@ -120,6 +121,10 @@ export function allOperationIds(): string[] {
     ...RESOURCES.flatMap((resource) => [
       operationId(resource.entity, 'list'),
       operationId(resource.entity, 'upsert'),
+    ]),
+    ...HANDOFF_RESOURCES.flatMap((resource) => [
+      handoffOperationId(resource, false),
+      handoffOperationId(resource, true),
     ]),
   ]
 }

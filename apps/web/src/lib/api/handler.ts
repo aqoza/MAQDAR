@@ -1,4 +1,12 @@
 import type { EntityName } from '../imports/contract'
+import {
+  HANDOFF_SCOPE,
+  handoffIdSchema,
+  handoffOperationId,
+  isHandoffResource,
+  parseHandoffQuery,
+  type HandoffResource,
+} from './handoffs'
 import { readBodyText } from '../imports/route'
 import {
   credentialProblem,
@@ -318,22 +326,28 @@ async function checkUpsertRequest(
 /* ------------------------------------------------------------------------------------------ */
 
 type Operation =
+  | { kind: 'handoff'; resource: HandoffResource; id: string | null }
   | { kind: 'organization' }
   | { kind: 'list'; resource: ApiResource }
   | { kind: 'upsert'; resource: ApiResource }
 
 function requiredScopeOf(operation: Operation): ApiScope | null {
+  if (operation.kind === 'handoff') return HANDOFF_SCOPE
   if (operation.kind === 'organization') return null
   return scopeFor(operation.resource.entity, operation.kind === 'list' ? 'read' : 'write')
 }
 
 function logOperation(operation: Operation): string {
+  if (operation.kind === 'handoff')
+    return `${operation.id === null ? 'list' : 'get'}:${operation.resource}`
   return operation.kind === 'organization'
     ? 'organization'
     : `${operation.kind}:${operation.resource.entity}`
 }
 
 function operationIdOf(operation: Operation): string {
+  if (operation.kind === 'handoff')
+    return handoffOperationId(operation.resource, operation.id !== null)
   return operation.kind === 'organization'
     ? ORGANIZATION_OPERATION_ID
     : operationId(operation.resource.entity, operation.kind)
@@ -387,6 +401,44 @@ async function runOperation(
 
     const requiredScope = requiredScopeOf(operation)
     const url = new URL(request.url)
+
+    if (operation.kind === 'handoff') {
+      const query = parseHandoffQuery(url.searchParams)
+      const detailProblem = operation.id !== null ? noParameters(url.searchParams) : null
+      const invalidId = operation.id !== null && !handoffIdSchema.safeParse(operation.id).success
+      const failure = detailProblem ?? (!query.ok ? query : null)
+      if (!query.ok || detailProblem || invalidId) {
+        const pending = parameterProblem(
+          failure ?? {
+            ok: false,
+            code: 'invalid_parameter',
+            errors: [{ parameter: 'id', detail: 'Must be a UUID.' }],
+          },
+          requestId,
+        )
+        return finish(
+          ctx,
+          problemOutcome(await confirmKeyThen(ctx, keyHash, requiredScope, pending)),
+        )
+      }
+      const result =
+        operation.id !== null
+          ? await deps.rpc('api_handoff_get', {
+              p_key_hash: keyHash,
+              p_resource: operation.resource,
+              p_id: operation.id,
+            })
+          : await deps.rpc('api_handoff_list', {
+              p_key_hash: keyHash,
+              p_resource: operation.resource,
+              p_limit: query.limit,
+              p_after: query.cursor,
+              p_created_since: query.createdSince,
+            })
+      addDbTime(ctx, result.ms)
+      if (!result.ok) return finish(ctx, problemOutcome(rpcProblem(ctx, result, requiredScope)))
+      return finish(ctx, { kind: 'json', status: 200, body: result.text })
+    }
 
     if (operation.kind === 'organization') {
       const parameters = noParameters(url.searchParams)
@@ -497,6 +549,7 @@ export async function handleResource(
   segment: string,
   deps: ApiDeps,
 ): Promise<Response> {
+  if (isHandoffResource(segment)) return handleHandoff(request, method, segment, null, deps)
   const route: ResourceRoute | null = parseResourceSegment(segment)
   if (!route) return notFound(request, method, deps)
 
@@ -517,6 +570,33 @@ export async function handleResource(
     allowHeader(action),
     methodHint(route, method),
   )
+}
+
+/** Saved planning artifacts; reading cannot create, approve, export to ERP or acknowledge orders. */
+export async function handleHandoff(
+  request: Request,
+  method: ApiMethod,
+  resource: HandoffResource,
+  id: string | null,
+  deps: ApiDeps,
+): Promise<Response> {
+  const operation = `${id === null ? 'list' : 'get'}:${resource}`
+  if (method === 'OPTIONS') return options(request, deps, operation, READ_ONLY_ALLOW)
+  if (method === 'GET' || method === 'HEAD')
+    return runOperation(request, method, { kind: 'handoff', resource, id }, deps)
+  return methodNotAllowed(request, method, deps, operation, READ_ONLY_ALLOW)
+}
+
+/** Only the two handoff resources have detail routes; other nested paths retain JSON 404s. */
+export async function handleResourceDetail(
+  request: Request,
+  method: ApiMethod,
+  resource: string,
+  rest: string[],
+  deps: ApiDeps,
+): Promise<Response> {
+  if (!isHandoffResource(resource) || rest.length !== 1) return notFound(request, method, deps)
+  return handleHandoff(request, method, resource, rest[0], deps)
 }
 
 /** `/api/v1/organization`: the key and its organization (any valid key). */

@@ -16,6 +16,7 @@ export const API_SCOPES = [
   'master_data:write',
   'transactions:read',
   'transactions:write',
+  'purchase_handoffs:read',
 ] as const
 
 export type ApiScope = (typeof API_SCOPES)[number]
@@ -26,6 +27,8 @@ export const SCOPE_DESCRIPTIONS: Readonly<Record<ApiScope, string>> = {
   'master_data:write': 'Upsert master data.',
   'transactions:read': 'List demand history, stock snapshots, open orders and receipts.',
   'transactions:write': 'Upsert demand history, stock snapshots, open orders and receipts.',
+  'purchase_handoffs:read':
+    'Read saved purchase handoffs and batches across the organization; no order execution.',
 }
 
 export function isApiScope(value: unknown): value is ApiScope {

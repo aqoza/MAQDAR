@@ -773,6 +773,11 @@
       "creating": "Creating…"
     },
     "scopes": {
+      "purchaseHandoffsRead": {
+        "label": "Read purchase handoffs",
+        "badge": "Purchase handoffs: read",
+        "description": "Read saved handoffs and batches across the whole organization, including historical approvals."
+      },
       "masterDataRead": {
         "label": "Read master data",
         "badge": "Master data: read",

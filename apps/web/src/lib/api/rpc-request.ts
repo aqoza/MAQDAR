@@ -2,6 +2,7 @@ import type { Database } from '@maqdar/shared/database.types'
 import type { EntityName } from '../imports/contract'
 import type { RpcErrorLike } from '../rpc-errors'
 import type { KeyHash } from './keys'
+import type { HandoffResource } from './handoffs'
 
 /**
  * The HTTP requests `src/lib/supabase/api.ts` sends to PostgREST for the `api_*` RPCs, built
@@ -12,6 +13,14 @@ import type { KeyHash } from './keys'
 
 /** The `api_*` RPCs of the `rest_api` migration and the arguments the Worker sends them. */
 export type ApiRpcArgs = {
+  api_handoff_list: {
+    p_key_hash: KeyHash
+    p_resource: HandoffResource
+    p_after: string | null
+    p_limit: number
+    p_created_since: string | null
+  }
+  api_handoff_get: { p_key_hash: KeyHash; p_resource: HandoffResource; p_id: string }
   api_organization: { p_key_hash: KeyHash }
   api_list: {
     p_key_hash: KeyHash
@@ -74,6 +83,8 @@ export type MissingApiRpcs = [GeneratedApiRpcName] extends [never]
   : Exclude<DeclaredApiRpcName, GeneratedApiRpcName>
 
 export const API_RPC_NAMES = [
+  'api_handoff_list',
+  'api_handoff_get',
   'api_organization',
   'api_list',
   'api_list_demand',

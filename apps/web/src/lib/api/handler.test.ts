@@ -9,6 +9,7 @@ import {
   handleOpenApi,
   handleOrganization,
   handleResource,
+  handleResourceDetail,
   hasContentEncoding,
   ifNoneMatchHits,
   isJsonMediaType,
@@ -38,6 +39,7 @@ const BASE = 'https://maqdar.test/api/v1'
 const LEAK = 'permission denied for function api_upsert (secret detail)'
 
 const ALL_SCOPES = [
+  'purchase_handoffs:read',
   'master_data:read',
   'master_data:write',
   'transactions:read',
@@ -173,6 +175,160 @@ function only<T>(items: T[]): T {
 }
 
 beforeEach(() => resetRateLimitWarning())
+
+describe('read-only handoff routes', () => {
+  const id = '98000000-0000-4000-8000-000000000001'
+  it.each(['purchase-handoffs', 'purchase-handoff-batches'])(
+    'passes list arguments and original detail JSON for %s',
+    async (resource) => {
+      const raw =
+        '{"data":{"payload":{"subtotal":"999999999999999.999"},"current":{"selected":false}}}'
+      const state = fake({ rpc: { api_handoff_list: ok('{"data":[]}'), api_handoff_get: ok(raw) } })
+      const list = await handleResource(
+        request(`/${resource}?limit=2&created_since=2026-10-01T00:00:00Z&cursor=abc`, {
+          headers: AUTH,
+        }),
+        'GET',
+        resource,
+        state.deps,
+      )
+      expect(list.status).toBe(200)
+      expect(state.rpcCalls[0]).toEqual({
+        name: 'api_handoff_list',
+        args: {
+          p_key_hash: HASH,
+          p_resource: resource,
+          p_limit: 2,
+          p_after: 'abc',
+          p_created_since: '2026-10-01T00:00:00Z',
+        },
+      })
+      const detail = await handleResourceDetail(
+        request(`/${resource}/${id}`, { headers: AUTH }),
+        'GET',
+        resource,
+        [id],
+        state.deps,
+      )
+      expect(detail.status).toBe(200)
+      expect(await detail.text()).toBe(raw)
+      expect(detail.headers.get('cache-control')).toContain('no-store')
+      expect(detail.headers.get('set-cookie')).toBeNull()
+      expect(state.rpcCalls[1]).toEqual({
+        name: 'api_handoff_get',
+        args: { p_key_hash: HASH, p_resource: resource, p_id: id },
+      })
+      expect(state.upsertCalls).toEqual([])
+      const head = await handleResourceDetail(
+        request(`/${resource}/${id}`, { method: 'HEAD', headers: AUTH }),
+        'HEAD',
+        resource,
+        [id],
+        state.deps,
+      )
+      expect(head.status).toBe(200)
+      expect(await head.text()).toBe('')
+    },
+  )
+  it('authenticates before reporting malformed query or ID', async () => {
+    for (const scopes of [[], ['purchase_handoffs:read']]) {
+      const state = fake({ rpc: { api_organization: ok(organizationText(scopes)) } })
+      const response = await handleResourceDetail(
+        request('/purchase-handoffs/bad', { headers: AUTH }),
+        'GET',
+        'purchase-handoffs',
+        ['bad'],
+        state.deps,
+      )
+      expect(response.status).toBe(scopes.length ? 400 : 403)
+      expect((await body(response)).code).toBe(
+        scopes.length ? 'invalid_parameter' : 'insufficient_scope',
+      )
+      expect(state.rpcCalls.map((call) => call.name)).toEqual(['api_organization'])
+    }
+    const expired = fake({ rpc: { api_organization: rpcError('MQ401', 'expired') } })
+    expect(
+      (
+        await handleResource(
+          request('/purchase-handoffs?limit=0', { headers: AUTH }),
+          'GET',
+          'purchase-handoffs',
+          expired.deps,
+        )
+      ).status,
+    ).toBe(401)
+    const signedIn = fake()
+    expect(
+      (
+        await handleResource(
+          request('/purchase-handoffs', { headers: { cookie: 'session=ignored' } }),
+          'GET',
+          'purchase-handoffs',
+          signedIn.deps,
+        )
+      ).status,
+    ).toBe(401)
+    expect(signedIn.rpcCalls).toEqual([])
+  })
+  it('rejects parameters on details, exposes no mutation routes and preserves nested 404s', async () => {
+    const state = fake({ rpc: { api_organization: ok(organizationText()) } })
+    expect(
+      (
+        await handleResourceDetail(
+          request(`/purchase-handoffs/${id}?payload=1`, { headers: AUTH }),
+          'GET',
+          'purchase-handoffs',
+          [id],
+          state.deps,
+        )
+      ).status,
+    ).toBe(400)
+    for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'] as const) {
+      const result = await handleResourceDetail(
+        request(`/purchase-handoffs/${id}`, { method, headers: AUTH }),
+        method,
+        'purchase-handoffs',
+        [id],
+        state.deps,
+      )
+      expect(result.status).toBe(405)
+      expect(result.headers.get('allow')).toBe('GET, HEAD')
+    }
+    expect(
+      (await handleResourceDetail(request('/items/x'), 'GET', 'items', ['x'], state.deps)).status,
+    ).toBe(404)
+    expect(
+      (
+        await handleResourceDetail(
+          request('/purchase-handoffs/x/json'),
+          'GET',
+          'purchase-handoffs',
+          ['x', 'json'],
+          state.deps,
+        )
+      ).status,
+    ).toBe(404)
+    expect(state.rpcCalls).toHaveLength(1)
+    expect(state.upsertCalls).toEqual([])
+  })
+  it('maps missing, wrong-scope and cursor RPC failures without leaking database details', async () => {
+    for (const [code, hint, status] of [
+      ['MQ404', 'resource', 404],
+      ['MQ403', 'scope', 403],
+      ['MQ422', 'cursor', 400],
+    ] as const) {
+      const state = fake({ rpc: { api_handoff_list: rpcError(code, hint) } })
+      const result = await handleResource(
+        request('/purchase-handoffs', { headers: AUTH }),
+        'GET',
+        'purchase-handoffs',
+        state.deps,
+      )
+      expect(result.status).toBe(status)
+      expect(await result.text()).not.toContain(LEAK)
+    }
+  })
+})
 
 const ITEM = {
   item_code: 'FAL-BRK-1001',
