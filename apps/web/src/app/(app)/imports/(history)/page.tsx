@@ -30,7 +30,7 @@ import {
 } from '@/lib/master-data/list-params'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
-import { IMPORT_SOURCES, historyConditions, loadMemberEmails } from './data'
+import { IMPORT_SOURCES, historyConditions, loadMemberEmails } from '../data'
 
 /**
  * URL state of the history: newest first (index import_batches_list_idx), filter by status and by

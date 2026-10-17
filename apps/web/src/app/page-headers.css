@@ -2,7 +2,7 @@
 .app-shell:has([data-page-banner]) [data-slot='sidebar-inset'] > header {
   position: relative;
   z-index: 1;
-  border-color: transparent;
+  border-block-end: 0;
   background: transparent;
 }
 .app-shell:has([data-page-banner]) header [data-slot='separator'] {
@@ -16,7 +16,7 @@
   min-block-size: 32px;
 }
 .app-shell:has([data-page-banner]) [data-app-content] {
-  padding-block-start: 8px;
+  padding-block-start: 0;
 }
 .page-banner {
   position: relative;
@@ -31,7 +31,7 @@
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  inset-block: -52px 0;
+  inset-block: -44px 0;
   inset-inline: -16px;
   overflow: hidden;
   background: linear-gradient(110deg, #f0f8f6 5%, #edf8f4 62%, #edf6f4);
@@ -44,7 +44,7 @@
   block-size: 100%;
 }
 .page-banner .page-heading-row {
-  min-block-size: 52px;
+  min-block-size: 48px;
   align-items: center;
 }
 .page-banner > header {

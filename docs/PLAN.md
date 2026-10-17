@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Header loading consistency and spacing — approved 2026-10-17
+
+Fix the old white header shown while Import history streams, and close the global tagline-to-heading gap highlighted by the owner. Preserve the shared type scale, navigation, mobile targets and unrelated work. Match loading and settled header geometry, verify client navigation and reload, and open a reviewable PR without deployment. See [header-loading-spacing.md](header-loading-spacing.md).
+
 ## Illustrated compact page headers — approved 2026-10-17
 
 Implement the reviewed Items mockup and coordinated patterns for the other main sections. Extend the mint artwork through section tabs, close the highlighted subtitle-to-tabs gap, and preserve the shared typography and sidebar. Scope: reusable presentation and existing navigation composition; no backend changes. See [page-headers.md](page-headers.md).

@@ -1,5 +1,7 @@
 # Compact illustrated page headers
 
+This records the initial header implementation. The subsequent [loading and spacing fix](header-loading-spacing.md) reduces the top gap further and adds a matching Import history loading header; its screenshots and measurements supersede the dimensions below.
+
 The owner approved the Items mockup after extending its artwork through the section tabs and removing the excess subtitle-to-tabs gap. The main sections now share that compact mint header treatment, with page-specific SVG motifs and the typography required by [design.MD](../design.MD).
 
 | Section       | Decorative motif                     | Scope                                                           |
