@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('purchase_handoff_acknowledgements', 'anon', 'r', ''),
+    ('purchase_handoff_acknowledgements', 'authenticated', 'r', 'SELECT'),
+    ('purchase_handoff_acknowledgements', 'service_role', 'r', ''),
     ('replenishment_drafts', 'anon', 'r', ''),
     ('delivery_scenarios', 'anon', 'r', ''),
     ('delivery_scenarios', 'authenticated', 'r', 'SELECT'),
@@ -333,6 +336,11 @@ select set_eq(
     ('app.active_organization_claim()', 'authenticated,service_role'),
     ('app.admin_organizations()', 'authenticated,service_role'),
     ('app.api_authorize(bytea, text)', ''),
+    ('app.api_authorize_check(bytea, text)', ''),
+    ('app.handoff_ack_json(purchase_handoff_acknowledgements)', ''),
+    ('app.handoff_ack_location(uuid, text, uuid)', ''),
+    ('public.api_handoff_acknowledge(bytea, text, uuid, jsonb)', 'service_role'),
+    ('public.api_handoff_acknowledgements(bytea, text, uuid, uuid, text, integer)', 'service_role'),
     ('app.api_check_fields(text, jsonb)', ''),
     ('app.api_cursor_decode(text, text)', ''),
     ('app.api_cursor_encode(jsonb)', ''),

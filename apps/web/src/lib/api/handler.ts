@@ -1,5 +1,13 @@
 import type { EntityName } from '../imports/contract'
 import {
+  ACKNOWLEDGE_SCOPE,
+  ACKNOWLEDGEMENT_BODY_BYTES,
+  acknowledgementInputSchema,
+  acknowledgementOperationId,
+  parseAcknowledgementQuery,
+  type AcknowledgementInput,
+} from './acknowledgements'
+import {
   HANDOFF_SCOPE,
   handoffIdSchema,
   handoffOperationId,
@@ -138,7 +146,7 @@ type RequestContext = {
 type Outcome =
   | { kind: 'problem'; problem: ApiProblem }
   /** A string body is sent untouched (PostgREST's text); anything else is serialized. */
-  | { kind: 'json'; status: number; body: unknown }
+  | { kind: 'json'; status: number; body: unknown; headers?: Record<string, string> }
   /** A body sent as it is (or none: 204, 304) with its own headers. */
   | { kind: 'raw'; status: number; body: string | null; headers: Record<string, string> }
 
@@ -191,7 +199,7 @@ function finish(ctx: RequestContext, outcome: Outcome): Response {
     response = problemResponse(outcome.problem, common)
     code = outcome.problem.body.code
   } else if (outcome.kind === 'json') {
-    response = jsonResponse(outcome.status, outcome.body, common)
+    response = jsonResponse(outcome.status, outcome.body, { ...common, ...outcome.headers })
   } else {
     const headers = new Headers({ ...outcome.headers, ...common })
     response = new Response(outcome.body, { status: outcome.status, headers })
@@ -326,26 +334,42 @@ async function checkUpsertRequest(
 /* ------------------------------------------------------------------------------------------ */
 
 type Operation =
+  | {
+      kind: 'acknowledgement'
+      resource: HandoffResource
+      id: string
+      eventId: string | null
+      write: boolean
+    }
   | { kind: 'handoff'; resource: HandoffResource; id: string | null }
   | { kind: 'organization' }
   | { kind: 'list'; resource: ApiResource }
   | { kind: 'upsert'; resource: ApiResource }
 
 function requiredScopeOf(operation: Operation): ApiScope | null {
+  if (operation.kind === 'acknowledgement')
+    return operation.write ? ACKNOWLEDGE_SCOPE : HANDOFF_SCOPE
   if (operation.kind === 'handoff') return HANDOFF_SCOPE
   if (operation.kind === 'organization') return null
   return scopeFor(operation.resource.entity, operation.kind === 'list' ? 'read' : 'write')
 }
 
 function logOperation(operation: Operation): string {
+  if (operation.kind === 'acknowledgement')
+    return `${operation.write ? 'create' : operation.eventId ? 'get' : 'list'}:${operation.resource.replaceAll('-', '_')}_acknowledgements`
   if (operation.kind === 'handoff')
-    return `${operation.id === null ? 'list' : 'get'}:${operation.resource}`
+    return `${operation.id === null ? 'list' : 'get'}:${operation.resource.replaceAll('-', '_')}`
   return operation.kind === 'organization'
     ? 'organization'
     : `${operation.kind}:${operation.resource.entity}`
 }
 
 function operationIdOf(operation: Operation): string {
+  if (operation.kind === 'acknowledgement')
+    return acknowledgementOperationId(
+      operation.resource,
+      operation.write ? 'create' : operation.eventId ? 'get' : 'list',
+    )
   if (operation.kind === 'handoff')
     return handoffOperationId(operation.resource, operation.id !== null)
   return operation.kind === 'organization'
@@ -401,6 +425,9 @@ async function runOperation(
 
     const requiredScope = requiredScopeOf(operation)
     const url = new URL(request.url)
+
+    if (operation.kind === 'acknowledgement')
+      return await runAcknowledgement(request, ctx, keyHash, operation)
 
     if (operation.kind === 'handoff') {
       const query = parseHandoffQuery(url.searchParams)
@@ -580,7 +607,7 @@ export async function handleHandoff(
   id: string | null,
   deps: ApiDeps,
 ): Promise<Response> {
-  const operation = `${id === null ? 'list' : 'get'}:${resource}`
+  const operation = `${id === null ? 'list' : 'get'}:${resource.replaceAll('-', '_')}`
   if (method === 'OPTIONS') return options(request, deps, operation, READ_ONLY_ALLOW)
   if (method === 'GET' || method === 'HEAD')
     return runOperation(request, method, { kind: 'handoff', resource, id }, deps)
@@ -595,8 +622,146 @@ export async function handleResourceDetail(
   rest: string[],
   deps: ApiDeps,
 ): Promise<Response> {
+  if (
+    isHandoffResource(resource) &&
+    (rest.length === 2 || rest.length === 3) &&
+    rest[1] === 'acknowledgements'
+  ) {
+    const eventId = rest[2] ?? null
+    const allow = eventId === null ? 'GET, HEAD, POST' : READ_ONLY_ALLOW
+    const operation = `acknowledgements:${resource.replaceAll('-', '_')}`
+    if (method === 'OPTIONS') return options(request, deps, operation, allow)
+    if (method === 'GET' || method === 'HEAD' || (method === 'POST' && eventId === null))
+      return runOperation(
+        request,
+        method,
+        { kind: 'acknowledgement', resource, id: rest[0], eventId, write: method === 'POST' },
+        deps,
+      )
+    return methodNotAllowed(request, method, deps, operation, allow)
+  }
   if (!isHandoffResource(resource) || rest.length !== 1) return notFound(request, method, deps)
   return handleHandoff(request, method, resource, rest[0], deps)
+}
+
+async function checkAcknowledgementBody(
+  request: Request,
+  requestId: string,
+): Promise<{ ok: true; body: AcknowledgementInput } | { ok: false; problem: ApiProblem }> {
+  if (
+    !isJsonMediaType(request.headers.get('content-type')) ||
+    hasContentEncoding(request.headers.get('content-encoding'))
+  )
+    return { ok: false, problem: toProblem('unsupported_media_type', requestId) }
+  const body = await readBodyText(request, ACKNOWLEDGEMENT_BODY_BYTES)
+  if (!body.ok)
+    return {
+      ok: false,
+      problem:
+        body.response.status === 413
+          ? toProblem('payload_too_large', requestId, {
+              detail: `The acknowledgement body exceeds ${ACKNOWLEDGEMENT_BODY_BYTES} bytes.`,
+            })
+          : bodyReadProblem(body.response.status, requestId),
+    }
+  let value: unknown
+  try {
+    value = JSON.parse(body.text)
+  } catch {
+    return { ok: false, problem: toProblem('invalid_json', requestId) }
+  }
+  const parsed = acknowledgementInputSchema.safeParse(value)
+  if (!parsed.success)
+    return {
+      ok: false,
+      problem: toProblem('invalid_request', requestId, {
+        extensions: {
+          errors: parsed.error.issues.slice(0, 20).map((issue) => ({
+            field: String(issue.path[0] ?? 'body'),
+            detail: 'Invalid acknowledgement field; see the documented request schema.',
+          })),
+        },
+      }),
+    }
+  return { ok: true, body: parsed.data }
+}
+
+async function runAcknowledgement(
+  request: Request,
+  ctx: RequestContext,
+  keyHash: KeyHash,
+  operation: Extract<Operation, { kind: 'acknowledgement' }>,
+): Promise<Response> {
+  const params = new URL(request.url).searchParams
+  const query = parseAcknowledgementQuery(params)
+  const failure =
+    operation.write || operation.eventId !== null ? noParameters(params) : !query.ok ? query : null
+  const invalidId =
+    !handoffIdSchema.safeParse(operation.id).success ||
+    (operation.eventId !== null && !handoffIdSchema.safeParse(operation.eventId).success)
+  const scope = requiredScopeOf(operation)
+  if (failure || invalidId)
+    return finish(
+      ctx,
+      problemOutcome(
+        await confirmKeyThen(
+          ctx,
+          keyHash,
+          scope,
+          parameterProblem(
+            failure ?? {
+              ok: false,
+              code: 'invalid_parameter',
+              errors: [{ parameter: 'id', detail: 'Must be a UUID.' }],
+            },
+            ctx.requestId,
+          ),
+        ),
+      ),
+    )
+  if (operation.write) {
+    const checked = await checkAcknowledgementBody(request, ctx.requestId)
+    if (!checked.ok)
+      return finish(ctx, problemOutcome(await confirmKeyThen(ctx, keyHash, scope, checked.problem)))
+    const result = await ctx.deps.rpc('api_handoff_acknowledge', {
+      p_key_hash: keyHash,
+      p_resource: operation.resource,
+      p_id: operation.id,
+      p_body: checked.body,
+    })
+    addDbTime(ctx, result.ms)
+    if (!result.ok) return finish(ctx, problemOutcome(rpcProblem(ctx, result, scope)))
+    const response: { data?: { id?: unknown }; replayed?: unknown } = JSON.parse(result.text)
+    if (
+      typeof response?.replayed !== 'boolean' ||
+      !handoffIdSchema.safeParse(response?.data?.id).success
+    )
+      return crashed(ctx)
+    return finish(ctx, {
+      kind: 'json',
+      status: response.replayed ? 200 : 201,
+      body: result.text,
+      headers: {
+        Location: `/api/v1/${operation.resource}/${operation.id}/acknowledgements/${response.data!.id}`,
+      },
+    })
+  }
+  if (!query.ok) return crashed(ctx) // Detail queries were refused above; lists were validated.
+  const result = await ctx.deps.rpc('api_handoff_acknowledgements', {
+    p_key_hash: keyHash,
+    p_resource: operation.resource,
+    p_id: operation.id,
+    p_event_id: operation.eventId,
+    p_after: query.cursor,
+    p_limit: query.limit,
+  })
+  addDbTime(ctx, result.ms)
+  return finish(
+    ctx,
+    result.ok
+      ? { kind: 'json', status: 200, body: result.text }
+      : problemOutcome(rpcProblem(ctx, result, scope)),
+  )
 }
 
 /** `/api/v1/organization`: the key and its organization (any valid key). */

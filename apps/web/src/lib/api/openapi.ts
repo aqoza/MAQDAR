@@ -26,6 +26,7 @@ import {
 } from './resources'
 import { OPENAPI_DOCUMENT_VERSION, deprecationFor } from './versioning'
 import { handoffPaths, handoffSchemas } from './handoff-openapi'
+import { acknowledgementPaths, acknowledgementSchemas } from './acknowledgement-openapi'
 
 /**
  * The OpenAPI 3.1.1 document of `/api/v1`, generated from the import contract
@@ -926,7 +927,8 @@ export function buildOpenApi(): OpenApiDocument {
     schemas[names.page] = pageSchema(entity)
   }
   Object.assign(paths, handoffPaths())
-  Object.assign(schemas, sharedSchemas(), handoffSchemas())
+  Object.assign(paths, acknowledgementPaths())
+  Object.assign(schemas, sharedSchemas(), handoffSchemas(), acknowledgementSchemas())
 
   return {
     openapi: OPENAPI_VERSION,

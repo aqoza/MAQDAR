@@ -3,6 +3,7 @@ import type { EntityName } from '../imports/contract'
 import type { RpcErrorLike } from '../rpc-errors'
 import type { KeyHash } from './keys'
 import type { HandoffResource } from './handoffs'
+import type { AcknowledgementInput } from './acknowledgements'
 
 /**
  * The HTTP requests `src/lib/supabase/api.ts` sends to PostgREST for the `api_*` RPCs, built
@@ -13,6 +14,20 @@ import type { HandoffResource } from './handoffs'
 
 /** The `api_*` RPCs of the `rest_api` migration and the arguments the Worker sends them. */
 export type ApiRpcArgs = {
+  api_handoff_acknowledge: {
+    p_key_hash: KeyHash
+    p_resource: HandoffResource
+    p_id: string
+    p_body: AcknowledgementInput
+  }
+  api_handoff_acknowledgements: {
+    p_key_hash: KeyHash
+    p_resource: HandoffResource
+    p_id: string
+    p_event_id: string | null
+    p_after: string | null
+    p_limit: number
+  }
   api_handoff_list: {
     p_key_hash: KeyHash
     p_resource: HandoffResource
@@ -83,6 +98,8 @@ export type MissingApiRpcs = [GeneratedApiRpcName] extends [never]
   : Exclude<DeclaredApiRpcName, GeneratedApiRpcName>
 
 export const API_RPC_NAMES = [
+  'api_handoff_acknowledge',
+  'api_handoff_acknowledgements',
   'api_handoff_list',
   'api_handoff_get',
   'api_organization',

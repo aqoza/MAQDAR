@@ -663,8 +663,8 @@ select ok(
 select is(
   (select count(*)::integer from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'app' and p.proname like 'api\_%'),
-  9,
-  'there are 9 internal app.api_* functions'
+  10,
+  'there are 10 internal app.api_* functions'
 );
 select is(
   array(select p.oid::regprocedure::text

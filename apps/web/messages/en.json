@@ -797,6 +797,11 @@
         "label": "Write transactions",
         "badge": "Transactions: write",
         "description": "Add and update transaction feeds; zero quantities clear demand history only."
+      },
+      "purchaseHandoffsAcknowledge": {
+        "badge": "Handoff acknowledgements",
+        "label": "Acknowledge purchase handoffs",
+        "description": "Report external receipt or rejection of saved handoffs and batches across the whole organization. This permission does not create orders."
       }
     },
     "secret": {
@@ -2545,5 +2550,23 @@
     "policyRequired": "A selected line requires policy recalculation. Choose an approved compatible replacement.",
     "unavailable": "The batch or a selected handoff is unavailable. Refresh and check your selection.",
     "context": "Planning packages for manual handoff"
+  },
+  "HandoffAcknowledgements": {
+    "title": "Integration acknowledgements",
+    "count": "{count, plural, =0 {No reports} one {# report} other {# reports}}",
+    "meaning": "Reports are supplied by an API key holder. The system name is their label; receipt or rejection is not independently verified and does not mean an order was placed. Times show when MAQDAR recorded each report.",
+    "batchNote": "These reports apply to this batch only. Individual handoffs and overlapping batches have separate histories.",
+    "singleNote": "Batch reports do not update this handoff’s history. Saved exports and approval selection remain unchanged.",
+    "empty": "No reports on this page.",
+    "received": "Reported received",
+    "rejected": "Reported rejected",
+    "evidence": "Event details",
+    "eventId": "Recorded event",
+    "clientEventId": "Client event",
+    "keyId": "Reporting API key",
+    "pagination": "Acknowledgement history pages",
+    "previous": "Newer reports",
+    "next": "Older reports",
+    "page": "Page {page}"
   }
 }

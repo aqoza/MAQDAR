@@ -198,6 +198,10 @@ describe('structure', () => {
         resourcePath(resource, 'upsert'),
       ]),
       ...HANDOFF_RESOURCES.flatMap((resource) => [`/${resource}`, `/${resource}/{id}`]),
+      ...HANDOFF_RESOURCES.flatMap((resource) => [
+        `/${resource}/{id}/acknowledgements`,
+        `/${resource}/{id}/acknowledgements/{eventId}`,
+      ]),
     ]
     expect(Object.keys(doc.paths)).toEqual(expected)
     for (const resource of RESOURCES) {
@@ -228,7 +232,7 @@ describe('structure', () => {
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
         : path.startsWith('/purchase-handoff')
-          ? [HANDOFF_SCOPE]
+          ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
           : []
       expect(operation['x-maqdar-scopes'], operation.operationId).toEqual(scopes)
       expect(operation.deprecated === true).toBe(deprecationFor(operation.operationId) !== null)

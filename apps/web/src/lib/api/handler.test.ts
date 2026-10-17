@@ -40,6 +40,7 @@ const LEAK = 'permission denied for function api_upsert (secret detail)'
 
 const ALL_SCOPES = [
   'purchase_handoffs:read',
+  'purchase_handoffs:acknowledge',
   'master_data:read',
   'master_data:write',
   'transactions:read',
@@ -175,6 +176,122 @@ function only<T>(items: T[]): T {
 }
 
 beforeEach(() => resetRateLimitWarning())
+
+describe('handoff acknowledgements', () => {
+  const id = '98000000-0000-4000-8000-000000000001'
+  const event = '98000000-0000-4000-8000-000000000002'
+  const value = {
+    client_event_id: event,
+    external_system: 'ERP',
+    external_reference: '00123',
+    status: 'received',
+  }
+  const base = `/purchase-handoffs/${id}/acknowledgements`
+  const route = (
+    state: Fake,
+    method: ApiMethod,
+    suffix = '',
+    payload?: string,
+    headers = JSON_HEADERS,
+  ) =>
+    handleResourceDetail(
+      request(base + suffix, {
+        method,
+        headers,
+        ...(payload === undefined ? {} : { body: payload }),
+      }),
+      method,
+      'purchase-handoffs',
+      [id, 'acknowledgements', ...(suffix.startsWith('/') ? [suffix.slice(1)] : [])],
+      state.deps,
+    )
+  it.each([false, true])(
+    'returns creation/retry status and a readable location (replayed %s)',
+    async (replayed) => {
+      const raw = JSON.stringify({ data: { id: event, external_reference: '00123' }, replayed })
+      const state = fake({ rpc: { api_handoff_acknowledge: ok(raw) } })
+      const response = await route(state, 'POST', '', JSON.stringify(value))
+      expect(response.status).toBe(replayed ? 200 : 201)
+      expect(response.headers.get('location')).toBe(`/api/v1${base}/${event}`)
+      expect(response.headers.get('cache-control')).toContain('no-store')
+      expect(await response.text()).toBe(raw)
+      expect(state.rpcCalls).toEqual([
+        {
+          name: 'api_handoff_acknowledge',
+          args: { p_key_hash: HASH, p_resource: 'purchase-handoffs', p_id: id, p_body: value },
+        },
+      ])
+      expect(JSON.stringify(state.logs)).not.toContain('00123')
+      expect(JSON.stringify(state.logs)).not.toContain(TOKEN)
+      expect(state.upsertCalls).toEqual([])
+    },
+  )
+  it('uses the read RPC for lists, details and HEAD and refuses event mutations', async () => {
+    const state = fake({ rpc: { api_handoff_acknowledgements: ok('{"data":[]}') } })
+    expect((await route(state, 'GET', '?limit=2&cursor=abc')).status).toBe(200)
+    expect(state.rpcCalls[0].args).toMatchObject({ p_limit: 2, p_after: 'abc', p_event_id: null })
+    expect((await route(state, 'GET', `/${event}`)).status).toBe(200)
+    expect(state.rpcCalls[1].args.p_event_id).toBe(event)
+    expect(await (await route(state, 'HEAD')).text()).toBe('')
+    for (const method of ['PUT', 'PATCH', 'DELETE'] as const)
+      expect((await route(state, method)).status).toBe(405)
+    expect((await route(state, 'POST', `/${event}`, JSON.stringify(value))).status).toBe(405)
+    expect((await route(state, 'OPTIONS')).headers.get('allow')).toBe('GET, HEAD, POST, OPTIONS')
+  })
+  it.each([
+    ['{', 400],
+    [JSON.stringify({ ...value, status: 'rejected' }), 422],
+    ['x'.repeat(8193), 413],
+  ])('validates writes after authenticating (%s)', async (payload, status) => {
+    const valid = fake({ rpc: { api_organization: ok(organizationText()) } })
+    expect((await route(valid, 'POST', '', payload)).status).toBe(status)
+    expect(valid.rpcCalls.map((call) => call.name)).toEqual(['api_organization'])
+    const readOnly = fake({
+      rpc: { api_organization: ok(organizationText(['purchase_handoffs:read'])) },
+    })
+    expect((await route(readOnly, 'POST', '', payload)).status).toBe(403)
+    const expired = fake({ rpc: { api_organization: rpcError('MQ401', 'expired') } })
+    expect((await route(expired, 'POST', '', payload)).status).toBe(401)
+  })
+  it('refuses unsupported media, cookies, invalid queries and conflicting events safely', async () => {
+    const state = fake({
+      rpc: {
+        api_organization: ok(organizationText()),
+        api_handoff_acknowledge: rpcError('MQ409', 'acknowledgement_conflict'),
+      },
+    })
+    expect(
+      (
+        await route(state, 'POST', '', JSON.stringify(value), {
+          ...JSON_HEADERS,
+          'content-type': 'text/plain',
+        })
+      ).status,
+    ).toBe(415)
+    expect((await route(state, 'POST', '?limit=1', JSON.stringify(value))).status).toBe(400)
+    expect((await route(state, 'GET', '?created_since=2026-10-01T00:00:00Z')).status).toBe(400)
+    const conflict = await route(state, 'POST', '', JSON.stringify(value))
+    expect(conflict.status).toBe(409)
+    expect(conflict.headers.get('retry-after')).toBeNull()
+    const error = await conflict.text()
+    expect(error).toContain('acknowledgement_conflict')
+    expect(error).not.toContain(LEAK)
+    const anonymous = fake()
+    const response = await handleResourceDetail(
+      request(base, {
+        method: 'POST',
+        body: JSON.stringify(value),
+        headers: { cookie: 'session=ignored', 'content-type': 'application/json' },
+      }),
+      'POST',
+      'purchase-handoffs',
+      [id, 'acknowledgements'],
+      anonymous.deps,
+    )
+    expect(response.status).toBe(401)
+    expect(anonymous.rpcCalls).toEqual([])
+  })
+})
 
 describe('read-only handoff routes', () => {
   const id = '98000000-0000-4000-8000-000000000001'
