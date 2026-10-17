@@ -37,10 +37,11 @@ export default async function TransferReview({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const params = workbenchParams(await searchParams)
-  const [db, t, locale] = await Promise.all([
+  const [db, t, locale, handoffT] = await Promise.all([
     createClient(),
     getTranslations('TransferReview'),
     getLocale(),
+    getTranslations('TransferHandoffs'),
   ])
   const organizationId = context.active.id
   const query = (head: boolean) => {
@@ -86,6 +87,9 @@ export default async function TransferReview({
         }
       />
       <ReplenishmentNav current="redistribution" />
+      <Link href="/replenishment/redistribution/handoffs" className="inline-block underline">
+        {handoffT('title')}
+      </Link>
       <Form
         action="/replenishment/redistribution/review"
         className="workspace-toolbar flex flex-wrap items-end gap-3"
