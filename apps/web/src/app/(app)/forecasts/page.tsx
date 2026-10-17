@@ -1,15 +1,12 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import {
-  BarChart3,
-  Clock,
-  Layers,
-  LockKeyhole,
-  Package,
-  Search,
-  ShieldCheck,
-  TrendingUp,
-} from 'lucide-react'
+import { Clock, LockKeyhole } from 'lucide-react'
+import { ForecastTabs } from '@/components/forecast-tabs'
+import { ForecastQuality } from '@/components/forecast-section-quality'
+import { PolicyWorkbench } from '@/components/forecast-section-workbench'
+import { ClassifyPage } from '@/components/forecast-section-classify'
+import { NewForecastPage } from '@/components/forecast-section-new'
+import { PreparePage } from '@/components/forecast-section-prepare'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import { CancelPlanningRun, PlanningForm } from '@/components/planning-controls'
@@ -53,50 +50,6 @@ export default async function ForecastsPage() {
   const from = new Date(Date.parse(to) - 364 * 86_400_000).toISOString().slice(0, 10)
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
   const canStart = editor && !active
-  const tasks = [
-    {
-      key: 'readiness',
-      label: t('submit'),
-      href: '#demand-check',
-      icon: Search,
-      enabled: canStart,
-    },
-    {
-      key: 'quality',
-      label: t('quality'),
-      href: '/forecasts/quality',
-      icon: BarChart3,
-      enabled: true,
-    },
-    {
-      key: 'workbench',
-      label: t('workbench'),
-      href: '/forecasts/workbench',
-      icon: ShieldCheck,
-      enabled: true,
-    },
-    {
-      key: 'classify',
-      label: t('classify'),
-      href: '/forecasts/classify',
-      icon: Package,
-      enabled: canStart,
-    },
-    {
-      key: 'forecast',
-      label: t('forecast'),
-      href: '/forecasts/new',
-      icon: TrendingUp,
-      enabled: canStart,
-    },
-    {
-      key: 'prepare',
-      label: t('prepare'),
-      href: '/forecasts/prepare',
-      icon: Layers,
-      enabled: canStart,
-    },
-  ] as const
   const statuses = (['queued', 'running', 'succeeded', 'failed', 'canceled'] as const).map(
     (value) => ({ value, label: t(`status.${value}`) }),
   )
@@ -233,82 +186,88 @@ export default async function ForecastsPage() {
           </HelpDisclosure>
         </div>
       </header>
-      <nav className={styles.workflows} aria-label={t('workspace.tools')}>
-        {tasks.map(({ key, label, href, icon: Icon, enabled }) => {
-          const content = (
-            <>
-              <Icon aria-hidden="true" />
-              <span>{label}</span>
-            </>
-          )
-          const className = `${styles.workflow} ${key === 'readiness' ? styles.selected : ''}`
-          const TaskLink = href.startsWith('#') ? 'a' : Link
-          return enabled ? (
-            <TaskLink
-              key={key}
-              href={href}
-              className={className}
-              aria-current={key === 'readiness' ? 'location' : undefined}
-            >
-              {content}
-            </TaskLink>
+      <ForecastTabs
+        label={t('workspace.tools')}
+        tabs={[
+          { key: 'readiness', label: t('submit') },
+          { key: 'quality', label: t('quality') },
+          { key: 'workbench', label: t('workbench') },
+          { key: 'classify', label: t('classify') },
+          { key: 'forecast', label: t('forecast') },
+          { key: 'prepare', label: t('prepare') },
+        ]}
+        panels={[
+          <div key="readiness">
+            {canStart ? (
+              <PlanningForm
+                key={`readiness-${organization.id}`}
+                organizationId={organization.id}
+                requestId={crypto.randomUUID()}
+                from={from}
+                to={to}
+                labels={{
+                  location: t('location'),
+                  from: t('from'),
+                  to: t('to'),
+                  submit: t('submit'),
+                  pending: t('pending'),
+                  locationPlaceholder: t('workspace.locationPlaceholder'),
+                }}
+              />
+            ) : (
+              <section className={styles.notice} aria-labelledby="workspace-state">
+                {active ? <Clock aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
+                <div>
+                  <h2 id="workspace-state" className="text-section-title">
+                    {t(active ? 'workspace.activeTitle' : 'workspace.readOnlyTitle')}
+                  </h2>
+                  <p role={active ? 'status' : undefined}>
+                    {t(active ? 'activeNote' : 'workspace.readOnlyDescription')}
+                  </p>
+                </div>
+              </section>
+            )}
+            <ForecastRunBrowser
+              key={`history-${organization.id}`}
+              runs={runs}
+              active={active}
+              statuses={statuses}
+              labels={{
+                recent: t('recent'),
+                details: t('workspace.details'),
+                search: t('workspace.search'),
+                status: t('workspace.status'),
+                allStatuses: t('workspace.allStatuses'),
+                location: t('workspace.locationRun'),
+                window: t('workspace.window'),
+                requested: t('workspace.requested'),
+                empty: t('empty'),
+                noMatch: t('workspace.noMatch'),
+                reset: t('workspace.reset'),
+                selectRun: t('workspace.selectRun'),
+                refresh: t('refresh'),
+                historyNote: t('workspace.historyNote'),
+              }}
+            />
+          </div>,
+          <ForecastQuality key="quality" embedded searchParams={Promise.resolve({})} />,
+          <PolicyWorkbench key="workbench" embedded searchParams={Promise.resolve({})} />,
+          editor ? (
+            <ClassifyPage key="classify" embedded />
           ) : (
-            <span key={key} className={className} aria-disabled="true">
-              {content}
-            </span>
-          )
-        })}
-      </nav>
-      {canStart ? (
-        <PlanningForm
-          key={`readiness-${organization.id}`}
-          organizationId={organization.id}
-          requestId={crypto.randomUUID()}
-          from={from}
-          to={to}
-          labels={{
-            location: t('location'),
-            from: t('from'),
-            to: t('to'),
-            submit: t('submit'),
-            pending: t('pending'),
-            locationPlaceholder: t('workspace.locationPlaceholder'),
-          }}
-        />
-      ) : (
-        <section className={styles.notice} aria-labelledby="workspace-state">
-          {active ? <Clock aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
-          <div>
-            <h2 id="workspace-state" className="text-section-title">
-              {t(active ? 'workspace.activeTitle' : 'workspace.readOnlyTitle')}
-            </h2>
-            <p role={active ? 'status' : undefined}>
-              {t(active ? 'activeNote' : 'workspace.readOnlyDescription')}
-            </p>
-          </div>
-        </section>
-      )}
-      <ForecastRunBrowser
-        key={`history-${organization.id}`}
-        runs={runs}
-        active={active}
-        statuses={statuses}
-        labels={{
-          recent: t('recent'),
-          details: t('workspace.details'),
-          search: t('workspace.search'),
-          status: t('workspace.status'),
-          allStatuses: t('workspace.allStatuses'),
-          location: t('workspace.locationRun'),
-          window: t('workspace.window'),
-          requested: t('workspace.requested'),
-          empty: t('empty'),
-          noMatch: t('workspace.noMatch'),
-          reset: t('workspace.reset'),
-          selectRun: t('workspace.selectRun'),
-          refresh: t('refresh'),
-          historyNote: t('workspace.historyNote'),
-        }}
+            <p key="classify">{t('workspace.readOnlyDescription')}</p>
+          ),
+          editor ? (
+            <NewForecastPage key="new" embedded />
+          ) : (
+            <p key="new">{t('workspace.readOnlyDescription')}</p>
+          ),
+          editor ? (
+            <PreparePage key="prepare" embedded />
+          ) : (
+            <p key="prepare">{t('workspace.readOnlyDescription')}</p>
+          ),
+        ]}
       />
     </div>
   )

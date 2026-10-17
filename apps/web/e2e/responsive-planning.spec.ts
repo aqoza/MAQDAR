@@ -37,7 +37,7 @@ async function expectContainedLayout(page: Page) {
 
   // No clipping the page to hide the defect: the actual form controls must fit too.
   for (const control of await page
-    .locator('main input:not([type=hidden]), main select, main textarea')
+    .locator('main input:not([type=hidden]):visible, main select:visible, main textarea:visible')
     .all()) {
     const bounds = await control.boundingBox()
     expect(bounds).not.toBeNull()
@@ -89,12 +89,12 @@ for (const { width, height } of [
         }
         if (screen.path === '/forecasts') {
           await expect(
-            page.getByRole('navigation', { name: 'Planning tools' }).getByRole('link'),
+            page.getByRole('tablist', { name: 'Planning tools' }).getByRole('tab'),
           ).toHaveCount(6)
-          await page.getByRole('link', { name: 'Check demand data', exact: true }).focus()
+          await page.getByRole('tab', { name: 'Check demand data', exact: true }).focus()
           await page.keyboard.press('Enter')
           await expect(
-            page.getByRole('form', { name: 'Check demand data', exact: true }),
+            page.getByRole('tab', { name: 'Check demand data', exact: true }),
           ).toBeFocused()
           await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')
           await expect(
@@ -102,7 +102,9 @@ for (const { width, height } of [
           ).toHaveCount(1)
         }
         for (const control of await page
-          .locator('main select, main input:not([type=hidden]):not([type=checkbox]), main textarea')
+          .locator(
+            'main select:visible, main input:not([type=hidden]):not([type=checkbox]):visible, main textarea:visible',
+          )
           .all()) {
           await expect(control).toHaveCSS('font-size', width < 768 ? '16px' : '14px')
         }
@@ -122,7 +124,7 @@ for (const { width, height } of [
         await expectContainedLayout(page)
 
         // Long native options caused the original overflow, even in an empty organization.
-        for (const select of await page.locator('main select:not([disabled])').all()) {
+        for (const select of await page.locator('main select:not([disabled]):visible').all()) {
           // Editable forms and master-data auto-submit filters are covered by their workflow tests.
           if (!screen.reset && screen.path !== '/forecasts') continue
           const longest = await select
@@ -159,7 +161,7 @@ for (const { width, height } of [
           fullPage: true,
         })
         if (screen.path === '/forecasts') {
-          await page.getByRole('link', { name: 'Saved forecast quality', exact: true }).click()
+          await page.getByRole('tab', { name: 'Saved forecast quality', exact: true }).click()
           await expect(
             page.getByRole('heading', { name: 'Saved forecast quality', exact: true }),
           ).toBeVisible()

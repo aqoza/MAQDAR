@@ -348,11 +348,9 @@ test('a viewer sees master data read-only and cannot open a new form', async ({
   await expect(
     viewerPage.getByRole('form', { name: 'Check demand data', exact: true }),
   ).toHaveCount(0)
-  await expect(viewerPage.getByRole('link', { name: 'Create forecast', exact: true })).toHaveCount(
-    0,
-  )
+  await expect(viewerPage.getByRole('tab', { name: 'Create forecast', exact: true })).toBeVisible()
   await expect(
-    viewerPage.getByRole('link', { name: 'Saved forecast quality', exact: true }),
+    viewerPage.getByRole('tab', { name: 'Saved forecast quality', exact: true }),
   ).toBeVisible()
   await context.close()
 })
