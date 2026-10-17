@@ -2,9 +2,9 @@ import { z } from 'zod'
 import {
   acknowledgementInputSchema,
   acknowledgementOperationId,
-  ACKNOWLEDGE_SCOPE,
+  acknowledgementScope,
 } from './acknowledgements'
-import { HANDOFF_RESOURCES, HANDOFF_SCOPE } from './handoffs'
+import { READ_HANDOFF_RESOURCES, handoffReadScope, isTransferHandoffResource } from './handoffs'
 import type { Schema } from './openapi'
 
 const ref = (name: string) => ({ $ref: `#/components/schemas/${name}` })
@@ -23,7 +23,7 @@ export function acknowledgementSchemas(): Record<string, Schema> {
     HandoffAcknowledgementInput: {
       ...input,
       description:
-        'A rejected report requires a nonblank reason. Text must be nonblank and contain no control characters. 8 KiB body cap. Omitted reason and null are equivalent; UUID letter case is normalized. Other text is preserved exactly. System/reference are caller assertions, not independently verified identities or purchase-order numbers.',
+        'A rejected report requires a nonblank reason. Text must be nonblank and contain no control characters. 8 KiB body cap. Omitted reason and null are equivalent; UUID letter case is normalized. Other text is preserved exactly. System/reference are caller assertions, not independently verified identities or order numbers.',
       allOf: [
         {
           if: { properties: { status: { const: 'rejected' } }, required: ['status'] },
@@ -39,7 +39,7 @@ export function acknowledgementSchemas(): Record<string, Schema> {
       client_event_id: uuid,
       api_key_id: uuid,
       recorded_at: timestamp,
-      resource: { type: 'string', enum: [...HANDOFF_RESOURCES] },
+      resource: { type: 'string', enum: [...READ_HANDOFF_RESOURCES] },
       record_id: uuid,
       external_system: { type: 'string', minLength: 1, maxLength: 80 },
       external_reference: { type: 'string', minLength: 1, maxLength: 200 },
@@ -61,7 +61,7 @@ export function acknowledgementSchemas(): Record<string, Schema> {
 
 export function acknowledgementPaths(): Record<string, Record<string, Schema>> {
   const paths: Record<string, Record<string, Schema>> = {}
-  for (const resource of HANDOFF_RESOURCES) {
+  for (const resource of READ_HANDOFF_RESOURCES) {
     const base = `/${resource}/{id}/acknowledgements`
     for (const action of ['list', 'create', 'get'] as const) {
       const path = base + (action === 'get' ? '/{eventId}' : '')
@@ -103,7 +103,7 @@ export function acknowledgementPaths(): Record<string, Record<string, Schema>> {
       paths[path] ??= {}
       paths[path][action === 'create' ? 'post' : 'get'] = {
         operationId: acknowledgementOperationId(resource, action),
-        tags: ['Purchase handoffs'],
+        tags: [isTransferHandoffResource(resource) ? 'Transfer handoffs' : 'Purchase handoffs'],
         summary:
           action === 'create'
             ? 'Record an external receipt or rejection report'
@@ -111,13 +111,15 @@ export function acknowledgementPaths(): Record<string, Record<string, Schema>> {
         description: [
           'Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.',
           action === 'create'
-            ? 'client_event_id is unique across the organization, regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.'
+            ? "client_event_id is unique across the organization's transfer reports or purchase reports respectively, regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries."
             : action === 'list'
               ? 'Newest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.'
               : 'The event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.',
-          'GET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.',
+          `GET/HEAD require ${handoffReadScope(resource)}; POST requires ${acknowledgementScope(resource)}. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.`,
         ].join('\n\n'),
-        'x-maqdar-scopes': [action === 'create' ? ACKNOWLEDGE_SCOPE : HANDOFF_SCOPE],
+        'x-maqdar-scopes': [
+          action === 'create' ? acknowledgementScope(resource) : handoffReadScope(resource),
+        ],
         parameters,
         ...(action === 'create'
           ? {

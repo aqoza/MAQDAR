@@ -1,3 +1,4 @@
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
@@ -11,9 +12,12 @@ import { transferFreightReportSchema } from '@/lib/transfer-freight'
 
 export default async function TransferHandoffDetail({
   params,
+  searchParams,
 }: {
+  searchParams: Promise<{ ack_page?: string | string[] }>
   params: Promise<{ handoffId: string }>
 }) {
+  const { ack_page } = await searchParams
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { handoffId } = await params
@@ -107,6 +111,12 @@ export default async function TransferHandoffDetail({
         </section>
       </div>
       <TransferFreightReport report={payload.estimate} locale={locale} />
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={handoffId}
+        transfer
+        pageValue={ack_page}
+      />
     </div>
   )
 }

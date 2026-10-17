@@ -870,6 +870,11 @@
         "label": "Read transfer handoffs",
         "badge": "Transfer handoffs: read",
         "description": "Read saved transfer handoffs and batches across the whole organization, including historical approvals. No stock reservation or transfer execution."
+      },
+      "transferHandoffsAcknowledge": {
+        "label": "Acknowledge transfer handoffs",
+        "badge": "Transfer handoffs: acknowledge",
+        "description": "Record external receipt or rejection reports across the organization. Does not reserve stock or execute transfers."
       }
     },
     "secret": {
@@ -2779,7 +2784,8 @@
     "pagination": "Acknowledgement history pages",
     "previous": "Newer reports",
     "next": "Older reports",
-    "page": "Page {page}"
+    "page": "Page {page}",
+    "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when MAQDAR saved the report."
   },
   "TransferDates": {
     "title": "Transfer date scenarios",

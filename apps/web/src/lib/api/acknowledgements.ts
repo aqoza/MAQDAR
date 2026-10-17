@@ -1,7 +1,11 @@
 import { z } from 'zod'
-import { parseHandoffQuery, type HandoffResource } from './handoffs'
+import { parseHandoffQuery, isTransferHandoffResource, type ReadHandoffResource } from './handoffs'
 
 export const ACKNOWLEDGE_SCOPE = 'purchase_handoffs:acknowledge' as const
+export const TRANSFER_ACKNOWLEDGE_SCOPE = 'transfer_handoffs:acknowledge' as const
+export function acknowledgementScope(resource: ReadHandoffResource) {
+  return isTransferHandoffResource(resource) ? TRANSFER_ACKNOWLEDGE_SCOPE : ACKNOWLEDGE_SCOPE
+}
 export const ACKNOWLEDGEMENT_BODY_BYTES = 8192
 
 const text = (max: number) =>
@@ -40,8 +44,14 @@ export function parseAcknowledgementQuery(params: URLSearchParams) {
 }
 
 export function acknowledgementOperationId(
-  resource: HandoffResource,
+  resource: ReadHandoffResource,
   action: 'list' | 'get' | 'create',
 ) {
-  return `${action}${resource === 'purchase-handoffs' ? 'PurchaseHandoff' : 'PurchaseHandoffBatch'}Acknowledgements`
+  const names = {
+    'purchase-handoffs': 'PurchaseHandoff',
+    'purchase-handoff-batches': 'PurchaseHandoffBatch',
+    'transfer-handoffs': 'TransferHandoff',
+    'transfer-handoff-batches': 'TransferHandoffBatch',
+  } as const
+  return `${action}${names[resource]}Acknowledgements`
 }

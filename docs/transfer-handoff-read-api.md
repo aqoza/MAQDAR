@@ -1,6 +1,6 @@
 # Transfer handoff read API (Step 16g)
 
-**Status:** Implemented and locally verified; review pending. The owner approved this scope on 2026-10-17 after PR #48 merged as `bcbff02`.
+**Status:** Reviewed and merged in PR #50 as `6204f94` on 2026-10-17 after all three CI jobs passed. The owner approved this scope on 2026-10-17 after PR #48 merged as `bcbff02`.
 
 Integrations can list saved transfer handoffs and batches and retrieve their original JSON evidence. Current selection is reported separately from immutable quantities, units, dispatch and p50/p90 receipt dates, freight charges and approval references. These are planning packages; reading does not reserve stock, refresh commitments, transmit a transfer, acknowledge delivery or create orders/inbound. Shipment consolidation, acknowledgements and execution remain later increments.
 

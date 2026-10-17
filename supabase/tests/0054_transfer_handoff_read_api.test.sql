@@ -122,7 +122,7 @@ select lives_ok($$select pg_temp.key(43,array['master_data:read','master_data:wr
 select throws_ok($$select pg_temp.key(45,array['transfer_handoffs:write'])$$,'MQ422',null,'no handoff write scope');
 select throws_ok($$select pg_temp.key(45,array['transfer_handoffs:read',null])$$,'MQ422',null,'null scope refused');
 select lives_ok($$select pg_temp.key(46,array['master_data:read','master_data:write','transactions:read','transactions:write','purchase_handoffs:read','purchase_handoffs:acknowledge','transfer_handoffs:read'])$$,'all seven scopes accepted explicitly');
-select throws_ok($$select pg_temp.key(45,array['transfer_handoffs:acknowledge'])$$,'MQ422',null,'transfer acknowledgements are not enabled');
+select throws_ok($$select pg_temp.key(45,array['transfer_handoffs:execute'])$$,'MQ422',null,'transfer execution is not enabled');
 select pg_temp.login(15,1);
 select lives_ok($$select pg_temp.key(47)$$,'admin can issue transfer reader');
 select pg_temp.login(14,1);

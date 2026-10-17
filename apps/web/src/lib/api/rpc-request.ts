@@ -26,6 +26,20 @@ export type ApiRpcArgs = {
     p_resource: TransferHandoffResource
     p_id: string
   }
+  api_transfer_handoff_acknowledge: {
+    p_key_hash: KeyHash
+    p_resource: TransferHandoffResource
+    p_id: string
+    p_body: AcknowledgementInput
+  }
+  api_transfer_handoff_acknowledgements: {
+    p_key_hash: KeyHash
+    p_resource: TransferHandoffResource
+    p_id: string
+    p_event_id: string | null
+    p_after: string | null
+    p_limit: number
+  }
   api_handoff_acknowledge: {
     p_key_hash: KeyHash
     p_resource: HandoffResource
@@ -110,6 +124,8 @@ export type MissingApiRpcs = [GeneratedApiRpcName] extends [never]
   : Exclude<DeclaredApiRpcName, GeneratedApiRpcName>
 
 export const API_RPC_NAMES = [
+  'api_transfer_handoff_acknowledge',
+  'api_transfer_handoff_acknowledgements',
   'api_handoff_acknowledge',
   'api_handoff_acknowledgements',
   'api_handoff_list',
