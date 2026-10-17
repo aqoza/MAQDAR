@@ -15,7 +15,7 @@ import { detailOutcome, isIdleCommit } from '@/lib/imports/detail'
 import { isUuid } from '@/lib/master-data/list-params'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
-import { loadErrorExamples, loadMemberEmails } from '../data'
+import { loadErrorExamples, loadMemberEmails } from '../../data'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Imports')

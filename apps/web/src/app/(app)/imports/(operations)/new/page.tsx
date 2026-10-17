@@ -13,7 +13,7 @@ import { ENTITY_NAMES, columnLabels, isEntityName } from '@/lib/imports/contract
 import { firstParam } from '@/lib/master-data/list-params'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
-import { loadImportMemory } from '../data'
+import { loadImportMemory } from '../../data'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Imports')

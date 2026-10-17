@@ -1,0 +1,75 @@
+{
+  "contract": "docs/header-loading-spacing.md and design.MD: stable illustrated Import history loading/settled header; preserve URLs, authorization, wizard/detail headers and typography; Items header <=144px with tagline/title gap <=12px, artwork through tabs, mobile wrapping and RTL.",
+  "targetViewports": ["1920x900", "1366x768", "375x900"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Existing shared 20px/28px titles and 14px/20px navigation are verified by browser checks. Import-to-New keyboard focus, aria-hidden decorative SVG, pointer-events:none and existing mobile 44px targets passed. Loading placeholders are hidden from assistive technology inside an aria-busy container. Desktop/mobile/Arabic text fit was inspected. No automated axe audit was run."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "All seven main sections passed English 1920/1366/375px and Arabic 1366/375px checks without page overflow or browser errors. Items measures 141px including global bar/tabs and a 12px tagline/title gap at desktop/laptop. Five responsive planning widths also passed after the final spacing change."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "Real production responses were throttled on direct Import history entry and reload. The test waits for the full server fallback header, captures it while still visible, restores throughput and verifies identical 1110x100px background bounds at x=256,y=0. Sidebar navigation and the retained plain wizard header also passed without browser errors."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "The illustrated-header suite captured real empty-organization pages in English and Arabic, preserving the existing empty messages, filters and actions."
+    },
+    "error": {
+      "status": "not-applicable",
+      "reason": "The header has no new data request, error controller or mutable state. Existing page/data error handling remains unchanged; Import validation-error and master-data rejected-write workflows passed."
+    },
+    "partial": {
+      "status": "not-applicable",
+      "reason": "Decorative headers introduce no optional business dataset, operational quantity or partial-data calculation. Existing page content keeps its original semantics."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Six Import workflow tests passed staging/check/commit, repeat imports, both Excel date systems and cancel/delete behavior. Master-data create/edit/delete and Forecasts tab state/keyboard checks passed."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Viewer Import links remain hidden and direct Import pages return 404. Existing read-only master-data/settings and stale-organization form protection tests passed. Page moves change only relative imports; authorization/data queries remain identical."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1920x900",
+      "artifact": "items-en-1920.png",
+      "observation": "Items header is 141px tall with a 12px tagline/title gap and unchanged shared typography."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "items-en-1366.png",
+      "observation": "Laptop header preserves the artwork through tabs and saves 12px of vertical space."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "items-en-375.png",
+      "observation": "Actions wrap and tabs scroll locally with readable shared font sizes and no page overflow."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "items-ar-1366.png",
+      "observation": "Arabic desktop header mirrors the artwork and retains action/navigation alignment."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "items-ar-375.png",
+      "observation": "Arabic mobile layout wraps naturally with preserved controls and typography."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "imports-loading-entry-1366.png",
+      "observation": "The actual server loading fallback already displays the mint mapping artwork behind the transparent global bar."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "imports-loaded-entry-1366.png",
+      "observation": "Settled Import history retains exactly the loading header's position and dimensions."
+    }
+  ]
+}
