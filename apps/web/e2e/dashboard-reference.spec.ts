@@ -27,6 +27,33 @@ test('dashboard reference renders real scoped data at the reference viewports', 
     baseCurrency: 'USD',
   })
   const organization = await organizationIdBySlug(slug)
+  const laptopViewports = [
+    { width: 1280, height: 800 },
+    { width: 1366, height: 768 },
+    { width: 1440, height: 900 },
+    { width: 1536, height: 864 },
+  ]
+  // Exercise the reported no-stock state before the populated reference fixture.
+  await page.goto('/dashboard?day=2026-10-17')
+  await expect(page.locator('.dashboard-metric-value[data-unavailable]')).toHaveCount(2)
+  await expect(page.locator('.dashboard-metric').first()).toBeVisible()
+  await page.evaluate(() => document.fonts.ready)
+  for (const viewport of laptopViewports) {
+    await page.setViewportSize(viewport)
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+      .toBe(viewport.width)
+    for (const status of await page.locator('.dashboard-metric-value[data-unavailable]').all()) {
+      await expect(status).toBeVisible()
+      expect((await status.boundingBox())!.height).toBeLessThanOrEqual(24)
+    }
+    const capture = testInfo.outputPath(`dashboard-laptop-empty-${viewport.width}.png`)
+    await page.screenshot({ path: capture })
+    await testInfo.attach(`empty-laptop-${viewport.width}`, {
+      path: capture,
+      contentType: 'image/png',
+    })
+  }
   const locations = ['DXB', 'LHR', 'JFK', 'SIN', 'FRA'].map((code, index) => ({
     id: randomUUID(),
     organization_id: organization,
@@ -148,6 +175,43 @@ test('dashboard reference renders real scoped data at the reference viewports', 
       2,
     ) + '\n',
   )
+  for (const viewport of laptopViewports) {
+    await page.setViewportSize(viewport)
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+      .toBe(viewport.width)
+    const metrics = await page
+      .locator('.dashboard-metric')
+      .evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().top))
+    expect(new Set(metrics).size).toBe(1)
+    const locations = (await page.locator('.dashboard-locations').boundingBox())!
+    const risk = (await page.locator('.dashboard-risk').boundingBox())!
+    expect(locations.y).toBe(risk.y)
+    expect(Math.max(locations.y + locations.height, risk.y + risk.height)).toBeLessThanOrEqual(
+      viewport.height,
+    )
+    await writeFile(
+      testInfo.outputPath(`dashboard-laptop-bounds-${viewport.width}.json`),
+      JSON.stringify(
+        {
+          viewport,
+          metrics: await page.locator('.dashboard-metrics').boundingBox(),
+          chart: await page.locator('.dashboard-demand').boundingBox(),
+          locations,
+          risk,
+        },
+        null,
+        2,
+      ) + '\n',
+    )
+    const capture = testInfo.outputPath(`dashboard-laptop-populated-${viewport.width}.png`)
+    await page.screenshot({ path: capture })
+    await testInfo.attach(`populated-laptop-${viewport.width}`, {
+      path: capture,
+      contentType: 'image/png',
+    })
+  }
+  await page.setViewportSize({ width: 1672, height: 941 })
   await page.locator('.recharts-area-dots circle').last().hover()
   await expect(page.locator('.recharts-tooltip-wrapper')).toContainText('2026-10-17')
   await expect(page.locator('.recharts-tooltip-wrapper')).toContainText('72')
@@ -187,6 +251,10 @@ test('dashboard reference renders real scoped data at the reference viewports', 
   await page.evaluate(() => document.fonts.ready)
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(375)
   await page.screenshot({ path: testInfo.outputPath('dashboard-arabic-375.png'), fullPage: true })
+  await page.setViewportSize({ width: 1366, height: 768 })
+  await page.evaluate(() => document.fonts.ready)
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(1366)
+  await page.screenshot({ path: testInfo.outputPath('dashboard-laptop-arabic-1366.png') })
   await page.setViewportSize({ width: 1672, height: 941 })
   await page.evaluate(() => document.fonts.ready)
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(1672)

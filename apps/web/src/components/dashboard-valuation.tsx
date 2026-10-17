@@ -56,7 +56,9 @@ export function DashboardValuation({
           </div>
         </details>
       ) : (
-        <p className="dashboard-metric-value">{unavailable}</p>
+        <p className="dashboard-metric-value" data-unavailable="">
+          {unavailable}
+        </p>
       )}
     </div>
   )

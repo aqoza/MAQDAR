@@ -85,7 +85,12 @@ export async function DashboardMetrics({
               />
             ) : (
               <div className="dashboard-metric-line">
-                <p className="dashboard-metric-value">{value}</p>
+                <p
+                  className="dashboard-metric-value"
+                  data-unavailable={key === 'availability' && ratio === null ? '' : undefined}
+                >
+                  {value}
+                </p>
                 <span
                   className="dashboard-trend"
                   title={t('trendUnavailable')}
