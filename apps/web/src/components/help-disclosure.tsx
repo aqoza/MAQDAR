@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 export function HelpDisclosure({ children, label }: { children: React.ReactNode; label?: string }) {
   const t = useTranslations('Common')
   return (
-    <details className="text-sm">
+    <details className="help-disclosure text-sm">
       <summary className="w-fit cursor-pointer rounded-sm py-2 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
         {label ?? t('methodDetails')}
       </summary>

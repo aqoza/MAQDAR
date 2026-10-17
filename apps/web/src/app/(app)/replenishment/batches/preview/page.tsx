@@ -56,7 +56,7 @@ export default async function BatchPreview({
     )
   const report = batchPreviewSchema.parse(result.data)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href={batchSelectionHref(parsed.data)}>
         {t('editSelection')}
       </Link>

@@ -89,7 +89,7 @@ export async function StockPoolReport({
       </div>
       <p>{t('pool.valuation')}</p>
       {pool.inventory_values.length > 0 && (
-        <dl className="flex flex-wrap gap-4 rounded-xl border p-4" aria-label={t('pool.values')}>
+        <dl className="flex flex-wrap gap-4 workspace-panel" aria-label={t('pool.values')}>
           {pool.inventory_values.map((value) => (
             <div key={value.currency}>
               <dt>{value.currency}</dt>

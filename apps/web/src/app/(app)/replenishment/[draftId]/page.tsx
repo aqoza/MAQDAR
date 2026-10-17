@@ -38,7 +38,7 @@ export default async function SavedDraft({
   const next = new URLSearchParams({ policy: report.policy.policy_id, basis: report.policy.basis })
   if (report.policy.override_id) next.set('override', report.policy.override_id)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href="/replenishment">
         {t('back')}
       </Link>

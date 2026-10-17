@@ -67,7 +67,7 @@ export function ApiKeysCard({
         <CardTitle>{t('title')}</CardTitle>
         <CardDescription>{t('description')}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-6">
+      <CardContent className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 text-sm">
           <p className="text-muted-foreground">{t('creatorRule')}</p>
           <p className="flex flex-wrap gap-x-4 gap-y-1">

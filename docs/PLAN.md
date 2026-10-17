@@ -270,3 +270,7 @@ After PR #31 was merged as `428ce46`, the owner supplied a MAQDAR mockup and req
 ### Compact green Forecasts workspace (2026-10-17)
 
 PR #32 was already merged as `24791c7` when the owner approved the compact emerald/sage mockup. Apply it in a follow-up PR linked to #32: slim workflow navigation, one readiness action, searchable latest-20 history and selected-run evidence side by side. Preserve run permissions, refresh, cancellation and every saved metric. Keep the visual changes scoped to the Forecasts landing page; other pages follow later.
+
+### Compact green application rollout (2026-10-17)
+
+PR #33 was reviewed without blocking findings and merged as `d76a93a` after all three CI jobs passed. The owner requested the same compact green design across the remaining pages. Promote the approved palette, spacing and table/form treatment into shared styles; compact Dashboard KPIs and section navigation while preserving workflows, roles and actionable warnings. See [compact-green-application.md](compact-green-application.md) for scope and rendered verification.

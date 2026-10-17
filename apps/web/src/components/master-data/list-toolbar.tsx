@@ -48,12 +48,16 @@ export function ListToolbar({
   if (!searchable && filters.length === 0) return null
 
   return (
-    <Form action={action} className="flex flex-wrap items-end gap-3" role="search">
+    <Form
+      action={action}
+      className="workspace-toolbar flex flex-wrap items-end gap-3"
+      role="search"
+    >
       {Object.entries(hidden).map(([name, value]) => (
         <input key={name} type="hidden" name={name} value={value} />
       ))}
       {searchable ? (
-        <div className="flex min-w-60 flex-1 items-center gap-2 sm:max-w-md">
+        <div className="flex w-full min-w-0 flex-1 basis-60 items-center gap-2 sm:max-w-md">
           <label htmlFor="list-search" className="sr-only">
             {t('search')}
           </label>

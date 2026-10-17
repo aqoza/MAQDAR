@@ -1,5 +1,6 @@
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { PageHeader } from '@/components/page-header'
+import { ReplenishmentNav } from '@/components/replenishment-nav'
 import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -64,27 +65,30 @@ export default async function HandoffBatches({
     (row) => batchRowSchema.parse(row),
   )
   return (
-    <div className="space-y-5">
-      <Link className="underline" href="/replenishment/handoffs">
-        {t('handoffs')}
-      </Link>
-      <div className="space-y-1">
-        <PageHeader title={t('title')} description={t('context')} />
-        <HelpDisclosure>
-          <p>{t('description')}</p>
-        </HelpDisclosure>
-      </div>
-      {isEditorRole(context.role) && (
-        <Link
-          className="inline-block rounded-md bg-primary px-4 py-2 text-primary-foreground"
-          href="/replenishment/batches/new"
-        >
-          {t('choose')}
-        </Link>
-      )}
+    <div className="space-y-4">
+      <PageHeader
+        title={t('title')}
+        description={t('context')}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+          </HelpDisclosure>
+        }
+        actions={
+          isEditorRole(context.role) && (
+            <Link
+              className="inline-block rounded-md bg-primary px-4 py-2 text-primary-foreground"
+              href="/replenishment/batches/new"
+            >
+              {t('choose')}
+            </Link>
+          )
+        }
+      />
+      <ReplenishmentNav current="batches" />
       <Form
         action="/replenishment/batches"
-        className="flex flex-wrap items-end gap-3"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
         <label className="grid min-w-0 max-w-full gap-1">

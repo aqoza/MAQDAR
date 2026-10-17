@@ -60,7 +60,7 @@ export default async function NewDeliveryScenario({
     else report = deliveryScenarioReportSchema.parse(data)
   }
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href={`/replenishment/suppliers/${scenario.data}`}>
         {t('source')}
       </Link>
@@ -72,7 +72,7 @@ export default async function NewDeliveryScenario({
       <form
         action="/replenishment/deliveries/new"
         method="get"
-        className="space-y-4 rounded-xl border p-4"
+        className="space-y-4 workspace-panel"
         key={JSON.stringify(values)}
       >
         <input type="hidden" name="scenario" value={scenario.data} />

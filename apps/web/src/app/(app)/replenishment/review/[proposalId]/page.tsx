@@ -78,7 +78,7 @@ export default async function PurchaseReviewDetail({
   const withdrawal = proposal.submitted_by === context.userId
   const reviewer = ['owner', 'admin', 'approver'].includes(context.role ?? '')
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/replenishment/review" className="underline">
         {t('back')}
       </Link>

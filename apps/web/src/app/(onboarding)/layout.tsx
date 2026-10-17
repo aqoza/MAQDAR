@@ -15,8 +15,8 @@ export default async function OnboardingLayout({ children }: { children: React.R
   const email = claims.email ?? ''
 
   return (
-    <div className="bg-muted/40 flex min-h-svh flex-col">
-      <header className="bg-background flex h-14 shrink-0 items-center justify-between gap-4 border-b px-6">
+    <div className="bg-canvas flex min-h-svh flex-col">
+      <header className="bg-background flex min-h-11 shrink-0 items-center justify-between gap-4 border-b px-4">
         <Link href="/organizations" className="font-semibold tracking-tight">
           {t('appName')}
         </Link>
@@ -35,7 +35,9 @@ export default async function OnboardingLayout({ children }: { children: React.R
           </form>
         </div>
       </header>
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 p-6">{children}</main>
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4 text-sm">
+        {children}
+      </main>
     </div>
   )
 }

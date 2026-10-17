@@ -33,7 +33,7 @@ export function InvitationsCard({ invitations, roles }: InvitationsCardProps) {
         <CardTitle>{t('title')}</CardTitle>
         <CardDescription>{t('description')}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-6">
+      <CardContent className="flex flex-col gap-4">
         <InviteForm roles={roles} />
         <Separator />
         <section className="flex flex-col gap-3" aria-labelledby="pending-invitations-heading">

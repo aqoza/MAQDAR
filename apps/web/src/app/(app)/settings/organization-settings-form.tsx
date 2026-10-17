@@ -52,7 +52,7 @@ export function OrganizationSettingsForm({
   const homeCountry = values.home_country ?? organization.home_country
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
+    <form action={formAction} className="flex flex-col gap-4">
       <ActiveOrganizationField />
       <FieldGroup>
         <Field data-invalid={errors.name ? true : undefined}>
@@ -175,7 +175,7 @@ export function OrganizationPreferencesForm({
   const timeZone = values.time_zone ?? organization.time_zone ?? ''
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
+    <form action={formAction} className="flex flex-col gap-4">
       <ActiveOrganizationField />
       <FieldGroup>
         <div className="grid gap-5 sm:grid-cols-2">

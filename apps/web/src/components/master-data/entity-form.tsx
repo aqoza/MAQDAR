@@ -42,7 +42,7 @@ export function EntityForm({
   const errors = state.fieldErrors ?? {}
 
   return (
-    <form action={formAction} noValidate className="flex flex-col gap-6">
+    <form action={formAction} noValidate className="flex flex-col gap-4">
       <ActiveOrganizationField />
       <input type="hidden" name="entity" value={entity} />
       {id ? <input type="hidden" name="id" value={id} /> : null}

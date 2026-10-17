@@ -58,7 +58,7 @@ export async function DeliveryScenarioHistory({
     <section className="space-y-3" aria-label={t('history')}>
       <h2 className="text-section-title">{t('history')}</h2>
       <p>{t('count', { total })}</p>
-      <div className="overflow-x-auto">
+      <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('history')}</caption>
           <thead>

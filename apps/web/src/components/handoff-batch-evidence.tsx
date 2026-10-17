@@ -18,7 +18,7 @@ export async function HandoffBatchEvidence({
   return (
     <section className="space-y-3" aria-label={t('evidence')}>
       <h2 className="text-section-title">{t('evidence')}</h2>
-      <dl className="grid gap-3 rounded-xl border p-4 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="grid gap-3 workspace-panel sm:grid-cols-2 lg:grid-cols-4">
         {[
           [t('supplier'), s.supplier_code],
           [t('location'), s.location_code],
@@ -32,7 +32,7 @@ export async function HandoffBatchEvidence({
         ))}
       </dl>
       <p>{t('totalNote')}</p>
-      <div className="overflow-x-auto">
+      <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('evidence')}</caption>
           <thead>

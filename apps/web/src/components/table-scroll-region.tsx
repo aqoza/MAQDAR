@@ -7,7 +7,7 @@ export function TableScrollRegion({ label, children }: { label: string; children
       role="region"
       aria-label={label}
       tabIndex={0}
-      className="max-w-full overflow-x-auto rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="workspace-table max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
       {children}
     </div>

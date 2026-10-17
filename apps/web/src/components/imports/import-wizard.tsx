@@ -877,7 +877,7 @@ export function ImportWizard({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {/* The one live region of the wizard: phase changes only, not every chunk. */}
       <p className="sr-only" role="status">
         {run.phase === 'idle' ? '' : t(`announce.${run.phase}`)}

@@ -36,7 +36,7 @@ export default async function SavedSupplierScenario({
   if (!data) notFound()
   const report = supplierScenarioReportSchema.parse(data.report)
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <h1 className="text-page-title">{t('saved')}</h1>
       <p>
         {t('savedBy', {

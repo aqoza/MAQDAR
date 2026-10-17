@@ -99,13 +99,13 @@ export default async function BatchSelection({
     (row) => rowSchema.parse(row),
   )
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link className="underline" href="/replenishment/batches">
         {t('back')}
       </Link>
       <h1 className="text-page-title">{t('choose')}</h1>
       <p>{t('grouping')}</p>
-      <section aria-label={t('selection')} className="space-y-3 rounded-xl border p-4">
+      <section aria-label={t('selection')} className="space-y-3 workspace-panel">
         <h2 className="text-section-title">{t('selectedCount', { total: ids.length })}</h2>
         {chosen.length !== ids.length && <p role="alert">{t('sourceInvalid')}</p>}
         <ul className="space-y-2">
@@ -148,7 +148,7 @@ export default async function BatchSelection({
       <HandoffBatchOverlap organizationId={context.active.id} handoffIds={ids} />
       <Form
         action="/replenishment/batches/new"
-        className="flex flex-wrap items-end gap-3"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
         {ids.map((id) => (
@@ -203,7 +203,7 @@ export default async function BatchSelection({
         <input type="hidden" name="supplier" value={params.filters.supplier ?? ''} />
         <input type="hidden" name="location" value={params.filters.location ?? ''} />
         <input type="hidden" name="order_date" value={orderDate} />
-        <div className="overflow-x-auto">
+        <div className="workspace-table overflow-x-auto">
           <table className="w-full text-sm">
             <caption className="sr-only">{t('candidates')}</caption>
             <thead>

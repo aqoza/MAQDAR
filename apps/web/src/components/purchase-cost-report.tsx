@@ -43,14 +43,14 @@ export async function PurchaseCostReport({ report, locale }: { report: Report; l
             ],
           ] as const
         ).map(([label, value]) => (
-          <div className="rounded-xl border p-4" key={label}>
+          <div className="workspace-panel" key={label}>
             <dt className="text-sm text-muted-foreground">{t(label)}</dt>
             <dd className="text-xl font-semibold tabular-nums">{value}</dd>
           </div>
         ))}
       </dl>
       {report.source.policy_recalculation_required && (
-        <p className="rounded-xl border p-4 font-semibold">{t('recalculate')}</p>
+        <p className="workspace-panel font-semibold">{t('recalculate')}</p>
       )}
       <p>{t(report.price_confirmed ? 'confirmed' : 'unconfirmed')}</p>
       <p>{t('limits')}</p>

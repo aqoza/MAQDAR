@@ -1,26 +1,4 @@
-/* Shell accents exist only while the Forecasts landing page is mounted. */
-:global(body):has(.workspace) :global([data-slot='sidebar-inset']) {
-  background: #f5f8f6;
-}
-:global(body):has(.workspace) :global([data-slot='sidebar-inset'] > header) {
-  block-size: 44px;
-  background: #fff;
-  border-color: #dfe8e3;
-}
-:global(body):has(.workspace) :global([data-app-content]) {
-  padding-block: 16px;
-}
-:global(body):has(.workspace) :global([data-sidebar='sidebar']) {
-  background: #fff;
-}
-:global(body):has(.workspace) :global([data-sidebar='menu-button'][data-active]) {
-  color: #155d46;
-  background: #e9f4ed;
-  box-shadow: inset 2px 0 #4d9674;
-}
-:global(html[dir='rtl'] body):has(.workspace) :global([data-sidebar='menu-button'][data-active]) {
-  box-shadow: inset -2px 0 #4d9674;
-}
+/* Forecast-specific composition; shell colors and spacing are shared application styles. */
 .workspace {
   --workspace-ink: #1d302c;
   --workspace-muted: #5e706a;
@@ -491,9 +469,6 @@
   }
 }
 @media (width < 768px) {
-  :global(body):has(.workspace) :global([data-app-content]) {
-    padding: 16px 14px;
-  }
   .heading {
     flex-direction: column;
     gap: 4px;

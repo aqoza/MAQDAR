@@ -1,5 +1,6 @@
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { PageHeader } from '@/components/page-header'
+import { ReplenishmentNav } from '@/components/replenishment-nav'
 import type { Metadata } from 'next'
 import Form from 'next/form'
 import Link from 'next/link'
@@ -65,25 +66,28 @@ export default async function ReplenishmentPage({
   if (result.error) throw new Error('Drafts unavailable')
   const rows = range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])
   return (
-    <div className="space-y-5">
-      <Link href="/replenishment/review" className="block underline">
-        {t('purchaseReview')}
-      </Link>
-      <Link href="/replenishment/handoffs" className="block underline">
-        {t('purchaseHandoffs')}
-      </Link>
-      <div className="space-y-1">
-        <PageHeader title={t('title')} description={t('context')} />
-        <HelpDisclosure>
-          <p>{t('description')}</p>
-        </HelpDisclosure>
-      </div>
-      <Link className="inline-block underline" href="/forecasts/workbench">
-        {t('choosePolicy')}
-      </Link>
+    <div className="space-y-4">
+      <PageHeader
+        title={t('title')}
+        description={t('context')}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+          </HelpDisclosure>
+        }
+        actions={
+          <Link
+            className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+            href="/forecasts/workbench"
+          >
+            {t('choosePolicy')}
+          </Link>
+        }
+      />
+      <ReplenishmentNav current="drafts" />
       <Form
         action="/replenishment"
-        className="flex flex-wrap items-end gap-3"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
         key={JSON.stringify(params)}
       >
         <label className="grid min-w-0 max-w-full gap-1">

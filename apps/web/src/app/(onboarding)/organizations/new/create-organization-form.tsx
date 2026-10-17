@@ -58,7 +58,7 @@ export function CreateOrganizationForm({
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
+    <form action={formAction} className="flex flex-col gap-4">
       {state.status === 'error' && state.message ? (
         <Alert variant="destructive">
           <AlertDescription>{state.message}</AlertDescription>

@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import type { Messages } from '@/i18n/messages'
 import type { AreaKey } from '@/lib/master-data/types'
-import { cn } from '@/lib/utils'
 
 export type AreaTabKey = Exclude<keyof Messages['MasterData']['tabs'], 'label'>
 
@@ -30,23 +29,13 @@ export const AREA_TABS: Record<AreaKey, ReadonlyArray<{ key: AreaTabKey; href: s
 export async function AreaTabs({ area, current }: { area: AreaKey; current: string }) {
   const t = await getTranslations('MasterData.tabs')
   return (
-    <nav aria-label={t('label')} className="border-b">
-      <ul className="-mb-px flex gap-5 overflow-x-auto">
+    <nav aria-label={t('label')} className="workspace-navigation">
+      <ul className="flex gap-1">
         {AREA_TABS[area].map((tab) => {
           const active = tab.key === current
           return (
             <li key={tab.key}>
-              <Link
-                href={tab.href}
-                prefetch={false}
-                aria-current={active ? 'page' : undefined}
-                className={cn(
-                  'inline-flex border-b-2 px-0.5 pb-2 text-sm font-medium whitespace-nowrap transition-colors',
-                  active
-                    ? 'border-primary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground border-transparent',
-                )}
-              >
+              <Link href={tab.href} prefetch={false} aria-current={active ? 'page' : undefined}>
                 {t(tab.key)}
               </Link>
             </li>

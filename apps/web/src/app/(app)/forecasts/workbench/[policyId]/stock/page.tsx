@@ -54,7 +54,7 @@ export default async function StockComparison({
   const amount = (v: string | null | undefined) => formatScore(v, locale)
   const snapshot = report?.snapshot
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href={back} className="underline">
         {t('back')}
       </Link>
@@ -66,7 +66,7 @@ export default async function StockComparison({
       <p>{t('cutoff', { date: policy.data.to_date ?? '—' })}</p>
       <Form
         action={`${back}/stock`}
-        className="flex flex-wrap items-end gap-3"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
         key={JSON.stringify(raw)}
       >
         <label className="grid gap-1">
@@ -122,7 +122,7 @@ export default async function StockComparison({
           <DemandUnitEvidence evidence={report.unit_provenance} />
           <p>{t(report.pool ? 'pool.formula' : 'formula')}</p>
           {report.status === 'available' && (
-            <div className="rounded-xl border p-5">
+            <div className="workspace-panel">
               <p className="text-3xl font-semibold tabular-nums">
                 {amount(report.quantity_above)} {report.unit}
               </p>
@@ -152,7 +152,7 @@ export default async function StockComparison({
                   unit: snapshot.unit ?? '—',
                 })}
               </p>
-              <dl className="grid grid-cols-2 gap-2 rounded-xl border p-4">
+              <dl className="grid grid-cols-2 gap-2 workspace-panel">
                 {(['quantity', 'allocated', 'available', 'unit_cost'] as const).map((key) => (
                   <div key={key}>
                     <dt>{t(key)}</dt>

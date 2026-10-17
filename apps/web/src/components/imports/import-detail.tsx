@@ -125,7 +125,7 @@ export function ImportDetail({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <p className="text-sm text-muted-foreground">{tClient('retention')}</p>
       {hint ? (
         <Alert role="status">

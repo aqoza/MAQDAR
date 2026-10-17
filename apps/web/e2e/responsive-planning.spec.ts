@@ -3,12 +3,21 @@ import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
 const screens = [
+  { path: '/dashboard', title: 'Dashboard', reset: null },
+  { path: '/items', title: 'Items', reset: null },
+  { path: '/items/new', title: 'New item', reset: null },
+  { path: '/locations', title: 'Locations', reset: null },
+  { path: '/suppliers', title: 'Suppliers', reset: null },
+  { path: '/imports', title: 'Imports', reset: null },
   { path: '/forecasts', title: 'Forecasts and planning runs', reset: null },
   { path: '/forecasts/quality', title: 'Saved forecast quality', reset: 'Reset' },
   { path: '/forecasts/workbench', title: 'Policy review workbench', reset: 'Reset filters' },
   { path: '/forecasts/new', title: 'Create forecast', reset: null },
   { path: '/replenishment', title: 'Replenishment drafts', reset: 'Reset' },
   { path: '/replenishment/batches', title: 'Purchase handoff batches', reset: 'Reset' },
+  { path: '/replenishment/review', title: 'Purchase proposal review', reset: null },
+  { path: '/replenishment/handoffs', title: 'Purchase handoffs', reset: null },
+  { path: '/settings', title: 'Settings', reset: null },
 ] as const
 
 async function expectContainedLayout(page: Page) {
@@ -32,18 +41,25 @@ async function expectContainedLayout(page: Page) {
   }
 }
 
-for (const width of [375, 768, 1440]) {
-  test(`planning screens fit ${width}px with keyboard-accessible tables`, async ({
+for (const { width, height } of [
+  { width: 375, height: 900 },
+  { width: 768, height: 900 },
+  { width: 1024, height: 768 },
+  { width: 1440, height: 900 },
+  { width: 1920, height: 1080 },
+]) {
+  test(`application screens fit ${width}px with keyboard-accessible tables`, async ({
     page,
   }, testInfo) => {
-    test.setTimeout(120_000)
+    test.setTimeout(180_000)
     const run = `${Date.now()}-${width}`
     const email = `responsive-${run}@example.com`
     const password = `Responsive-pass-${run}`
     await createConfirmedUser(email, password)
     await signInWithPassword(page, email, password)
     await createOrganization(page, { name: `Responsive ${run}`, slug: `responsive-${run}` })
-    await page.setViewportSize({ width, height: 900 })
+    await page.setViewportSize({ width, height })
+    if (width === 1024) await page.emulateMedia({ reducedMotion: 'reduce' })
 
     for (const screen of screens) {
       await test.step(screen.path, async () => {
@@ -53,6 +69,18 @@ for (const width of [375, 768, 1440]) {
         ).toBeVisible()
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
+        await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')
+        if (width === 1024 && screen.path === '/items') {
+          await expect(page.getByRole('button', { name: 'Search', exact: true })).toHaveCSS(
+            'transition-property',
+            'none',
+          )
+          await expect(
+            page
+              .getByRole('navigation', { name: 'Sections' })
+              .getByRole('link', { name: 'Items', exact: true }),
+          ).toHaveCSS('transition-property', 'none')
+        }
         if (screen.path === '/forecasts') {
           await expect(
             page.getByRole('navigation', { name: 'Planning tools' }).getByRole('link'),
@@ -66,10 +94,6 @@ for (const width of [375, 768, 1440]) {
           await expect(
             page.getByRole('button', { name: 'Check demand data', exact: true }),
           ).toHaveCount(1)
-        } else {
-          // Other planning routes retain their existing surface.
-          await expect(page.locator('main')).toHaveCSS('background-image', 'none')
-          await expect(page.locator('main')).not.toHaveCSS('background-color', 'rgb(245, 248, 246)')
         }
         for (const control of await page
           .locator('main select, main input:not([type=hidden]):not([type=checkbox]), main textarea')
@@ -92,7 +116,9 @@ for (const width of [375, 768, 1440]) {
         await expectContainedLayout(page)
 
         // Long native options caused the original overflow, even in an empty organization.
-        for (const select of await page.locator('main select').all()) {
+        for (const select of await page.locator('main select:not([disabled])').all()) {
+          // Editable forms and master-data auto-submit filters are covered by their workflow tests.
+          if (!screen.reset && screen.path !== '/forecasts') continue
           const longest = await select
             .locator('option')
             .evaluateAll((options) =>
@@ -131,9 +157,9 @@ for (const width of [375, 768, 1440]) {
           await expect(
             page.getByRole('heading', { name: 'Saved forecast quality', exact: true }),
           ).toBeVisible()
-          // The route-scoped accents must disappear after client navigation as well.
+          // Shared application styling stays consistent after client navigation.
           await expect(page.locator('main')).toHaveCSS('background-image', 'none')
-          await expect(page.locator('main')).not.toHaveCSS('background-color', 'rgb(245, 248, 246)')
+          await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')
         }
       })
     }

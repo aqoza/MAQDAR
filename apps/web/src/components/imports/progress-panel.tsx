@@ -23,7 +23,7 @@ export function ProgressPanel({ items, label }: { items: readonly ProgressItem[]
   return (
     <ul className="flex flex-col gap-3" aria-label={label}>
       {items.map((item) => (
-        <li key={item.key} className="flex flex-col gap-1.5 rounded-lg border p-3">
+        <li key={item.key} className="flex flex-col gap-1.5 rounded-lg border bg-card p-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
               {item.state === 'done' ? (

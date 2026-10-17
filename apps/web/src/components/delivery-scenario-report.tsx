@@ -37,7 +37,7 @@ export async function DeliveryScenarioReport({
             ['expectedReceipt', report.expected_receipt],
           ] as const
         ).map(([label, date]) => (
-          <div className="rounded-xl border p-4" key={label}>
+          <div className="workspace-panel" key={label}>
             <p className="text-sm text-muted-foreground">{t(label)}</p>
             <p className="text-xl font-semibold tabular-nums">{date ?? '—'}</p>
           </div>
@@ -45,7 +45,7 @@ export async function DeliveryScenarioReport({
       </div>
       {report.elapsed_days !== null && <p>{t('elapsed', { days: report.elapsed_days })}</p>}
       {report.policy_recalculation_required !== null && (
-        <p className="rounded-xl border p-4 font-semibold">
+        <p className="workspace-panel font-semibold">
           {t(report.policy_recalculation_required ? 'recalculate' : 'withinLead')}
         </p>
       )}
@@ -58,7 +58,7 @@ export async function DeliveryScenarioReport({
         const search = stage === 'supplier' ? report.order_search : report.receipt_search
         if (!cal) return null
         return (
-          <section className="space-y-3 rounded-xl border p-4" key={stage} aria-label={t(stage)}>
+          <section className="space-y-3 workspace-panel" key={stage} aria-label={t(stage)}>
             <h3 className="text-subsection-title">
               {t(stage)} · {cal.calendar_code ?? t('countryDefault')} · {cal.country}
             </h3>
@@ -80,7 +80,7 @@ export async function DeliveryScenarioReport({
               })}
             </p>
             {search && (
-              <div className="overflow-x-auto">
+              <div className="workspace-table overflow-x-auto">
                 <table className="w-full text-sm">
                   <caption className="text-start">{t('evaluatedDays')}</caption>
                   <thead>

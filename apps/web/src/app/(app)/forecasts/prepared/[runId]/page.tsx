@@ -72,7 +72,7 @@ export default async function PreparedResults({
     calendar = preparationCalendarSchema.parse(data.calendar)
   }
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <Link href="/forecasts" className="text-sm underline">
         {t('back')}
       </Link>
@@ -84,7 +84,7 @@ export default async function PreparedResults({
       <HelpDisclosure>
         <p>{t('calendarNote')}</p>
       </HelpDisclosure>
-      <div className="overflow-x-auto">
+      <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('groups')}</caption>
           <thead>
@@ -140,7 +140,7 @@ export default async function PreparedResults({
           )}
           <h2 className="text-section-title">{t('contributions')}</h2>
           <p className="text-sm">{t('contributionNote')}</p>
-          <div className="overflow-x-auto">
+          <div className="workspace-table overflow-x-auto">
             <table className="w-full text-sm">
               <caption className="sr-only">{t('contributions')}</caption>
               <thead>
@@ -185,7 +185,7 @@ export default async function PreparedResults({
             <>
               <h2 className="text-section-title">{t('daily')}</h2>
               <p className="text-sm">{t('lifecycleNote')}</p>
-              <div className="overflow-x-auto">
+              <div className="workspace-table overflow-x-auto">
                 <table className="w-full text-sm">
                   <caption className="sr-only">{t('daily')}</caption>
                   <thead>
