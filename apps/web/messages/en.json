@@ -865,6 +865,11 @@
         "badge": "Handoff acknowledgements",
         "label": "Acknowledge purchase handoffs",
         "description": "Report external receipt or rejection of saved handoffs and batches across the whole organization. This permission does not create orders."
+      },
+      "transferHandoffsRead": {
+        "label": "Read transfer handoffs",
+        "badge": "Transfer handoffs: read",
+        "description": "Read saved transfer handoffs and batches across the whole organization, including historical approvals. No stock reservation or transfer execution."
       }
     },
     "secret": {

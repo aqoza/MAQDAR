@@ -2044,6 +2044,12 @@ isOneToOne: false
 "api_organization":
 { Args: { "p_key_hash": string }; Returns: Json
                            },
+"api_transfer_handoff_get":
+{ Args: { "p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
+                           },
+"api_transfer_handoff_list":
+{ Args: { "p_after"?: string,"p_created_since"?: string,"p_key_hash": string,"p_limit"?: number,"p_resource": string }; Returns: Json
+                           },
 "api_upsert":
 { Args: { "p_body": Json,"p_entity": string,"p_key_hash": string,"p_request_id": string }; Returns: Json
                            },

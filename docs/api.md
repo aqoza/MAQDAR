@@ -16,6 +16,7 @@ An organization owner or administrator opens **Settings → API keys**, gives th
 | `transactions:write`            | Upsert transaction feeds (clear by zero only for demand)                                  |
 | `purchase_handoffs:read`        | List and retrieve saved handoffs and batches across the whole organization                |
 | `purchase_handoffs:acknowledge` | Append external receipt/rejection reports to saved packages across the whole organization |
+| `transfer_handoffs:read`        | List and retrieve saved transfer handoffs and batches across the whole organization       |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -26,6 +27,8 @@ Send the key only in the `Authorization` header over HTTPS. Browser session cook
 ## Quick start
 
 For saved purchasing evidence, see [the handoff read API](handoff-read-api.md). It has separate creation-based pagination and an explicit permission; the transaction scopes do not include this access.
+
+For saved transfer evidence, see [the transfer handoff read API](transfer-handoff-read-api.md). It requires the separate `transfer_handoffs:read` permission and preserves original quantities, dispatch/receipt dates and freight while reporting live selection separately. Existing keys gain no access; browser downloads still require both locations. Reads do not reserve stock or execute transfers.
 
 For external receipt/rejection reporting and event history, see [handoff acknowledgements](handoff-acknowledgements.md). Writes require `purchase_handoffs:acknowledge`; history reads require `purchase_handoffs:read`. Reports have no order or inventory side effects. Existing keys gain no new permission.
 
