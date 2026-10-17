@@ -116,7 +116,7 @@ test('stock locator separates observation evidence, ranks distance and preserves
   await page.getByLabel('Search source locations').fill('UNIT')
   await page.getByRole('button', { name: 'Find stock', exact: true }).click()
   await expect(rows).toHaveCount(2)
-  await expect(page.getByText('Page 1 of 1 · 2 locations', { exact: true })).toBeVisible()
+  await expect(page.getByText('Page 1 of 1 · 2 observations', { exact: true })).toBeVisible()
   await page.goto(path + query.replace('unit=EA', 'unit=BOX'))
   await expect(page.getByRole('main').getByRole('alert')).toContainText('choose a unit')
   await page.goto(path + query.replace('RECEIVER', 'INACTIVE'))

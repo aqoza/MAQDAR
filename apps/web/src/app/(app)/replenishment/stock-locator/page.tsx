@@ -55,7 +55,7 @@ export default async function StockLocator({
     .limit(200)
   if (locations.error) throw new Error('Location suggestions unavailable')
   let result: StockLocatorResult | null = null
-  let error: 'invalid' | 'unavailable' | null = null
+  let error: 'invalid' | 'unavailable' | 'groupLimit' | null = null
   if (parsed.success) {
     const input = parsed.data
     const response = await db.rpc('stock_locator', {
@@ -64,12 +64,13 @@ export default async function StockLocator({
       p_receiving_code: input.receiving,
       p_unit: input.unit,
       p_day: input.day,
-      p_filters: { q: params.q, view: params.view },
+      p_filters: { q: params.q, view: params.view, scope: input.scope },
       p_page: params.page,
       p_size: params.size,
     })
     if (response.error?.code === 'MQ404') error = 'unavailable'
-    else if (response.error?.code === 'MQ422') error = 'invalid'
+    else if (response.error?.code === 'MQ422')
+      error = response.error.hint === 'group_limit' ? 'groupLimit' : 'invalid'
     else if (response.error) throw new Error('Stock locator unavailable')
     else result = stockLocatorResultSchema.parse(response.data)
     if (result && result.page !== params.page) redirect(stockLocatorHref(params, result.page))
@@ -138,6 +139,13 @@ export default async function StockLocator({
           </label>
         </div>
         <div className="flex min-w-0 flex-wrap items-end gap-3">
+          <label className="grid min-w-0 flex-[1_1_12rem] gap-1">
+            {t('scope')}
+            <select name="scope" defaultValue={params.scope} className={inputClass}>
+              <option value="exact">{t('scopes.exact')}</option>
+              <option value="interchangeable">{t('scopes.interchangeable')}</option>
+            </select>
+          </label>
           <label className="grid min-w-0 flex-[1_1_15rem] gap-1">
             {t('search')}
             <input name="q" maxLength={100} defaultValue={params.q} className={inputClass} />
@@ -194,23 +202,41 @@ export default async function StockLocator({
               </p>
             </div>
           </div>
+          {result.scope === 'interchangeable' && (
+            <p
+              className="text-xs text-muted-foreground"
+              role={result.relationship_status === 'unit_mismatch' ? 'status' : undefined}
+            >
+              {result.relationship_status === 'unit_mismatch'
+                ? t('catalogMismatch')
+                : t('relationshipContext', { count: result.item_count })}
+            </p>
+          )}
           <TableScrollRegion label={t('results')}>
             <table className="w-full text-sm">
               <caption className="sr-only">{t('caption')}</caption>
               <thead>
                 <tr>
-                  {(['source', 'stock', 'snapshot', 'distance', 'lane', 'evidence'] as const).map(
-                    (key) => (
-                      <th key={key} className="p-3 text-start">
-                        {t(key)}
-                      </th>
-                    ),
-                  )}
+                  {(
+                    [
+                      'source',
+                      'stockItem',
+                      'stock',
+                      'snapshot',
+                      'distance',
+                      'lane',
+                      'evidence',
+                    ] as const
+                  ).map((key) => (
+                    <th key={key} className="p-3 text-start">
+                      {t(key)}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {result.rows.map((row) => (
-                  <tr key={row.id} className="border-t align-top">
+                  <tr key={`${row.id}:${row.item.id}`} className="border-t align-top">
                     <th scope="row" className="min-w-40 p-3 text-start font-normal">
                       <p className="max-w-56 break-all font-medium">{row.code}</p>
                       <p className="max-w-56 break-words">{displayName(row, locale).primary}</p>
@@ -218,6 +244,18 @@ export default async function StockLocator({
                         {[row.city, row.country_code].filter(Boolean).join(' · ')}
                       </p>
                     </th>
+                    <td className="min-w-40 p-3">
+                      <p className="max-w-56 break-all font-medium">{row.item.code}</p>
+                      <p className="max-w-56 break-words">
+                        {displayName(row.item, locale).primary}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {t(`matchKinds.${row.match_kind}`)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {t('itemStatus', { status: t(`itemStatuses.${row.item.status}`) })}
+                      </p>
+                    </td>
                     <td className="min-w-44 p-3">
                       <p className="font-medium tabular-nums">
                         {row.snapshot
@@ -271,6 +309,48 @@ export default async function StockLocator({
                       <details className="max-w-72 break-words text-xs">
                         <summary className="cursor-pointer py-1">{t('inspect')}</summary>
                         <dl className="space-y-2">
+                          <div>
+                            <dt>{t('catalogUnit')}</dt>
+                            <dd>{row.item.unit}</dd>
+                            <dd>{format.dateTime(new Date(row.item.updated_at), 'long')}</dd>
+                          </div>
+                          {row.relationship_path.length > 0 && (
+                            <div>
+                              <dt>{t('relationshipPath')}</dt>
+                              <dd>
+                                <ol className="space-y-3">
+                                  {row.relationship_path.map((edge) => (
+                                    <li key={edge.id}>
+                                      <p>
+                                        {edge.from_code} ⇄ {edge.to_code}
+                                      </p>
+                                      <p>
+                                        {t('relationshipRatio', {
+                                          unit: edge.unit,
+                                          priority: edge.priority,
+                                        })}
+                                      </p>
+                                      <p className="break-all">{edge.id}</p>
+                                      <p>
+                                        {t('relationshipUpdated', {
+                                          time: format.dateTime(new Date(edge.updated_at), 'long'),
+                                        })}
+                                      </p>
+                                      <p>
+                                        {t('catalogUpdated', {
+                                          from: format.dateTime(
+                                            new Date(edge.from_updated_at),
+                                            'long',
+                                          ),
+                                          to: format.dateTime(new Date(edge.to_updated_at), 'long'),
+                                        })}
+                                      </p>
+                                    </li>
+                                  ))}
+                                </ol>
+                              </dd>
+                            </div>
+                          )}
                           {row.snapshot && (
                             <>
                               <div>

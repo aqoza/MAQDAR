@@ -10,9 +10,11 @@ describe('stock locator URL inputs', () => {
       receiving: 'DC',
       day: base.day,
       unit: 'EA',
+      scope: 'exact',
     })
     for (const changes of [
       { unit: 'ea' },
+      { scope: 'substitutes' },
       { unit: 'BOX' },
       { item: '%P%' },
       { receiving: 'DC/1' },
@@ -57,6 +59,7 @@ describe('stock locator URL inputs', () => {
         view: 'other',
         q: 'North',
         size: '50',
+        scope: 'interchangeable',
       },
       '2026-10-17',
     )

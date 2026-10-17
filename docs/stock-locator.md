@@ -1,6 +1,6 @@
 # Item stock locator (Step 17)
 
-Status: approved on 2026-10-17; implemented and locally verified, ready for PR review and CI. PR #55 was reviewed without blocking findings and merged as `5ade8b2` after all three CI jobs passed.
+Status: merged in PR #57 as `6a901e8` after all three CI jobs passed. The optional alternative-item extension is documented in [interchangeable-stock-locator.md](interchangeable-stock-locator.md); the exact-item rules below remain unchanged.
 
 ## Approved behavior
 
