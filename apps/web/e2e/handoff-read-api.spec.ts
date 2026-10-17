@@ -64,7 +64,7 @@ with psycopg.connect(sys.argv[1]) as db:
   const individual = await (
     await page.request.get(`/api/purchase-handoffs/${lines[0].handoff}/json`)
   ).json()
-  await openSettings(page)
+  await openSettings(page, 'api-keys')
   await page.getByLabel('Key name', { exact: true }).fill('Handoff reader')
   await page.getByLabel('Read purchase handoffs', { exact: true }).check()
   await expect(

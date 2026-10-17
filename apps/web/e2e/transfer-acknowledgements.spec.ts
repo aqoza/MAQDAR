@@ -83,7 +83,7 @@ with psycopg.connect(sys.argv[1]) as db:
   const originalBatchCsv = await (
     await page.request.get(`/api/transfer-batches/${batch}/csv`)
   ).text()
-  await openSettings(page)
+  await openSettings(page, 'api-keys')
   await page.getByLabel('Key name', { exact: true }).fill('Acknowledgement integration')
   await page.getByLabel('Read transfer handoffs', { exact: true }).check()
   await page.getByLabel('Acknowledge transfer handoffs', { exact: true }).check()
@@ -297,7 +297,7 @@ with psycopg.connect(sys.argv[1]) as db:
 with psycopg.connect(sys.argv[1]) as db:
     db.execute("delete from public.membership_locations where organization_id=%s and user_id=%s and location_id=%s",(sys.argv[2],'${branch}','${destination}'))`)
   expect((await visible()).data).toEqual([])
-  await openSettings(page)
+  await openSettings(page, 'api-keys')
   await page
     .getByRole('row')
     .filter({ hasText: 'Acknowledgement integration' })

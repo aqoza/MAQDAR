@@ -934,6 +934,21 @@
   "Settings": {
     "title": "Settings",
     "description": "Organization, members and preferences.",
+    "navigation": {
+      "label": "Settings sections",
+      "searchLabel": "Find a setting",
+      "searchPlaceholder": "Find a setting...",
+      "clearSearch": "Clear settings search",
+      "noResults": "No matching settings. Try another search.",
+      "chooseSection": "Settings section: {section}",
+      "password": "Password",
+      "language": "Interface language",
+      "groups": {
+        "workspace": "Workspace",
+        "access": "People & access",
+        "account": "Your account"
+      }
+    },
     "organization": {
       "title": "Organization",
       "description": "Name, currency, country and language options.",

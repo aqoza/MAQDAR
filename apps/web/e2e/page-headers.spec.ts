@@ -3,6 +3,7 @@ import { writeFile } from 'node:fs/promises'
 import { expect, test } from '@playwright/test'
 import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { selectSettingsSection } from './helpers/settings'
 
 const sections = [
   'items',
@@ -30,6 +31,7 @@ test('illustrated headers stay compact, cover the tabs and preserve English/Arab
   for (const locale of ['en', 'ar']) {
     if (locale === 'ar') {
       await page.goto('/settings')
+      await selectSettingsSection(page, 'language')
       await page.getByRole('radio', { name: 'العربية' }).click()
       await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
     }
@@ -38,8 +40,11 @@ test('illustrated headers stay compact, cover the tabs and preserve English/Arab
       for (const section of sections) {
         await page.goto(`/${section}`)
         const banner = page.locator(`[data-page-banner="${section}"]`)
-        await expect(banner).toBeVisible()
+        if (section === 'settings') {
+          await expect(page.locator('[data-settings-loading]')).toHaveCount(0)
+        }
         await expect(page.locator('[data-page-banner]')).toHaveCount(1)
+        await expect(banner).toBeVisible()
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
         await expect(banner.locator('.page-banner-backdrop')).toHaveAttribute('aria-hidden', 'true')

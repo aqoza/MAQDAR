@@ -3,6 +3,7 @@
 import { useFormatter, useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
 import { ActiveOrganizationField } from '@/components/active-organization'
+import { TableScrollRegion } from '@/components/table-scroll-region'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -127,63 +128,65 @@ function ApiKeysTable({ keys }: { keys: ApiKeyRow[] }) {
   )
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{t('list.name')}</TableHead>
-          <TableHead>{t('list.key')}</TableHead>
-          <TableHead>{t('list.scopes')}</TableHead>
-          <TableHead>{t('list.created')}</TableHead>
-          <TableHead>{t('list.lastUsed')}</TableHead>
-          <TableHead>{t('list.expires')}</TableHead>
-          <TableHead>{t('list.status')}</TableHead>
-          <TableHead>
-            <span className="sr-only">{t('list.actions')}</span>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {keys.map((key) => (
-          <TableRow key={key.id}>
-            <TableCell className="font-medium">
-              <bdi>{key.name}</bdi>
-            </TableCell>
-            <TableCell>
-              <bdi dir="ltr" className="font-mono text-xs">
-                {key.display}
-              </bdi>
-            </TableCell>
-            <TableCell className="whitespace-normal">
-              <div className="flex min-w-40 flex-wrap gap-1">
-                {key.scopes.map((scope) => (
-                  <Badge key={scope.value} variant="outline" title={scope.value}>
-                    {t(`scopes.${scope.key}.badge`)}
-                  </Badge>
-                ))}
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex flex-col">
-                {date(key.created_at)}
-                <span className="text-muted-foreground text-xs">
-                  {key.creator ? <bdi>{key.creator}</bdi> : t('list.formerMember')}
-                </span>
-              </div>
-            </TableCell>
-            <TableCell className={key.last_used_at ? undefined : 'text-muted-foreground'}>
-              {key.last_used_at ? date(key.last_used_at) : t('list.never')}
-            </TableCell>
-            <TableCell>{date(key.expires_at)}</TableCell>
-            <TableCell className="whitespace-normal">
-              <StatusBadge status={key.status} />
-            </TableCell>
-            <TableCell className="text-end">
-              {key.revoked_at ? null : <RevokeApiKeyDialog apiKey={key} />}
-            </TableCell>
+    <TableScrollRegion label={t('list.heading')}>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{t('list.name')}</TableHead>
+            <TableHead>{t('list.key')}</TableHead>
+            <TableHead>{t('list.scopes')}</TableHead>
+            <TableHead>{t('list.created')}</TableHead>
+            <TableHead>{t('list.lastUsed')}</TableHead>
+            <TableHead>{t('list.expires')}</TableHead>
+            <TableHead>{t('list.status')}</TableHead>
+            <TableHead>
+              <span className="sr-only">{t('list.actions')}</span>
+            </TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {keys.map((key) => (
+            <TableRow key={key.id}>
+              <TableCell className="font-medium">
+                <bdi>{key.name}</bdi>
+              </TableCell>
+              <TableCell>
+                <bdi dir="ltr" className="font-mono text-xs">
+                  {key.display}
+                </bdi>
+              </TableCell>
+              <TableCell className="whitespace-normal">
+                <div className="flex min-w-40 flex-wrap gap-1">
+                  {key.scopes.map((scope) => (
+                    <Badge key={scope.value} variant="outline" title={scope.value}>
+                      {t(`scopes.${scope.key}.badge`)}
+                    </Badge>
+                  ))}
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="flex flex-col">
+                  {date(key.created_at)}
+                  <span className="text-muted-foreground text-xs">
+                    {key.creator ? <bdi>{key.creator}</bdi> : t('list.formerMember')}
+                  </span>
+                </div>
+              </TableCell>
+              <TableCell className={key.last_used_at ? undefined : 'text-muted-foreground'}>
+                {key.last_used_at ? date(key.last_used_at) : t('list.never')}
+              </TableCell>
+              <TableCell>{date(key.expires_at)}</TableCell>
+              <TableCell className="whitespace-normal">
+                <StatusBadge status={key.status} />
+              </TableCell>
+              <TableCell className="text-end">
+                {key.revoked_at ? null : <RevokeApiKeyDialog apiKey={key} />}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableScrollRegion>
   )
 }
 

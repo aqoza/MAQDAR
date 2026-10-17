@@ -4,6 +4,7 @@ import type { Database } from '@maqdar/shared/database.types'
 import { useFormatter, useTranslations } from 'next-intl'
 import { useActionState } from 'react'
 import { RoleBadge } from '@/components/role-badge'
+import { TableScrollRegion } from '@/components/table-scroll-region'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -66,69 +67,71 @@ export function MembersCard({
         <CardDescription>{t('description')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('email')}</TableHead>
-              <TableHead>{t('role')}</TableHead>
-              <TableHead>{t('since')}</TableHead>
-              <TableHead>{t('locations')}</TableHead>
-              <TableHead>
-                <span className="sr-only">{t('remove')}</span>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {members.map((member) => {
-              const memberRole = isRole(member.role) ? member.role : null
-              const self = member.user_id === currentUserId
-              const manageable =
-                !self && memberRole !== null && canManageMember(actorRole, memberRole)
-              return (
-                <TableRow key={`${member.user_id}:${member.role}`}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <span>{member.email}</span>
-                      {self ? <Badge variant="outline">{t('you')}</Badge> : null}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {manageable && memberRole ? (
-                      <RoleForm member={member} role={memberRole} options={roleOptions} />
-                    ) : memberRole ? (
-                      <RoleBadge role={memberRole} />
-                    ) : (
-                      <span className="text-muted-foreground">{member.role}</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {format.dateTime(new Date(member.created_at), 'short')}
-                  </TableCell>
-                  <TableCell className="whitespace-normal">
-                    {memberRole === 'branch_user' ? (
-                      manageable || self ? (
-                        <LocationsForm member={member} locations={locations} />
+        <TableScrollRegion label={t('title')}>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t('email')}</TableHead>
+                <TableHead>{t('role')}</TableHead>
+                <TableHead>{t('since')}</TableHead>
+                <TableHead>{t('locations')}</TableHead>
+                <TableHead>
+                  <span className="sr-only">{t('remove')}</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {members.map((member) => {
+                const memberRole = isRole(member.role) ? member.role : null
+                const self = member.user_id === currentUserId
+                const manageable =
+                  !self && memberRole !== null && canManageMember(actorRole, memberRole)
+                return (
+                  <TableRow key={`${member.user_id}:${member.role}`}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <span>{member.email}</span>
+                        {self ? <Badge variant="outline">{t('you')}</Badge> : null}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {manageable && memberRole ? (
+                        <RoleForm member={member} role={memberRole} options={roleOptions} />
+                      ) : memberRole ? (
+                        <RoleBadge role={memberRole} />
                       ) : (
-                        <AssignedLocations member={member} locations={locations} />
-                      )
-                    ) : (
-                      <span className="text-muted-foreground">{t('allLocations')}</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-end">
-                    {self || manageable ? (
-                      <RemoveMemberDialog
-                        member={member}
-                        self={self}
-                        organizationName={organizationName}
-                      />
-                    ) : null}
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
+                        <span className="text-muted-foreground">{member.role}</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {format.dateTime(new Date(member.created_at), 'short')}
+                    </TableCell>
+                    <TableCell className="whitespace-normal">
+                      {memberRole === 'branch_user' ? (
+                        manageable || self ? (
+                          <LocationsForm member={member} locations={locations} />
+                        ) : (
+                          <AssignedLocations member={member} locations={locations} />
+                        )
+                      ) : (
+                        <span className="text-muted-foreground">{t('allLocations')}</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-end">
+                      {self || manageable ? (
+                        <RemoveMemberDialog
+                          member={member}
+                          self={self}
+                          organizationName={organizationName}
+                        />
+                      ) : null}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </TableScrollRegion>
       </CardContent>
     </Card>
   )
