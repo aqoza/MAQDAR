@@ -2,6 +2,7 @@ import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { DemandUnitEvidence } from './demand-unit-evidence'
+import { TableScrollRegion } from './table-scroll-region'
 import { formatScore } from '@/lib/forecast-quality'
 import type { ReplenishmentReport as Report } from '@/lib/replenishment'
 
@@ -60,8 +61,8 @@ export async function ReplenishmentReport({ report, locale }: { report: Report; 
       <DemandUnitEvidence evidence={p.unit_provenance} />
       {report.orders_truncated && <p role="alert">{t('truncated')}</p>}
       {report.status !== 'prepared_group' && (
-        <div className="workspace-table overflow-x-auto">
-          <table className="w-full text-sm">
+        <TableScrollRegion label={t('orders')}>
+          <table className="w-full min-w-[40rem] text-sm">
             <caption className="text-start font-semibold">{t('orders')}</caption>
             <thead>
               <tr>
@@ -103,7 +104,7 @@ export async function ReplenishmentReport({ report, locale }: { report: Report; 
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScrollRegion>
       )}
       {report.status !== 'prepared_group' && !report.orders.length && !report.orders_truncated && (
         <p>{t('noOrders')}</p>
