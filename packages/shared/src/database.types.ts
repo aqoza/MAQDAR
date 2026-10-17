@@ -1212,6 +1212,44 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"transfer_date_scenarios": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"redistribution_id": string,"report": NonNullable<Json>,"request_id": string,"source_location_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"redistribution_id": string,"report": NonNullable<Json>,"request_id": string,"source_location_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"redistribution_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"source_location_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_date_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_redistribution_id_fkey"
+      columns: ["organization_id","redistribution_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_redistribution_id_fkey"
+      columns: ["organization_id","redistribution_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"user_settings": {
                   Row: {
                     "active_organization_id": string | null,"created_at": string,"updated_at": string,"user_id": string
@@ -1617,6 +1655,44 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"transfer_date_scenario_list": {
+                  Row: {
+                    "created_at": string | null,"destination_code": string | null,"dispatch_date": string | null,"id": string | null,"item_code": string | null,"location_id": string | null,"organization_id": string | null,"quantity": string | null,"redistribution_id": string | null,"requested_date": string | null,"search_text": string | null,"slow_receipt": string | null,"source_code": string | null,"source_location_id": string | null,"status": string | null,"typical_receipt": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"destination_code"?: never,"dispatch_date"?: never,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"quantity"?: never,"redistribution_id"?: string | null,"requested_date"?: never,"search_text"?: never,"slow_receipt"?: never,"source_code"?: never,"source_location_id"?: string | null,"status"?: never,"typical_receipt"?: never,"unit"?: never
+                         }
+                        Update: {
+                           "created_at"?: string | null,"destination_code"?: never,"dispatch_date"?: never,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"quantity"?: never,"redistribution_id"?: string | null,"requested_date"?: never,"search_text"?: never,"slow_receipt"?: never,"source_code"?: never,"source_location_id"?: string | null,"status"?: never,"typical_receipt"?: never,"unit"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "transfer_date_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_redistribution_id_fkey"
+      columns: ["organization_id","redistribution_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_redistribution_id_fkey"
+      columns: ["organization_id","redistribution_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 }
           }
           Functions: {
@@ -1806,6 +1882,12 @@ isOneToOne: false
                            },
 "supplier_scenario_save":
 { Args: { "p_draft_id": string,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: string
+                           },
+"transfer_date_preview":
+{ Args: { "p_calendars_confirmed": boolean,"p_organization_id": string,"p_redistribution_id": string,"p_requested_date": string }; Returns: Json
+                           },
+"transfer_date_save":
+{ Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_redistribution_id": string,"p_request_id": string,"p_requested_date": string }; Returns: string
                            },
 "update_organization_preferences":
 { Args: { "p_default_locale": string,"p_numbering_system": string,"p_organization_id": string,"p_time_zone": string }; Returns: undefined

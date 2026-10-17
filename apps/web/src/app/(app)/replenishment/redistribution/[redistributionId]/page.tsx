@@ -17,9 +17,10 @@ export default async function SavedRedistribution({
   if (!context?.active) redirect('/organizations')
   const { redistributionId } = await params
   if (!z.uuid().safeParse(redistributionId).success) notFound()
-  const [db, t, locale, format] = await Promise.all([
+  const [db, t, dates, locale, format] = await Promise.all([
     createClient(),
     getTranslations('Redistribution'),
+    getTranslations('TransferDates'),
     getLocale(),
     getFormatter(),
   ])
@@ -40,7 +41,21 @@ export default async function SavedRedistribution({
       <PageHeader
         title={t('saved')}
         description={`${report.destination.policy.item_code} · ${report.source_location_code} → ${report.destination.policy.location_code} · ${report.destination.policy.cutoff}`}
+        actions={
+          <Link
+            className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+            href={`/replenishment/redistribution/dates/new?draft=${redistributionId}`}
+          >
+            {dates('create')}
+          </Link>
+        }
       />
+      <Link
+        className="inline-block underline"
+        href={`/replenishment/redistribution/dates?draft=${redistributionId}`}
+      >
+        {dates('draftHistory')}
+      </Link>
       <p className="text-sm text-muted-foreground">
         {t('savedAt', { time: format.dateTime(new Date(result.data.created_at), 'long') })}
       </p>

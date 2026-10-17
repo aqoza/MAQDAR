@@ -30,6 +30,12 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('transfer_date_scenarios', 'anon', 'r', ''),
+    ('transfer_date_scenarios', 'authenticated', 'r', 'SELECT'),
+    ('transfer_date_scenarios', 'service_role', 'r', ''),
+    ('transfer_date_scenario_list', 'anon', 'v', ''),
+    ('transfer_date_scenario_list', 'authenticated', 'v', 'SELECT'),
+    ('transfer_date_scenario_list', 'service_role', 'v', ''),
     ('redistribution_drafts', 'anon', 'r', ''),
     ('redistribution_drafts', 'authenticated', 'r', 'SELECT'),
     ('redistribution_drafts', 'service_role', 'r', ''),
@@ -347,6 +353,8 @@ select set_eq(
     ('app.api_authorize(bytea, text)', ''),
     ('app.api_authorize_check(bytea, text)', ''),
     ('public.handoff_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
+    ('public.transfer_date_preview(uuid, uuid, date, boolean)', 'authenticated'),
+    ('public.transfer_date_save(uuid, uuid, date, boolean, uuid, text)', 'authenticated'),
     ('public.redistribution_preview(uuid, uuid, uuid, text, uuid, text, boolean, boolean)', 'authenticated'),
     ('public.redistribution_save(uuid, uuid, uuid, text, uuid, text, boolean, boolean, uuid, text)', 'authenticated'),
     ('app.handoff_ack_json(purchase_handoff_acknowledgements)', ''),
