@@ -215,35 +215,35 @@
 }
 .dashboard-hero {
   position: relative;
-  min-block-size: 91px;
+  min-block-size: 64px;
   display: flex;
   justify-content: space-between;
   padding-inline: 9px 29px;
-  padding-block: 0 16px;
+  padding-block: 0 8px;
   isolation: isolate;
 }
 .dashboard-hero h1 {
-  font-size: 40px;
-  line-height: 48px;
+  font-size: 28px;
+  line-height: 36px;
   font-weight: 600;
-  letter-spacing: -1.5px;
+  letter-spacing: -0.75px;
   margin: 0;
 }
 .dashboard-hero p {
-  font-size: 16px;
-  line-height: 23px;
+  font-size: 13px;
+  line-height: 20px;
   color: #536d94;
 }
 .dashboard-hero .dashboard-tagline {
-  font-size: 16px;
-  line-height: 21px;
+  font-size: 13px;
+  line-height: 17px;
   color: #508d80;
-  margin-block-start: 12px;
+  margin-block-start: 4px;
 }
 .dashboard-hero-art {
   position: absolute;
   inline-size: 650px;
-  block-size: 180px;
+  block-size: 153px;
   inset-inline-end: 140px;
   inset-block-end: 0;
   z-index: -1;
@@ -1008,11 +1008,11 @@
     padding-inline: 14px;
   }
   .dashboard-hero {
-    min-block-size: 85px;
+    min-block-size: 60px;
   }
   .dashboard-hero h1 {
-    font-size: 32px;
-    line-height: 42px;
+    font-size: 24px;
+    line-height: 32px;
   }
   .dashboard-actions {
     gap: 6px;

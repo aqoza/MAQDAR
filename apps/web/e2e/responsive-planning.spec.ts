@@ -90,11 +90,11 @@ for (const { width, height } of [
         ).toBeVisible()
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
           'font-size',
-          screen.path === '/dashboard' ? (width < 768 ? '32px' : '40px') : '20px',
+          screen.path === '/dashboard' ? (width < 768 ? '24px' : '28px') : '20px',
         )
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
           'line-height',
-          screen.path === '/dashboard' ? (width < 768 ? '42px' : '48px') : '28px',
+          screen.path === '/dashboard' ? (width < 768 ? '32px' : '36px') : '28px',
         )
         if (screen.path !== '/dashboard')
           await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(245, 248, 246)')

@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Dashboard typography refinement — approved 2026-10-17
+
+After PR #42 merged, the owner requested smaller dashboard heading/subheading typography and improved vertical space utilization. Reduce the title region while preserving panel dimensions and functionality; verify desktop, mobile and Arabic layouts. See [dashboard-typography.md](dashboard-typography.md).
+
 Multi-tenant cloud SaaS for service parts planning in the Middle East. Target: Syncron Service Parts Planning parity, then differentiators for the region.
 
 ## Phases

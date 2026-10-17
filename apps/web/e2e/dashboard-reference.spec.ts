@@ -113,7 +113,8 @@ test('dashboard reference renders real scoped data at the reference viewports', 
     })
     const strip = await page.locator('.dashboard-metrics').boundingBox()
     expect(strip?.height).toBe(107)
-    expect(strip?.y).toBeCloseTo(249, 0)
+    // The approved compact heading reclaims 27px above the original reference composition.
+    expect(strip?.y).toBeCloseTo(222, 0)
     expect((await page.locator('.dashboard-demand').boundingBox())?.height).toBe(280)
   }
   await page.setViewportSize({ width: 1672, height: 941 })
