@@ -384,6 +384,7 @@ select set_eq(
     ('app.api_authorize_check(bytea, text)', ''),
     ('public.handoff_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.transfer_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
+    ('public.stock_locator(uuid, text, text, text, date, jsonb, integer, integer)', 'authenticated'),
     ('public.transfer_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.transfer_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),
     ('public.transfer_proposal_decide(uuid, uuid, uuid, text, text)', 'authenticated'),

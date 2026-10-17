@@ -1,6 +1,6 @@
 # Transfer integration workbench (Step 16i)
 
-Status: implemented and locally verified; ready for PR review and CI. PR #53 was reviewed without blocking findings and merged as `b26d099` on 2026-10-17 after all three CI jobs passed.
+Status: merged in PR #55 as `5ade8b2` on 2026-10-17 after review without blocking findings and all three CI jobs passing. PR #53 was reviewed without blocking findings and merged as `b26d099` on 2026-10-17 after all three CI jobs passed.
 
 ## Approved scope and semantics
 

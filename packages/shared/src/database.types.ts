@@ -2269,6 +2269,9 @@ isOneToOne: false
 "set_member_role":
 { Args: { "p_organization_id": string,"p_role": string,"p_user_id": string }; Returns: undefined
                            },
+"stock_locator":
+{ Args: { "p_day": string,"p_filters"?: Json,"p_item_code": string,"p_organization_id": string,"p_page"?: number,"p_receiving_code": string,"p_size"?: number,"p_unit": string }; Returns: Json
+                           },
 "supplier_scenario_preview":
 { Args: { "p_draft_id": string,"p_organization_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: Json
                            },
