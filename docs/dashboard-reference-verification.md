@@ -48,8 +48,8 @@ Three correction passes adjusted geometry, KPI/icon density, chart dimensions/gr
 | First layout iteration                                 | 0.701998                | 13.6527                         |
 | Second correction                                      | 0.702127                | 13.3574                         |
 | Third correction                                       | 0.756813                | 10.7709                         |
-| Final production, 1672 × 941                           | 0.769123                | 10.2552                         |
-| Final production, 1648 × 928 against resized reference | 0.698528                | 13.1369                         |
+| Final production, 1672 × 941                           | 0.769592                | 10.2417                         |
+| Final production, 1648 × 928 against resized reference | 0.698893                | 13.1259                         |
 
 ![Reference left; actual production dashboard right](dashboard-visuals/comparison-1672.png)
 
@@ -72,7 +72,7 @@ Required local checks run against a separate `MAQDAR-dashboard-reference` stack 
 | `pnpm lint`, `pnpm typecheck`, `pnpm check:logical`  | Passed on the rebased branch                                         |
 | `pnpm format:check`                                  | Passed                                                               |
 | Complete web unit suite, `vitest run --maxWorkers=2` | 99 files, 1232 tests passed on PR #41 plus dashboard                 |
-| Full pgTAP on PR #40 plus dashboard                  | 50 files, 2885 assertions passed                                     |
+| Full pgTAP on PR #41 plus dashboard                  | 51 files, 2971 assertions passed locally and in CI                   |
 | Engine `uv run pytest -q`                            | 293 passed; 113 database tests skipped and run separately            |
 | Engine `uv run pytest -m db -q`                      | All 113 passed before rebase                                         |
 | New main-branch `test_transfer_dates_db.py`          | All 6 passed after rebase; engine implementation otherwise unchanged |
@@ -82,6 +82,8 @@ Required local checks run against a separate `MAQDAR-dashboard-reference` stack 
 The complete production browser run finished with **59 passed, two optional import-scale tests skipped, and one performance threshold miss** (2088ms versus 2000ms while image comparisons were running). The isolated repeat passed the unchanged threshold: **1327ms, 1033ms, 1012ms**, and **821ms** for location-filtered navigation, with 50,000 items, 40 locations, 50,000 snapshots and 50,000 demand rows. These are local measurements, not a production SLA.
 
 The final focused reference and planning-KPI tests both passed after fixing Arabic mobile currency overflow and waiting for visible server-streamed content and settled fonts. Coverage includes both desktop viewports, 375px English/Arabic, tooltip values, location drill-down, scoped forecast-quality navigation/reset, and separate USD/KWD selection with exact totals. Existing responsive checks passed at 375, 768, 1024, 1440 and 1920px across the application.
+
+The first Linux CI run passed 59 browser cases but caught a platform-dependent caption wrap: two KPI notes increased the strip to 123px. Compact captions now retain the observed denominator and supplied-cost meaning with fewer words; detailed definitions remain available. The 107px assertion is unchanged, and full-resolution reference captures are attached to the CI report. That run also passed all 2971 pgTAP assertions, 294 engine tests and the separate 126 database-dependent engine tests. The final PR checks show the rerun result.
 
 A controlled local failure drill held a stock-table lock for two seconds, then separately revoked and restored the authenticated KPI function permission on the isolated test stack. [Loading](dashboard-visuals/dashboard-loading-1672.png), [safe error](dashboard-visuals/dashboard-error-1672.png) and visible one-click recovery all passed. The drill caught and fixed a real retry defect: retry now refreshes server data and resets the boundary within a transition. Permission restoration was verified through successful recovery and enforced in the drill's `finally` block. No production permission changed.
 

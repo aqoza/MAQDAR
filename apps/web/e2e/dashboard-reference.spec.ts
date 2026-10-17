@@ -103,11 +103,13 @@ test('dashboard reference renders real scoped data at the reference viewports', 
         ),
       )
       .toBeLessThanOrEqual(1)
-    await page.screenshot({
-      path: testInfo.outputPath(
-        `dashboard-${process.env.DASHBOARD_CAPTURE ?? 'reference'}-${width}.png`,
-      ),
-      fullPage: false,
+    const capturePath = testInfo.outputPath(
+      `dashboard-${process.env.DASHBOARD_CAPTURE ?? 'reference'}-${width}.png`,
+    )
+    await page.screenshot({ path: capturePath, fullPage: false })
+    await testInfo.attach(`dashboard-${width}`, {
+      path: capturePath,
+      contentType: 'image/png',
     })
     const strip = await page.locator('.dashboard-metrics').boundingBox()
     expect(strip?.height).toBe(107)

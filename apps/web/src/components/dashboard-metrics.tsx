@@ -28,7 +28,7 @@ export async function DashboardMetrics({
       icon: Layers,
       tone: 'green',
       value: ratio === null ? t('unavailable') : percent.format(ratio),
-      note: t('compactCounts', {
+      note: t('compactMetricCounts', {
         available: summary.available_pairs,
         observed: summary.observed_pairs,
       }),

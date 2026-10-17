@@ -4,8 +4,8 @@
     "rgb_mae_0_255": 16.3757
   },
   "dashboard-final-1672.png": {
-    "ssim": 0.769123,
-    "rgb_mae_0_255": 10.2552
+    "ssim": 0.769592,
+    "rgb_mae_0_255": 10.2417
   },
   "dashboard-iteration-1-1672.png": {
     "ssim": 0.701998,
@@ -20,7 +20,7 @@
     "rgb_mae_0_255": 10.7709
   },
   "dashboard-final-1648.png": {
-    "ssim": 0.698528,
-    "rgb_mae_0_255": 13.1369
+    "ssim": 0.698893,
+    "rgb_mae_0_255": 13.1259
   }
 }

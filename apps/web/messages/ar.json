@@ -1327,6 +1327,7 @@
     "metrics": "نظرة عامة على المخزون",
     "stockAvailability": "توفر المخزون",
     "compactCounts": "{available, number} من {observed, number} زوج مرصود",
+    "compactMetricCounts": "{available, number} / {observed, number} مرصود",
     "valueCompactNote": "المخزون الفعلي بالتكلفة المسجلة",
     "stockOutsCompactNote": "أزواج مرصودة دون مخزون متاح",
     "coverageCompactNote": "أزواج لها أرصدة مخزون",
