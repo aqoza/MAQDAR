@@ -43,7 +43,11 @@ export default async function Assessment({
         <p className="break-words">{data.reason}</p>
         <p className="text-xs text-muted-foreground">{t('savedNote')}</p>
       </section>
-      <ExcessStockReport report={report} />
+      <ExcessStockReport
+        report={report}
+        assessmentId={assessmentId}
+        canPropose={['owner', 'admin', 'planner'].includes(context.active.role)}
+      />
     </div>
   )
 }
