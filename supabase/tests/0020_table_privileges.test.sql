@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('event_delivery_scenarios', 'anon', 'r', ''),
+    ('event_delivery_scenarios', 'authenticated', 'r', 'SELECT'),
+    ('event_delivery_scenarios', 'service_role', 'r', ''),
     ('event_supplier_scenarios', 'anon', 'r', ''),
     ('event_supplier_scenarios', 'authenticated', 'r', 'SELECT'),
     ('event_supplier_scenarios', 'service_role', 'r', ''),
@@ -493,6 +496,8 @@ select set_eq(
     ('public.purchase_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.purchase_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),
     ('public.purchase_proposal_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
+    ('public.event_delivery_preview(uuid, uuid, date, boolean)', 'authenticated'),
+    ('public.event_delivery_save(uuid, uuid, date, boolean, uuid, text)', 'authenticated'),
     ('public.event_supplier_preview(uuid, uuid, text, boolean)', 'authenticated'),
     ('public.event_supplier_save(uuid, uuid, text, boolean, uuid, text)', 'authenticated'),
     ('public.event_replenishment_preview(uuid, uuid, text, boolean, boolean)', 'authenticated'),

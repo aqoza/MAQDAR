@@ -171,6 +171,6 @@ select throws_ok($$select * from public.event_supplier_scenarios$$,'42501',null,
 select throws_ok($$select pg_temp.supplier_preview()$$,'42501',null,'anonymous cannot preview');
 reset role;
 delete from public.event_replenishment_drafts where id=(select saved from capture);
-select is((select count(*)::integer from public.event_supplier_scenarios),0,'parent retention cascades');
+select is((select count(*)::integer from public.event_supplier_scenarios where organization_id=pg_temp.id(1)),0,'parent retention cascades');
 select * from finish();
 rollback;

@@ -212,6 +212,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"event_delivery_scenarios": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string,"supplier_scenario_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string,"supplier_scenario_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string,"supplier_scenario_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_delivery_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_delivery_scenarios_organization_id_supplier_scenario_fkey"
+      columns: ["organization_id","supplier_scenario_id"]
+isOneToOne: false
+      referencedRelation: "event_supplier_scenarios"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"event_policy_scenarios": {
                   Row: {
                     "created_at": string,"event_id": string,"id": string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
@@ -2301,6 +2327,12 @@ isOneToOne: false
                            },
 "delivery_scenario_save":
 { Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_requested_date": string,"p_supplier_scenario_id": string }; Returns: string
+                           },
+"event_delivery_preview":
+{ Args: { "p_calendars_confirmed": boolean,"p_organization_id": string,"p_requested_date": string,"p_scenario_id": string }; Returns: Json
+                           },
+"event_delivery_save":
+{ Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_requested_date": string,"p_scenario_id": string }; Returns: string
                            },
 "event_policy_preview":
 { Args: { "p_event_id": string,"p_organization_id": string,"p_policy_id": string,"p_reason": string }; Returns: Json

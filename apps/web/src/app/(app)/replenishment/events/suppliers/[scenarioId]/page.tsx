@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
+import { isEditorRole } from '@/lib/auth/roles'
 import { PageHeader } from '@/components/page-header'
 import { EventSupplierReport } from '@/components/event-supplier-report'
 import { eventSupplierReportSchema } from '@/lib/event-suppliers'
@@ -53,6 +54,22 @@ export default async function EventSupplierDetail({
         </bdi>{' '}
         · {t('cutoff', { date: report.draft.scenario.event.source.cutoff })}
       </p>
+      <div className="flex flex-wrap gap-4">
+        {isEditorRole(context.role) && (
+          <Link
+            className="underline"
+            href={`/replenishment/events/deliveries/new?scenario=${scenarioId}`}
+          >
+            {(await getTranslations('EventDeliveries'))('new')}
+          </Link>
+        )}
+        <Link
+          className="underline"
+          href={`/replenishment/events/deliveries?scenario=${scenarioId}`}
+        >
+          {(await getTranslations('EventDeliveries'))('history')}
+        </Link>
+      </div>
       <EventSupplierReport report={report} />
       <p className="text-xs text-muted-foreground">
         {t('savedAt', { time: format.dateTime(new Date(data.created_at), 'long') })}
