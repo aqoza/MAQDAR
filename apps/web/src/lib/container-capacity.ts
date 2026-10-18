@@ -7,7 +7,7 @@ const capacity = decimalSchema({ scale: 6, integerDigits: 9, greaterThan: 0 }).t
   numberInputValue,
 )
 export const capacityInputSchema = z.object({
-  batch: z.uuid(),
+  batch: z.guid(),
   volume: capacity,
   payload: capacity,
   confirmed: z.enum(['true', 'false']),
@@ -39,8 +39,8 @@ export const capacityStatuses = [
 const decimal = z.string().regex(/^\d+(\.\d+)?$/)
 export const capacityReportSchema = z.object({
   method: z.literal('container-capacity-v1'),
-  batch_id: z.uuid(),
-  location_id: z.uuid(),
+  batch_id: z.guid(),
+  location_id: z.guid(),
   summary: batchSummarySchema,
   confirmed: z.boolean(),
   selected: z.boolean(),
@@ -61,9 +61,9 @@ export const capacityReportSchema = z.object({
   lines: z
     .array(
       z.object({
-        handoff_id: z.uuid(),
-        proposal_id: z.uuid(),
-        item_id: z.uuid(),
+        handoff_id: z.guid(),
+        proposal_id: z.guid(),
+        item_id: z.guid(),
         item_code: z.string(),
         unit: z.string().nullable(),
         quantity: decimal,
@@ -73,7 +73,7 @@ export const capacityReportSchema = z.object({
         status: z.enum(capacityStatuses),
         measurement: z
           .object({
-            id: z.uuid(),
+            id: z.guid(),
             unit: z.string().nullable(),
             weight_kg: decimal.nullable(),
             volume_m3: decimal.nullable(),

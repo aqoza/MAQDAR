@@ -1,0 +1,53 @@
+{
+  "id": "14ed3317-eddb-464a-96c8-2507650ac3f8",
+  "mae": "2.66077918296945292033333333333333333333333333333333333333333",
+  "bias": "-0.307813915388327155857142857142857142857142857142857142857143",
+  "rmse": "3.92976606286945927032112276331170298097808138055400802674380",
+  "unit": "EA",
+  "folds": [
+    {
+      "test_to": "2026-08-19",
+      "train_to": "2026-07-29",
+      "test_from": "2026-07-30",
+      "train_from": "2025-10-01"
+    },
+    {
+      "test_to": "2026-09-09",
+      "train_to": "2026-08-19",
+      "test_from": "2026-08-20",
+      "train_from": "2025-10-01"
+    },
+    {
+      "test_to": "2026-09-30",
+      "train_to": "2026-09-09",
+      "test_from": "2026-09-10",
+      "train_from": "2025-10-01"
+    }
+  ],
+  "model": "auto_arima",
+  "method": "regional-v1",
+  "run_id": "63c933ab-8018-34ee-df3e-9b292e2a360e",
+  "status": "selected",
+  "horizon": "21",
+  "item_id": "45fccdfa-6816-12b4-6722-8b9776fc6925",
+  "to_date": "2026-09-30",
+  "from_date": "2025-10-01",
+  "item_code": "SYN-ACME-CHE-001",
+  "item_name": "SYN-ACME-CHE-001",
+  "comparison": "fixed-group-v1",
+  "evaluation": {
+    "count": 21,
+    "model": "calendar",
+    "status": "available",
+    "test_to": "2026-09-30",
+    "train_to": "2026-09-09",
+    "test_from": "2026-09-10",
+    "coverage80": "0.904761904761904761904761904761904761904761904761904761904762",
+    "coverage95": "0.952380952380952380952380952380952380952380952380952380952381"
+  },
+  "finished_at": "2026-10-17T23:31:14.100553+00:00",
+  "location_id": "fdb74b12-697c-18ae-55a9-a593537de77c",
+  "search_text": "syn acme che 001 syn acme che 001",
+  "location_code": "SYN-ACME-DZ-ALG",
+  "organization_id": "93000000-0000-4000-8000-000000000099"
+}

@@ -21,7 +21,7 @@ export default async function StockComparison({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { policyId } = await params
-  if (!z.uuid().safeParse(policyId).success) notFound()
+  if (!z.guid().safeParse(policyId).success) notFound()
   const [db, t, locale, raw] = await Promise.all([
     createClient(),
     getTranslations('StockComparison'),

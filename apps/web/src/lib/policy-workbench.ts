@@ -12,7 +12,7 @@ function thousandths(value: string) {
 }
 export const proposalSchema = z
   .object({
-    policy_id: z.uuid(),
+    policy_id: z.guid(),
     request_id: z.uuid(),
     reorder_point: quantity,
     order_up_to: quantity,
@@ -25,7 +25,7 @@ export const proposalSchema = z
       thousandths(v.reorder_point) <= thousandths(v.order_up_to),
   )
 export const decisionSchema = z.object({
-  override_id: z.uuid(),
+  override_id: z.guid(),
   request_id: z.uuid(),
   decision: z.enum(['approved', 'rejected', 'withdrawn']),
   reason,
@@ -50,9 +50,9 @@ export const workbenchSpec: ListSpec = {
 }
 export const workbenchParams = (raw: RawSearchParams) => parseListParams(raw, workbenchSpec)
 export const workbenchRowSchema = z.object({
-  id: z.uuid(),
-  run_id: z.uuid(),
-  location_id: z.uuid(),
+  id: z.guid(),
+  run_id: z.guid(),
+  location_id: z.guid(),
   item_code: z.string(),
   location_code: z.string(),
   unit: z.string().nullable(),

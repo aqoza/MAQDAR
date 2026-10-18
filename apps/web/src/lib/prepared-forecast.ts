@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const preparedForecastSchema = z.object({
-  preparation_id: z.uuid(),
+  preparation_id: z.guid(),
   request_id: z.uuid(),
   horizon: z
     .string()
@@ -29,9 +29,9 @@ export const calendarModelSchema = z.object({
   ),
 })
 export const preparedSourceSchema = z.object({
-  id: z.uuid(),
-  run_id: z.uuid(),
-  group_id: z.uuid(),
+  id: z.guid(),
+  run_id: z.guid(),
+  group_id: z.guid(),
   unit: z.string(),
   original_from: z.string(),
   comparison: z.literal('fixed-group-v1'),

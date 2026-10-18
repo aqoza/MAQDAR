@@ -30,7 +30,7 @@ export const preparationSummarySchema = z.object({
 export const preparationOutputSchema = z.object({
   contributors: z.array(
     z.object({
-      item_id: z.uuid(),
+      item_id: z.guid(),
       item_code: z.string(),
       factor: decimal,
       sold: decimal,

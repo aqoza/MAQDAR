@@ -3,14 +3,14 @@ import { notFound, redirect } from 'next/navigation'
 import { isAdminRole } from '@/lib/auth/roles'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
-import type { EntityName } from '@/lib/imports/contract'
+import { auditEntityKey } from '@/lib/audit'
 
 export default async function AuditPage() {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   if (!context.role || !isAdminRole(context.role)) notFound()
   const t = await getTranslations('Audit')
-  const entityName = await getTranslations('ImportsClient.entities')
+  const entityName = await getTranslations('Audit.entities')
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('audit_log')
@@ -41,7 +41,7 @@ export default async function AuditPage() {
               <tr key={row.id} className="border-t">
                 <td className="whitespace-nowrap p-2">{row.occurred_at}</td>
                 <td className="p-2 font-mono text-xs">{row.actor_user_id ?? t('system')}</td>
-                <td className="p-2">{entityName(row.table_name as EntityName)}</td>
+                <td className="p-2">{entityName(auditEntityKey(row.table_name))}</td>
                 <td className="p-2">{t(row.operation as 'INSERT' | 'UPDATE' | 'DELETE')}</td>
                 <td className="p-2 tabular-nums">{row.row_count}</td>
               </tr>

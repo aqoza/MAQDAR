@@ -21,7 +21,7 @@ export default async function BatchDetail({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { batchId } = await params
-  if (!z.uuid().safeParse(batchId).success) notFound()
+  if (!z.guid().safeParse(batchId).success) notFound()
   const [db, t, format] = await Promise.all([
     createClient(),
     getTranslations('TransferBatches'),

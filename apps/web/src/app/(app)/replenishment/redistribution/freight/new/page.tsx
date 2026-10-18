@@ -35,7 +35,7 @@ export default async function NewTransferFreight({
     searchParams,
   ])
   const values = transferFreightParams(raw)
-  const draft = z.uuid().safeParse(values.scenario)
+  const draft = z.guid().safeParse(values.scenario)
   if (!draft.success) notFound()
   const source = await db
     .from('transfer_date_scenarios')

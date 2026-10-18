@@ -16,7 +16,7 @@ export const eventQuantitySchema = z
   .pipe(z.string().regex(/^\d{1,15}(\.\d{1,3})?$/))
 const quantity = eventQuantitySchema
 export const eventInputSchema = z.object({
-  forecast_id: z.uuid(),
+  forecast_id: z.guid(),
   event_type: z.enum(eventTypes),
   name: z.string().trim().min(1).max(200),
   reason: z.string().trim().min(1).max(2000),
@@ -42,11 +42,11 @@ export const eventSourceStatuses = [
 ] as const
 export const eventSourceSchema = z.object({
   status: z.enum(eventSourceStatuses),
-  forecast_id: z.uuid(),
-  run_id: z.uuid(),
-  location_id: z.uuid(),
+  forecast_id: z.guid(),
+  run_id: z.guid(),
+  location_id: z.guid(),
   location_code: z.string(),
-  item_id: z.uuid(),
+  item_id: z.guid(),
   item_code: z.string(),
   item_name: z.string(),
   unit: z.string().nullable(),

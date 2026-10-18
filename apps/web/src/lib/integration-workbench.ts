@@ -87,7 +87,7 @@ export const integrationResultSchema = z.object({
   rows: z
     .array(
       z.object({
-        id: z.uuid(),
+        id: z.guid(),
         kind: z.enum(['handoff', 'batch']),
         created_at: z.string(),
         item_code: z.string().nullable(),
@@ -95,13 +95,13 @@ export const integrationResultSchema = z.object({
         location_code: z.string(),
         line_count: z.number().int().positive(),
         selected: z.boolean(),
-        event_id: z.uuid().nullable(),
+        event_id: z.guid().nullable(),
         external_system: z.string().nullable(),
         external_reference: z.string().nullable(),
         status: z.enum(['received', 'rejected', 'no_report']),
         reason: z.string().nullable(),
         recorded_at: z.string().nullable(),
-        api_key_id: z.uuid().nullable(),
+        api_key_id: z.guid().nullable(),
         client_event_id: z.uuid().nullable(),
       }),
     )

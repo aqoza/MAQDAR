@@ -38,7 +38,7 @@ import {
  * the form) and lets the database enforce the rules; what comes back is translated for the form.
  */
 
-const uuidSchema = z.uuid()
+const uuidSchema = z.guid()
 const locationIdsSchema = z.array(uuidSchema).max(1000)
 const passwordSchema = z.string().min(8).max(72)
 

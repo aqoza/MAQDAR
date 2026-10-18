@@ -27,9 +27,9 @@ const decimal = z
   .regex(/^-?\d+(\.\d+)?$/)
   .nullable()
 export const qualityRowSchema = z.object({
-  id: z.uuid(),
-  run_id: z.uuid(),
-  item_id: z.uuid(),
+  id: z.guid(),
+  run_id: z.guid(),
+  item_id: z.guid(),
   item_code: z.string(),
   item_name: z.string(),
   location_code: z.string(),

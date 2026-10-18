@@ -12,7 +12,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
-  if (!z.uuid().safeParse(runId).success) notFound()
+  if (!z.guid().safeParse(runId).success) notFound()
   const [db, t, locale] = await Promise.all([
     createClient(),
     getTranslations('InventoryPolicy'),

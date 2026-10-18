@@ -26,7 +26,7 @@ export const transferFreightStatuses = [
   'amount_out_of_range',
 ] as const
 export const transferFreightInputSchema = z.object({
-  scenario: z.uuid(),
+  scenario: z.guid(),
   confirmed: z.enum(['true', 'false']),
 })
 export const transferFreightSaveSchema = transferFreightInputSchema.extend({
@@ -43,19 +43,19 @@ const decimal = z.string().regex(/^\d+(\.\d+)?$/)
 export const transferFreightReportSchema = z.object({
   method: z.literal('transfer-freight-v1'),
   status: z.enum(transferFreightStatuses),
-  scenario_id: z.uuid(),
-  location_id: z.uuid(),
-  source_location_id: z.uuid(),
+  scenario_id: z.guid(),
+  location_id: z.guid(),
+  source_location_id: z.guid(),
   source: transferDateReportSchema,
   terms_confirmed: z.boolean(),
   sender: calendarEntitySchema.nullable(),
   receiver: calendarEntitySchema.nullable(),
   terms: z
     .object({
-      id: z.uuid(),
+      id: z.guid(),
       active: z.boolean(),
-      from_location_id: z.uuid(),
-      to_location_id: z.uuid(),
+      from_location_id: z.guid(),
+      to_location_id: z.guid(),
       lead_time_days_p50: z.number().int(),
       lead_time_days_p90: z.number().int(),
       basis: z.enum(['none', 'per_unit', 'per_shipment']),

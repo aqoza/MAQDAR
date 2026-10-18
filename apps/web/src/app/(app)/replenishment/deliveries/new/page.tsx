@@ -33,7 +33,7 @@ export default async function NewDeliveryScenario({
     searchParams,
   ])
   const values = deliveryScenarioParams(raw)
-  const scenario = z.uuid().safeParse(values.scenario)
+  const scenario = z.guid().safeParse(values.scenario)
   if (!scenario.success) notFound()
   const source = await db
     .from('supplier_scenarios')

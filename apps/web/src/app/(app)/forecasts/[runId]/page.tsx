@@ -21,7 +21,7 @@ export default async function ClassificationResults({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
-  if (!z.uuid().safeParse(runId).success) notFound()
+  if (!z.guid().safeParse(runId).success) notFound()
   const search = await searchParams
   const page = Math.min(1000, Math.max(1, Number.parseInt(search.page ?? '1', 10) || 1))
   const pattern = CLASSIFICATION_PATTERNS.find((p) => p === search.pattern)

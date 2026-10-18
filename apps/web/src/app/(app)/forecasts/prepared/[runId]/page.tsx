@@ -25,7 +25,7 @@ export default async function PreparedResults({
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
   const { group } = await searchParams
-  if (!z.uuid().safeParse(runId).success || (group && !z.uuid().safeParse(group).success))
+  if (!z.guid().safeParse(runId).success || (group && !z.guid().safeParse(group).success))
     notFound()
   const [db, t, locale] = await Promise.all([
     createClient(),
