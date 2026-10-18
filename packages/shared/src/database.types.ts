@@ -212,6 +212,50 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"event_policy_scenarios": {
+                  Row: {
+                    "created_at": string,"event_id": string,"id": string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"event_id": string,"id"?: string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"event_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_policy_scenarios_organization_id_event_id_fkey"
+      columns: ["organization_id","event_id"]
+isOneToOne: false
+      referencedRelation: "planned_event_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
+      columns: ["organization_id","policy_id"]
+isOneToOne: false
+      referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
+      columns: ["organization_id","policy_id"]
+isOneToOne: false
+      referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
+      columns: ["organization_id","policy_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_source_options"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"forecast_results": {
                   Row: {
                     "evidence": NonNullable<Json>,"id": string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"model": string | null,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>
@@ -2205,6 +2249,12 @@ isOneToOne: false
                            },
 "delivery_scenario_save":
 { Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_requested_date": string,"p_supplier_scenario_id": string }; Returns: string
+                           },
+"event_policy_preview":
+{ Args: { "p_event_id": string,"p_organization_id": string,"p_policy_id": string,"p_reason": string }; Returns: Json
+                           },
+"event_policy_save":
+{ Args: { "p_event_id": string,"p_fingerprint": string,"p_organization_id": string,"p_policy_id": string,"p_reason": string,"p_request_id": string }; Returns: string
                            },
 "forecast_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string

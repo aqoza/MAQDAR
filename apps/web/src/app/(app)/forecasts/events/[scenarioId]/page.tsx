@@ -7,6 +7,7 @@ import { PlannedEventReport } from '@/components/planned-event-report'
 import { eventReportSchema } from '@/lib/planned-events'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
+import { isEditorRole } from '@/lib/auth/roles'
 
 export default async function EventDetail({ params }: { params: Promise<{ scenarioId: string }> }) {
   const context = await getActiveContext()
@@ -27,6 +28,7 @@ export default async function EventDetail({ params }: { params: Promise<{ scenar
   if (error) throw new Error('Event scenario unavailable')
   if (!data) notFound()
   const report = eventReportSchema.parse(data.report)
+  const policies = await getTranslations('EventPolicies')
   return (
     <div className="space-y-4">
       <PageHeader
@@ -60,6 +62,16 @@ export default async function EventDetail({ params }: { params: Promise<{ scenar
         </Link>
       </div>
       <PlannedEventReport report={report} />
+      <div className="flex flex-wrap gap-4">
+        {isEditorRole(context.role) && (
+          <Link className="underline" href={`/forecasts/events/policies/new?event=${scenarioId}`}>
+            {policies('new')}
+          </Link>
+        )}
+        <Link className="underline" href={`/forecasts/events/policies?event=${scenarioId}`}>
+          {policies('history')}
+        </Link>
+      </div>
     </div>
   )
 }
