@@ -117,7 +117,8 @@ Steps 13, 13b, 13c, 13d, 14, 15 and 15b were scoped and approved by the owner on
 | 17b  | **Interchangeable stock locator:** optional current same-unit two-way alternatives, separate item/location observations, inspectable connection evidence and existing stock/access rules.           | Merged (PR #59)              |
 | 17c  | **Direct substitute stock locator:** optional outgoing one-way alternatives, matching units, separate observations, current relationship evidence and existing distance/access rules.               | Merged (PR #60)              |
 | 18   | **Container-capacity scenarios:** fixed purchase-batch quantities, supplied shipping measurements, exact weight/volume totals, capacity limits and immutable location-scoped history.               | Merged                       |
-| 19   | **Planned-event scenarios:** explicit daily additions to saved individual-item forecasts, independent comparisons, immutable baseline evidence and location-scoped history.                         | Implemented — review pending |
+| 19   | **Planned-event scenarios:** explicit daily additions to saved individual-item forecasts, independent comparisons, immutable baseline evidence and location-scoped history.                         | Merged (PR #62)              |
+| 19b  | **Event-adjusted policy scenarios:** matching saved event/policy evidence, fixed safety stock, dated additions, lifecycle gates and immutable scoped history.                                       | Implemented — review pending |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -403,3 +404,7 @@ PR #60 was reviewed at `5c4aa71` without blocking findings and merged as `6a88cd
 ### Step 19 approved decisions (2026-10-18)
 
 PR #61 was reviewed at `540ad74` without blocking findings and merged as `fe2c9a4` after all three CI jobs passed. The owner approved saved planned-event demand scenarios for campaigns, recalls and tenders from one successful individual-item forecast. Explicit nonnegative daily additions must use its known unit and fall within the saved horizon, with confirmation that demand is additional. Show exact baseline plus additions, reasons and immutable history; separate scenarios never automatically stack. Preserve original model scores and bands as baseline evidence without implying adjusted uncertainty or tender probabilities. Editors save; members need location access. Keep compact green screens at 375, 768, 1024, 1440 and 1920px. Prepared groups, policies, reservations and execution remain separate. See [planned-event-scenarios.md](planned-event-scenarios.md).
+
+### Step 19b approved decisions (2026-10-18)
+
+PR #62 was merged by the owner as `a2c239d`; all three CI jobs passed. The owner approved independent saved event-adjusted policy scenarios using one event and one available calculated policy from the same individual-item forecast. Hold lead time, review interval, service target and safety stock fixed; add exact dated event quantities to demand and thresholds only within the corresponding periods. Treat additions as fixed assumptions with no modeled event uncertainty. Require matching saved forecast/item/location/unit/cutoff and baseline evidence, and reject positive events outside the saved lifecycle. Editors save; members with location access inspect. Do not carry approved overrides, combine scenarios or apply them to replenishment. Keep the compact green design at all five widths. See [event-policy-scenarios.md](event-policy-scenarios.md).
