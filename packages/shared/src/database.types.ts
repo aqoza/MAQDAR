@@ -282,6 +282,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"event_purchase_cost_estimates": {
+                  Row: {
+                    "created_at": string,"delivery_id": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"delivery_id": string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"delivery_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_purchase_cost_estimates_organization_id_delivery_id_fkey"
+      columns: ["organization_id","delivery_id"]
+isOneToOne: false
+      referencedRelation: "event_delivery_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_purchase_cost_estimates_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"event_replenishment_drafts": {
                   Row: {
                     "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"submitted_by": string
@@ -2339,6 +2365,12 @@ isOneToOne: false
                            },
 "event_policy_save":
 { Args: { "p_event_id": string,"p_fingerprint": string,"p_organization_id": string,"p_policy_id": string,"p_reason": string,"p_request_id": string }; Returns: string
+                           },
+"event_purchase_cost_preview":
+{ Args: { "p_delivery_id": string,"p_organization_id": string,"p_price_confirmed": boolean }; Returns: Json
+                           },
+"event_purchase_cost_save":
+{ Args: { "p_delivery_id": string,"p_fingerprint": string,"p_organization_id": string,"p_price_confirmed": boolean,"p_request_id": string }; Returns: string
                            },
 "event_replenishment_preview":
 { Args: { "p_backorders": string,"p_event_uncommitted": boolean,"p_orders_confirmed": boolean,"p_organization_id": string,"p_scenario_id": string }; Returns: Json
