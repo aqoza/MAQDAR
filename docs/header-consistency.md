@@ -1,13 +1,13 @@
 # Full application header consistency
 
-The owner approved extending the existing illustrated header to detail, create/edit and loading pages after finding a plain Transfer Proposal detail header. The audit started from main `8a078f5` and includes main `c6eafd5`, preserving the subsequently merged event batches, read API and repeated-download fix. The [source inventory](header-consistency-visuals/routes.json) covers all 116 authenticated route files. Login and organization onboarding retain their separate shells. Dashboard retains its approved illustrated header.
+The owner approved extending the existing illustrated header to detail, create/edit and loading pages after finding a plain Transfer Proposal detail header. The audit started from main `8a078f5` and includes main `4707e36`, preserving the subsequently merged event batches, read API, repeated-download fix, event acknowledgements and integration workbench. The [source inventory](header-consistency-visuals/routes.json) covers all 117 authenticated route files. Login and organization onboarding retain their separate shells. Dashboard retains its approved illustrated header.
 
 ## Acceptance contract
 
 - Reuse the section artwork and shared PageHeader. Titles remain 20px/28px, body/navigation 14px/20px and captions 12px/16px. Preserve all existing text, translations, identifiers, controls and business evidence.
 - Put existing back/source navigation in the header alongside its method disclosure and actions. Retain destinations, permissions, prefetch behavior and primary actions. Do not leave an extra navigation row above the artwork.
 - Keep embedded Forecasts panels subordinate to their existing parent banner, with no duplicate artwork. Standalone routes always select their section pattern explicitly. Audit uses the existing Settings permissions motif.
-- All six existing loading boundaries retain their placement and use their section's artwork, including the previously plain Imports operations fallback. Routes without a loading boundary deliver their complete server response with the illustrated header. No new ancestor streaming is introduced, so hidden-record HTTP 404 behavior remains intact. Existing list-only navigation placeholders and mobile wrapping are preserved.
+- All seven existing loading boundaries retain their placement and use their section's artwork, including the previously plain Imports operations fallback and the subsequently merged Event Integration fallback. Routes without a loading boundary deliver their complete server response with the illustrated header. No new ancestor streaming is introduced by this PR, so hidden-record HTTP 404 behavior remains intact. Existing list-only navigation placeholders and mobile wrapping are preserved.
 - Add an executable guard for bare authenticated page titles and omitted PageHeader patterns, plus real browser coverage for the reported transfer proposal and representative detail/create/edit/loading routes.
 - Inspect English 1920×900, 1366×768 and 375×900 and Arabic RTL laptop/mobile captures. Check keyboard back navigation, controls and long titles, shared typography, one banner, local table scrolling, loading, empty/error/permission states and existing workflows.
 
@@ -37,9 +37,9 @@ These are actual browser screenshots at the same viewport. The freight rate fits
 | Suppliers                                                       |           9 |
 | Imports                                                         |           3 |
 | Forecasts                                                       |          18 |
-| Replenishment, including ordinary/event purchases and transfers |          59 |
+| Replenishment, including ordinary/event purchases and transfers |          60 |
 | Settings and Audit                                              |           2 |
-| Total                                                           |         116 |
+| Total                                                           |         117 |
 
 `PageHeader.pattern` is required; embedded Forecasts panels explicitly pass `undefined` under the existing parent banner. Existing back/source links use the new `back` slot, retaining destinations, permission conditions and prefetch behavior. Three contract checks reject omitted patterns, bare page titles, plain loading boundaries and headerless validation render branches. Generic recovery screens retain the section pattern, translated guidance, the visible 404 code and the existing English not-found sentence. Retry refreshes the server response without displaying exception details.
 
@@ -92,5 +92,9 @@ Local closeout on 2026-10-19:
 - The ECC visual-evidence checker accepts the local record; the actual rendered screenshots, comparison and overlay were inspected. The full initial sweep's three optional large-fixture cases remain conditional skips, rather than claims of measured performance for those absent datasets.
 
 Compact-value correction, 2026-10-19: the production build, lint, strict types, logical utilities, formatting and all 1,530 unit tests pass. The 12-case targeted browser run passed 11 cases; the new transfer single-line assertion initially counted values inside closed evidence panels. After restricting it to visible freight values, the transfer case passes in a fresh invocation. All 12 workflows are therefore covered, including all five responsive widths, Dashboard/Items typography and desktop/mobile/Arabic RTL report matrices. The committed screenshots and computed styles come from these fresh captures. This correction changes value typography only; the header/loading composition and previously verified data, permission and response contracts are unchanged.
+
+CI integration correction, 2026-10-19: GitHub tested the branch merged with main `4707e36`, which adds Event Integration loading through `IntegrationWorkbenchHeader`. HEADER-002 incorrectly treated that new wrapper as plain even though it already renders `PageHeader` with the replenishment pattern. The failure was reproduced locally. The guard now recognizes the wrapper and separately checks its `PageHeader` and pattern; all three contract tests pass. No production header, loading placement, timeout or permission assertion is changed. The route inventory includes the new upstream route and seventh loading boundary.
+
+The integrated production build and all 1,546 unit tests pass. The local full-suite verification uses `pnpm --filter web exec vitest run --maxWorkers=1`: parallel Windows runs hit the unchanged 5-second filesystem-scan limit in the existing isolation/client-bundle checks. The sequential run passes all 133 files without modifying those tests or their timeouts.
 
 Keep raw screenshots outside another Playwright configuration's output directory, or copy them to the documentation directory first: Playwright clears its output directory at startup. The retained visual rerun uses a dedicated root `test-results/header-visual-final` folder, separate from the tab fixture output.

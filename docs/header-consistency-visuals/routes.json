@@ -1,6 +1,6 @@
 {
-  "base": "c6eafd55bda05580007b6e43bd9593b392d3cc26",
-  "totalRoutes": 116,
+  "base": "4707e365019952e08258a299c951d6f62ade9336",
+  "totalRoutes": 117,
   "sections": {
     "settings": 2,
     "dashboard": 1,
@@ -8,7 +8,7 @@
     "imports": 3,
     "items": 12,
     "locations": 12,
-    "replenishment": 59,
+    "replenishment": 60,
     "suppliers": 9
   },
   "note": "Source inventory; null means no explicit inherited loading boundary. Existing response and authorization behavior is preserved. Browser coverage is representative rather than every possible record and permission combination.",
@@ -426,6 +426,12 @@
       "source": "replenishment/events/handoffs/[handoffId]/page.tsx",
       "section": "replenishment",
       "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/integrations",
+      "source": "replenishment/events/integrations/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": "replenishment/events/integrations/loading.tsx"
     },
     {
       "route": "/replenishment/events/new",

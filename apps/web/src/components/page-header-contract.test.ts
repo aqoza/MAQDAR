@@ -55,11 +55,18 @@ describe('authenticated header contract', () => {
 
   it('HEADER-002: every existing loading boundary uses its illustrated section header', () => {
     const violations: string[] = []
+    // The event integration fallback renders the shared header through this wrapper.
+    const integrationHeader = readFileSync(
+      join(source, 'components/integration-workbench-header.tsx'),
+      'utf8',
+    )
+    expect(integrationHeader).toMatch(/<PageHeader\b/)
+    expect(integrationHeader).toMatch(/\bpattern="replenishment"/)
     const boundaries = files(app).filter((file) => basename(file) === 'loading.tsx')
     expect(boundaries).toContain(join(app, 'imports/(operations)/loading.tsx'))
     for (const loading of boundaries) {
       if (
-        !/SectionLoading|PageHeader|StockLocatorHeader|data-dashboard/.test(
+        !/SectionLoading|PageHeader|StockLocatorHeader|IntegrationWorkbenchHeader|data-dashboard/.test(
           readFileSync(loading, 'utf8'),
         )
       )
