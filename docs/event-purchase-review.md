@@ -1,6 +1,6 @@
 # Event purchase-proposal review — Step 19g
 
-Status: approved 2026-10-18; implemented and locally verified, review pending.
+Status: approved 2026-10-18; merged in PR #77 after all CI jobs passed.
 
 ## Approved outcome
 
