@@ -62,11 +62,14 @@ describe('authenticated header contract', () => {
     )
     expect(integrationHeader).toMatch(/<PageHeader\b/)
     expect(integrationHeader).toMatch(/\bpattern="replenishment"/)
+    const excessHeader = readFileSync(join(source, 'components/excess-stock-header.tsx'), 'utf8')
+    expect(excessHeader).toMatch(/<PageHeader\b/)
+    expect(excessHeader).toMatch(/\bpattern="replenishment"/)
     const boundaries = files(app).filter((file) => basename(file) === 'loading.tsx')
     expect(boundaries).toContain(join(app, 'imports/(operations)/loading.tsx'))
     for (const loading of boundaries) {
       if (
-        !/SectionLoading|PageHeader|StockLocatorHeader|IntegrationWorkbenchHeader|data-dashboard/.test(
+        !/SectionLoading|PageHeader|StockLocatorHeader|IntegrationWorkbenchHeader|ExcessStockHeader|data-dashboard/.test(
           readFileSync(loading, 'utf8'),
         )
       )
@@ -82,6 +85,7 @@ describe('authenticated header contract', () => {
       'EditScreen',
       'IntegrationWorkbenchScreen',
       'StockLocatorHeader',
+      'ExcessStockHeader',
       'PolicyWorkbench',
       'NewForecastPage',
       'ClassifyPage',
