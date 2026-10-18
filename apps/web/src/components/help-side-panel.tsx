@@ -25,9 +25,7 @@ export function HelpSidePanel({
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-transparent" />
-        <Dialog.Popup
-          className={`fixed inset-y-0 end-0 z-50 flex w-full flex-col border-s bg-background ${styles.panel}`}
-        >
+        <Dialog.Popup className={`fixed z-50 flex flex-col border bg-background ${styles.panel}`}>
           <div className={`relative mx-6 shrink-0 border-b pe-12 ${styles.header}`}>
             <Dialog.Title className={styles.title}>{title}</Dialog.Title>
             <Dialog.Description className={`mt-1 ${styles.description}`}>
@@ -40,7 +38,7 @@ export function HelpSidePanel({
               <X className="size-5" aria-hidden="true" />
             </Dialog.Close>
           </div>
-          <div className={`min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 ${styles.body}`}>
+          <div className={`min-h-0 overflow-y-auto overscroll-contain px-6 ${styles.body}`}>
             {children}
           </div>
           <div className={`mx-6 flex shrink-0 justify-end border-t ${styles.footer}`}>
