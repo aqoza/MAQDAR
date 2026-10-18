@@ -1,16 +1,28 @@
 .panel {
+  --help-gutter: 0.5rem;
   --help-heading: color-mix(in srgb, var(--primary) 82%, #004c53);
   --help-ink: color-mix(in srgb, var(--foreground) 65%, #52677d);
   --help-divider: color-mix(in srgb, var(--primary) 15%, var(--border));
 
+  inset-block-start: var(--help-gutter);
+  inset-inline-end: var(--help-gutter);
+  inline-size: calc(100% - 2 * var(--help-gutter));
   max-inline-size: 26.25rem;
+  max-block-size: calc(100dvh - 2 * var(--help-gutter));
   color: var(--help-ink);
   border-color: var(--help-divider);
-  box-shadow: 0 0 0.125rem rgb(0 0 0 / 5%);
+  border-radius: 1.5rem;
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 5%);
+}
+
+@media (min-width: 48rem) {
+  .panel {
+    --help-gutter: 1.25rem;
+  }
 }
 
 .header {
-  padding-block: 1.25rem 1rem;
+  padding-block: 1.5rem 1.25rem;
   border-color: var(--help-divider);
 }
 

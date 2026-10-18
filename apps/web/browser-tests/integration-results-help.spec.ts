@@ -6,6 +6,7 @@ for (const width of [375, 1440]) {
       page,
     }, testInfo) => {
       test.setTimeout(120_000)
+      const gutter = width === 375 ? 8 : 20
       await page.setViewportSize({ width, height: width === 375 ? 500 : 800 })
       await page.goto(`/e2e/fixtures/integration-results-help/?dir=${direction}`)
       const trigger = page.getByRole('button', { name: 'How to read these results' })
@@ -32,8 +33,10 @@ for (const width of [375, 1440]) {
       await expect(dialog).toHaveCSS('background-color', 'rgb(255, 255, 255)')
       expect(await supplier.boundingBox()).toEqual(before)
       const bounds = (await dialog.boundingBox())!
-      expect(bounds.width).toBe(Math.min(width, 420))
-      expect(direction === 'rtl' ? bounds.x : width - bounds.x - bounds.width).toBe(0)
+      expect(bounds.width).toBe(Math.min(width - 2 * gutter, 420))
+      expect(bounds.y).toBe(gutter)
+      expect(bounds.height).toBeLessThanOrEqual(page.viewportSize()!.height - 2 * gutter)
+      expect(direction === 'rtl' ? bounds.x : width - bounds.x - bounds.width).toBe(gutter)
       expect(bounds.x).toBeGreaterThanOrEqual(0)
       expect(bounds.x + bounds.width).toBeLessThanOrEqual(width)
       await page.screenshot({ path: testInfo.outputPath('guidance.png') })
