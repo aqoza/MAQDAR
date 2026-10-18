@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Dashboard metric wrapping — requested 2026-10-19
+
+Repair percentages, counts and currency totals wrapping or overlapping in narrow dashboard cards beside the sidebar. Preserve shared typography and calculations; add phone/tablet layout regression checks and verify existing dashboard layouts. See [dashboard-metric-wrapping.md](dashboard-metric-wrapping.md).
+
 ## Settings Arabic and policy-selection header — requested 2026-10-17
 
 Complete Arabic `Members` and `InviteMembers` translations and give the standalone policy-selection workbench the shared forecast header and matching list-only loading state. Preserve shared type roles, routes, filters, permissions and planning semantics. Verify Settings RTL workflows and navigation from Replenishment, then open a PR without merge or deployment. See [settings-arabic-policy-header.md](settings-arabic-policy-header.md).

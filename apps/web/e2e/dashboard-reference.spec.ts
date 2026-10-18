@@ -45,6 +45,7 @@ test('dashboard reference renders real scoped data at the reference viewports', 
     ...laptopViewports,
     { width: 375, height: 900 },
     { width: 768, height: 1024 },
+    { width: 800, height: 900 },
     { width: 1024, height: 768 },
     { width: 1648, height: 928 },
     { width: 1672, height: 941 },
@@ -224,6 +225,24 @@ test('dashboard reference renders real scoped data at the reference viewports', 
       path: capture,
       contentType: 'image/png',
     })
+  }
+  // Keep digits intact on phones and where a tablet's sidebar constrains the metric strip.
+  for (const width of [375, 768, 800, 1024]) {
+    await page.setViewportSize({ width, height: 1024 })
+    for (const value of await page
+      .locator('.dashboard-metric-line > .dashboard-metric-value')
+      .all()) {
+      const bounds = await value.evaluate((element) => ({
+        height: element.getBoundingClientRect().height,
+        lineHeight: Number.parseFloat(getComputedStyle(element).lineHeight),
+        width: element.getBoundingClientRect().width,
+        available: element.closest('.dashboard-metric-body')!.getBoundingClientRect().width,
+      }))
+      expect(bounds.height).toBeLessThanOrEqual(bounds.lineHeight + 1)
+      expect(bounds.width).toBeLessThanOrEqual(bounds.available + 1)
+    }
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
+    await page.screenshot({ path: testInfo.outputPath(`dashboard-tablet-metrics-${width}.png`) })
   }
   await page.setViewportSize({ width: 1672, height: 941 })
   await page.locator('.recharts-area-dots circle').last().hover()
