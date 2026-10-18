@@ -22,6 +22,8 @@ Sizes are expressed in rem in the implementation so browser text scaling is resp
 
 ## Shared application shell
 
+The help side-panel style approved on 2026-10-18 uses a separate, scoped reading scale: 30px / 36px for its title, 20px / 28px for section headings, 18px / 28px for body copy, 18px / 27px for its subtitle, and 16px / 24px for its footer button. These rem-based styles live only in `help-side-panel.module.css`; page, navigation and sidebar typography retain the shared scale above.
+
 - Use `AppSidebar` on every authenticated route, including Dashboard. Navigation labels are always 14px / 20px with 16px icons and the same active-label weight. The desktop navigation row is 32px. Brand, organization switcher, account footer, sidebar width and spacing do not change when navigating between Dashboard and Items.
 - Dashboard CSS may style its own panels and decorative surfaces. It must not override the shared sidebar or the shared header's text size.
 - Breakpoints change layout, gaps, wrapping and density. They must not shrink or enlarge page titles, navigation, body text or captions. The explicit mobile-input and numeric-KPI roles above are the only responsive size exceptions.
