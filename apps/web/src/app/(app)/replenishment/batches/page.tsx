@@ -1,4 +1,4 @@
-import { HelpDisclosure } from '@/components/help-disclosure'
+import { PurchaseBatchesHelp } from '@/components/replenishment-workspace-help'
 import { PageHeader } from '@/components/page-header'
 import { ReplenishmentNav } from '@/components/replenishment-nav'
 import Form from 'next/form'
@@ -71,11 +71,7 @@ export default async function HandoffBatches({
         navigation={<ReplenishmentNav current="batches" />}
         title={t('title')}
         description={t('context')}
-        help={
-          <HelpDisclosure>
-            <p>{t('description')}</p>
-          </HelpDisclosure>
-        }
+        help={<PurchaseBatchesHelp />}
         actions={
           isEditorRole(context.role) && (
             <Link

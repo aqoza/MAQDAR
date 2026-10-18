@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { PageHeader } from '@/components/page-header'
-import { HelpDisclosure } from '@/components/help-disclosure'
+import { RedistributionDraftsHelp } from '@/components/replenishment-workspace-help'
 import { ReplenishmentNav } from '@/components/replenishment-nav'
 import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
@@ -69,12 +69,7 @@ export default async function RedistributionHistory({
         navigation={<ReplenishmentNav current="redistribution" />}
         title={t('title')}
         description={t('context')}
-        help={
-          <HelpDisclosure>
-            <p>{t('asOf')}</p>
-            <p>{t('noReservation')}</p>
-          </HelpDisclosure>
-        }
+        help={<RedistributionDraftsHelp />}
         actions={
           <Link
             className="rounded-md bg-primary px-3 py-2 text-primary-foreground"

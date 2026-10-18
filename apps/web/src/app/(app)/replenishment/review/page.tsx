@@ -1,4 +1,4 @@
-import { HelpDisclosure } from '@/components/help-disclosure'
+import { PurchaseReviewHelp } from '@/components/replenishment-workspace-help'
 import { PageHeader } from '@/components/page-header'
 import { ReplenishmentNav } from '@/components/replenishment-nav'
 import { formatCostDecimal, formatPurchaseCost } from '@/lib/purchase-costs'
@@ -74,11 +74,7 @@ export default async function PurchaseReview({
         navigation={<ReplenishmentNav current="review" />}
         title={t('title')}
         description={t('context')}
-        help={
-          <HelpDisclosure>
-            <p>{t('description')}</p>
-          </HelpDisclosure>
-        }
+        help={<PurchaseReviewHelp />}
       />
       <Form
         action="/replenishment/review"
