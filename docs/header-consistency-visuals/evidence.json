@@ -7,7 +7,7 @@
   },
   "responsive": {
     "status": "pass",
-    "evidence": "Actual production screens were captured in English at 1920x900, 1366x768 and 375x900 and Arabic RTL at 1366x768 and 375x900. Assertions verify one section banner, 20px/28px titles, 14px/20px navigation/subtitles/actions, 12px/16px disclosures, matching locale font families, 14px desktop inputs and 16px/24px mobile inputs, 28px/36px metric cards, a tagline-to-title gap no greater than 12px, contained titles/actions and locally scrolling tabs. The broader responsive suite passed at 375, 768, 1024, 1440 and 1920px, including Dashboard-to-Items navigation and sidebar type/icon checks. Long part identifiers wrap without shrinking their type."
+    "evidence": "Actual production screens were captured in English at 1920x900, 1366x768 and 375x900 and Arabic RTL at 1366x768 and 375x900. Assertions verify one section banner, 20px/28px titles, 14px/20px navigation/subtitles/actions, 12px/16px disclosures, matching locale font families, 14px desktop inputs and 16px/24px mobile inputs, 16px/24px semibold compact evidence-card values, a tagline-to-title gap no greater than 12px, contained titles/actions and locally scrolling tabs. The broader responsive suite passed at 375, 768, 1024, 1440 and 1920px, including Dashboard-to-Items navigation and sidebar type/icon checks. Long part identifiers wrap without shrinking their type."
   },
   "contentStates": {
     "loading": {
@@ -44,7 +44,7 @@
     {
       "viewport": "1366x768",
       "artifact": "transfer-after-1366.png",
-      "observation": "Laptop: the illustrated detail header reaches the global bar; the title aligns with the Items heading row and report values use the documented metric role."
+      "observation": "Laptop: the illustrated detail header reaches the global bar; the title aligns with Items and all three visible freight values use 16px/24px semibold text on one line."
     },
     {
       "viewport": "375x900",
@@ -80,6 +80,11 @@
       "viewport": "1366x768",
       "artifact": "before-after.png",
       "observation": "Original main and actual implementation captures at identical viewport dimensions, placed side by side. Fixture content differs; no similarity percentage is claimed."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "font-correction-before-after.png",
+      "observation": "Previous 28px/36px record values compared with the corrected 16px/24px evidence role. Both are actual production-app browser captures at the same viewport; the supplied rate no longer wraps."
     }
   ]
 }

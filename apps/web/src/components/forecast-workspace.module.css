@@ -408,9 +408,9 @@
   color: var(--workspace-muted);
 }
 .metrics dd {
-  font-size: var(--text-metric);
-  line-height: var(--text-metric--line-height);
-  font-weight: 600;
+  font-size: var(--text-evidence-value);
+  line-height: var(--text-evidence-value--line-height);
+  font-weight: var(--text-evidence-value--font-weight);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }

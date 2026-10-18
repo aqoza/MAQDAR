@@ -15,9 +15,17 @@ The direction remains a dense, quiet planning workspace. The mint artwork identi
 
 ## Typography audit
 
-The follow-up font audit uses Items as the reference, without changing the approved scale. Page titles, subtitles, sidebar labels, back/actions and native controls are checked by computed size, line height, weight and font family. Shared controls, tab labels, table headings and disclosures use the corresponding font/line-height tokens. Mobile inputs retain 16px/24px and 44px targets. Planning metric cards use the existing 28px/36px token instead of inconsistent 20/24/30px utilities; prominent dates use 16px/24px. Forecast identifiers are raised from 11px to the existing 12px/16px caption role. The approved 13px help-panel exception remains isolated and unchanged. Full explanations stay below the header to avoid increasing its height.
+The follow-up font audit uses Items as the reference. Page titles, subtitles, sidebar labels, back/actions and native controls are checked by computed size, line height, weight and font family. Shared controls, tab labels, table headings and disclosures use the corresponding font/line-height tokens. Mobile inputs retain 16px/24px and 44px targets. Following the owner's highlighted comparison, compact planning/evidence values use the shared 16px/24px semibold `text-evidence-value` role for quantities, prices, subtotals and dates. The earlier 28px/36px treatment made record values larger than the page title and unnecessarily wrapped the freight rate; it has been removed. Dashboard KPI sizing stays separate. Forecast identifiers use the existing 12px/16px caption role. The approved 13px help-panel exception remains isolated and unchanged. Full explanations stay below the header to avoid increasing its height.
 
 Titles without subtitles align to the top of the same heading row, keeping the tagline-to-title gap at most 12px. Normal desktop detail/create headers occupy 100px including the 44px global bar. The Items workspace remains 140px including its tabs. Long identifiers and mobile actions wrap naturally; fonts are not reduced to force a fit.
+
+## Compact evidence value correction
+
+The owner highlighted oversized values in the previous comparison. A dedicated shared `text-evidence-value` role now keeps compact record quantities, rates, subtotals and dates at 16px/24px semibold across ordinary/event reports and Forecasts evidence. The previous 28px metric role has no remaining consumers and was removed. Body text remains 14px/20px, captions 12px/16px, page titles 20px/28px and Dashboard KPIs keep their existing separate scale. No value formatter, currency precision, unit or calculation changes.
+
+![Previous oversized values and corrected compact values at 1366×768](header-consistency-visuals/font-correction-before-after.png)
+
+These are actual browser screenshots at the same viewport. The freight rate fits on one line in the corrected laptop view, and the three values have matching computed size, line height, weight and font family. The [purchase view](header-consistency-visuals/purchase-after-1366.png) also uses one size for quantity, dates, unit price and subtotal; [mobile Arabic RTL](header-consistency-visuals/purchase-ar-375.png) preserves the same scale while stacking cards.
 
 ## Route coverage and safeguards
 
@@ -82,5 +90,7 @@ Local closeout on 2026-10-19:
 - A final consecutive six-case header/typography run passes and supplies the committed screenshots and computed styles. It includes real loading, retry/return behavior, 404 status, validation branches, long identifiers and desktop/mobile/RTL matrices.
 - All 16 separate tab/help browser cases pass. The first cold Vite navigation exceeded the unchanged 30-second test timeout; rerunning the same suite after compilation passed 16/16.
 - The ECC visual-evidence checker accepts the local record; the actual rendered screenshots, comparison and overlay were inspected. The full initial sweep's three optional large-fixture cases remain conditional skips, rather than claims of measured performance for those absent datasets.
+
+Compact-value correction, 2026-10-19: the production build, lint, strict types, logical utilities, formatting and all 1,530 unit tests pass. The 12-case targeted browser run passed 11 cases; the new transfer single-line assertion initially counted values inside closed evidence panels. After restricting it to visible freight values, the transfer case passes in a fresh invocation. All 12 workflows are therefore covered, including all five responsive widths, Dashboard/Items typography and desktop/mobile/Arabic RTL report matrices. The committed screenshots and computed styles come from these fresh captures. This correction changes value typography only; the header/loading composition and previously verified data, permission and response contracts are unchanged.
 
 Keep raw screenshots outside another Playwright configuration's output directory, or copy them to the documentation directory first: Playwright clears its output directory at startup. The retained visual rerun uses a dedicated root `test-results/header-visual-final` folder, separate from the tab fixture output.

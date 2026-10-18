@@ -38,7 +38,7 @@ export async function ReplenishmentReport({ report, locale }: { report: Report; 
         ).map(([key, value]) => (
           <div className="workspace-panel" key={key}>
             <p className="text-sm text-muted-foreground">{t(key)}</p>
-            <p className="text-metric wrap-anywhere tabular-nums">
+            <p className="text-evidence-value wrap-anywhere tabular-nums">
               {amount(value)} {(key === 'available' ? stock?.unit : p.unit) ?? '—'}
             </p>
           </div>

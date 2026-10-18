@@ -2,7 +2,7 @@
 
 ## Full application header consistency — approved 2026-10-18
 
-Extend each section's compact illustrated header to every authenticated detail, create/edit and loading route. Remove the previous detail/edit exception from `design.MD`, retain existing titles, back destinations, actions and permissions, and preserve the Items typography. Verify a complete route inventory, real desktop/mobile/Arabic RTL screenshots, loading and downstream workflows before opening a separate PR. No merge, deployment or business-logic changes. See [header-consistency.md](header-consistency.md).
+Extend each section's compact illustrated header to every authenticated detail, create/edit and loading route. Remove the previous detail/edit exception from `design.MD`, retain existing titles, back destinations, actions and permissions, and preserve the Items typography. The owner's subsequent font correction sets compact evidence values to 16px/24px semibold, consistently below the page title. Verify a complete route inventory, real desktop/mobile/Arabic RTL screenshots, loading and downstream workflows before opening a separate PR. No merge, deployment or business-logic changes. See [header-consistency.md](header-consistency.md).
 
 ## Settings Arabic and policy-selection header — requested 2026-10-17
 

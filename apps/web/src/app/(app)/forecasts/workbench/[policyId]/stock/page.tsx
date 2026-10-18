@@ -132,7 +132,7 @@ export default async function StockComparison({
           <p>{t(report.pool ? 'pool.formula' : 'formula')}</p>
           {report.status === 'available' && (
             <div className="workspace-panel">
-              <p className="text-metric wrap-anywhere tabular-nums">
+              <p className="text-evidence-value wrap-anywhere tabular-nums">
                 {amount(report.quantity_above)} {report.unit}
               </p>
               {snapshot && (

@@ -114,9 +114,13 @@ async function header(page: Page, route: Route) {
     await expect(input).toHaveCSS('font-size', viewport.width < 768 ? '16px' : '14px')
     await expect(input).toHaveCSS('line-height', viewport.width < 768 ? '24px' : '20px')
   }
-  for (const metric of await page.locator('main .text-metric:visible').all()) {
-    await expect(metric).toHaveCSS('font-size', '28px')
-    await expect(metric).toHaveCSS('line-height', '36px')
+  for (const metric of await page
+    .locator('main .text-evidence-value:visible, main dl[class*="metrics"] dd:visible')
+    .all()) {
+    await expect(metric).toHaveCSS('font-size', '16px')
+    await expect(metric).toHaveCSS('line-height', '24px')
+    await expect(metric).toHaveCSS('font-weight', '600')
+    await expect(metric).toHaveCSS('font-family', family)
   }
   const bounds = (await heading.boundingBox())!
   const tagline = (await page.locator('header > span').boundingBox())!
@@ -155,6 +159,14 @@ async function matrix(page: Page, routes: Route[], testInfo: TestInfo) {
       for (const route of routes) {
         await header(page, route)
         await page.evaluate(() => document.fonts.ready)
+        if (route.name === 'transfer-proposal' && locale === 'en' && width >= 1366) {
+          const values = page.locator('main dd.text-evidence-value:visible')
+          await expect(values).toHaveCount(3)
+          // Saved freight rate and units must fit a single line at the laptop viewport.
+          for (const value of await values.all()) {
+            expect((await value.boundingBox())!.height).toBe(24)
+          }
+        }
         await page.screenshot({ path: testInfo.outputPath(`${route.name}-${locale}-${width}.png`) })
         const typography = await page.evaluate(() => {
           const selectors = [
@@ -162,7 +174,8 @@ async function matrix(page: Page, routes: Route[], testInfo: TestInfo) {
             '.page-heading-copy > p',
             '[data-sidebar="menu-button"]',
             'main input:not([type="hidden"])',
-            'main .text-metric',
+            'main .text-evidence-value',
+            'main dl[class*="metrics"] dd',
             'main .help-disclosure > summary',
             'main [data-slot="button"]',
             'main p.text-section-title, main dd.text-section-title',
