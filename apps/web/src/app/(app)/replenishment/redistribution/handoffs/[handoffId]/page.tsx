@@ -114,7 +114,7 @@ export default async function TransferHandoffDetail({
       <HandoffAcknowledgements
         organizationId={context.active.id}
         recordId={handoffId}
-        transfer
+        kind="transfer"
         pageValue={ack_page}
       />
     </div>

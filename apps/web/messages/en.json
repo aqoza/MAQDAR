@@ -902,6 +902,11 @@
         "label": "Acknowledge transfer handoffs",
         "badge": "Transfer handoffs: acknowledge",
         "description": "Record external receipt or rejection reports across the organization. Does not reserve stock or execute transfers."
+      },
+      "eventPurchaseHandoffsAcknowledge": {
+        "label": "Acknowledge event purchase handoffs",
+        "description": "Record external receipt or rejection reports for event purchase handoffs and batches across the whole organization. Does not transmit packages or create orders.",
+        "badge": "Event purchase handoffs: acknowledge"
       }
     },
     "secret": {
@@ -2917,7 +2922,8 @@
     "previous": "Newer reports",
     "next": "Older reports",
     "page": "Page {page}",
-    "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when MAQDAR saved the report."
+    "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when MAQDAR saved the report.",
+    "eventMeaning": "Reports are supplied by an integration key holder. They do not verify external acceptance or create orders. Full adjusted selections, baseline comparisons and event evidence remain unchanged."
   },
   "TransferDates": {
     "title": "Transfer date scenarios",

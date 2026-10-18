@@ -9,13 +9,13 @@ export async function HandoffAcknowledgements({
   organizationId,
   recordId,
   batch = false,
-  transfer = false,
+  kind = 'purchase',
   pageValue,
 }: {
   organizationId: string
   recordId: string
   batch?: boolean
-  transfer?: boolean
+  kind?: 'purchase' | 'transfer' | 'event'
   pageValue?: string | string[]
 }) {
   const page =
@@ -26,7 +26,13 @@ export async function HandoffAcknowledgements({
     getFormatter(),
   ])
   const result = await db
-    .from(transfer ? 'transfer_handoff_acknowledgements' : 'purchase_handoff_acknowledgements')
+    .from(
+      kind === 'event'
+        ? 'event_purchase_handoff_acknowledgements'
+        : kind === 'transfer'
+          ? 'transfer_handoff_acknowledgements'
+          : 'purchase_handoff_acknowledgements',
+    )
     .select(
       'id,client_event_id,api_key_id,recorded_at,external_system,external_reference,status,reason',
       { count: 'exact' },
@@ -37,7 +43,7 @@ export async function HandoffAcknowledgements({
     .order('id')
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1)
   if (result.error) throw new Error('Acknowledgement history unavailable')
-  const base = `/replenishment/${transfer ? 'redistribution/' : ''}${batch ? 'batches' : 'handoffs'}/${recordId}`
+  const base = `/replenishment/${kind === 'event' ? 'events/' : kind === 'transfer' ? 'redistribution/' : ''}${batch ? 'batches' : 'handoffs'}/${recordId}`
   return (
     <section id="acknowledgements" className="space-y-3 workspace-panel" aria-label={t('title')}>
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -47,7 +53,11 @@ export async function HandoffAcknowledgements({
         </span>
       </div>
       <HelpDisclosure>
-        <p>{t(transfer ? 'transferMeaning' : 'meaning')}</p>
+        <p>
+          {t(
+            kind === 'event' ? 'eventMeaning' : kind === 'transfer' ? 'transferMeaning' : 'meaning',
+          )}
+        </p>
         <p>{t(batch ? 'batchNote' : 'singleNote')}</p>
       </HelpDisclosure>
       {!result.data?.length && <p className="text-muted-foreground">{t('empty')}</p>}
@@ -71,7 +81,9 @@ export async function HandoffAcknowledgements({
             </p>
             {event.reason && <p className="break-words [overflow-wrap:anywhere]">{event.reason}</p>}
             <details className="text-xs text-muted-foreground">
-              <summary className="cursor-pointer py-1">{t('evidence')}</summary>
+              <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-1">
+                {t('evidence')}
+              </summary>
               <dl className="grid gap-1 pt-2 break-all">
                 <div>
                   <dt className="inline">{t('eventId')}: </dt>
@@ -94,7 +106,7 @@ export async function HandoffAcknowledgements({
         <nav className="flex flex-wrap items-center gap-4" aria-label={t('pagination')}>
           {page > 1 && (
             <Link
-              className="underline"
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
               prefetch={false}
               href={`${base}?ack_page=${page - 1}#acknowledgements`}
             >
@@ -104,7 +116,7 @@ export async function HandoffAcknowledgements({
           <span>{t('page', { page })}</span>
           {page * PAGE_SIZE < (result.count ?? 0) && (
             <Link
-              className="underline"
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
               prefetch={false}
               href={`${base}?ack_page=${page + 1}#acknowledgements`}
             >
