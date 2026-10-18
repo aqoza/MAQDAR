@@ -18,7 +18,7 @@ export default async function NewEventDraft({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { scenario } = await searchParams
-  if (!z.uuid().safeParse(scenario).success) notFound()
+  if (!z.guid().safeParse(scenario).success) notFound()
   const [db, t, messages] = await Promise.all([
     createClient(),
     getTranslations('EventReplenishment'),

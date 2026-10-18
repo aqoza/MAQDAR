@@ -4,7 +4,7 @@ import { eventPolicyReportSchema } from './event-policies'
 import { replenishmentReportSchema, replenishmentStatuses } from './replenishment'
 
 export const eventDraftInputSchema = z.object({
-  scenario_id: z.uuid(),
+  scenario_id: z.guid(),
   backorders: eventQuantitySchema,
   orders_confirmed: z.boolean(),
   event_uncommitted: z.boolean(),
@@ -23,7 +23,7 @@ export const eventDraftReportSchema = z.object({
   method: z.literal('event-replenishment-v1'),
   status: z.literal('available'),
   input: eventDraftInputSchema,
-  location_id: z.uuid(),
+  location_id: z.guid(),
   scenario: eventPolicyReportSchema,
   baseline: replenishmentReportSchema,
   baseline_maximum: decimal,

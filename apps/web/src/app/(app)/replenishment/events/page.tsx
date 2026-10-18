@@ -15,7 +15,7 @@ export default async function EventDraftHistory({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { scenario, page } = await searchParams
-  if (!z.uuid().safeParse(scenario).success) notFound()
+  if (!z.guid().safeParse(scenario).success) notFound()
   const [db, t, format, locale] = await Promise.all([
     createClient(),
     getTranslations('EventReplenishment'),

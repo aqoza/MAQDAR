@@ -48,6 +48,8 @@ const AUDIT_ENTITIES = [
   'container_capacity_scenarios',
   'planned_event_scenarios',
   'event_policy_scenarios',
+  'event_replenishment_drafts',
+  'event_supplier_scenarios',
   'other',
 ] as const
 
