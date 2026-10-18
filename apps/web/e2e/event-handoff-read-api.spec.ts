@@ -106,15 +106,13 @@ with psycopg.connect(sys.argv[1]) as db:
   for (const path of ['/api/v1/purchase-handoffs', '/api/v1/transfer-handoffs']) {
     expect((await request.get(path, { headers })).status()).toBe(403)
   }
-  for (const path of [api, batches]) {
-    expect(
-      (await request.get(`${path}/${lines[0].handoff}/acknowledgements`, { headers })).status(),
-    ).toBe(404)
-    expect(
-      (
-        await request.post(`${path}/${lines[0].handoff}/acknowledgements`, { headers, data: {} })
-      ).status(),
-    ).toBe(404)
+  for (const path of [`${api}/${lines[0].handoff}`, `${batches}/${batch}`]) {
+    const reports = await request.get(`${path}/acknowledgements`, { headers })
+    expect(reports.status()).toBe(200)
+    expect((await reports.json()).data).toEqual([])
+    expect((await request.post(`${path}/acknowledgements`, { headers, data: {} })).status()).toBe(
+      403,
+    )
   }
   const orgResponse = await request.get('/api/v1/organization', { headers })
   expect((await orgResponse.json()).key.scopes).toEqual(['event_purchase_handoffs:read'])

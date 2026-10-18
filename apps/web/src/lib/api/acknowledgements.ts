@@ -2,6 +2,8 @@ import { z } from 'zod'
 import {
   parseHandoffQuery,
   isTransferHandoffResource,
+  isEventHandoffResource,
+  EVENT_HANDOFF_RESOURCES,
   HANDOFF_RESOURCES,
   TRANSFER_HANDOFF_RESOURCES,
 } from './handoffs'
@@ -10,6 +12,7 @@ import {
 export const ACKNOWLEDGEMENT_RESOURCES = [
   ...HANDOFF_RESOURCES,
   ...TRANSFER_HANDOFF_RESOURCES,
+  ...EVENT_HANDOFF_RESOURCES,
 ] as const
 export type AcknowledgementResource = (typeof ACKNOWLEDGEMENT_RESOURCES)[number]
 export function isAcknowledgementResource(value: string): value is AcknowledgementResource {
@@ -18,7 +21,9 @@ export function isAcknowledgementResource(value: string): value is Acknowledgeme
 
 export const ACKNOWLEDGE_SCOPE = 'purchase_handoffs:acknowledge' as const
 export const TRANSFER_ACKNOWLEDGE_SCOPE = 'transfer_handoffs:acknowledge' as const
+export const EVENT_ACKNOWLEDGE_SCOPE = 'event_purchase_handoffs:acknowledge' as const
 export function acknowledgementScope(resource: AcknowledgementResource) {
+  if (isEventHandoffResource(resource)) return EVENT_ACKNOWLEDGE_SCOPE
   return isTransferHandoffResource(resource) ? TRANSFER_ACKNOWLEDGE_SCOPE : ACKNOWLEDGE_SCOPE
 }
 export const ACKNOWLEDGEMENT_BODY_BYTES = 8192
@@ -63,6 +68,8 @@ export function acknowledgementOperationId(
   action: 'list' | 'get' | 'create',
 ) {
   const names = {
+    'event-purchase-handoffs': 'EventPurchaseHandoff',
+    'event-purchase-handoff-batches': 'EventPurchaseHandoffBatch',
     'purchase-handoffs': 'PurchaseHandoff',
     'purchase-handoff-batches': 'PurchaseHandoffBatch',
     'transfer-handoffs': 'TransferHandoff',

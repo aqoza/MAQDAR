@@ -33,6 +33,7 @@ describe('scopes', () => {
       'transfer_handoffs:read',
       'transfer_handoffs:acknowledge',
       'event_purchase_handoffs:read',
+      'event_purchase_handoffs:acknowledge',
     ])
     expect(Object.keys(SCOPE_DESCRIPTIONS)).toEqual([...API_SCOPES])
     expect(isApiScope('master_data:read')).toBe(true)

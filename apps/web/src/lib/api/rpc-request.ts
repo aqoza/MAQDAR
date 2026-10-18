@@ -14,6 +14,20 @@ import type { AcknowledgementInput } from './acknowledgements'
 
 /** The `api_*` RPCs of the `rest_api` migration and the arguments the Worker sends them. */
 export type ApiRpcArgs = {
+  api_event_purchase_handoff_acknowledge: {
+    p_key_hash: KeyHash
+    p_resource: EventHandoffResource
+    p_id: string
+    p_body: AcknowledgementInput
+  }
+  api_event_purchase_handoff_acknowledgements: {
+    p_key_hash: KeyHash
+    p_resource: EventHandoffResource
+    p_id: string
+    p_event_id: string | null
+    p_after: string | null
+    p_limit: number
+  }
   api_event_purchase_handoff_list: {
     p_key_hash: KeyHash
     p_resource: EventHandoffResource
@@ -136,6 +150,8 @@ export type MissingApiRpcs = [GeneratedApiRpcName] extends [never]
   : Exclude<DeclaredApiRpcName, GeneratedApiRpcName>
 
 export const API_RPC_NAMES = [
+  'api_event_purchase_handoff_acknowledge',
+  'api_event_purchase_handoff_acknowledgements',
   'api_event_purchase_handoff_list',
   'api_event_purchase_handoff_get',
   'api_transfer_handoff_acknowledge',

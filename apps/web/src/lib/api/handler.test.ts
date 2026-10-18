@@ -40,6 +40,7 @@ const LEAK = 'permission denied for function api_upsert (secret detail)'
 
 const ALL_SCOPES = [
   'event_purchase_handoffs:read',
+  'event_purchase_handoffs:acknowledge',
   'transfer_handoffs:read',
   'transfer_handoffs:acknowledge',
   'purchase_handoffs:read',
@@ -185,13 +186,19 @@ describe.each([
   'purchase-handoff-batches',
   'transfer-handoffs',
   'transfer-handoff-batches',
+  'event-purchase-handoffs',
+  'event-purchase-handoff-batches',
 ] as const)('%s acknowledgements', (resource) => {
-  const writeRpc = resource.startsWith('transfer')
-    ? 'api_transfer_handoff_acknowledge'
-    : 'api_handoff_acknowledge'
-  const readRpc = resource.startsWith('transfer')
-    ? 'api_transfer_handoff_acknowledgements'
-    : 'api_handoff_acknowledgements'
+  const writeRpc = resource.startsWith('event-')
+    ? 'api_event_purchase_handoff_acknowledge'
+    : resource.startsWith('transfer')
+      ? 'api_transfer_handoff_acknowledge'
+      : 'api_handoff_acknowledge'
+  const readRpc = resource.startsWith('event-')
+    ? 'api_event_purchase_handoff_acknowledgements'
+    : resource.startsWith('transfer')
+      ? 'api_transfer_handoff_acknowledgements'
+      : 'api_handoff_acknowledgements'
   const id = '98000000-0000-4000-8000-000000000001'
   const event = '98000000-0000-4000-8000-000000000002'
   const value = {
@@ -1646,7 +1653,7 @@ it.each(['transfer-handoffs', 'transfer-handoff-batches'])(
   },
 )
 
-describe('event purchase readers have an explicit read-only capability', () => {
+describe('event purchase readers retain an explicit read-only capability', () => {
   for (const resource of ['event-purchase-handoffs', 'event-purchase-handoff-batches']) {
     it(`dispatches ${resource} without modifying original decimal evidence`, async () => {
       const text =
@@ -1687,22 +1694,15 @@ describe('event purchase readers have an explicit read-only capability', () => {
       expect(detail.headers.get('cache-control')).toContain('no-store')
       expect(detail.headers.get('set-cookie')).toBeNull()
     })
-    it(`never exposes ${resource} acknowledgement or mutation handlers`, async () => {
+    it(`never exposes unknown ${resource} subroutes or package mutations`, async () => {
       const state = fake()
-      const req = new Request(`${BASE}/${resource}/${REQUEST_ID}/acknowledgements`, {
+      const req = new Request(`${BASE}/${resource}/${REQUEST_ID}/unknown`, {
         headers: { authorization: `Bearer ${TOKEN}` },
       })
       for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] as const) {
         expect(
-          (
-            await handleResourceDetail(
-              req,
-              method,
-              resource,
-              [REQUEST_ID, 'acknowledgements'],
-              state.deps,
-            )
-          ).status,
+          (await handleResourceDetail(req, method, resource, [REQUEST_ID, 'unknown'], state.deps))
+            .status,
         ).toBe(404)
       }
       for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'] as const) {

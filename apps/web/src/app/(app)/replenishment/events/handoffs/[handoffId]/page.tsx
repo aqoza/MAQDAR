@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -11,8 +12,10 @@ import { handoffPayloadSchema } from '@/lib/event-purchase-handoffs'
 
 export default async function EventHandoffDetail({
   params,
+  searchParams,
 }: {
   params: Promise<{ handoffId: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
@@ -92,6 +95,13 @@ export default async function EventHandoffDetail({
         </Link>
       </div>
       <p>{t('selectionHelp')}</p>
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={handoffId}
+        kind="event"
+
+        pageValue={(await searchParams).ack_page}
+      />
       <EventCostReport report={payload.estimate} />
     </div>
   )
