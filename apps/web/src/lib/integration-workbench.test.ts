@@ -59,7 +59,7 @@ describe('integration workbench URL state', () => {
   it('keeps transfer endpoint filters and evidence separate from purchasing', () => {
     const params = integrationParams(
       { source: 'SOURCE', location: 'DEST', supplier: 'SUP', system: ' ERP ', status: 'no_report' },
-      true,
+      'transfer',
     )
     expect(params.filters).toEqual({
       source: 'SOURCE',
@@ -67,20 +67,57 @@ describe('integration workbench URL state', () => {
       system: ' ERP ',
       status: 'no_report',
     })
-    const url = new URL(integrationHref(params, 2, true), 'https://example.com')
+    const url = new URL(integrationHref(params, 2, 'transfer'), 'https://example.com')
     expect(url.pathname).toBe('/replenishment/redistribution/integrations')
-    expect(integrationParams(Object.fromEntries(url.searchParams), true)).toMatchObject({
+    expect(integrationParams(Object.fromEntries(url.searchParams), 'transfer')).toMatchObject({
       page: 2,
       filters: params.filters,
     })
     expect(integrationParams({ source: 'SOURCE', supplier: 'SUP' }).filters).toEqual({
       supplier: 'SUP',
     })
-    expect(integrationEvidenceHref({ kind: 'handoff', id: 'one' }, true)).toBe(
+    expect(integrationEvidenceHref({ kind: 'handoff', id: 'one' }, 'transfer')).toBe(
       '/replenishment/redistribution/handoffs/one#acknowledgements',
     )
-    expect(integrationEvidenceHref({ kind: 'batch', id: 'two' }, true)).toBe(
+    expect(integrationEvidenceHref({ kind: 'batch', id: 'two' }, 'transfer')).toBe(
       '/replenishment/redistribution/batches/two#acknowledgements',
+    )
+  })
+})
+
+describe('event integration URL boundaries', () => {
+  it('retains exact system identity, receiving filters and event routes through paging', () => {
+    const params = integrationParams(
+      {
+        supplier: 'SUP',
+        location: 'DC',
+        source: 'hidden',
+        system: ' ERP /+?& العربية ',
+        selection: 'historical',
+        status: 'no_report',
+      },
+      'event',
+    )
+    expect(params.filters).toEqual({
+      supplier: 'SUP',
+      location: 'DC',
+      system: ' ERP /+?& العربية ',
+      selection: 'historical',
+      status: 'no_report',
+    })
+    const url = new URL(integrationHref(params, 2, 'event'), 'https://example.com')
+    expect(url.pathname).toBe('/replenishment/events/integrations')
+    expect(integrationParams(Object.fromEntries(url.searchParams), 'event')).toMatchObject({
+      page: 2,
+      filters: params.filters,
+    })
+  })
+  it('links each event package to its own history', () => {
+    expect(integrationEvidenceHref({ kind: 'handoff', id: 'one' }, 'event')).toBe(
+      '/replenishment/events/handoffs/one#acknowledgements',
+    )
+    expect(integrationEvidenceHref({ kind: 'batch', id: 'two' }, 'event')).toBe(
+      '/replenishment/events/batches/two#acknowledgements',
     )
   })
 })

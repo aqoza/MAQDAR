@@ -1,6 +1,6 @@
 # Event purchase handoff read API (Step 19j)
 
-**Status:** Implemented; review pending. Scope and organization-wide permission approved on 2026-10-18. PR #80 was merged as `72e549a` with all CI checks passing before implementation.
+**Status:** Merged in PR #81 as `4ed941c` after review and all CI checks passed. Scope and organization-wide permission approved on 2026-10-18. PR #80 was merged as `72e549a` with all CI checks passing before implementation.
 
 Integrations can discover saved event purchase handoffs and batches and retrieve their original JSON. The selection is the **full event-adjusted quantity and cost**. Baseline quantities, baseline costs and differences are comparison evidence, never additional order lines. Ordinary purchase and transfer packages remain separate.
 
@@ -59,3 +59,5 @@ Verification uses synthetic loopback fixtures and runs pgTAP, pytest database te
 After review, the owner runs `pnpm exec supabase db push` to apply `20261018183653_event_purchase_handoff_read_api.sql`, then deploys the web build. The additive migration extends the scope constraint/create allowlist, adds a private projection and two service-only readers, and changes no existing keys or saved evidence. Constraint replacement uses a five-second lock timeout; retry in a quieter window if it cannot acquire the lock.
 
 Rollback the web build while retaining the additive schema and saved evidence. Revoke newly issued event-reader keys if disabling this capability. Hosted migration/deployment, acknowledgements, ERP transmission and order creation are outside this step.
+
+Step 19k adds separately permissioned report history; see [event handoff acknowledgements](event-handoff-acknowledgements.md). Package reads and original payloads retain the contract above.

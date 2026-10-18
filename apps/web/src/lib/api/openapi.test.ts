@@ -241,7 +241,11 @@ describe('structure', () => {
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
         : path.startsWith('/event-purchase-handoff')
-          ? ['event_purchase_handoffs:read']
+          ? [
+              method === 'post'
+                ? 'event_purchase_handoffs:acknowledge'
+                : 'event_purchase_handoffs:read',
+            ]
           : path.startsWith('/transfer-handoff')
             ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
             : path.startsWith('/purchase-handoff')
@@ -400,7 +404,7 @@ it('documents original transfer payloads, exact freight and source/destination i
   expect(doc.paths['/transfer-handoffs/{id}/acknowledgements']?.post).toBeDefined()
 })
 
-it('documents complete event evidence without granting acknowledgement or ordinary scopes', () => {
+it('documents complete event evidence with independent read and acknowledgement scopes', () => {
   expect(valid(schema('EventPurchaseHandoffPayload'), eventHandoffFixture)).toBe(true)
   expect(valid(schema('EventPurchaseHandoffBatchPayload'), eventBatchFixture)).toBe(true)
   expect(
@@ -416,6 +420,11 @@ it('documents complete event evidence without granting acknowledgement or ordina
     expect(doc.paths[`/${resource}`]?.get?.['x-maqdar-scopes']).toEqual([
       'event_purchase_handoffs:read',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]).toBeUndefined()
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.post?.['x-maqdar-scopes']).toEqual([
+      'event_purchase_handoffs:acknowledge',
+    ])
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.get?.['x-maqdar-scopes']).toEqual([
+      'event_purchase_handoffs:read',
+    ])
   }
 })

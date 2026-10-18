@@ -8,17 +8,18 @@ The machine-readable OpenAPI 3.1.1 description is available at `/api/v1/openapi.
 
 An organization owner or administrator opens **Settings → API keys**, gives the key a name, chooses permissions and an expiry, and selects **Create key**. Copy the key from the dialog into the integration's secret store. It is shown once; Settings subsequently shows only a prefix and suffix. The database stores a SHA-256 hash, never the complete key.
 
-| Scope                           | Operations                                                                                         |
-| ------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `master_data:read`              | List all master-data resources                                                                     |
-| `master_data:write`             | Upsert all master-data resources                                                                   |
-| `transactions:read`             | List all four transaction feeds                                                                    |
-| `transactions:write`            | Upsert transaction feeds (clear by zero only for demand)                                           |
-| `purchase_handoffs:read`        | List and retrieve saved handoffs and batches across the whole organization                         |
-| `purchase_handoffs:acknowledge` | Append external receipt/rejection reports to saved packages across the whole organization          |
-| `transfer_handoffs:acknowledge` | Append external receipt/rejection reports to saved transfer packages across the whole organization |
-| `transfer_handoffs:read`        | List and retrieve saved transfer handoffs and batches across the whole organization                |
-| `event_purchase_handoffs:read`  | List and retrieve saved event purchase handoffs and batches across the whole organization          |
+| Scope                                 | Operations                                                                                                      |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `master_data:read`                    | List all master-data resources                                                                                  |
+| `master_data:write`                   | Upsert all master-data resources                                                                                |
+| `transactions:read`                   | List all four transaction feeds                                                                                 |
+| `transactions:write`                  | Upsert transaction feeds (clear by zero only for demand)                                                        |
+| `purchase_handoffs:read`              | List and retrieve saved handoffs and batches across the whole organization                                      |
+| `purchase_handoffs:acknowledge`       | Append external receipt/rejection reports to saved packages across the whole organization                       |
+| `transfer_handoffs:acknowledge`       | Append external receipt/rejection reports to saved transfer packages across the whole organization              |
+| `transfer_handoffs:read`              | List and retrieve saved transfer handoffs and batches across the whole organization                             |
+| `event_purchase_handoffs:read`        | List and retrieve saved event purchase handoffs and batches across the whole organization                       |
+| `event_purchase_handoffs:acknowledge` | Append external received/rejected reports for saved event purchase handoffs and batches across the organization |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -165,3 +166,5 @@ Version 1 changes are additive. Clients should tolerate new response fields and 
 Network-link records include nullable `freight_unit` and `freight_valid_from` fields for [transfer freight estimates](transfer-freight-estimates.md). When a write supplies freight basis/cost/currency but omits either provenance field, the omitted field is cleared. Unrelated updates preserve both fields. These remain ordinary master-data reads/writes; the API does not create freight estimates or execute transfers.
 
 The three Step 6 resources (`stock-snapshots`, `open-orders`, `receipts`) use transaction scopes with UUID cursor paging and `updated_since`, like master-data lists. Their list default is 100, maximum 1,000, and atomic writes accept up to 1,000 records. See [transaction semantics and dashboard definitions](transactions-dashboard.md).
+
+Event purchase report history is documented in [event handoff acknowledgements](event-handoff-acknowledgements.md). Its explicit write scope is independent of event reads and ordinary purchase/transfer permissions. Reports never change saved planning evidence or create orders.

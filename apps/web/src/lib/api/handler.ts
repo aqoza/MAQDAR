@@ -758,12 +758,17 @@ async function runAcknowledgement(
     if (!checked.ok)
       return finish(ctx, problemOutcome(await confirmKeyThen(ctx, keyHash, scope, checked.problem)))
     const args = { p_key_hash: keyHash, p_id: operation.id, p_body: checked.body }
-    const result = isTransferHandoffResource(operation.resource)
-      ? await ctx.deps.rpc('api_transfer_handoff_acknowledge', {
+    const result = isEventHandoffResource(operation.resource)
+      ? await ctx.deps.rpc('api_event_purchase_handoff_acknowledge', {
           ...args,
           p_resource: operation.resource,
         })
-      : await ctx.deps.rpc('api_handoff_acknowledge', { ...args, p_resource: operation.resource })
+      : isTransferHandoffResource(operation.resource)
+        ? await ctx.deps.rpc('api_transfer_handoff_acknowledge', {
+            ...args,
+            p_resource: operation.resource,
+          })
+        : await ctx.deps.rpc('api_handoff_acknowledge', { ...args, p_resource: operation.resource })
     addDbTime(ctx, result.ms)
     if (!result.ok) return finish(ctx, problemOutcome(rpcProblem(ctx, result, scope)))
     const response: { data?: { id?: unknown }; replayed?: unknown } = JSON.parse(result.text)
@@ -789,15 +794,20 @@ async function runAcknowledgement(
     p_after: query.cursor,
     p_limit: query.limit,
   }
-  const result = isTransferHandoffResource(operation.resource)
-    ? await ctx.deps.rpc('api_transfer_handoff_acknowledgements', {
+  const result = isEventHandoffResource(operation.resource)
+    ? await ctx.deps.rpc('api_event_purchase_handoff_acknowledgements', {
         ...args,
         p_resource: operation.resource,
       })
-    : await ctx.deps.rpc('api_handoff_acknowledgements', {
-        ...args,
-        p_resource: operation.resource,
-      })
+    : isTransferHandoffResource(operation.resource)
+      ? await ctx.deps.rpc('api_transfer_handoff_acknowledgements', {
+          ...args,
+          p_resource: operation.resource,
+        })
+      : await ctx.deps.rpc('api_handoff_acknowledgements', {
+          ...args,
+          p_resource: operation.resource,
+        })
   addDbTime(ctx, result.ms)
   return finish(
     ctx,

@@ -650,7 +650,8 @@
     "integrations": "Integration workbench",
     "eventReview": "Event review",
     "eventHandoffs": "Event handoffs",
-    "eventBatches": "Event batches"
+    "eventBatches": "Event batches",
+    "eventIntegrations": "Event integrations"
   },
   "Replenishment": {
     "help": {
@@ -909,6 +910,11 @@
         "label": "Acknowledge transfer handoffs",
         "badge": "Transfer handoffs: acknowledge",
         "description": "Record external receipt or rejection reports across the organization. Does not reserve stock or execute transfers."
+      },
+      "eventPurchaseHandoffsAcknowledge": {
+        "label": "Acknowledge event purchase handoffs",
+        "description": "Record external receipt or rejection reports for event purchase handoffs and batches across the whole organization. Does not transmit packages or create orders.",
+        "badge": "Event purchase handoffs: acknowledge"
       }
     },
     "secret": {
@@ -2905,7 +2911,16 @@
     "transferLink": "Transfer integration workbench",
     "purchaseLink": "Purchase integration workbench",
     "transferHandoffs": "Transfer handoffs",
-    "transferBatches": "Transfer batches"
+    "transferBatches": "Transfer batches",
+    "eventTitle": "Event purchase integration workbench",
+    "eventContext": "Latest reported receipt and rejection for event purchase packages",
+    "eventMeaning": "Reports concern the full adjusted purchase selection. Baseline comparisons and event assumptions remain saved evidence. Ordinary purchase and transfer packages have separate histories. These reports do not transmit packages, verify orders, reserve stock or change inbound.",
+    "eventLink": "Event purchase integration workbench",
+    "eventHandoffs": "Event purchase handoffs",
+    "eventBatches": "Event handoff batches",
+    "eventSearch": "Search items, events or latest references",
+    "receiver": "Receiving location code",
+    "loading": "Loading integration reports…"
   },
   "HandoffAcknowledgements": {
     "title": "Integration acknowledgements",
@@ -2924,7 +2939,8 @@
     "previous": "Newer reports",
     "next": "Older reports",
     "page": "Page {page}",
-    "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when MAQDAR saved the report."
+    "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when MAQDAR saved the report.",
+    "eventMeaning": "Reports are supplied by an integration key holder. They do not verify external acceptance or create orders. Full adjusted selections, baseline comparisons and event evidence remain unchanged."
   },
   "TransferDates": {
     "title": "Transfer date scenarios",

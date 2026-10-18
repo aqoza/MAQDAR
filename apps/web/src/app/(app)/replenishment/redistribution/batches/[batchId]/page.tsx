@@ -91,7 +91,7 @@ export default async function BatchDetail({
       <HandoffAcknowledgements
         organizationId={context.active.id}
         recordId={batchId}
-        transfer
+        kind="transfer"
         batch
         pageValue={ack_page}
       />

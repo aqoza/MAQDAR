@@ -1,11 +1,8 @@
+import { IntegrationWorkbenchHeader } from '@/components/integration-workbench-header'
 import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
-import { HelpDisclosure } from '@/components/help-disclosure'
-import { IntegrationResultsHelp } from '@/components/integration-results-help'
-import { PageHeader } from '@/components/page-header'
-import { ReplenishmentNav } from '@/components/replenishment-nav'
 import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
@@ -17,61 +14,76 @@ import {
   integrationResultSchema,
   transferIntegrationResultSchema,
   integrationPath,
+  integrationFamilies,
+  eventIntegrationResultSchema,
+  type IntegrationFamily,
 } from '@/lib/integration-workbench'
 
 export async function IntegrationWorkbenchScreen({
   searchParams,
-  transfer = false,
+  family = 'purchase',
 }: {
   searchParams: Promise<RawSearchParams>
-  transfer?: boolean
+  family?: IntegrationFamily
 }) {
+  const transfer = family === 'transfer'
+  const configuration = integrationFamilies[family]
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
-  const params = integrationParams(await searchParams, transfer)
+  const params = integrationParams(await searchParams, family)
   const [db, t, format] = await Promise.all([
     createClient(),
     getTranslations('IntegrationWorkbench'),
     getFormatter(),
   ])
-  const response = await db.rpc(
-    transfer ? 'transfer_integration_workbench' : 'handoff_integration_workbench',
-    {
-      p_organization_id: context.active.id,
-      p_filters: { ...params.filters, q: params.q },
-      p_page: params.page,
-      p_size: params.size,
-    },
-  )
+  const response = await db.rpc(configuration.rpc, {
+    p_organization_id: context.active.id,
+    p_filters: { ...params.filters, q: params.q },
+    p_page: params.page,
+    p_size: params.size,
+  })
   if (response.error) throw new Error('Integration workbench unavailable')
-  const result = (transfer ? transferIntegrationResultSchema : integrationResultSchema).parse(
-    response.data,
-  )
-  if (result.page !== params.page) redirect(integrationHref(params, result.page, transfer))
+  const result = (
+    family === 'event'
+      ? eventIntegrationResultSchema
+      : transfer
+        ? transferIntegrationResultSchema
+        : integrationResultSchema
+  ).parse(response.data)
+  if (result.page !== params.page) redirect(integrationHref(params, result.page, family))
   const pages = lastPage(result.total, result.size)
   const inputClass = 'w-full min-w-0 rounded-md border bg-background p-2'
   return (
     <div className="min-w-0 space-y-4">
-      <PageHeader
-        pattern="replenishment"
-        navigation={<ReplenishmentNav current={transfer ? 'redistribution' : 'integrations'} />}
-        title={t(transfer ? 'transferTitle' : 'title')}
-        description={t(transfer ? 'transferContext' : 'context')}
-        help={
-          transfer ? (
-            <HelpDisclosure>
-              <p>{t('transferMeaning')}</p>
-              <p>{t('independence')}</p>
-            </HelpDisclosure>
-          ) : (
-            <IntegrationResultsHelp />
-          )
-        }
-      />
+      <IntegrationWorkbenchHeader family={family} />
       <div className="flex flex-wrap gap-4">
-        <Link className="underline" href={integrationPath(!transfer)}>
-          {t(transfer ? 'purchaseLink' : 'transferLink')}
-        </Link>
+        {(Object.keys(integrationFamilies) as IntegrationFamily[])
+          .filter((other) => other !== family)
+          .map((other) => (
+            <Link
+              key={other}
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href={integrationPath(other)}
+            >
+              {t(integrationFamilies[other].link)}
+            </Link>
+          ))}
+        {family === 'event' && (
+          <>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/events/handoffs"
+            >
+              {t('eventHandoffs')}
+            </Link>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/events/batches"
+            >
+              {t('eventBatches')}
+            </Link>
+          </>
+        )}
         {transfer && (
           <>
             <Link className="underline" href="/replenishment/redistribution/handoffs">
@@ -84,12 +96,12 @@ export async function IntegrationWorkbenchScreen({
         )}
       </div>
       <Form
-        action={integrationPath(transfer)}
+        action={integrationPath(family)}
         className="workspace-toolbar grid min-w-0 grid-cols-2 gap-3 xl:grid-cols-4"
         key={JSON.stringify(params)}
       >
         <label className="col-span-2 grid min-w-0 grid-rows-[1fr_auto] gap-1 sm:col-span-1">
-          {t('search')}
+          {t(family === 'event' ? 'eventSearch' : 'search')}
           <input name="q" maxLength={100} defaultValue={params.q} className={inputClass} />
         </label>
         {([transfer ? 'source' : 'supplier', 'location', 'system'] as const).map((field) => (
@@ -97,7 +109,15 @@ export async function IntegrationWorkbenchScreen({
             className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'system' ? 'col-span-2 sm:col-span-1' : ''}`}
             key={field}
           >
-            {t(transfer && field === 'location' ? 'destination' : field)}
+            {t(
+              field === 'location'
+                ? transfer
+                  ? 'destination'
+                  : family === 'event'
+                    ? 'receiver'
+                    : field
+                : field,
+            )}
             <input
               name={field}
               maxLength={field === 'system' ? 80 : 64}
@@ -142,7 +162,7 @@ export async function IntegrationWorkbenchScreen({
           <button className="rounded-md bg-primary px-3 py-2 text-primary-foreground">
             {t('filter')}
           </button>
-          <Link href={integrationPath(transfer)} className="py-2 underline">
+          <Link href={integrationPath(family)} className="py-2 underline">
             {t('reset')}
           </Link>
         </div>
@@ -153,7 +173,7 @@ export async function IntegrationWorkbenchScreen({
           {t('asOf', { time: format.dateTime(new Date(result.as_of), 'long') })}
         </p>
       </div>
-      <TableScrollRegion label={t(transfer ? 'transferTitle' : 'title')}>
+      <TableScrollRegion label={t(configuration.title)}>
         <table className="w-full text-sm">
           <caption className="sr-only">{t('tableCaption')}</caption>
           <thead>
@@ -186,9 +206,16 @@ export async function IntegrationWorkbenchScreen({
                       ? row.item_code
                       : t('batchLines', { count: row.line_count })}
                   </p>
+                  {'event_name' in row && typeof row.event_name === 'string' && row.event_name && (
+                    <p className="max-w-56 break-words text-xs text-muted-foreground">
+                      {row.event_name}
+                    </p>
+                  )}
                   <p className="text-xs text-muted-foreground">{t(row.kind)}</p>
                   <details className="text-xs text-muted-foreground">
-                    <summary className="cursor-pointer py-1">{t('packageDetails')}</summary>
+                    <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-1">
+                      {t('packageDetails')}
+                    </summary>
                     <p className="max-w-56 break-all">{row.id}</p>
                     <time dateTime={row.created_at}>
                       {format.dateTime(new Date(row.created_at), 'long')}
@@ -230,7 +257,9 @@ export async function IntegrationWorkbenchScreen({
                   )}
                   {row.event_id && (
                     <details className="text-xs text-muted-foreground">
-                      <summary className="cursor-pointer py-1">{t('eventDetails')}</summary>
+                      <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-1">
+                        {t('eventDetails')}
+                      </summary>
                       <dl className="max-w-80 space-y-1 break-all">
                         {(['event_id', 'client_event_id', 'api_key_id'] as const).map((field) => (
                           <div key={field}>
@@ -244,9 +273,9 @@ export async function IntegrationWorkbenchScreen({
                 </td>
                 <td className="p-3">
                   <Link
-                    href={integrationEvidenceHref(row, transfer)}
+                    href={integrationEvidenceHref(row, family)}
                     prefetch={false}
-                    className="inline-block py-1 underline"
+                    className="inline-flex min-h-11 items-center py-1 underline md:min-h-0"
                   >
                     {t('openEvidence')}
                   </Link>
@@ -260,9 +289,9 @@ export async function IntegrationWorkbenchScreen({
       <nav className="flex flex-wrap items-center gap-4" aria-label={t('pagination')}>
         {result.page > 1 && (
           <Link
-            href={integrationHref(params, result.page - 1, transfer)}
+            href={integrationHref(params, result.page - 1, family)}
             prefetch={false}
-            className="py-1 underline"
+            className="inline-flex min-h-11 items-center py-1 underline md:min-h-0"
           >
             {t('previous')}
           </Link>
@@ -270,9 +299,9 @@ export async function IntegrationWorkbenchScreen({
         <span>{t('page', { page: result.page, pages })}</span>
         {result.page < pages && (
           <Link
-            href={integrationHref(params, result.page + 1, transfer)}
+            href={integrationHref(params, result.page + 1, family)}
             prefetch={false}
-            className="py-1 underline"
+            className="inline-flex min-h-11 items-center py-1 underline md:min-h-0"
           >
             {t('next')}
           </Link>
