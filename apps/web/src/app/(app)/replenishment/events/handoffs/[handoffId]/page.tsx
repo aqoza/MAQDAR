@@ -75,10 +75,10 @@ export default async function EventHandoffDetail({
         <p>{t(priceState)}</p>
       </section>
       <div className="flex flex-wrap gap-4">
-        <a href={`/api/event-purchase-handoffs/${handoffId}/json`} className="underline">
+        <a download href={`/api/event-purchase-handoffs/${handoffId}/json`} className="underline">
           {t('json')}
         </a>
-        <a href={`/api/event-purchase-handoffs/${handoffId}/csv`} className="underline">
+        <a download href={`/api/event-purchase-handoffs/${handoffId}/csv`} className="underline">
           {t('csv')}
         </a>
         <Link href={`/replenishment/events/review/${payload.proposal.id}`} className="underline">

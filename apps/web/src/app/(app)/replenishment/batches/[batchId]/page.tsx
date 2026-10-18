@@ -64,10 +64,10 @@ export default async function BatchDetail({
         <Link className="underline" href={`/replenishment/capacity/new?batch=${batchId}`}>
           {t('capacity')}
         </Link>
-        <a className="underline" href={`/api/handoff-batches/${batchId}/json`}>
+        <a download className="underline" href={`/api/handoff-batches/${batchId}/json`}>
           {t('json')}
         </a>
-        <a className="underline" href={`/api/handoff-batches/${batchId}/csv`}>
+        <a download className="underline" href={`/api/handoff-batches/${batchId}/csv`}>
           {t('csv')}
         </a>
       </div>

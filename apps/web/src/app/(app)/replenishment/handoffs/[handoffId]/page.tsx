@@ -75,10 +75,10 @@ export default async function HandoffDetail({
         <p>{t('immutableNote')}</p>
       </section>
       <div className="flex flex-wrap gap-4">
-        <a href={`/api/purchase-handoffs/${handoffId}/json`} className="underline">
+        <a download href={`/api/purchase-handoffs/${handoffId}/json`} className="underline">
           {t('json')}
         </a>
-        <a href={`/api/purchase-handoffs/${handoffId}/csv`} className="underline">
+        <a download href={`/api/purchase-handoffs/${handoffId}/csv`} className="underline">
           {t('csv')}
         </a>
         <Link href={`/replenishment/review/${payload.proposal.id}`} className="underline">

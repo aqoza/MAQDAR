@@ -73,10 +73,10 @@ export default async function TransferHandoffDetail({
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
       <p className="break-all">{t('identity', { id: payload.handoff_id })}</p>
       <div className="flex flex-wrap gap-4">
-        <a href={`/api/transfer-handoffs/${handoffId}/json`} className="underline">
+        <a download href={`/api/transfer-handoffs/${handoffId}/json`} className="underline">
           {t('json')}
         </a>
-        <a href={`/api/transfer-handoffs/${handoffId}/csv`} className="underline">
+        <a download href={`/api/transfer-handoffs/${handoffId}/csv`} className="underline">
           {t('csv')}
         </a>
         <Link

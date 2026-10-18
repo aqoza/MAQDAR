@@ -67,10 +67,10 @@ export default async function BatchDetail({
       >
         <p role="status">{t(current.data.selected ? 'current' : 'historical')}</p>
         <div className="flex flex-wrap gap-4">
-          <a className="underline" href={`/api/transfer-batches/${batchId}/json`}>
+          <a download className="underline" href={`/api/transfer-batches/${batchId}/json`}>
             {t('json')}
           </a>
-          <a className="underline" href={`/api/transfer-batches/${batchId}/csv`}>
+          <a download className="underline" href={`/api/transfer-batches/${batchId}/csv`}>
             {t('csv')}
           </a>
         </div>

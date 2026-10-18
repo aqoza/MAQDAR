@@ -57,10 +57,10 @@ export default async function BatchDetail({ params }: { params: Promise<{ batchI
         <p>{t('immutableNote')}</p>
       </section>
       <div className="flex flex-wrap gap-4">
-        <a className="underline" href={`/api/event-handoff-batches/${batchId}/json`}>
+        <a download className="underline" href={`/api/event-handoff-batches/${batchId}/json`}>
           {t('json')}
         </a>
-        <a className="underline" href={`/api/event-handoff-batches/${batchId}/csv`}>
+        <a download className="underline" href={`/api/event-handoff-batches/${batchId}/csv`}>
           {t('csv')}
         </a>
       </div>

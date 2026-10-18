@@ -3,6 +3,7 @@ import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve } from 'node:path'
 import { test, expect } from '@playwright/test'
+import { expectRepeatedDownloads } from './helpers/downloads'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
@@ -106,14 +107,10 @@ with psycopg.connect(sys.argv[1]) as db:
   const originalCsv = await (await page.request.get(csvPath)).text()
   expect(originalCsv).toContain(`"'=1+1"`)
   expect(originalCsv).toContain('"5.55"')
-  const downloading = page.waitForEvent('download')
-  await page.getByRole('link', { name: 'Download JSON', exact: true }).click()
-  const download = await downloading
-  expect(download.suggestedFilename()).toBe(`event-purchase-handoff-${handoffId}.json`)
-  const stream = await download.createReadStream()
-  const chunks: Buffer[] = []
-  for await (const chunk of stream!) chunks.push(Buffer.from(chunk))
-  expect(Buffer.concat(chunks).toString('utf8')).toBe(originalJson)
+  await expectRepeatedDownloads(page, `event-purchase-handoff-${handoffId}`, {
+    json: originalJson,
+    csv: originalCsv,
+  })
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   for (const width of [375, 768, 1024, 1440, 1920]) {

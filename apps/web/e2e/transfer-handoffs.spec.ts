@@ -3,6 +3,7 @@ import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve } from 'node:path'
 import { test, expect } from '@playwright/test'
+import { expectRepeatedDownloads } from './helpers/downloads'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
@@ -140,20 +141,16 @@ print(proposal)`)
   expect(payload.estimate.source.receipts.p50.search.date).toBe('2026-10-13')
   expect(payload.estimate.source.receipts.p90.search.date).toBe('2026-10-15')
   expect(payload.estimate.subtotal).toBe('11.11')
-  const downloadEvent = page.waitForEvent('download')
-  await page.getByRole('link', { name: 'Download JSON', exact: true }).click()
-  const downloaded = await downloadEvent
-  expect(downloaded.suggestedFilename()).toBe(`transfer-handoff-${handoffId}.json`)
-  const stream = await downloaded.createReadStream()
-  const chunks: Buffer[] = []
-  for await (const chunk of stream!) chunks.push(Buffer.from(chunk))
-  expect(Buffer.concat(chunks)).toEqual(originalJson)
   const csv = await page.request.get(`/api/transfer-handoffs/${handoffId}/csv`)
   const originalCsv = await csv.body()
   expect(originalCsv.subarray(0, 3)).toEqual(Buffer.from([0xef, 0xbb, 0xbf]))
   expect(originalCsv.toString('utf8')).toContain(
     '"typical_receipt_date","slow_lead_time_days","slow_receipt_date"',
   )
+  await expectRepeatedDownloads(page, `transfer-handoff-${handoffId}`, {
+    json: originalJson,
+    csv: originalCsv,
+  })
   for (const width of [375, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 })
     expect(
