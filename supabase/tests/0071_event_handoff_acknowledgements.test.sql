@@ -307,14 +307,14 @@ select throws_ok($$select public.api_event_purchase_handoff_acknowledge(pg_temp.
 reset role;
 select ok(not has_function_privilege('anon','public.api_event_purchase_handoff_acknowledge(bytea,text,uuid,jsonb)','execute'),'anonymous cannot invoke write RPC');
 select ok(not has_function_privilege('maqdar_worker','public.api_event_purchase_handoff_acknowledge(bytea,text,uuid,jsonb)','execute'),'worker cannot invoke write RPC');
-select is((select count(*) from public.event_purchase_handoff_acknowledgements),4::bigint,'exactly four original reports');
+select is((select count(*) from public.event_purchase_handoff_acknowledgements where organization_id=pg_temp.id(1)),4::bigint,'exactly four original reports');
 select is((select count(*) from public.audit_log where organization_id=pg_temp.id(1) and table_name='event_purchase_handoff_acknowledgements' and operation='INSERT'),4::bigint,'one audit insertion per original report');
 delete from public.api_keys where key_hash=pg_temp.hash(40);
-select is((select count(*) from public.event_purchase_handoff_acknowledgements),4::bigint,'key deletion retains attributed history');
+select is((select count(*) from public.event_purchase_handoff_acknowledgements where organization_id=pg_temp.id(1)),4::bigint,'key deletion retains attributed history');
 delete from public.event_purchase_handoffs where id=(select id from lines where n=0);
-select is((select count(*) from public.event_purchase_handoff_acknowledgements),1::bigint,'parent deletion cascades only individual history');
+select is((select count(*) from public.event_purchase_handoff_acknowledgements where organization_id=pg_temp.id(1)),1::bigint,'parent deletion cascades only individual history');
 select is((select count(*) from public.audit_log where organization_id=pg_temp.id(1) and table_name='event_purchase_handoff_acknowledgements' and operation='DELETE'),3::bigint,'parent cascade is audited');
 delete from public.event_purchase_handoff_batches where id=(select id from batches);
-select is((select count(*) from public.event_purchase_handoff_acknowledgements),0::bigint,'batch deletion cascades its own history');
+select is((select count(*) from public.event_purchase_handoff_acknowledgements where organization_id=pg_temp.id(1)),0::bigint,'batch deletion cascades its own history');
 select * from finish();
 rollback;

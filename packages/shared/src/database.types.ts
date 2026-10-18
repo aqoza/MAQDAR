@@ -2625,6 +2625,9 @@ isOneToOne: false
 "event_purchase_handoff_create":
 { Args: { "p_organization_id": string,"p_proposal_id": string }; Returns: string
                            },
+"event_purchase_integration_workbench":
+{ Args: { "p_filters"?: Json,"p_organization_id": string,"p_page"?: number,"p_size"?: number }; Returns: Json
+                           },
 "event_purchase_proposal_decide":
 { Args: { "p_decision": string,"p_organization_id": string,"p_proposal_id": string,"p_reason": string,"p_request_id": string }; Returns: string
                            },

@@ -2,5 +2,5 @@ import { IntegrationWorkbenchScreen } from '@/components/integration-workbench-s
 import type { RawSearchParams } from '@/lib/master-data/list-params'
 
 export default function Page({ searchParams }: { searchParams: Promise<RawSearchParams> }) {
-  return <IntegrationWorkbenchScreen searchParams={searchParams} transfer />
+  return <IntegrationWorkbenchScreen searchParams={searchParams} family="transfer" />
 }
