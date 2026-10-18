@@ -75,6 +75,7 @@ export default async function NewEventPolicy({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="forecasts"
         title={t('new')}
         description={<span className="break-words">{source.data.name}</span>}
         actions={

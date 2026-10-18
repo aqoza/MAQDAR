@@ -36,6 +36,7 @@ export default async function BatchPreview({
   if (!parsed.success)
     return (
       <div className="space-y-3">
+        <PageHeader pattern="replenishment" title={t('preview')} />
         <p role="alert">{t('invalidSelection')}</p>
         <Link className="underline" href="/replenishment/events/batches/new">
           {t('choose')}
@@ -49,7 +50,7 @@ export default async function BatchPreview({
   if (result.error)
     return (
       <div className="space-y-3">
-        <h1 className="text-page-title">{t('preview')}</h1>
+        <PageHeader pattern="replenishment" title={t('preview')} />
         <p role="alert">{t(batchErrorKey(result.error.hint))}</p>
         <Link className="underline" href={batchSelectionHref(parsed.data)}>
           {t('editSelection')}
@@ -60,10 +61,11 @@ export default async function BatchPreview({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('preview')}
         description={t('context')}
         help={<EventHandoffBatchesHelp />}
-        actions={
+        back={
           <Link className="underline" href={batchSelectionHref(parsed.data)}>
             {t('editSelection')}
           </Link>

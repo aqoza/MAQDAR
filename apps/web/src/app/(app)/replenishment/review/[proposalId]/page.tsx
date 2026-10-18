@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { PurchaseHandoffForm } from '@/components/purchase-handoff-form'
 import { isEditorRole } from '@/lib/auth/roles'
@@ -79,11 +80,17 @@ export default async function PurchaseReviewDetail({
   const reviewer = ['owner', 'admin', 'approver'].includes(context.role ?? '')
   return (
     <div className="space-y-4">
-      <Link href="/replenishment/review" className="underline">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('detailTitle', { item: row.item_code })}</h1>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link href="/replenishment/review" className="underline">
+            {t('back')}
+          </Link>
+        }
+        title={t('detailTitle', { item: row.item_code })}
+      />
       <p>{t('description')}</p>
+
       <h2 className="text-section-title">
         {t('revision', { revision: proposal.revision })} · {t(`statuses.${row.status}`)}
       </h2>

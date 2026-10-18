@@ -61,6 +61,7 @@ export default async function EventHandoffDetail({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('detailTitle', { item: event.source.item_code })}
         description={<span className="break-words">{event.input.name}</span>}
         actions={

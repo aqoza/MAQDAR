@@ -5,8 +5,9 @@ export type SettingsSectionKey =
 
 /** Follow the real local Settings navigation, including the collapsed laptop/mobile menu. */
 export async function selectSettingsSection(page: Page, section: SettingsSectionKey) {
-  const workspace = page.locator('[data-settings-workspace]')
-  // React may briefly stage a hidden copy while the server response streams.
+  // React can stage a hidden copy between assertions while the response streams.
+  // Require exactly one visible, interactive workspace without counting that staged tree.
+  const workspace = page.locator('[data-settings-workspace]:visible')
   await expect(workspace).toHaveCount(1)
   await expect(workspace).toBeVisible()
   const tab = workspace.locator(`[data-settings-section="${section}"]`)

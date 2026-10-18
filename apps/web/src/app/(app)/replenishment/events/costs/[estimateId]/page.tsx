@@ -40,6 +40,7 @@ export default async function EventCostDetail({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('saved')}
         description={
           <span className="break-words">

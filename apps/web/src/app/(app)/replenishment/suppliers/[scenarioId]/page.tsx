@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
@@ -37,13 +38,14 @@ export default async function SavedSupplierScenario({
   const report = supplierScenarioReportSchema.parse(data.report)
   return (
     <div className="space-y-4">
-      <h1 className="text-page-title">{t('saved')}</h1>
+      <PageHeader pattern="replenishment" title={t('saved')} />
       <p>
         {t('savedBy', {
           actor: data.submitted_by === context.userId ? t('you') : data.submitted_by,
           time: format.dateTime(new Date(data.created_at), 'long'),
         })}
       </p>
+
       <p>{t('immutable')}</p>
       <SupplierScenarioReport report={report} locale={locale} />
       {report.status === 'available' && (

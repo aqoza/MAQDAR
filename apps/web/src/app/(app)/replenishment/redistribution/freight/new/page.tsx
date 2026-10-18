@@ -61,13 +61,8 @@ export default async function NewTransferFreight({
   }
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      <Link
-        className="inline-block underline"
-        href={`/replenishment/redistribution/dates/${draft.data}`}
-      >
-        {t('source')}
-      </Link>
       <PageHeader
+        pattern="replenishment"
         title={t('new')}
         description={`${saved.source.destination.policy.item_code} · ${saved.source.source_location_code} → ${saved.source.destination.policy.location_code}`}
         help={
@@ -75,6 +70,14 @@ export default async function NewTransferFreight({
             <p>{t('method')}</p>
             <p>{t('noGuarantee')}</p>
           </HelpDisclosure>
+        }
+        back={
+          <Link
+            className="inline-block underline"
+            href={`/replenishment/redistribution/dates/${draft.data}`}
+          >
+            {t('source')}
+          </Link>
         }
       />
       <form

@@ -44,7 +44,7 @@ export async function RedistributionReport({ report, locale }: { report: Report;
         ).map(([key, value]) => (
           <div className="workspace-panel min-w-0" key={key}>
             <p className="text-muted-foreground">{t(key)}</p>
-            <p className="text-page-title wrap-anywhere tabular-nums">
+            <p className="text-evidence-value wrap-anywhere tabular-nums">
               {amount(value)} {unit}
             </p>
           </div>

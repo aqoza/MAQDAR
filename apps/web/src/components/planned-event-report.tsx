@@ -16,7 +16,7 @@ export function PlannedEventReport({ report }: { report: EventReport }) {
         {(['baseline', 'addition', 'adjusted'] as const).map((key) => (
           <div key={key} className="min-w-0 workspace-panel">
             <h2 className="text-subsection-title">{t(key)}</h2>
-            <p className="break-words text-section-title tabular-nums">
+            <p className="break-words text-evidence-value tabular-nums">
               <bdi>
                 {format(report.totals[key])} {report.input.unit}
               </bdi>

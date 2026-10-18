@@ -32,6 +32,7 @@ export default async function EventDetail({ params }: { params: Promise<{ scenar
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="forecasts"
         title={<span className="break-words">{report.input.name}</span>}
         description={t('savedDescription')}
         actions={

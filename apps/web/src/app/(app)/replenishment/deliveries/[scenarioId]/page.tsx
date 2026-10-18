@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { PurchaseCostHistory } from '@/components/purchase-cost-history'
 import type { RawSearchParams } from '@/lib/master-data/list-params'
 import Link from 'next/link'
@@ -38,13 +39,14 @@ export default async function SavedDeliveryScenario({
   const costT = await getTranslations('PurchaseCosts')
   return (
     <div className="space-y-4">
-      <h1 className="text-page-title">{t('saved')}</h1>
+      <PageHeader pattern="replenishment" title={t('saved')} />
       <p>
         {t('savedBy', {
           actor: data.submitted_by === context.userId ? t('you') : data.submitted_by,
           time: format.dateTime(new Date(data.created_at), 'long'),
         })}
       </p>
+
       <p>{t('immutable')}</p>
       {['available', 'no_order_needed'].includes(report.status) && (
         <Link

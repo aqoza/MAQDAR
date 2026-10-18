@@ -35,10 +35,8 @@ export default async function SavedRedistribution({
   const report = redistributionReportSchema.parse(result.data.report)
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      <Link className="inline-block underline" href="/replenishment/redistribution">
-        {t('back')}
-      </Link>
       <PageHeader
+        pattern="replenishment"
         title={t('saved')}
         description={`${report.destination.policy.item_code} · ${report.source_location_code} → ${report.destination.policy.location_code} · ${report.destination.policy.cutoff}`}
         actions={
@@ -47,6 +45,11 @@ export default async function SavedRedistribution({
             href={`/replenishment/redistribution/dates/new?draft=${redistributionId}`}
           >
             {dates('create')}
+          </Link>
+        }
+        back={
+          <Link className="inline-block underline" href="/replenishment/redistribution">
+            {t('back')}
           </Link>
         }
       />

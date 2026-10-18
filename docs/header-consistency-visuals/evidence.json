@@ -1,0 +1,90 @@
+{
+  "contract": "../header-consistency.md: retain the approved illustrated header family across all 117 authenticated route files and seven existing loading boundaries, preserve response/permission/data contracts, enforce Items typography and compact spacing, and verify real production-browser desktop/mobile/Arabic RTL renders. The new upstream Event Integration fallback uses the existing illustrated IntegrationWorkbenchHeader wrapper; the CI guard validates that wrapper without changing its rendering.",
+  "targetViewports": ["1920x900", "1366x768", "375x900"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Real Chromium checks exercised focus and Enter on back navigation, retry with an observed server refresh, return to Dashboard, existing tab keyboard behavior, and mobile header-link targets of at least 44px. The separate 16-case browser suite verifies tab/form lifecycle, LTR/RTL keys, help overlays and restored focus. Reduced-motion loading has animation-name:none. Decorative SVGs remain aria-hidden and pointer-events:none. Against the mint gradient endpoints, the retained foreground, muted and link colors have minimum calculated ratios of 12.63:1, 4.77:1 and 7.11:1; the artwork was also visually inspected. This is targeted verification, not a complete pixel-contrast, axe or assistive-technology audit."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "Actual production screens were captured in English at 1920x900, 1366x768 and 375x900 and Arabic RTL at 1366x768 and 375x900. Assertions verify one section banner, 20px/28px titles, 14px/20px navigation/subtitles/actions, 12px/16px disclosures, matching locale font families, 14px desktop inputs and 16px/24px mobile inputs, 16px/24px semibold compact evidence-card values, a tagline-to-title gap no greater than 12px, contained titles/actions and locally scrolling tabs. The broader responsive suite passed at 375, 768, 1024, 1440 and 1920px, including Dashboard-to-Items navigation and sidebar type/icon checks. Long part identifiers wrap without shrinking their type."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "Real throttled Imports history and creation reloads retain their section artwork at y=0 with a 100px desktop backdrop. Both existing fallback components are exercised without inserting new ancestor streaming boundaries or adding tabs. The existing policy-list and Settings loading checks also ran in the full browser sweep."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Fresh local organizations and empty master-data sublists keep the same section header and the existing truthful empty state and authorized creation/import actions. No dashboard or planning values are fabricated."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "An intentionally incomplete local policy-evidence fixture displays translated generic Arabic recovery under the forecast pattern. Retry produces another server response and the Dashboard return link works; exception details are not rendered. Invalid batch selection branches retain their section heading. Matched missing Item routes retain HTTP 404, the visible code and translated recovery."
+    },
+    "partial": {
+      "status": "not-applicable",
+      "reason": "The shared header loads no operational dataset and adds no calculations. Its title and metadata arrive with the existing page response; partial planning evidence remains owned by unchanged report components. This presentation change defines no new partial-data behavior."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Existing create/edit/delete, import, policy review, independent purchase/transfer review and saved-evidence workflows were exercised in the full sweep and affected-suite reruns. Back/source destinations, forms and actions remain functional under the new header. The merged repeated-download and event read API checks also pass in the rerun."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Read-only viewers retain their allowed master data and Settings panels without administrative actions. Hidden-record/branch checks retain the existing 404 behavior and no record details. Imports stay hidden from viewers and their report API still refuses access. Tenant/location filtering and all RPC contracts are unchanged by this PR."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1920x900",
+      "artifact": "transfer-after-1920.png",
+      "observation": "Actual Transfer Proposal detail: shared compact mint header, 20px page title, method/back controls and existing saved evidence."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "transfer-after-1366.png",
+      "observation": "Laptop: the illustrated detail header reaches the global bar; the title aligns with Items and all three visible freight values use 16px/24px semibold text on one line."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "transfer-after-375.png",
+      "observation": "Mobile: wrapping header actions and 44px back target retain the shared title/body scale; record panels stack vertically."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "transfer-ar-1366.png",
+      "observation": "Arabic locale: mirrored header/sidebar placement and the same type roles. Existing untranslated planning text uses English fallback."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "item-edit-ar-375.png",
+      "observation": "RTL edit route with a long LTR part identifier: title wrapping, existing back/delete controls and the native form remain contained."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "loading-import-1366.png",
+      "observation": "Unmodified screenshot of the actual throttled Imports operations fallback, with the same 100px illustrated desktop header and no added tabs."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-error-ar-1366.png",
+      "observation": "Translated generic recovery under the forecast section pattern, with retry and Dashboard return controls."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "not-found-ar-375.png",
+      "observation": "Matched missing-record recovery keeps the Item pattern, translated copy, visible 404 code and safe return link."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "before-after.png",
+      "observation": "Original main and actual implementation captures at identical viewport dimensions, placed side by side. Fixture content differs; no similarity percentage is claimed."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "font-correction-before-after.png",
+      "observation": "Previous 28px/36px record values compared with the corrected 16px/24px evidence role. Both are actual production-app browser captures at the same viewport; the supplied rate no longer wraps."
+    }
+  ]
+}
