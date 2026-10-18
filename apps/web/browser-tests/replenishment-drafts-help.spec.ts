@@ -22,17 +22,32 @@ for (const width of [375, 1440]) {
       await expect(dialog.getByText('A planning draft, not a purchase order.')).toBeVisible()
       await expect(dialog.getByRole('heading', { name: 'Policy comparison' })).toHaveCSS(
         'font-size',
-        '16px',
+        '13px',
       )
       await expect(dialog.getByRole('heading', { name: 'How to read these drafts' })).toHaveCSS(
         'font-size',
-        '20px',
+        '16px',
       )
+      await expect(dialog.getByText('Replenishment drafts', { exact: true })).toHaveCSS(
+        'font-size',
+        '12px',
+      )
+      // The modal makes the page inert; its visual typography must still stay unchanged.
+      await expect(
+        page.getByRole('heading', {
+          name: 'Replenishment drafts',
+          exact: true,
+          includeHidden: true,
+        }),
+      ).toHaveCSS('font-size', '20px')
       await expect(dialog).toHaveCSS('background-color', 'rgb(255, 255, 255)')
       await expect(dialog).toHaveCSS('border-radius', '24px')
       await expect(
         dialog.getByText('Each draft shows the unrounded gap against that maximum.'),
-      ).toHaveCSS('font-size', '14px')
+      ).toHaveCSS('font-size', '13px')
+      await expect(
+        dialog.getByText('Each draft shows the unrounded gap against that maximum.'),
+      ).toHaveCSS('line-height', '19px')
       expect(await search.boundingBox()).toEqual(before)
       const bounds = (await dialog.boundingBox())!
       expect(bounds.width).toBe(Math.min(width - 2 * gutter, 420))
@@ -43,6 +58,12 @@ for (const width of [375, 1440]) {
       expect(bounds.x + bounds.width).toBeLessThanOrEqual(width)
       expect(direction === 'rtl' ? bounds.x : width - bounds.x - bounds.width).toBe(gutter)
       const closeButtons = dialog.getByRole('button', { name: 'Close', exact: true })
+      await expect(closeButtons.last()).toHaveCSS('font-size', '14px')
+      for (const close of await closeButtons.all()) {
+        const closeBounds = (await close.boundingBox())!
+        expect(closeBounds.width).toBeGreaterThanOrEqual(44)
+        expect(closeBounds.height).toBeGreaterThanOrEqual(44)
+      }
       await expect(closeButtons.last()).toBeInViewport()
       const nextSteps = dialog.getByText(
         'Supplier constraints, arrival scheduling, and order execution follow separately.',
