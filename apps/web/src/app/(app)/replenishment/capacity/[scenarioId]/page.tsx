@@ -16,7 +16,7 @@ export default async function CapacityDetail({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { scenarioId } = await params
-  if (!z.uuid().safeParse(scenarioId).success) notFound()
+  if (!z.guid().safeParse(scenarioId).success) notFound()
   const [db, t, format] = await Promise.all([
     createClient(),
     getTranslations('ContainerCapacity'),

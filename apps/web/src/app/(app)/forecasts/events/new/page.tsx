@@ -18,7 +18,7 @@ export default async function NewEvent({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { forecast } = await searchParams
-  if (!z.uuid().safeParse(forecast).success) notFound()
+  if (!z.guid().safeParse(forecast).success) notFound()
   const [db, t, messages] = await Promise.all([
     createClient(),
     getTranslations('PlannedEvents'),

@@ -1,0 +1,51 @@
+{
+  "gap": "112.233",
+  "method": "replenishment-gap-v1",
+  "orders": [],
+  "policy": {
+    "day": "2026-06-30",
+    "unit": "EA",
+    "basis": "calculated",
+    "cutoff": "2026-06-30",
+    "run_id": "b95904ac-82c8-6749-b857-f8a4273b5057",
+    "status": "available",
+    "maximum": "108.233",
+    "revision": null,
+    "snapshot": {
+      "id": "f1bfe60a-c84d-3f44-5931-290316fd6fd7",
+      "age": 0,
+      "date": "2026-06-30",
+      "unit": "EA",
+      "currency": "DZD",
+      "quantity": "0.000",
+      "allocated": "0.000",
+      "available": "0.000",
+      "unit_cost": "14725.400",
+      "updated_at": "2026-06-30T15:00:00+00:00"
+    },
+    "item_code": "SYN-ACME-VPL-017",
+    "policy_id": "2f9fffb6-b90c-422b-82f0-57d9afb481a6",
+    "forecast_id": "4e738f00-0fad-49cd-a578-fdb43abf456c",
+    "override_id": null,
+    "value_above": "0.000",
+    "location_code": "SYN-ACME-DZ-ANN",
+    "quantity_above": "0",
+    "unit_provenance": {
+      "rows": 150,
+      "unit": "EA",
+      "units": ["EA"],
+      "method": "source-units-v1",
+      "status": "consistent",
+      "unknown_rows": 0
+    }
+  },
+  "status": "available",
+  "backorders": "4.000",
+  "fingerprint": "97975eac703c9ef6bd0e73a69650d2cd3527df52f798b5ee01d416706e290375",
+  "location_id": "2e10df33-532c-8881-9ab9-1fd214d0ee0b",
+  "protection_end": "2026-07-14",
+  "inbound_quantity": "0",
+  "orders_confirmed": true,
+  "orders_truncated": false,
+  "inventory_position": "-4.000"
+}

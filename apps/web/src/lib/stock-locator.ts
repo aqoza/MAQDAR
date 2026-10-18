@@ -56,7 +56,7 @@ export function stockLocatorHref(params: StockLocatorParams, page: number) {
   return `${stockLocatorPath}?${query}`
 }
 const named = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   code: z.string(),
   name_en: z.string(),
   name_ar: z.string().nullable(),
@@ -90,7 +90,7 @@ export const stockLocatorResultSchema = z.object({
         relationship_path: z
           .array(
             z.object({
-              id: z.uuid(),
+              id: z.guid(),
               direction: z.enum(['two_way', 'one_way']),
               from_code: z.string(),
               to_code: z.string(),
@@ -118,7 +118,7 @@ export const stockLocatorResultSchema = z.object({
         ]),
         snapshot: z
           .object({
-            id: z.uuid(),
+            id: z.guid(),
             date: z.iso.date(),
             updated_at: z.string(),
             age: z.number().int().nonnegative(),
@@ -130,7 +130,7 @@ export const stockLocatorResultSchema = z.object({
           .nullable(),
         lane: z
           .object({
-            id: z.uuid(),
+            id: z.guid(),
             p50: z.number().int().nonnegative(),
             p90: z.number().int().nonnegative(),
             updated_at: z.string(),

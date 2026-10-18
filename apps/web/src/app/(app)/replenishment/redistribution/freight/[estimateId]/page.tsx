@@ -19,7 +19,7 @@ export default async function SavedTransferFreight({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { estimateId } = await params
-  if (!z.uuid().safeParse(estimateId).success) notFound()
+  if (!z.guid().safeParse(estimateId).success) notFound()
   const [db, t, locale, format, review, messages] = await Promise.all([
     createClient(),
     getTranslations('TransferFreight'),

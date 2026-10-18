@@ -42,7 +42,7 @@ export async function enqueueRun(_state: ActionState, form: FormData): Promise<A
 export async function cancelRun(_state: ActionState, form: FormData): Promise<ActionState> {
   const guard = await requireEditor(form)
   if (!guard.ok) return guard.state
-  const run = z.uuid().safeParse(form.get('run_id'))
+  const run = z.guid().safeParse(form.get('run_id'))
   if (!run.success) return invalidState('validation')
   const db = await createClient()
   const { error } = await db.rpc('planning_cancel', {

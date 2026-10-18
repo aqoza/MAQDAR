@@ -65,14 +65,16 @@ export const optionalDateSchema = z
   .transform((value) => (value === '' ? null : value))
   .pipe(z.iso.date().nullable())
 
+/** PostgreSQL resource UUIDs have no RFC version/variant constraint; z.guid() matches isUuid(). */
+
 /** Optional reference picked from a select of ids; '' becomes null. */
 export const optionalUuidSchema = z
   .string()
   .trim()
   .transform((value) => (value === '' ? null : value.toLowerCase()))
-  .pipe(z.uuid().nullable())
+  .pipe(z.guid().nullable())
 
-export const uuidSchema = z.string().trim().toLowerCase().pipe(z.uuid())
+export const uuidSchema = z.string().trim().toLowerCase().pipe(z.guid())
 
 /** Optional two-letter ISO country code (any code, not only the regional countries); '' → null. */
 export const optionalCountryCodeSchema = z

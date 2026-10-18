@@ -26,7 +26,7 @@ export default async function NewCapacity({
     searchParams,
   ])
   const values = capacityParams(raw)
-  const batch = z.uuid().safeParse(values.batch)
+  const batch = z.guid().safeParse(values.batch)
   if (!batch.success) notFound()
   const source = await db
     .from('purchase_handoff_batches')

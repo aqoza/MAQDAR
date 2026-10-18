@@ -27,7 +27,7 @@ export const SUPPLIER_PART_NUMBER_MAX_LENGTH = 100
 
 export const supplierItemSchema = z
   .object({
-    supplier_id: z.string().trim().min(1).toLowerCase().pipe(z.uuid()),
+    supplier_id: z.string().trim().min(1).toLowerCase().pipe(z.guid()),
     item_code: codeSchema({ allowSlash: true }),
     supplier_part_number: optionalText(SUPPLIER_PART_NUMBER_MAX_LENGTH),
     lead_time_days: integerSchema({ min: 0 }),

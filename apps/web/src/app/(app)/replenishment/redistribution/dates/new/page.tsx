@@ -35,7 +35,7 @@ export default async function NewTransferDates({
     searchParams,
   ])
   const values = transferDateParams(raw)
-  const draft = z.uuid().safeParse(values.draft)
+  const draft = z.guid().safeParse(values.draft)
   if (!draft.success) notFound()
   const source = await db
     .from('redistribution_drafts')

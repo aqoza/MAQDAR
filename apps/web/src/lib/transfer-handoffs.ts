@@ -3,24 +3,24 @@ import { transferFreightReportSchema } from './transfer-freight'
 import { csvReport } from './imports/report'
 import { parseListParams, type ListSpec, type RawSearchParams } from './master-data/list-params'
 
-export const handoffInputSchema = z.object({ proposal_id: z.uuid() })
+export const handoffInputSchema = z.object({ proposal_id: z.guid() })
 export const handoffPayloadSchema = z.object({
   schema_version: z.literal('transfer-handoff-v1'),
   purpose: z.literal('planning_only'),
   notice: z.string(),
-  handoff_id: z.uuid(),
-  organization_id: z.uuid(),
-  created_by: z.uuid(),
+  handoff_id: z.guid(),
+  organization_id: z.guid(),
+  created_by: z.guid(),
   created_at: z.string(),
   proposal: z.object({
-    id: z.uuid(),
+    id: z.guid(),
     revision: z.number().int().positive(),
-    estimate_id: z.uuid(),
-    redistribution_id: z.uuid(),
-    submitted_by: z.uuid(),
+    estimate_id: z.guid(),
+    redistribution_id: z.guid(),
+    submitted_by: z.guid(),
     submitted_at: z.string(),
     reason: z.string(),
-    approved_by: z.uuid(),
+    approved_by: z.guid(),
     approved_at: z.string(),
     approval_reason: z.string(),
   }),
@@ -136,8 +136,8 @@ export const handoffListSpec: ListSpec = {
 }
 export const handoffListParams = (raw: RawSearchParams) => parseListParams(raw, handoffListSpec)
 export const handoffRowSchema = z.object({
-  id: z.uuid(),
-  proposal_id: z.uuid(),
+  id: z.guid(),
+  proposal_id: z.guid(),
   created_at: z.string(),
   selected: z.boolean(),
   item_code: z.string(),

@@ -11,7 +11,7 @@ export const unitProvenanceSchema = z.object({
 })
 const decimal = z.string().regex(/^-?\d+(\.\d+)?$/)
 export const stockSnapshotSchema = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   date: z.iso.date(),
   updated_at: z.string(),
   age: z.number().int(),
@@ -28,7 +28,7 @@ export const stockPoolSchema = z.object({
   members: z
     .array(
       z.object({
-        item_id: z.uuid(),
+        item_id: z.guid(),
         item_code: z.string(),
         unit_provenance: unitProvenanceSchema.nullable(),
         status: z.enum([
@@ -57,9 +57,9 @@ export const comparisonSchema = z.object({
     'stock_unit_unknown',
     'unit_mismatch',
   ]),
-  policy_id: z.uuid(),
-  run_id: z.uuid(),
-  forecast_id: z.uuid(),
+  policy_id: z.guid(),
+  run_id: z.guid(),
+  forecast_id: z.guid(),
   item_code: z.string(),
   location_code: z.string(),
   day: z.iso.date(),
@@ -67,7 +67,7 @@ export const comparisonSchema = z.object({
   unit: z.string().nullable(),
   unit_provenance: unitProvenanceSchema.nullable(),
   basis: z.enum(['calculated', 'approved']),
-  override_id: z.uuid().nullable(),
+  override_id: z.guid().nullable(),
   revision: z.number().int().nullable(),
   maximum: decimal.nullable(),
   quantity_above: decimal.nullable(),
@@ -81,7 +81,7 @@ export function comparisonParams(raw: RawSearchParams) {
     .object({
       day: z.iso.date(),
       basis: z.enum(['calculated', 'approved']),
-      override: z.uuid().optional(),
+      override: z.guid().optional(),
     })
     .refine((v) => (v.basis === 'approved') === (v.override !== undefined))
     .safeParse({

@@ -4,15 +4,15 @@ import { csvReport } from './imports/report'
 import { parseListParams, type RawSearchParams } from './master-data/list-params'
 
 export const batchInputSchema = z
-  .array(z.uuid())
+  .array(z.guid())
   .min(1)
   .max(50)
   .refine((ids) => new Set(ids).size === ids.length)
 export const batchSummarySchema = z.object({
-  lane_id: z.uuid(),
-  source_location_id: z.uuid(),
+  lane_id: z.guid(),
+  source_location_id: z.guid(),
   source_code: z.string(),
-  location_id: z.uuid(),
+  location_id: z.guid(),
   location_code: z.string(),
   currency: z.string().regex(/^[A-Z]{3}$/),
   minor_units: z.number().int().min(0).max(3),
@@ -21,7 +21,7 @@ export const batchSummarySchema = z.object({
   subtotal: z.string().regex(/^\d+(\.\d+)?$/),
 })
 export const batchPreviewSchema = z.object({
-  existing_batch_id: z.uuid().nullable(),
+  existing_batch_id: z.guid().nullable(),
   summary: batchSummarySchema,
   lines: z.array(handoffPayloadSchema).min(1).max(50),
 })
@@ -29,9 +29,9 @@ export const batchPayloadSchema = z.object({
   schema_version: z.literal('transfer-handoff-batch-v1'),
   purpose: z.literal('planning_only'),
   notice: z.string(),
-  batch_id: z.uuid(),
-  organization_id: z.uuid(),
-  created_by: z.uuid(),
+  batch_id: z.guid(),
+  organization_id: z.guid(),
+  created_by: z.guid(),
   created_at: z.string(),
   summary: batchSummarySchema,
   lines: z.array(handoffPayloadSchema).min(1).max(50),
@@ -61,7 +61,7 @@ export function batchCsv(payload: BatchPayload): string {
 export const batchListSpec = handoffListSpec
 export const batchListParams = (raw: RawSearchParams) => parseListParams(raw, batchListSpec)
 export const batchRowSchema = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   created_at: z.string(),
   source_code: z.string(),
   location_code: z.string(),

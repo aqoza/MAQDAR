@@ -28,7 +28,7 @@ export default async function ForecastResults({
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
   const { item } = await searchParams
-  if (!z.uuid().safeParse(runId).success || (item && !z.uuid().safeParse(item).success)) notFound()
+  if (!z.guid().safeParse(runId).success || (item && !z.guid().safeParse(item).success)) notFound()
   const [db, t, locale] = await Promise.all([
     createClient(),
     getTranslations('Forecasting'),

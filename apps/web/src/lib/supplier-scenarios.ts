@@ -16,7 +16,7 @@ export const supplierScenarioStatuses = [
 ] as const
 const decimal = z.string().regex(/^-?\d+(\.\d+)?$/)
 export const supplierScenarioInputSchema = z.object({
-  draft: z.uuid(),
+  draft: z.guid(),
   supplier: z
     .string()
     .trim()
@@ -38,14 +38,14 @@ export function supplierScenarioParams(raw: RawSearchParams) {
 export const supplierScenarioReportSchema = z.object({
   method: z.literal('supplier-rounding-v1'),
   status: z.enum(supplierScenarioStatuses),
-  location_id: z.uuid(),
+  location_id: z.guid(),
   requested_supplier_code: z.string(),
   terms_confirmed: z.boolean(),
   source: z.object({
-    draft_id: z.uuid(),
+    draft_id: z.guid(),
     draft_fingerprint: z.string(),
-    policy_id: z.uuid(),
-    item_id: z.uuid(),
+    policy_id: z.guid(),
+    item_id: z.guid(),
     item_code: z.string(),
     location_code: z.string(),
     cutoff: z.iso.date(),
@@ -55,7 +55,7 @@ export const supplierScenarioReportSchema = z.object({
   }),
   supplier: z
     .object({
-      id: z.uuid(),
+      id: z.guid(),
       code: z.string(),
       name: z.string(),
       active: z.boolean(),
@@ -64,7 +64,7 @@ export const supplierScenarioReportSchema = z.object({
     .nullable(),
   terms: z
     .object({
-      id: z.uuid(),
+      id: z.guid(),
       unit: z.string().nullable(),
       moq: decimal,
       pack: decimal,

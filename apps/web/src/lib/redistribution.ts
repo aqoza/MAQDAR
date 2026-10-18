@@ -26,9 +26,9 @@ export const redistributionStatuses = [
 ] as const
 const decimal = z.string().regex(/^-?\d+(\.\d+)?$/)
 export const redistributionInputSchema = z.object({
-  draft: z.uuid(),
-  policy: z.uuid(),
-  maximum: z.union([z.literal('calculated'), z.uuid()]),
+  draft: z.guid(),
+  policy: z.guid(),
+  maximum: z.union([z.literal('calculated'), z.guid()]),
   backorders: z
     .string()
     .transform(normalizeDigits)
@@ -66,11 +66,11 @@ export function redistributionRpcInput(input: z.infer<typeof redistributionInput
 export const redistributionReportSchema = z.object({
   method: z.literal('redistribution-quantity-v1'),
   status: z.enum(redistributionStatuses),
-  draft_id: z.uuid(),
-  location_id: z.uuid(),
-  source_location_id: z.uuid(),
-  source_policy_id: z.uuid(),
-  source_item_id: z.uuid(),
+  draft_id: z.guid(),
+  location_id: z.guid(),
+  source_location_id: z.guid(),
+  source_policy_id: z.guid(),
+  source_item_id: z.guid(),
   source_location_code: z.string(),
   source_policy: comparisonSchema.nullable(),
   destination: replenishmentReportSchema,
@@ -78,16 +78,16 @@ export const redistributionReportSchema = z.object({
   commitments_confirmed: z.boolean(),
   lane_confirmed: z.boolean(),
   basis: z.enum(['calculated', 'approved']),
-  override_id: z.uuid().nullable(),
+  override_id: z.guid().nullable(),
   source_surplus: decimal.nullable(),
   quantity: decimal.nullable(),
   fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
   lane: z
     .object({
-      id: z.uuid(),
+      id: z.guid(),
       active: z.boolean(),
-      from_location_id: z.uuid(),
-      to_location_id: z.uuid(),
+      from_location_id: z.guid(),
+      to_location_id: z.guid(),
       lead_time_days_p50: z.number().int(),
       lead_time_days_p90: z.number().int(),
       freight_basis: z.enum(['none', 'per_unit', 'per_shipment']),

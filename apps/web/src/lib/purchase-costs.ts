@@ -16,7 +16,7 @@ export const purchaseCostStatuses = [
   'amount_out_of_range',
 ] as const
 export const purchaseCostInputSchema = z.object({
-  delivery: z.uuid(),
+  delivery: z.guid(),
   confirmed: z.enum(['true', 'false']),
 })
 export const purchaseCostSaveSchema = purchaseCostInputSchema.extend({
@@ -32,18 +32,18 @@ const date = z.iso.date()
 export const purchaseCostReportSchema = z.object({
   method: z.literal('purchase-cost-v1'),
   status: z.enum(purchaseCostStatuses),
-  location_id: z.uuid(),
+  location_id: z.guid(),
   price_confirmed: z.boolean(),
   source: z.object({
-    delivery_id: z.uuid(),
+    delivery_id: z.guid(),
     delivery_fingerprint: z.string(),
-    supplier_scenario_id: z.uuid(),
+    supplier_scenario_id: z.guid(),
     supplier_fingerprint: z.string(),
-    draft_id: z.uuid(),
-    item_id: z.uuid().nullable(),
+    draft_id: z.guid(),
+    item_id: z.guid().nullable(),
     item_code: z.string(),
     location_code: z.string(),
-    supplier_id: z.uuid().nullable(),
+    supplier_id: z.guid().nullable(),
     supplier_code: z.string(),
     unit: z.string().nullable(),
     quantity: decimal.nullable(),
@@ -54,7 +54,7 @@ export const purchaseCostReportSchema = z.object({
   }),
   supplier: z
     .object({
-      id: z.uuid(),
+      id: z.guid(),
       code: z.string(),
       active: z.boolean(),
       updated_at: z.string(),
@@ -62,9 +62,9 @@ export const purchaseCostReportSchema = z.object({
     .nullable(),
   price: z
     .object({
-      terms_id: z.uuid(),
-      item_id: z.uuid(),
-      supplier_id: z.uuid(),
+      terms_id: z.guid(),
+      item_id: z.guid(),
+      supplier_id: z.guid(),
       unit: z.string().nullable(),
       unit_price: decimal.nullable(),
       raw_unit_price: z.string(),

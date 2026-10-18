@@ -16,7 +16,7 @@ export default async function SavedRedistribution({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { redistributionId } = await params
-  if (!z.uuid().safeParse(redistributionId).success) notFound()
+  if (!z.guid().safeParse(redistributionId).success) notFound()
   const [db, t, dates, locale, format] = await Promise.all([
     createClient(),
     getTranslations('Redistribution'),

@@ -21,7 +21,7 @@ export default async function HandoffDetail({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { handoffId } = await params
-  if (!z.uuid().safeParse(handoffId).success) notFound()
+  if (!z.guid().safeParse(handoffId).success) notFound()
   const [db, t, locale, format] = await Promise.all([
     createClient(),
     getTranslations('PurchaseHandoffs'),

@@ -2,9 +2,9 @@ import { z } from 'zod'
 import { parseListParams, type RawSearchParams, type ListSpec } from './master-data/list-params'
 
 const reason = z.string().trim().min(1).max(2000)
-export const proposalSchema = z.object({ estimate_id: z.uuid(), request_id: z.uuid(), reason })
+export const proposalSchema = z.object({ estimate_id: z.guid(), request_id: z.uuid(), reason })
 export const decisionSchema = z.object({
-  proposal_id: z.uuid(),
+  proposal_id: z.guid(),
   request_id: z.uuid(),
   reason,
   decision: z.enum(['approved', 'rejected', 'withdrawn']),
@@ -40,9 +40,9 @@ export const workbenchSpec: ListSpec = {
 }
 export const workbenchParams = (raw: RawSearchParams) => parseListParams(raw, workbenchSpec)
 export const workbenchRowSchema = z.object({
-  id: z.uuid(),
-  estimate_id: z.uuid(),
-  draft_id: z.uuid(),
+  id: z.guid(),
+  estimate_id: z.guid(),
+  draft_id: z.guid(),
   revision: z.number().int().positive(),
   created_at: z.string(),
   status: z.enum(REVIEW_STATUSES),

@@ -19,7 +19,7 @@ export default async function SavedDraft({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { draftId } = await params
-  if (!z.uuid().safeParse(draftId).success) notFound()
+  if (!z.guid().safeParse(draftId).success) notFound()
   const [db, t, locale, format] = await Promise.all([
     createClient(),
     getTranslations('Replenishment'),
