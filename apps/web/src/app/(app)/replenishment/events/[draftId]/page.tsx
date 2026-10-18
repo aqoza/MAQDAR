@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { PageHeader } from '@/components/page-header'
 import { EventReplenishmentReport } from '@/components/event-replenishment-report'
 import { eventDraftReportSchema } from '@/lib/event-replenishment'
+import { isEditorRole } from '@/lib/auth/roles'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 
@@ -16,7 +17,7 @@ export default async function EventDraftDetail({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { draftId } = await params
-  if (!z.uuid().safeParse(draftId).success) notFound()
+  if (!z.guid().safeParse(draftId).success) notFound()
   const [db, t, format] = await Promise.all([
     createClient(),
     getTranslations('EventReplenishment'),
@@ -52,6 +53,16 @@ export default async function EventDraftDetail({
         </bdi>{' '}
         · {t('cutoff', { date: report.scenario.event.source.cutoff })}
       </p>
+      <div className="flex flex-wrap gap-4">
+        {isEditorRole(context.role) && (
+          <Link className="underline" href={`/replenishment/events/suppliers/new?draft=${draftId}`}>
+            {(await getTranslations('EventSuppliers'))('new')}
+          </Link>
+        )}
+        <Link className="underline" href={`/replenishment/events/suppliers?draft=${draftId}`}>
+          {(await getTranslations('EventSuppliers'))('history')}
+        </Link>
+      </div>
       <EventReplenishmentReport report={report} />
       <p className="text-xs text-muted-foreground">
         {t('savedAt', { time: format.dateTime(new Date(data.created_at), 'long') })}

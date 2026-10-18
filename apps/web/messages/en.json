@@ -1688,7 +1688,9 @@
       "container_capacity_scenarios": "Container capacity scenarios",
       "planned_event_scenarios": "Planned event scenarios",
       "event_policy_scenarios": "Event policy scenarios",
-      "other": "Other business record"
+      "other": "Other business record",
+      "event_supplier_scenarios": "Event supplier scenarios",
+      "event_replenishment_drafts": "Event replenishment drafts"
     }
   },
   "Planning": {
@@ -3551,6 +3553,63 @@
     "statuses": {
       "scenario_changed": "The saved event or calculated policy evidence has changed. Create a new event-policy scenario before replenishment.",
       "event_unconfirmed": "Confirm that the event additions are not also counted in allocations or entered backorders."
+    }
+  },
+  "EventSuppliers": {
+    "new": "Create event supplier scenario",
+    "saved": "Saved event supplier scenario",
+    "history": "Event supplier history",
+    "source": "Event replenishment evidence",
+    "findTerms": "Find supplier terms for this item",
+    "supplier": "Supplier code",
+    "entry": "Supplier terms for the saved event draft",
+    "confirmation": "I confirm that these supplier MOQ and pack terms apply at the saved draft cutoff, {date}.",
+    "preview": "Preview supplier comparison",
+    "previewing": "Checking supplier terms…",
+    "save": "Save event supplier scenario",
+    "saving": "Saving…",
+    "comparison": "Supplier quantity comparison",
+    "baselineQuantity": "Baseline rounded quantity",
+    "adjustedQuantity": "Event-adjusted rounded quantity",
+    "increase": "Increase in rounded quantity",
+    "measure": "Measure",
+    "baseline": "Baseline",
+    "adjusted": "Event-adjusted",
+    "gap": "Saved replenishment gap",
+    "quantity": "Rounded quantity",
+    "overage": "Overage above gap",
+    "moq": "Minimum order quantity",
+    "pack": "Pack multiple",
+    "lead": "Supplier-item lead time",
+    "days": "{days} calendar days",
+    "cutoff": "As of {date}",
+    "savedAt": "Saved {time}",
+    "timingWarning": "The saved draft includes overdue or late inbound. Supplier rounding retains these timing concerns and does not assess arrival dates.",
+    "planningOnly": "Saved planning comparison. Quantities are independent scenarios; no stock is reserved and no order is created.",
+    "evidence": "Supplier terms, calculation and saved draft evidence",
+    "formula": "For each gap separately: zero stays zero; otherwise round max(gap, MOQ) up to a pack multiple. Overage is rounded quantity minus gap. The increase compares the two rounded quantities; do not add them together.",
+    "fixedEvidence": "Stock, inbound, backorders, event assumptions and policy parameters remain as saved. Current supplier terms are captured with confirmation; stock commitments are not refreshed.",
+    "capturedTerms": "Supplier-item terms last updated {time}.",
+    "changed": "The supplier evidence changed or this request conflicts with a previous save. Refresh the preview and try again.",
+    "readOnly": "You can inspect saved scenarios. An owner, admin or planner must create a new scenario.",
+    "historyNote": "Saved scenarios retain their original supplier and event evidence after later changes. Separate scenarios can propose overlapping supply.",
+    "empty": "No supplier scenarios saved for this event draft.",
+    "historyQuantity": "{supplier} · {quantity} {unit} event-adjusted quantity",
+    "pagination": "Supplier scenario pages",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}",
+    "statuses": {
+      "draft_unavailable": "This saved event draft is unavailable or incompatible. Select another draft.",
+      "policy_unavailable": "The saved policy lead time is unavailable. Select a compatible draft.",
+      "supplier_missing": "No supplier matches this code in the active organization.",
+      "supplier_inactive": "Select an active supplier.",
+      "terms_missing": "This supplier has no terms for the saved item.",
+      "unit_unknown": "The saved draft and supplier terms need known supplied units.",
+      "unit_mismatch": "The supplier unit must match the saved draft unit.",
+      "lead_time_mismatch": "The supplier-item lead time must equal the saved policy lead time.",
+      "terms_unconfirmed": "Confirm that the supplier MOQ and pack terms apply at the saved cutoff.",
+      "quantity_out_of_range": "A rounded quantity exceeds the supported range. This scenario cannot be saved."
     }
   }
 }

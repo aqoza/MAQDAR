@@ -282,6 +282,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"event_supplier_scenarios": {
+                  Row: {
+                    "created_at": string,"draft_id": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"draft_id": string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"draft_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_supplier_scenarios_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "event_replenishment_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_supplier_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"forecast_results": {
                   Row: {
                     "evidence": NonNullable<Json>,"id": string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"model": string | null,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>
@@ -2287,6 +2313,12 @@ isOneToOne: false
                            },
 "event_replenishment_save":
 { Args: { "p_backorders": string,"p_event_uncommitted": boolean,"p_fingerprint": string,"p_orders_confirmed": boolean,"p_organization_id": string,"p_request_id": string,"p_scenario_id": string }; Returns: string
+                           },
+"event_supplier_preview":
+{ Args: { "p_draft_id": string,"p_organization_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: Json
+                           },
+"event_supplier_save":
+{ Args: { "p_draft_id": string,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: string
                            },
 "forecast_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
