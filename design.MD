@@ -22,7 +22,7 @@ Sizes are expressed in rem in the implementation so browser text scaling is resp
 
 ## Shared application shell
 
-The compact help side-panel style approved on 2026-10-18 is capped at 420px (26.25rem), filling the viewport on narrower screens. It uses the shared 20px / 28px title and 16px / 24px section roles, 14px / 21px body copy, and 14px / 20px subtitles and footer buttons. Keep a white surface in the light theme, a pale green callout, a thin grey-green border, and a barely visible neutral shadow. These styles live only in `help-side-panel.module.css`; page, navigation and sidebar typography retain the shared scale above.
+The compact help side-panel style approved on 2026-10-18 is capped at 420px (26.25rem), filling the viewport on narrower screens. It uses the shared 20px / 28px title and 16px / 24px section roles, 14px / 21px body copy, and 14px / 20px subtitles and footer buttons. Keep a white surface in the light theme, a pale green callout, a thin grey-green border, and a barely visible neutral shadow. All main Replenishment tab guidance uses `HelpSidePanel`, preserving each tab's existing method copy. These styles live only in `help-side-panel.module.css`; page, navigation and sidebar typography retain the shared scale above.
 
 - Use `AppSidebar` on every authenticated route, including Dashboard. Navigation labels are always 14px / 20px with 16px icons and the same active-label weight. The desktop navigation row is 32px. Brand, organization switcher, account footer, sidebar width and spacing do not change when navigating between Dashboard and Items.
 - Dashboard CSS may style its own panels and decorative surfaces. It must not override the shared sidebar or the shared header's text size.

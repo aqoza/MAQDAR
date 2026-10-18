@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { PageHeader } from '@/components/page-header'
-import { HelpDisclosure } from '@/components/help-disclosure'
+import { StockLocatorHelp } from '@/components/replenishment-workspace-help'
 import { ReplenishmentNav } from '@/components/replenishment-nav'
 
 export async function StockLocatorHeader() {
@@ -11,15 +11,7 @@ export async function StockLocatorHeader() {
       title={t('title')}
       description={t('description')}
       navigation={<ReplenishmentNav current="locator" />}
-      help={
-        <HelpDisclosure>
-          <p>{t('stockHelp')}</p>
-          <p>{t('distanceHelp')}</p>
-          <p>{t('historyHelp')}</p>
-          <p>{t('relationshipHelp')}</p>
-          <p>{t('substituteHelp')}</p>
-        </HelpDisclosure>
-      }
+      help={<StockLocatorHelp />}
     />
   )
 }
