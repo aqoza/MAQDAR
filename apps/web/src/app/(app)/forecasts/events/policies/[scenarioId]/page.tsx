@@ -7,6 +7,7 @@ import { EventPolicyReport } from '@/components/event-policy-report'
 import { eventPolicyReportSchema } from '@/lib/event-policies'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
+import { isEditorRole } from '@/lib/auth/roles'
 
 export default async function EventPolicyDetail({
   params,
@@ -31,6 +32,7 @@ export default async function EventPolicyDetail({
   if (error) throw new Error('Event policy scenario unavailable')
   if (!data) notFound()
   const report = eventPolicyReportSchema.parse(data.report)
+  const draftT = await getTranslations('EventReplenishment')
   return (
     <div className="space-y-4">
       <PageHeader
@@ -58,6 +60,16 @@ export default async function EventPolicyDetail({
         </p>
       </div>
       <EventPolicyReport report={report} />
+      <div className="flex flex-wrap gap-4">
+        {isEditorRole(context.role) && (
+          <Link className="underline" href={`/replenishment/events/new?scenario=${scenarioId}`}>
+            {draftT('new')}
+          </Link>
+        )}
+        <Link className="underline" href={`/replenishment/events?scenario=${scenarioId}`}>
+          {draftT('history')}
+        </Link>
+      </div>
     </div>
   )
 }
