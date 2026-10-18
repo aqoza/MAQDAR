@@ -21,14 +21,19 @@ for (const width of [375, 1440]) {
       await expect(dialog.getByText('A planning draft, not a purchase order.')).toBeVisible()
       await expect(dialog.getByRole('heading', { name: 'Policy comparison' })).toHaveCSS(
         'font-size',
-        '20px',
+        '16px',
       )
       await expect(dialog.getByRole('heading', { name: 'How to read these drafts' })).toHaveCSS(
         'font-size',
-        '30px',
+        '20px',
       )
+      await expect(dialog).toHaveCSS('background-color', 'rgb(255, 255, 255)')
+      await expect(
+        dialog.getByText('Each draft shows the unrounded gap against that maximum.'),
+      ).toHaveCSS('font-size', '14px')
       expect(await search.boundingBox()).toEqual(before)
       const bounds = (await dialog.boundingBox())!
+      expect(bounds.width).toBe(Math.min(width, 420))
       expect(bounds.x).toBeGreaterThanOrEqual(0)
       expect(bounds.x + bounds.width).toBeLessThanOrEqual(width)
       expect(direction === 'rtl' ? bounds.x : width - bounds.x - bounds.width).toBe(0)
