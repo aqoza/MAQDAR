@@ -125,7 +125,8 @@ Steps 13, 13b, 13c, 13d, 14, 15 and 15b were scoped and approved by the owner on
 | 19f  | **Event purchase-cost comparisons:** fixed delivery quantities and dates, confirmed price evidence, independently rounded subtotals and immutable scoped history.                                   | Merged (PR #70)              |
 | 19g  | **Event purchase-proposal review:** independent decisions on full adjusted quantities, price/timing gates, per-event-draft selection and scoped history.                                            | Merged (PR #77)              |
 | 19h  | **Event purchase handoffs:** immutable full-adjusted CSV/JSON exports, baseline/event evidence, selection/price/timing gates and scoped historical downloads.                                       | Merged (PR #79)              |
-| 19i  | **Event handoff batches:** compatible full-adjusted CSV/JSON packages, separate baseline totals, atomic evidence gates, canonical retries, visible overlap and scoped history.                      | Implemented — review pending |
+| 19i  | **Event handoff batches:** compatible full-adjusted CSV/JSON packages, separate baseline totals, atomic evidence gates, canonical retries, visible overlap and scoped history.                      | Merged (PR #80)              |
+| 19j  | **Event handoff read API:** explicit organization-wide permission, paginated original single/batch evidence, exact comparisons and separate live selection.                                         | Implemented — review pending |
 
 Step 13 acceptance, calculation, limits and owner-run rollout are in [replenishment-drafts.md](replenishment-drafts.md).
 
@@ -443,3 +444,7 @@ PR #77 was reviewed at `4418f8d` without blocking findings, all three CI jobs pa
 ### Step 19i approved decisions (2026-10-18)
 
 PR #79 was reviewed at `c0d7bc0` without blocking findings, all three CI jobs passed, and it was merged as `8a078f5`. The owner approved event-only handoff batches of 1–50 distinct items sharing supplier, receiver, currency/precision and adjusted order date. Retain full adjusted quantities and complete baseline/event evidence. Sum saved rounded adjusted and baseline subtotals separately, then subtract for the comparison increase. Recheck selected approvals, current prices and active entities, and require explicit clear policy/event timing evidence; any failure saves nothing. The canonical handoff set is the retry identity, with visible overlap and immutable historical files. Editors create; members require receiving-location access. Keep shared compact green styling at all five widths. No reservations, inbound updates, transmission or order creation. See [event-handoff-batches.md](event-handoff-batches.md).
+
+### Step 19j approved decisions (2026-10-18)
+
+PR #80 was reviewed without blocking findings and merged as `72e549a` with all CI passing. The owner approved read-only event purchase handoff/batch integration endpoints with pagination, original JSON, OpenAPI and integration tests. The new `event_purchase_handoffs:read` scope is explicit and organization-wide, issued only by owners/admins; no previous scope implies it. Expiry, revocation, creator-role checks and browser receiving-location restrictions remain. Current selection is separate from full adjusted selections and immutable baseline/event evidence. Acknowledgements, transmission and order creation follow separately. Acceptance and rollout: [event-handoff-read-api.md](event-handoff-read-api.md).

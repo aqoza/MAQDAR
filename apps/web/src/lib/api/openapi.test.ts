@@ -1,3 +1,6 @@
+import { ACKNOWLEDGEMENT_RESOURCES } from './acknowledgements'
+import { handoffFixture as eventHandoffFixture } from '../event-purchase-handoffs.fixture'
+import { batchFixture as eventBatchFixture } from '../event-handoff-batches.fixture'
 import { handoffFixture as transferFixture } from '../transfer-handoffs.fixture'
 import { batchFixture as transferBatchFixture } from '../transfer-batches.fixture'
 import { describe, expect, it } from 'vitest'
@@ -200,7 +203,7 @@ describe('structure', () => {
         resourcePath(resource, 'upsert'),
       ]),
       ...READ_HANDOFF_RESOURCES.flatMap((resource) => [`/${resource}`, `/${resource}/{id}`]),
-      ...READ_HANDOFF_RESOURCES.flatMap((resource) => [
+      ...ACKNOWLEDGEMENT_RESOURCES.flatMap((resource) => [
         `/${resource}/{id}/acknowledgements`,
         `/${resource}/{id}/acknowledgements/{eventId}`,
       ]),
@@ -216,6 +219,10 @@ describe('structure', () => {
   it('has unique operationIds equal to the served operations', () => {
     const ids = operations(doc).map(([, , operation]) => operation.operationId)
     expect(new Set(ids).size).toBe(ids.length)
+    for (const [, , operation] of operations(doc)) {
+      expect(Array.isArray(operation.tags)).toBe(true)
+      expect((operation.tags as unknown[]).every((tag) => typeof tag === 'string')).toBe(true)
+    }
     expect(ids).toEqual(allOperationIds())
   })
 
@@ -233,11 +240,13 @@ describe('structure', () => {
       )
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
-        : path.startsWith('/transfer-handoff')
-          ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
-          : path.startsWith('/purchase-handoff')
-            ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
-            : []
+        : path.startsWith('/event-purchase-handoff')
+          ? ['event_purchase_handoffs:read']
+          : path.startsWith('/transfer-handoff')
+            ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
+            : path.startsWith('/purchase-handoff')
+              ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
+              : []
       expect(operation['x-maqdar-scopes'], operation.operationId).toEqual(scopes)
       expect(operation.deprecated === true).toBe(deprecationFor(operation.operationId) !== null)
     }
@@ -389,4 +398,24 @@ it('documents original transfer payloads, exact freight and source/destination i
   })
   expect((schema('TransferHandoffRecord').properties as Schema).payload).toBeUndefined()
   expect(doc.paths['/transfer-handoffs/{id}/acknowledgements']?.post).toBeDefined()
+})
+
+it('documents complete event evidence without granting acknowledgement or ordinary scopes', () => {
+  expect(valid(schema('EventPurchaseHandoffPayload'), eventHandoffFixture)).toBe(true)
+  expect(valid(schema('EventPurchaseHandoffBatchPayload'), eventBatchFixture)).toBe(true)
+  expect(
+    valid(schema('EventPurchaseHandoffPayload'), {
+      ...eventHandoffFixture,
+      estimate: {
+        ...eventHandoffFixture.estimate,
+        adjusted: { ...eventHandoffFixture.estimate.adjusted, subtotal: 123 },
+      },
+    }),
+  ).toBe(false)
+  for (const resource of ['event-purchase-handoffs', 'event-purchase-handoff-batches']) {
+    expect(doc.paths[`/${resource}`]?.get?.['x-maqdar-scopes']).toEqual([
+      'event_purchase_handoffs:read',
+    ])
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]).toBeUndefined()
+  }
 })

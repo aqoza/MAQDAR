@@ -1,6 +1,6 @@
 # Event purchase handoff batches — Step 19i
 
-Status: implemented 2026-10-18; review pending.
+Status: reviewed and merged in PR #80 as `72e549a` on 2026-10-18 after all CI checks passed.
 
 Open **Replenishment → Event batches → Choose batch lines**. Search item or event names and filter supplier, receiving location or adjusted order date. Add checked lines before changing pages or filters; added lines remain selected. Preview the comparison evidence and overlapping packages, save, then download CSV or JSON.
 

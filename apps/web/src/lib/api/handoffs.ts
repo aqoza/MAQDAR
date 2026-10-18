@@ -5,7 +5,17 @@ export const HANDOFF_RESOURCES = ['purchase-handoffs', 'purchase-handoff-batches
 export type HandoffResource = (typeof HANDOFF_RESOURCES)[number]
 export const TRANSFER_HANDOFF_RESOURCES = ['transfer-handoffs', 'transfer-handoff-batches'] as const
 export type TransferHandoffResource = (typeof TRANSFER_HANDOFF_RESOURCES)[number]
-export const READ_HANDOFF_RESOURCES = [...HANDOFF_RESOURCES, ...TRANSFER_HANDOFF_RESOURCES] as const
+export const EVENT_HANDOFF_RESOURCES = [
+  'event-purchase-handoffs',
+  'event-purchase-handoff-batches',
+] as const
+export type EventHandoffResource = (typeof EVENT_HANDOFF_RESOURCES)[number]
+export const EVENT_HANDOFF_SCOPE = 'event_purchase_handoffs:read' as const
+export const READ_HANDOFF_RESOURCES = [
+  ...HANDOFF_RESOURCES,
+  ...TRANSFER_HANDOFF_RESOURCES,
+  ...EVENT_HANDOFF_RESOURCES,
+] as const
 export type ReadHandoffResource = (typeof READ_HANDOFF_RESOURCES)[number]
 export const TRANSFER_HANDOFF_SCOPE = 'transfer_handoffs:read' as const
 export const HANDOFF_SCOPE = 'purchase_handoffs:read' as const
@@ -20,14 +30,25 @@ export function isHandoffResource(value: string): value is HandoffResource {
 export function isTransferHandoffResource(value: string): value is TransferHandoffResource {
   return (TRANSFER_HANDOFF_RESOURCES as readonly string[]).includes(value)
 }
+export function isEventHandoffResource(value: string): value is EventHandoffResource {
+  return (EVENT_HANDOFF_RESOURCES as readonly string[]).includes(value)
+}
 export function isReadHandoffResource(value: string): value is ReadHandoffResource {
-  return isHandoffResource(value) || isTransferHandoffResource(value)
+  return (
+    isHandoffResource(value) || isTransferHandoffResource(value) || isEventHandoffResource(value)
+  )
 }
 export function handoffReadScope(resource: ReadHandoffResource) {
-  return isTransferHandoffResource(resource) ? TRANSFER_HANDOFF_SCOPE : HANDOFF_SCOPE
+  return isEventHandoffResource(resource)
+    ? EVENT_HANDOFF_SCOPE
+    : isTransferHandoffResource(resource)
+      ? TRANSFER_HANDOFF_SCOPE
+      : HANDOFF_SCOPE
 }
 export function handoffOperationId(resource: ReadHandoffResource, detail: boolean): string {
   const names = {
+    'event-purchase-handoffs': 'EventPurchaseHandoffs',
+    'event-purchase-handoff-batches': 'EventPurchaseHandoffBatches',
     'purchase-handoffs': 'PurchaseHandoffs',
     'purchase-handoff-batches': 'PurchaseHandoffBatches',
     'transfer-handoffs': 'TransferHandoffs',

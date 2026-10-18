@@ -39,6 +39,7 @@ const BASE = 'https://maqdar.test/api/v1'
 const LEAK = 'permission denied for function api_upsert (secret detail)'
 
 const ALL_SCOPES = [
+  'event_purchase_handoffs:read',
   'transfer_handoffs:read',
   'transfer_handoffs:acknowledge',
   'purchase_handoffs:read',
@@ -1644,3 +1645,92 @@ it.each(['transfer-handoffs', 'transfer-handoff-batches'])(
     expect(state.rpcCalls).toEqual([])
   },
 )
+
+describe('event purchase readers have an explicit read-only capability', () => {
+  for (const resource of ['event-purchase-handoffs', 'event-purchase-handoff-batches']) {
+    it(`dispatches ${resource} without modifying original decimal evidence`, async () => {
+      const text =
+        '{"data":{"payload":{"selected_quantity_basis":"full_event_adjusted","quantity":"123456789012345.123","baseline":"0.009"}}}'
+      const state = fake({
+        rpc: {
+          api_event_purchase_handoff_list: ok(text),
+          api_event_purchase_handoff_get: ok(text),
+        },
+      })
+      const headers = { authorization: `Bearer ${TOKEN}` }
+      const list = await handleResource(
+        new Request(`${BASE}/${resource}?limit=1`, { headers }),
+        'GET',
+        resource,
+        state.deps,
+      )
+      expect(await list.text()).toBe(text)
+      const detail = await handleResourceDetail(
+        new Request(`${BASE}/${resource}/${REQUEST_ID}`, { headers }),
+        'GET',
+        resource,
+        [REQUEST_ID],
+        state.deps,
+      )
+      expect(await detail.text()).toBe(text)
+      expect(state.rpcCalls.map((c) => c.name)).toEqual([
+        'api_event_purchase_handoff_list',
+        'api_event_purchase_handoff_get',
+      ])
+      expect(state.rpcCalls[0].args).toEqual({
+        p_key_hash: HASH,
+        p_resource: resource,
+        p_limit: 1,
+        p_after: null,
+        p_created_since: null,
+      })
+      expect(detail.headers.get('cache-control')).toContain('no-store')
+      expect(detail.headers.get('set-cookie')).toBeNull()
+    })
+    it(`never exposes ${resource} acknowledgement or mutation handlers`, async () => {
+      const state = fake()
+      const req = new Request(`${BASE}/${resource}/${REQUEST_ID}/acknowledgements`, {
+        headers: { authorization: `Bearer ${TOKEN}` },
+      })
+      for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] as const) {
+        expect(
+          (
+            await handleResourceDetail(
+              req,
+              method,
+              resource,
+              [REQUEST_ID, 'acknowledgements'],
+              state.deps,
+            )
+          ).status,
+        ).toBe(404)
+      }
+      for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'] as const) {
+        expect((await handleResource(req, method, resource, state.deps)).status).toBe(405)
+        expect(
+          (await handleResourceDetail(req, method, resource, [REQUEST_ID], state.deps)).status,
+        ).toBe(405)
+      }
+      expect(state.rpcCalls).toEqual([])
+    })
+    it(`requires event scope before exposing a malformed ${resource} request`, async () => {
+      const state = fake({
+        rpc: {
+          api_organization: ok(
+            organizationText(ALL_SCOPES.filter((s) => s !== 'event_purchase_handoffs:read')),
+          ),
+        },
+      })
+      const response = await handleResource(
+        new Request(`${BASE}/${resource}?limit=101`, {
+          headers: { authorization: `Bearer ${TOKEN}` },
+        }),
+        'GET',
+        resource,
+        state.deps,
+      )
+      expect(response.status).toBe(403)
+      expect(state.rpcCalls.map((c) => c.name)).toEqual(['api_organization'])
+    })
+  }
+})

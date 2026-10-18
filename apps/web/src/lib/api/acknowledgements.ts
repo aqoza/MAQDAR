@@ -1,9 +1,24 @@
 import { z } from 'zod'
-import { parseHandoffQuery, isTransferHandoffResource, type ReadHandoffResource } from './handoffs'
+import {
+  parseHandoffQuery,
+  isTransferHandoffResource,
+  HANDOFF_RESOURCES,
+  TRANSFER_HANDOFF_RESOURCES,
+} from './handoffs'
+
+// Reading a package does not enable acknowledgement routes for that resource.
+export const ACKNOWLEDGEMENT_RESOURCES = [
+  ...HANDOFF_RESOURCES,
+  ...TRANSFER_HANDOFF_RESOURCES,
+] as const
+export type AcknowledgementResource = (typeof ACKNOWLEDGEMENT_RESOURCES)[number]
+export function isAcknowledgementResource(value: string): value is AcknowledgementResource {
+  return (ACKNOWLEDGEMENT_RESOURCES as readonly string[]).includes(value)
+}
 
 export const ACKNOWLEDGE_SCOPE = 'purchase_handoffs:acknowledge' as const
 export const TRANSFER_ACKNOWLEDGE_SCOPE = 'transfer_handoffs:acknowledge' as const
-export function acknowledgementScope(resource: ReadHandoffResource) {
+export function acknowledgementScope(resource: AcknowledgementResource) {
   return isTransferHandoffResource(resource) ? TRANSFER_ACKNOWLEDGE_SCOPE : ACKNOWLEDGE_SCOPE
 }
 export const ACKNOWLEDGEMENT_BODY_BYTES = 8192
@@ -44,7 +59,7 @@ export function parseAcknowledgementQuery(params: URLSearchParams) {
 }
 
 export function acknowledgementOperationId(
-  resource: ReadHandoffResource,
+  resource: AcknowledgementResource,
   action: 'list' | 'get' | 'create',
 ) {
   const names = {

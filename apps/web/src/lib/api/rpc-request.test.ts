@@ -44,6 +44,8 @@ describe('buildRpcRequest (J9)', () => {
 
   it('admits api_* RPCs only', () => {
     expect(API_RPC_NAMES).toEqual([
+      'api_event_purchase_handoff_list',
+      'api_event_purchase_handoff_get',
       'api_transfer_handoff_acknowledge',
       'api_transfer_handoff_acknowledgements',
       'api_handoff_acknowledge',
