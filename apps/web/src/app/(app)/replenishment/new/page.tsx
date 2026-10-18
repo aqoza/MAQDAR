@@ -35,8 +35,9 @@ export default async function NewDraft({
   if (!selection.success)
     return (
       <div className="space-y-4">
-        <h1 className="text-page-title">{t('new')}</h1>
+        <PageHeader pattern="replenishment" title={t('new')} />
         <p>{t('choosePolicy')}</p>
+
         <Link className="underline" href="/forecasts/workbench">
           {t('policies')}
         </Link>
@@ -68,10 +69,16 @@ export default async function NewDraft({
   }
   return (
     <div className="space-y-4">
-      <Link className="underline" href="/replenishment">
-        {t('back')}
-      </Link>
-      <PageHeader title={t('new')} description={t('description')} />
+      <PageHeader
+        pattern="replenishment"
+        title={t('new')}
+        description={t('description')}
+        back={
+          <Link className="underline" href="/replenishment">
+            {t('back')}
+          </Link>
+        }
+      />
       <p>
         {policy.data.item_code} · {policy.data.location_code} ·{' '}
         {t('cutoff', { date: policy.data.to_date ?? '—' })}

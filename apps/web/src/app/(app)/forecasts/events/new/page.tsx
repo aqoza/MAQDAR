@@ -35,6 +35,7 @@ export default async function NewEvent({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="forecasts"
         title={t('new')}
         description={t('description')}
         actions={

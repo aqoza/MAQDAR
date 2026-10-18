@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
@@ -39,16 +40,22 @@ export default async function SavedDraft({
   if (report.policy.override_id) next.set('override', report.policy.override_id)
   return (
     <div className="space-y-4">
-      <Link className="underline" href="/replenishment">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('saved')}</h1>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href="/replenishment">
+            {t('back')}
+          </Link>
+        }
+        title={t('saved')}
+      />
       <p>
         {t('savedBy', {
           actor: data.submitted_by === context.userId ? t('you') : data.submitted_by,
           time: format.dateTime(new Date(data.created_at), 'long'),
         })}
       </p>
+
       <p>{t('immutable')}</p>
       <ReplenishmentReport report={report} locale={locale} />
       <div className="flex flex-wrap gap-4">

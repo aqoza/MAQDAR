@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -35,6 +36,7 @@ export default async function BatchPreview({
   if (!parsed.success)
     return (
       <div className="space-y-3">
+        <PageHeader pattern="replenishment" title={t('preview')} />
         <p role="alert">{t('invalidSelection')}</p>
         <Link className="underline" href="/replenishment/redistribution/batches/new">
           {t('choose')}
@@ -48,7 +50,7 @@ export default async function BatchPreview({
   if (result.error)
     return (
       <div className="space-y-3">
-        <h1 className="text-page-title">{t('preview')}</h1>
+        <PageHeader pattern="replenishment" title={t('preview')} />
         <p role="alert">{t(batchErrorKey(result.error.hint))}</p>
         <Link className="underline" href={batchSelectionHref(parsed.data)}>
           {t('editSelection')}
@@ -58,13 +60,21 @@ export default async function BatchPreview({
   const report = batchPreviewSchema.parse(result.data)
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      <Link className="underline" href={batchSelectionHref(parsed.data)}>
-        {t('editSelection')}
-      </Link>
-      <h1 className="text-page-title">{t('preview')}</h1>
-      <HelpDisclosure>
-        <p>{t('description')}</p>
-      </HelpDisclosure>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href={batchSelectionHref(parsed.data)}>
+            {t('editSelection')}
+          </Link>
+        }
+        title={t('preview')}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+          </HelpDisclosure>
+        }
+      />
+
       <TransferBatchEvidence report={report} />
       <TransferBatchOverlap
         organizationId={context.active.id}

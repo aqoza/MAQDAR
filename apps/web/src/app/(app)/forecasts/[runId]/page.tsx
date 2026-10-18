@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -58,16 +59,26 @@ export default async function ClassificationResults({
     `/forecasts/${runId}?${new URLSearchParams({ page: String(n), ...(pattern ? { pattern } : {}) })}`
   return (
     <div className="space-y-4">
-      <Link href="/forecasts" className="text-sm underline">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('results')}</h1>
-      <p>
-        {run.locations?.code} · {run.from_date} – {run.to_date}
-      </p>
-      <HelpDisclosure>
-        <p>{t('methodNote')}</p>
-      </HelpDisclosure>
+      <PageHeader
+        pattern="forecasts"
+        back={
+          <Link href="/forecasts" className="text-sm underline">
+            {t('back')}
+          </Link>
+        }
+        title={t('results')}
+        description={
+          <>
+            {run.locations?.code} · {run.from_date} – {run.to_date}
+          </>
+        }
+        help={
+          <HelpDisclosure>
+            <p>{t('methodNote')}</p>
+          </HelpDisclosure>
+        }
+      />
+
       <details>
         <summary className="cursor-pointer">{t('thresholds')}</summary>
         <dl className="mt-2 grid gap-2 sm:grid-cols-3">

@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -59,13 +60,21 @@ export default async function PolicyReview({
   const reviewer = ['owner', 'admin', 'approver'].includes(context.role ?? '')
   return (
     <div className="space-y-4">
-      <Link href="/forecasts/workbench" className="text-sm underline">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('detailTitle', { item: row.item_code })}</h1>
-      <p>
-        {row.location_code} · {row.to_date} · {row.unit ?? policy('itemUnits')}
-      </p>
+      <PageHeader
+        pattern="forecasts"
+        back={
+          <Link href="/forecasts/workbench" className="text-sm underline">
+            {t('back')}
+          </Link>
+        }
+        title={t('detailTitle', { item: row.item_code })}
+        description={
+          <>
+            {row.location_code} · {row.to_date} · {row.unit ?? policy('itemUnits')}
+          </>
+        }
+      />
+
       <Link
         href={`/forecasts/workbench/${policyId}/stock?basis=calculated&day=${row.to_date}`}
         className="inline-block underline"

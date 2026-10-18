@@ -34,7 +34,7 @@ export async function TransferDateReport({ report, locale }: { report: Report; l
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="workspace-panel min-w-0">
           <h3 className="text-sm text-muted-foreground">{t('dispatch')}</h3>
-          <p className="text-page-title tabular-nums">{report.dispatch?.date ?? '—'}</p>
+          <p className="text-section-title tabular-nums">{report.dispatch?.date ?? '—'}</p>
           <p>{t('requestedOn', { date: report.requested_date })}</p>
           {report.dispatch && <p>{t(`searchStatuses.${report.dispatch.status}`)}</p>}
         </div>
@@ -43,7 +43,7 @@ export async function TransferDateReport({ report, locale }: { report: Report; l
           return (
             <div className="workspace-panel min-w-0 space-y-1" key={key}>
               <h3 className="text-sm text-muted-foreground">{t(key)}</h3>
-              <p className="text-page-title tabular-nums">{receipt?.search.date ?? '—'}</p>
+              <p className="text-section-title tabular-nums">{receipt?.search.date ?? '—'}</p>
               <p>
                 {t('leadDays', {
                   days:

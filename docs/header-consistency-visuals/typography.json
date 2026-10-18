@@ -1,0 +1,552 @@
+{
+  "transfer-proposal-en-1366-type.json": [
+    {
+      "selector": "main h1",
+      "text": "Transfer proposal · BATCH-1",
+      "size": "20px",
+      "lineHeight": "28px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Header QAOwner",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Dashboard",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Items",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Locations",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Suppliers",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Imports",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Forecasts",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Replenishment",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "500",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Settings",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "9 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "1.005 SAR · Per shipment",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "SAR 1.01",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "9 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "9 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "10 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "0 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "4 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "6 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "20 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "14 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main p.text-section-title, main dd.text-section-title",
+      "text": "2026-10-10",
+      "size": "16px",
+      "lineHeight": "24px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main p.text-section-title, main dd.text-section-title",
+      "text": "2026-10-12",
+      "size": "16px",
+      "lineHeight": "24px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main p.text-section-title, main dd.text-section-title",
+      "text": "2026-10-14",
+      "size": "16px",
+      "lineHeight": "24px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    }
+  ],
+  "transfer-proposal-ar-375-type.json": [
+    {
+      "selector": "main h1",
+      "text": "Transfer proposal · BATCH-1",
+      "size": "20px",
+      "lineHeight": "28px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "9 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "1.005 SAR · Per shipment",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "‏1.01 SAR",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "9 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "9 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "10 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "0 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "4 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "6 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "20 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .text-metric",
+      "text": "14 EA",
+      "size": "28px",
+      "lineHeight": "36px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main .help-disclosure > summary",
+      "text": "Method and assumptions",
+      "size": "12px",
+      "lineHeight": "16px",
+      "weight": "500",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main p.text-section-title, main dd.text-section-title",
+      "text": "2026-10-10",
+      "size": "16px",
+      "lineHeight": "24px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main p.text-section-title, main dd.text-section-title",
+      "text": "2026-10-12",
+      "size": "16px",
+      "lineHeight": "24px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main p.text-section-title, main dd.text-section-title",
+      "text": "2026-10-14",
+      "size": "16px",
+      "lineHeight": "24px",
+      "weight": "600",
+      "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+    }
+  ],
+  "item-edit-en-1920-type.json": [
+    {
+      "selector": "main h1",
+      "text": "PART-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "size": "20px",
+      "lineHeight": "28px",
+      "weight": "600",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": ".page-heading-copy > p",
+      "text": "Header fixture with a long part identifier",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Header QAOwner",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Dashboard",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Items",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "500",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Locations",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Suppliers",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Imports",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Forecasts",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Replenishment",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "[data-sidebar=\"menu-button\"]",
+      "text": "Settings",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main input:not([type=\"hidden\"])",
+      "text": "",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    },
+    {
+      "selector": "main input:not([type=\"hidden\"])",
+      "text": "",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main input:not([type=\"hidden\"])",
+      "text": "",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main input:not([type=\"hidden\"])",
+      "text": "",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main input:not([type=\"hidden\"])",
+      "text": "",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main input:not([type=\"hidden\"])",
+      "text": "",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main input:not([type=\"hidden\"])",
+      "text": "",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "400",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "selector": "main [data-slot=\"button\"]",
+      "text": "Save changes",
+      "size": "14px",
+      "lineHeight": "20px",
+      "weight": "500",
+      "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+    }
+  ]
+}

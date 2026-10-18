@@ -39,7 +39,7 @@ export async function DeliveryScenarioReport({
         ).map(([label, date]) => (
           <div className="workspace-panel" key={label}>
             <p className="text-sm text-muted-foreground">{t(label)}</p>
-            <p className="text-xl font-semibold tabular-nums">{date ?? '—'}</p>
+            <p className="text-section-title tabular-nums">{date ?? '—'}</p>
           </div>
         ))}
       </div>

@@ -57,6 +57,11 @@
 }
 .page-banner .page-heading-copy {
   gap: 0;
+  align-self: flex-start;
+}
+.page-back a {
+  display: inline-flex;
+  align-items: center;
 }
 .page-banner > .workspace-navigation,
 .page-banner > [role='tablist'] {
@@ -74,6 +79,13 @@
 [dir='rtl'] .page-banner-art {
   transform: scaleX(-1);
 }
+@media (prefers-reduced-motion: reduce) {
+  .page-banner .animate-pulse,
+  .page-banner [data-slot='skeleton'],
+  [data-section-loading] [data-slot='skeleton'] {
+    animation: none;
+  }
+}
 @media (width < 1100px) {
   .page-banner-art {
     inset-inline-end: 0;
@@ -81,6 +93,9 @@
   }
 }
 @media (width < 768px) {
+  .page-back a {
+    min-block-size: 44px;
+  }
   .app-shell:has([data-page-banner]) header [data-sidebar='trigger'] {
     min-inline-size: 44px;
     min-block-size: 44px;

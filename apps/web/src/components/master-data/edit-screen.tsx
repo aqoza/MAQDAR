@@ -111,15 +111,8 @@ export async function EditScreen({ entity, id, searchParams }: EditScreenProps) 
 
   return (
     <>
-      <Link
-        href={definition.basePath}
-        prefetch={false}
-        className="text-muted-foreground hover:text-foreground inline-flex w-fit items-center gap-1 text-sm"
-      >
-        <ArrowLeftIcon aria-hidden="true" className="size-4 rtl:rotate-180" />
-        {tForm('backToList')}
-      </Link>
       <PageHeader
+        pattern={definition.area}
         title={row ? <bdi dir="ltr">{code}</bdi> : t('newTitle')}
         description={
           row ? (
@@ -143,6 +136,16 @@ export async function EditScreen({ entity, id, searchParams }: EditScreenProps) 
               description={optionalMessage(t, 'deleteWarning') ?? tForm('deleteWarning')}
             />
           ) : null
+        }
+        back={
+          <Link
+            href={definition.basePath}
+            prefetch={false}
+            className="text-muted-foreground hover:text-foreground inline-flex w-fit items-center gap-1 text-sm"
+          >
+            <ArrowLeftIcon aria-hidden="true" className="size-4 rtl:rotate-180" />
+            {tForm('backToList')}
+          </Link>
         }
       />
       {created ? (

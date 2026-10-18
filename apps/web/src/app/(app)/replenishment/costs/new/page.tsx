@@ -59,10 +59,16 @@ export default async function NewPurchaseCost({
   }
   return (
     <div className="space-y-4">
-      <Link className="underline" href={`/replenishment/deliveries/${delivery.data}`}>
-        {t('source')}
-      </Link>
-      <PageHeader title={t('new')} description={t('description')} />
+      <PageHeader
+        pattern="replenishment"
+        title={t('new')}
+        description={t('description')}
+        back={
+          <Link className="underline" href={`/replenishment/deliveries/${delivery.data}`}>
+            {t('source')}
+          </Link>
+        }
+      />
       <p>
         {saved.source.item_code} · {saved.source.location_code} · {saved.source.supplier_code}
       </p>

@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -59,17 +60,25 @@ export default async function TransferHandoffDetail({
       : 'freightChanged'
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      <Link className="underline" href="/replenishment/redistribution/handoffs">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">
-        {t('detailTitle', { item: payload.estimate.source.source.destination.policy.item_code })}
-      </h1>
-      <HelpDisclosure>
-        <p>{t('description')}</p>
-        <p>{t('csvNote')}</p>
-        <p>{t('immutableNote')}</p>
-      </HelpDisclosure>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href="/replenishment/redistribution/handoffs">
+            {t('back')}
+          </Link>
+        }
+        title={t('detailTitle', {
+          item: payload.estimate.source.source.destination.policy.item_code,
+        })}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+            <p>{t('csvNote')}</p>
+            <p>{t('immutableNote')}</p>
+          </HelpDisclosure>
+        }
+      />
+
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
       <p className="break-all">{t('identity', { id: payload.handoff_id })}</p>
       <div className="flex flex-wrap gap-4">

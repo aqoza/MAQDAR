@@ -35,6 +35,7 @@ export default async function EventDeliveryDetail({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('saved')}
         description={
           <span className="break-words">{report.source.draft.scenario.event.input.name}</span>

@@ -8,6 +8,7 @@ export function PageHeader({
   title,
   description,
   actions,
+  back,
   help,
   pattern,
   navigation,
@@ -15,19 +16,21 @@ export function PageHeader({
   title: React.ReactNode
   description?: React.ReactNode
   actions?: React.ReactNode
+  back?: React.ReactNode
   help?: React.ReactNode
-  pattern?: PageHeaderPattern
+  pattern: PageHeaderPattern | undefined
   navigation?: React.ReactNode
 }) {
   const heading = (
     <div className="page-heading-row flex flex-wrap items-start justify-between gap-3">
-      <div className="page-heading-copy flex min-w-0 flex-col gap-1">
+      <div className="page-heading-copy flex min-w-0 max-w-full flex-col gap-1 wrap-anywhere">
         <h1 className="text-page-title">{title}</h1>
         {description ? <p className="text-muted-foreground text-sm">{description}</p> : null}
       </div>
-      {help || actions ? (
+      {help || back || actions ? (
         <div className="page-actions flex max-w-full flex-wrap items-start gap-3">
           {help ? <div className="max-w-sm">{help}</div> : null}
+          {back ? <div className="page-back flex max-w-full flex-wrap gap-3">{back}</div> : null}
           {actions}
         </div>
       ) : null}

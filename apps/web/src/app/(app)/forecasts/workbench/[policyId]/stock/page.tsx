@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Form from 'next/form'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -55,13 +56,21 @@ export default async function StockComparison({
   const snapshot = report?.snapshot
   return (
     <div className="space-y-4">
-      <Link href={back} className="underline">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('title')}</h1>
-      <p>
-        {policy.data.item_code} · {policy.data.location_code}
-      </p>
+      <PageHeader
+        pattern="forecasts"
+        back={
+          <Link href={back} className="underline">
+            {t('back')}
+          </Link>
+        }
+        title={t('title')}
+        description={
+          <>
+            {policy.data.item_code} · {policy.data.location_code}
+          </>
+        }
+      />
+
       <p>{t('description')}</p>
       <p>{t('cutoff', { date: policy.data.to_date ?? '—' })}</p>
       <Form
@@ -123,7 +132,7 @@ export default async function StockComparison({
           <p>{t(report.pool ? 'pool.formula' : 'formula')}</p>
           {report.status === 'available' && (
             <div className="workspace-panel">
-              <p className="text-3xl font-semibold tabular-nums">
+              <p className="text-metric wrap-anywhere tabular-nums">
                 {amount(report.quantity_above)} {report.unit}
               </p>
               {snapshot && (

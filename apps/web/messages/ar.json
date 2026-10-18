@@ -10,6 +10,13 @@
     "remove": "إزالة",
     "back": "رجوع",
     "saving": "جارٍ الحفظ…",
+    "loading": "جارٍ التحميل…",
+    "pageErrorTitle": "تعذّر تحميل هذه الصفحة",
+    "pageErrorDescription": "حاول مرة أخرى أو عُد إلى لوحة التحكم.",
+    "notFoundTitle": "الصفحة غير موجودة",
+    "notFoundDescription": "تعذّر العثور على هذه الصفحة.",
+    "retry": "حاول مرة أخرى",
+    "backToDashboard": "العودة إلى لوحة التحكم",
     "pendingInvitations": "{count, plural, one {لديك دعوة واحدة معلّقة.} two {لديك دعوتان معلّقتان.} few {لديك # دعوات معلّقة.} other {لديك # دعوة معلّقة.}}",
     "viewInvitations": "عرض الدعوات",
     "staleOrganization": "تغيّرت المنظمة النشطة في علامة تبويب أو نافذة أخرى. أعد تحميل هذه الصفحة وحاول مرة أخرى."

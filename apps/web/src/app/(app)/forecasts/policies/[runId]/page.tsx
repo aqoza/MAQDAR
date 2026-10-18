@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { DemandUnitEvidence } from '@/components/demand-unit-evidence'
@@ -42,10 +43,15 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
   const number = (value: string | number) => formatter.format(value as number)
   return (
     <div className="space-y-4">
-      <Link href="/forecasts" className="text-sm underline">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('title')}</h1>
+      <PageHeader
+        pattern="forecasts"
+        back={
+          <Link href="/forecasts" className="text-sm underline">
+            {t('back')}
+          </Link>
+        }
+        title={t('title')}
+      />
       <Link href={`/forecasts/workbench/${data.id}`} className="inline-block underline">
         {t('reviewPolicy')}
       </Link>

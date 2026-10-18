@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
@@ -46,17 +47,23 @@ export default async function BatchDetail({
   const payload = batchPayloadSchema.parse(saved.data.payload)
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      <Link className="underline" href="/replenishment/redistribution/batches">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">
-        {t('detailTitle', { source: payload.summary.source_code })}
-      </h1>
-      <HelpDisclosure>
-        <p>{t('description')}</p>
-        <p>{t('immutableNote')}</p>
-        <p>{t('csvNote')}</p>
-      </HelpDisclosure>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href="/replenishment/redistribution/batches">
+            {t('back')}
+          </Link>
+        }
+        title={t('detailTitle', { source: payload.summary.source_code })}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+            <p>{t('immutableNote')}</p>
+            <p>{t('csvNote')}</p>
+          </HelpDisclosure>
+        }
+      />
+
       <div className="flex flex-wrap justify-between gap-2 text-sm text-muted-foreground">
         <p className="break-all">{t('batchIdentity', { id: batchId })}</p>
         <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>

@@ -47,7 +47,7 @@ export async function TransferFreightReport({
         ).map(([label, value]) => (
           <div className="workspace-panel min-w-0" key={label}>
             <dt className="text-sm text-muted-foreground">{t(label)}</dt>
-            <dd className="text-page-title tabular-nums">{value}</dd>
+            <dd className="text-metric wrap-anywhere tabular-nums">{value}</dd>
           </div>
         ))}
       </dl>
