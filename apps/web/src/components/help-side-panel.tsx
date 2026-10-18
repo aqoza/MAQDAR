@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react'
 import { Dialog } from '@base-ui/react/dialog'
 import { CircleHelp, X } from 'lucide-react'
+import styles from './help-side-panel.module.css'
 
 /** Accept translated content from the server without adding client message namespaces. */
 export function HelpSidePanel({
@@ -24,10 +25,12 @@ export function HelpSidePanel({
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-transparent" />
-        <Dialog.Popup className="fixed inset-y-0 end-0 z-50 flex w-full max-w-[35rem] flex-col border-s bg-background text-foreground shadow-xl">
-          <div className="relative mx-6 shrink-0 border-b py-6 pe-12 sm:mx-8">
-            <Dialog.Title className="text-page-title text-primary">{title}</Dialog.Title>
-            <Dialog.Description className="mt-1 text-sm text-muted-foreground">
+        <Dialog.Popup
+          className={`fixed inset-y-0 end-0 z-50 flex w-full flex-col border-s bg-background ${styles.panel}`}
+        >
+          <div className={`relative mx-6 shrink-0 border-b pe-12 sm:mx-8 ${styles.header}`}>
+            <Dialog.Title className={styles.title}>{title}</Dialog.Title>
+            <Dialog.Description className={`mt-1 ${styles.description}`}>
               {description}
             </Dialog.Description>
             <Dialog.Close
@@ -37,11 +40,15 @@ export function HelpSidePanel({
               <X className="size-5" aria-hidden="true" />
             </Dialog.Close>
           </div>
-          <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain px-6 py-6 text-sm sm:px-8">
+          <div
+            className={`min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 sm:px-8 ${styles.body}`}
+          >
             {children}
           </div>
-          <div className="mx-6 flex shrink-0 justify-end border-t py-4 sm:mx-8">
-            <Dialog.Close className="min-h-11 cursor-pointer rounded-md border border-primary px-6 py-2 text-sm font-medium text-primary hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+          <div className={`mx-6 flex shrink-0 justify-end border-t sm:mx-8 ${styles.footer}`}>
+            <Dialog.Close
+              className={`cursor-pointer border px-6 py-2 hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${styles.closeButton}`}
+            >
               {closeLabel}
             </Dialog.Close>
           </div>

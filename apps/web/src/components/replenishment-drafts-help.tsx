@@ -14,7 +14,7 @@ export function ReplenishmentDraftsHelp() {
         <h2 className="text-section-title text-primary">{t('help.gapTitle')}</h2>
         <p>{t('help.gapBody')}</p>
       </section>
-      <p className="rounded-lg border bg-accent/50 p-4 font-semibold text-primary">
+      <p data-help-callout className="border font-semibold">
         {t('help.note')}
       </p>
       <section className="space-y-2">
