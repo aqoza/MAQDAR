@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('event_policy_scenarios', 'anon', 'r', ''),
+    ('event_policy_scenarios', 'authenticated', 'r', 'SELECT'),
+    ('event_policy_scenarios', 'service_role', 'r', ''),
     ('planned_event_scenarios', 'anon', 'r', ''),
     ('planned_event_scenarios', 'authenticated', 'r', 'SELECT'),
     ('planned_event_scenarios', 'service_role', 'r', ''),
@@ -484,6 +487,9 @@ select set_eq(
     ('public.purchase_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.purchase_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),
     ('public.purchase_proposal_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
+    ('app.event_policy_calculate(jsonb, jsonb)', ''),
+    ('public.event_policy_preview(uuid, uuid, uuid, text)', 'authenticated'),
+    ('public.event_policy_save(uuid, uuid, uuid, text, uuid, text)', 'authenticated'),
     ('public.planned_event_source(uuid, uuid)', 'authenticated'),
     ('app.planned_event_input(text, text, text, text, jsonb, boolean)', ''),
     ('public.planned_event_preview(uuid, uuid, text, text, text, text, jsonb, boolean)', 'authenticated'),
