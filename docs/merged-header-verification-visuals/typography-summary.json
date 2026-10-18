@@ -1,0 +1,37 @@
+{
+  "baseRevision": "030a196bcade55a7398910e1305d7a5df85abc0f",
+  "patch": "Excess-stock currency totals use the shared evidence-value role.",
+  "source": "Fresh Chromium production-build captures, normal browser zoom",
+  "typeCaptureFiles": 40,
+  "screenshots": 273,
+  "roles": {
+    "page-title": {
+      "samples": 40,
+      "styles": [["20px", "28px", "600"]]
+    },
+    "subtitle": {
+      "samples": 30,
+      "styles": [["14px", "20px", "400"]]
+    },
+    "navigation": {
+      "samples": 216,
+      "styles": [
+        ["14px", "20px", "400"],
+        ["14px", "20px", "500"]
+      ]
+    },
+    "evidence-value": {
+      "samples": 155,
+      "styles": [["16px", "24px", "600"]]
+    },
+    "method-caption": {
+      "samples": 65,
+      "styles": [["12px", "16px", "500"]]
+    },
+    "button": {
+      "samples": 15,
+      "styles": [["14px", "20px", "500"]]
+    }
+  },
+  "violations": []
+}

@@ -4,7 +4,7 @@
 
 - Downstream consumers: the Dashboard metric strip and its currency disclosure. Other pages do not use these classes; shared type tokens and headers are unchanged.
 - Dependency evidence: `rg -n 'dashboard-metric|dashboard-currencies' apps/web/src` and `rg -n "dashboard.css" apps/web/src/app/globals.css` identify the stylesheet, DashboardMetrics and DashboardValuation.
-- Acceptance commands: `pnpm --filter web test`, `pnpm lint`, `pnpm typecheck`, `pnpm check:logical`, `pnpm --filter web build`, and `pnpm --filter web test:e2e dashboard-reference.spec.ts responsive.spec.ts`. Existing browser suites run sequentially against local fixtures or CI, never hosted tenants.
+- Acceptance commands: `pnpm --filter web test`, `pnpm lint`, `pnpm typecheck`, `pnpm check:logical`, `pnpm --filter web build`, and `pnpm --filter web test:e2e dashboard-reference.spec.ts responsive-planning.spec.ts`. Existing browser suites run sequentially against local fixtures or CI, never hosted tenants.
 - Propagation: changes to metric layout require populated and empty dashboard checks at phone, tablet, laptop, desktop and RTL widths. Shared header/token changes additionally require the downstream suites below.
 - Regression point: TEST-DASHBOARD-METRIC-001 requires single-line numeric values that fit their metric body and no page-wide overflow at 375, 768, 800 and 1024px. See [dashboard-metric-wrapping.md](dashboard-metric-wrapping.md).
 
@@ -21,6 +21,8 @@ Audit bases for the full header pass: `8a078f5`, then main `4707e36` including e
 - HEADER-002 recognizes the shared `IntegrationWorkbenchHeader` wrapper used by Event Integration loading, and separately verifies that wrapper renders `PageHeader` with the replenishment pattern. A guard-only correction requires the contract tests and full unit suite; no header/loading implementation is changed or bypassed.
 
 ## Compact evidence typography
+
+- Currency-specific excess-stock totals also use the value role. `excess-stock.spec.ts` checks rendered 16px/24px/600 values and the locale's font family in preview and saved Arabic evidence, including 1366×768 and 375px mobile. The title remains 20px/28px/600; table rows remain 14px. Run this suite alongside the header, responsive, Dashboard and Settings matrices for the merged-header audit. See [merged-header-verification.md](merged-header-verification.md).
 
 - Downstream consumers: transfer freight, redistribution, replenishment, supplier/delivery scenarios, purchase costs and forecast policy/stock evidence cards. The shared `text-evidence-value` role is 16px/24px semibold at every viewport; Dashboard KPIs retain their separate tokens.
 - Dependency evidence: `rg -n 'text-evidence-value|styles.metrics' apps/web/src`. Quantities, money and dates keep their existing formatters and data contracts.

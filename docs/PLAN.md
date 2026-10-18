@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Merged header and type verification — requested 2026-10-19
+
+Verify merged headers and shared Items typography at laptop/mobile widths and Arabic RTL. Include the subsequently merged Dashboard wrapping and excess-stock screens. Keep currency-specific assessment totals on `text-evidence-value`, with explicit 1366×768 and mobile/RTL browser coverage. Preserve business rules and the existing header architecture; open a reviewable PR without deployment. See [merged-header-verification.md](merged-header-verification.md).
+
 ## Dashboard metric wrapping — requested 2026-10-19
 
 Repair percentages, counts and currency totals wrapping or overlapping in narrow dashboard cards beside the sidebar. Preserve shared typography and calculations; add phone/tablet layout regression checks and verify existing dashboard layouts. See [dashboard-metric-wrapping.md](dashboard-metric-wrapping.md).

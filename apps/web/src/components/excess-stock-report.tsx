@@ -26,7 +26,7 @@ export async function ExcessStockReport({ report }: { report: ExcessReport }) {
           {report.totals.map((total) => (
             <div key={total.currency} className="workspace-panel space-y-1">
               <h3 className="text-subsection-title">{t('valueAbove')}</h3>
-              <p className="text-section-title tabular-nums">
+              <p className="text-evidence-value tabular-nums">
                 <bdi>
                   {number(total.value)} {total.currency}
                 </bdi>
