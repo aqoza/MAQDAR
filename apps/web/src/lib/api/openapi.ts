@@ -26,6 +26,7 @@ import {
 } from './resources'
 import { OPENAPI_DOCUMENT_VERSION, deprecationFor } from './versioning'
 import { handoffPaths, handoffSchemas } from './handoff-openapi'
+import { eventHandoffPaths, eventHandoffSchemas } from './event-handoff-openapi'
 import { transferHandoffPaths, transferHandoffSchemas } from './transfer-handoff-openapi'
 import { acknowledgementPaths, acknowledgementSchemas } from './acknowledgement-openapi'
 
@@ -928,13 +929,14 @@ export function buildOpenApi(): OpenApiDocument {
     schemas[names.request] = requestSchema(entity)
     schemas[names.page] = pageSchema(entity)
   }
-  Object.assign(paths, handoffPaths(), transferHandoffPaths())
+  Object.assign(paths, handoffPaths(), transferHandoffPaths(), eventHandoffPaths())
   Object.assign(paths, acknowledgementPaths())
   Object.assign(
     schemas,
     sharedSchemas(),
     handoffSchemas(),
     transferHandoffSchemas(),
+    eventHandoffSchemas(),
     acknowledgementSchemas(),
   )
 
@@ -949,6 +951,11 @@ export function buildOpenApi(): OpenApiDocument {
     servers: [{ url: API_BASE_PATH }],
     security: [{ bearerAuth: [] }],
     tags: [
+      {
+        name: 'Event purchase handoffs',
+        description:
+          'Saved full event-adjusted selections and baseline comparisons; live selection stays separate.',
+      },
       { name: TAGS.organization, description: 'The key and its organization.' },
       { name: TAGS.master_data, description: 'Calendars, locations, items, suppliers and rates.' },
       { name: TAGS.transactions, description: 'Demand history.' },

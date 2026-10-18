@@ -13,6 +13,9 @@ from psycopg import sql
 from psycopg.types.json import Jsonb
 
 dsn, org, user, approver = sys.argv[1:5]
+line_count = int(sys.argv[5]) if len(sys.argv) > 5 else 30
+if not 1 <= line_count <= 50:
+    raise SystemExit('Fixture line count must be 1 to 50')
 if urlparse(dsn).hostname not in ('localhost', '127.0.0.1', '::1'):
     raise SystemExit('Local fixture only')
 sys.argv = [sys.argv[0], dsn, org, user]
@@ -34,7 +37,7 @@ with psycopg.connect(dsn) as db:
 
     supplier_id = db.execute("select id from public.suppliers where organization_id=%s and code='EVENT-SUP'", (org,)).fetchone()[0]
     lines = []
-    for n in range(1, 31):
+    for n in range(1, line_count + 1):
         unit = 'KG' if n == 2 else 'EA'
         db.execute('reset role')
         item, forecast, policy, forecast_run, policy_run = [str(uuid4()) for _ in range(5)]

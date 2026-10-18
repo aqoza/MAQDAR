@@ -3,8 +3,9 @@ import {
   acknowledgementInputSchema,
   acknowledgementOperationId,
   acknowledgementScope,
+  ACKNOWLEDGEMENT_RESOURCES,
 } from './acknowledgements'
-import { READ_HANDOFF_RESOURCES, handoffReadScope, isTransferHandoffResource } from './handoffs'
+import { handoffReadScope, isTransferHandoffResource } from './handoffs'
 import type { Schema } from './openapi'
 
 const ref = (name: string) => ({ $ref: `#/components/schemas/${name}` })
@@ -39,7 +40,7 @@ export function acknowledgementSchemas(): Record<string, Schema> {
       client_event_id: uuid,
       api_key_id: uuid,
       recorded_at: timestamp,
-      resource: { type: 'string', enum: [...READ_HANDOFF_RESOURCES] },
+      resource: { type: 'string', enum: [...ACKNOWLEDGEMENT_RESOURCES] },
       record_id: uuid,
       external_system: { type: 'string', minLength: 1, maxLength: 80 },
       external_reference: { type: 'string', minLength: 1, maxLength: 200 },
@@ -61,7 +62,7 @@ export function acknowledgementSchemas(): Record<string, Schema> {
 
 export function acknowledgementPaths(): Record<string, Record<string, Schema>> {
   const paths: Record<string, Record<string, Schema>> = {}
-  for (const resource of READ_HANDOFF_RESOURCES) {
+  for (const resource of ACKNOWLEDGEMENT_RESOURCES) {
     const base = `/${resource}/{id}/acknowledgements`
     for (const action of ['list', 'create', 'get'] as const) {
       const path = base + (action === 'get' ? '/{eventId}' : '')

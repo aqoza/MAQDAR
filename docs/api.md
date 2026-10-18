@@ -18,6 +18,7 @@ An organization owner or administrator opens **Settings → API keys**, gives th
 | `purchase_handoffs:acknowledge` | Append external receipt/rejection reports to saved packages across the whole organization          |
 | `transfer_handoffs:acknowledge` | Append external receipt/rejection reports to saved transfer packages across the whole organization |
 | `transfer_handoffs:read`        | List and retrieve saved transfer handoffs and batches across the whole organization                |
+| `event_purchase_handoffs:read`  | List and retrieve saved event purchase handoffs and batches across the whole organization          |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -26,6 +27,8 @@ Keys belong to one organization. The API never takes the organization from a coo
 Send the key only in the `Authorization` header over HTTPS. Browser session cookies and Supabase JWTs cannot authenticate this API. Authenticated endpoints do not enable cross-origin browser access; keep keys in your integration's backend.
 
 ## Quick start
+
+For full adjusted selections and baseline comparisons, see [the event purchase handoff read API](event-handoff-read-api.md). It requires explicit `event_purchase_handoffs:read`; prior purchase/transfer scopes do not grant event access. Saved evidence is unchanged and live selection is separate.
 
 For saved purchasing evidence, see [the handoff read API](handoff-read-api.md). It has separate creation-based pagination and an explicit permission; the transaction scopes do not include this access.
 

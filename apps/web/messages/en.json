@@ -888,6 +888,11 @@
         "label": "Acknowledge purchase handoffs",
         "description": "Report external receipt or rejection of saved handoffs and batches across the whole organization. This permission does not create orders."
       },
+      "eventPurchaseHandoffsRead": {
+        "label": "Read event purchase handoffs",
+        "badge": "Event purchase handoffs: read",
+        "description": "Read saved event purchase handoffs and batches across the whole organization, including adjusted selections and baseline comparisons. Does not create orders."
+      },
       "transferHandoffsRead": {
         "label": "Read transfer handoffs",
         "badge": "Transfer handoffs: read",
