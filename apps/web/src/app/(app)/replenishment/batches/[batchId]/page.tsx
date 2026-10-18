@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { ContainerCapacityHistory } from '@/components/container-capacity-history'
 import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
@@ -46,13 +47,17 @@ export default async function BatchDetail({
   const payload = batchPayloadSchema.parse(saved.data.payload)
   return (
     <div className="space-y-4">
-      <Link className="underline" href="/replenishment/batches">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">
-        {t('detailTitle', { supplier: payload.summary.supplier_code })}
-      </h1>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href="/replenishment/batches">
+            {t('back')}
+          </Link>
+        }
+        title={t('detailTitle', { supplier: payload.summary.supplier_code })}
+      />
       <p>{t('description')}</p>
+
       <p className="break-all">{t('batchIdentity', { id: batchId })}</p>
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
       <section className="space-y-2 workspace-panel" aria-label={t('currentContext')}>

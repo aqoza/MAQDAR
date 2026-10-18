@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { getTranslations } from 'next-intl/server'
 import { notFound, redirect } from 'next/navigation'
 import { isAdminRole } from '@/lib/auth/roles'
@@ -22,8 +23,8 @@ export default async function AuditPage() {
   if (error) throw new Error('Audit data unavailable')
   return (
     <div className="space-y-4">
-      <h1 className="text-page-title">{t('title')}</h1>
-      <p className="text-sm text-muted-foreground">{t('description')}</p>
+      <PageHeader pattern="settings" title={t('title')} description={t('description')} />
+
       <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('title')}</caption>

@@ -30,7 +30,7 @@ export async function ContainerCapacityReport({ report }: { report: CapacityRepo
             <h2 className="text-subsection-title">
               {t(kind === 'weight' ? 'weightTotal' : 'volumeTotal')}
             </h2>
-            <p className="text-section-title tabular-nums">
+            <p className="text-evidence-value tabular-nums">
               <bdi>
                 {t(kind === 'weight' ? 'weightValue' : 'volumeValue', {
                   value: number(

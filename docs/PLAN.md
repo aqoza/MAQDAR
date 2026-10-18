@@ -4,6 +4,10 @@
 
 Repair percentages, counts and currency totals wrapping or overlapping in narrow dashboard cards beside the sidebar. Preserve shared typography and calculations; add phone/tablet layout regression checks and verify existing dashboard layouts. See [dashboard-metric-wrapping.md](dashboard-metric-wrapping.md).
 
+## Full application header consistency — approved 2026-10-18
+
+Extend each section's compact illustrated header to every authenticated detail, create/edit and loading route. Remove the previous detail/edit exception from `design.MD`, retain existing titles, back destinations, actions and permissions, and preserve the Items typography. The owner's subsequent font correction sets compact evidence values to 16px/24px semibold, consistently below the page title. Verify a complete route inventory, real desktop/mobile/Arabic RTL screenshots, loading and downstream workflows before opening a separate PR. No merge, deployment or business-logic changes. See [header-consistency.md](header-consistency.md).
+
 ## Settings Arabic and policy-selection header — requested 2026-10-17
 
 Complete Arabic `Members` and `InviteMembers` translations and give the standalone policy-selection workbench the shared forecast header and matching list-only loading state. Preserve shared type roles, routes, filters, permissions and planning semantics. Verify Settings RTL workflows and navigation from Replenishment, then open a PR without merge or deployment. See [settings-arabic-policy-header.md](settings-arabic-policy-header.md).

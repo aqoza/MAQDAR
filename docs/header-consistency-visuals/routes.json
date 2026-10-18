@@ -1,0 +1,719 @@
+{
+  "base": "4707e365019952e08258a299c951d6f62ade9336",
+  "totalRoutes": 117,
+  "sections": {
+    "settings": 2,
+    "dashboard": 1,
+    "forecasts": 18,
+    "imports": 3,
+    "items": 12,
+    "locations": 12,
+    "replenishment": 60,
+    "suppliers": 9
+  },
+  "note": "Source inventory; null means no explicit inherited loading boundary. Existing response and authorization behavior is preserved. Browser coverage is representative rather than every possible record and permission combination.",
+  "routes": [
+    {
+      "route": "/audit",
+      "source": "audit/page.tsx",
+      "section": "settings",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/dashboard",
+      "source": "dashboard/page.tsx",
+      "section": "dashboard",
+      "existingLoadingBoundary": "dashboard/loading.tsx"
+    },
+    {
+      "route": "/forecasts/classify",
+      "source": "forecasts/classify/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/events/new",
+      "source": "forecasts/events/new/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/events",
+      "source": "forecasts/events/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/events/policies/new",
+      "source": "forecasts/events/policies/new/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/events/policies",
+      "source": "forecasts/events/policies/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/events/policies/[scenarioId]",
+      "source": "forecasts/events/policies/[scenarioId]/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/events/[scenarioId]",
+      "source": "forecasts/events/[scenarioId]/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/new",
+      "source": "forecasts/new/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts",
+      "source": "forecasts/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/policies/[runId]",
+      "source": "forecasts/policies/[runId]/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/prepare",
+      "source": "forecasts/prepare/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/prepared/[runId]",
+      "source": "forecasts/prepared/[runId]/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/quality",
+      "source": "forecasts/quality/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/results/[runId]",
+      "source": "forecasts/results/[runId]/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/workbench",
+      "source": "forecasts/workbench/(list)/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": "forecasts/workbench/(list)/loading.tsx"
+    },
+    {
+      "route": "/forecasts/workbench/[policyId]",
+      "source": "forecasts/workbench/[policyId]/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/workbench/[policyId]/stock",
+      "source": "forecasts/workbench/[policyId]/stock/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/forecasts/[runId]",
+      "source": "forecasts/[runId]/page.tsx",
+      "section": "forecasts",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/imports",
+      "source": "imports/(history)/page.tsx",
+      "section": "imports",
+      "existingLoadingBoundary": "imports/(history)/loading.tsx"
+    },
+    {
+      "route": "/imports/new",
+      "source": "imports/(operations)/new/page.tsx",
+      "section": "imports",
+      "existingLoadingBoundary": "imports/(operations)/loading.tsx"
+    },
+    {
+      "route": "/imports/[id]",
+      "source": "imports/(operations)/[id]/page.tsx",
+      "section": "imports",
+      "existingLoadingBoundary": "imports/(operations)/loading.tsx"
+    },
+    {
+      "route": "/items/brands/new",
+      "source": "items/brands/new/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/brands",
+      "source": "items/brands/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/brands/[id]",
+      "source": "items/brands/[id]/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/interchanges/new",
+      "source": "items/interchanges/new/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/interchanges",
+      "source": "items/interchanges/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/interchanges/[id]",
+      "source": "items/interchanges/[id]/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/new",
+      "source": "items/new/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items",
+      "source": "items/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/supersessions/new",
+      "source": "items/supersessions/new/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/supersessions",
+      "source": "items/supersessions/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/supersessions/[id]",
+      "source": "items/supersessions/[id]/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/items/[id]",
+      "source": "items/[id]/page.tsx",
+      "section": "items",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/calendars/new",
+      "source": "locations/calendars/new/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/calendars",
+      "source": "locations/calendars/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/calendars/[id]",
+      "source": "locations/calendars/[id]/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/holidays/new",
+      "source": "locations/holidays/new/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/holidays",
+      "source": "locations/holidays/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/holidays/[id]",
+      "source": "locations/holidays/[id]/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/network/new",
+      "source": "locations/network/new/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/network",
+      "source": "locations/network/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/network/[id]",
+      "source": "locations/network/[id]/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/new",
+      "source": "locations/new/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations",
+      "source": "locations/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/locations/[id]",
+      "source": "locations/[id]/page.tsx",
+      "section": "locations",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/batches/new",
+      "source": "replenishment/batches/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/batches",
+      "source": "replenishment/batches/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/batches/preview",
+      "source": "replenishment/batches/preview/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/batches/[batchId]",
+      "source": "replenishment/batches/[batchId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/capacity/new",
+      "source": "replenishment/capacity/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/capacity/[scenarioId]",
+      "source": "replenishment/capacity/[scenarioId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/costs/new",
+      "source": "replenishment/costs/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/costs/[estimateId]",
+      "source": "replenishment/costs/[estimateId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/deliveries/new",
+      "source": "replenishment/deliveries/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/deliveries/[scenarioId]",
+      "source": "replenishment/deliveries/[scenarioId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/batches/new",
+      "source": "replenishment/events/batches/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/batches",
+      "source": "replenishment/events/batches/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/batches/preview",
+      "source": "replenishment/events/batches/preview/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/batches/[batchId]",
+      "source": "replenishment/events/batches/[batchId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/costs/new",
+      "source": "replenishment/events/costs/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/costs",
+      "source": "replenishment/events/costs/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/costs/[estimateId]",
+      "source": "replenishment/events/costs/[estimateId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/deliveries/new",
+      "source": "replenishment/events/deliveries/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/deliveries",
+      "source": "replenishment/events/deliveries/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/deliveries/[scenarioId]",
+      "source": "replenishment/events/deliveries/[scenarioId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/handoffs",
+      "source": "replenishment/events/handoffs/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/handoffs/[handoffId]",
+      "source": "replenishment/events/handoffs/[handoffId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/integrations",
+      "source": "replenishment/events/integrations/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": "replenishment/events/integrations/loading.tsx"
+    },
+    {
+      "route": "/replenishment/events/new",
+      "source": "replenishment/events/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events",
+      "source": "replenishment/events/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/review",
+      "source": "replenishment/events/review/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/review/[proposalId]",
+      "source": "replenishment/events/review/[proposalId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/suppliers/new",
+      "source": "replenishment/events/suppliers/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/suppliers",
+      "source": "replenishment/events/suppliers/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/suppliers/[scenarioId]",
+      "source": "replenishment/events/suppliers/[scenarioId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/events/[draftId]",
+      "source": "replenishment/events/[draftId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/handoffs",
+      "source": "replenishment/handoffs/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/handoffs/[handoffId]",
+      "source": "replenishment/handoffs/[handoffId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/integrations",
+      "source": "replenishment/integrations/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/new",
+      "source": "replenishment/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment",
+      "source": "replenishment/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/batches/new",
+      "source": "replenishment/redistribution/batches/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/batches",
+      "source": "replenishment/redistribution/batches/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/batches/preview",
+      "source": "replenishment/redistribution/batches/preview/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/batches/[batchId]",
+      "source": "replenishment/redistribution/batches/[batchId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/dates/new",
+      "source": "replenishment/redistribution/dates/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/dates",
+      "source": "replenishment/redistribution/dates/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/dates/[scenarioId]",
+      "source": "replenishment/redistribution/dates/[scenarioId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/freight/new",
+      "source": "replenishment/redistribution/freight/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/freight",
+      "source": "replenishment/redistribution/freight/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/freight/[estimateId]",
+      "source": "replenishment/redistribution/freight/[estimateId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/handoffs",
+      "source": "replenishment/redistribution/handoffs/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/handoffs/[handoffId]",
+      "source": "replenishment/redistribution/handoffs/[handoffId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/integrations",
+      "source": "replenishment/redistribution/integrations/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/new",
+      "source": "replenishment/redistribution/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution",
+      "source": "replenishment/redistribution/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/review",
+      "source": "replenishment/redistribution/review/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/review/[proposalId]",
+      "source": "replenishment/redistribution/review/[proposalId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/redistribution/[redistributionId]",
+      "source": "replenishment/redistribution/[redistributionId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/review",
+      "source": "replenishment/review/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/review/[proposalId]",
+      "source": "replenishment/review/[proposalId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/stock-locator",
+      "source": "replenishment/stock-locator/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": "replenishment/stock-locator/loading.tsx"
+    },
+    {
+      "route": "/replenishment/suppliers/new",
+      "source": "replenishment/suppliers/new/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/suppliers/[scenarioId]",
+      "source": "replenishment/suppliers/[scenarioId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/replenishment/[draftId]",
+      "source": "replenishment/[draftId]/page.tsx",
+      "section": "replenishment",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/settings",
+      "source": "settings/page.tsx",
+      "section": "settings",
+      "existingLoadingBoundary": "settings/loading.tsx"
+    },
+    {
+      "route": "/suppliers/fx-rates/new",
+      "source": "suppliers/fx-rates/new/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/suppliers/fx-rates",
+      "source": "suppliers/fx-rates/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/suppliers/fx-rates/[id]",
+      "source": "suppliers/fx-rates/[id]/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/suppliers/new",
+      "source": "suppliers/new/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/suppliers",
+      "source": "suppliers/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/suppliers/supplier-items/new",
+      "source": "suppliers/supplier-items/new/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/suppliers/supplier-items",
+      "source": "suppliers/supplier-items/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/suppliers/supplier-items/[id]",
+      "source": "suppliers/supplier-items/[id]/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    },
+    {
+      "route": "/suppliers/[id]",
+      "source": "suppliers/[id]/page.tsx",
+      "section": "suppliers",
+      "existingLoadingBoundary": null
+    }
+  ]
+}

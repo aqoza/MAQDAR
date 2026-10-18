@@ -49,6 +49,7 @@ export default async function EventPolicyHistory({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="forecasts"
         title={t('history')}
         description={<span className="break-words">{source.data.name}</span>}
         actions={

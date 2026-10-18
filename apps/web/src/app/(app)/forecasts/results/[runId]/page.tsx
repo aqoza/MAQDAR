@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { DemandUnitEvidence } from '@/components/demand-unit-evidence'
@@ -79,17 +80,27 @@ export default async function ForecastResults({
   }
   return (
     <div className="space-y-4">
-      <Link href="/forecasts" className="text-sm underline">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('results')}</h1>
-      <p>
-        {run.locations?.code} · {run.from_date} – {run.to_date}
-      </p>
-      <HelpDisclosure label={regional ? prepared('comparisonLabel') : undefined}>
-        <p>{regional ? prepared('method') : t(expanded ? 'expandedMethod' : 'method')}</p>
-        {regional && <p>{prepared('comparisonNote')}</p>}
-      </HelpDisclosure>
+      <PageHeader
+        pattern="forecasts"
+        back={
+          <Link href="/forecasts" className="text-sm underline">
+            {t('back')}
+          </Link>
+        }
+        title={t('results')}
+        description={
+          <>
+            {run.locations?.code} · {run.from_date} – {run.to_date}
+          </>
+        }
+        help={
+          <HelpDisclosure label={regional ? prepared('comparisonLabel') : undefined}>
+            <p>{regional ? prepared('method') : t(expanded ? 'expandedMethod' : 'method')}</p>
+            {regional && <p>{prepared('comparisonNote')}</p>}
+          </HelpDisclosure>
+        }
+      />
+
       <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('results')}</caption>

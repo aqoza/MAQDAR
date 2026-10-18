@@ -25,7 +25,7 @@ export function EventSupplierReport({ report }: { report: Report }) {
         ).map(([key, value]) => (
           <div key={key} className="min-w-0 space-y-2 workspace-panel">
             <h2 className="text-subsection-title">{t(key)}</h2>
-            <p className="break-words text-section-title tabular-nums">
+            <p className="break-words text-evidence-value tabular-nums">
               <bdi>
                 {amount(value)} {unit}
               </bdi>

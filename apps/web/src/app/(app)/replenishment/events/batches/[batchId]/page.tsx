@@ -47,9 +47,10 @@ export default async function BatchDetail({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('detailTitle', { supplier: payload.summary.supplier_code })}
         description={t('context')}
-        actions={
+        back={
           <Link className="underline" href="/replenishment/events/batches">
             {t('back')}
           </Link>

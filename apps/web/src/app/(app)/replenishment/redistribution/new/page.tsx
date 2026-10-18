@@ -59,6 +59,12 @@ export default async function NewRedistribution({
   if (!item.data) notFound()
   const header = (
     <PageHeader
+      pattern="replenishment"
+      back={
+        <Link className="inline-block underline" href={`/replenishment/${draftId}`}>
+          {t('openDestination')}
+        </Link>
+      }
       title={t('new')}
       description={`${destination.policy.item_code} · ${destination.policy.location_code} · ${destination.policy.cutoff}`}
       help={
@@ -69,15 +75,9 @@ export default async function NewRedistribution({
       }
     />
   )
-  const back = (
-    <Link className="inline-block underline" href={`/replenishment/${draftId}`}>
-      {t('openDestination')}
-    </Link>
-  )
   if (destination.status !== 'available' || !destination.policy.unit)
     return (
       <div className="min-w-0 space-y-4 wrap-anywhere">
-        {back}
         {header}
         <p role="alert">{t('statuses.destination_unavailable')}</p>
       </div>
@@ -85,7 +85,6 @@ export default async function NewRedistribution({
   if (!values.policy)
     return (
       <div className="min-w-0 space-y-4 wrap-anywhere">
-        {back}
         {header}
         <RedistributionSourcePicker
           organizationId={organizationId}
@@ -165,7 +164,6 @@ export default async function NewRedistribution({
   }
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      {back}
       {header}
       <div className="workspace-panel flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">

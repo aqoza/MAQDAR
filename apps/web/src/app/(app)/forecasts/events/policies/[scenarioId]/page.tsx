@@ -36,6 +36,7 @@ export default async function EventPolicyDetail({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="forecasts"
         title={t('saved')}
         description={<span className="break-words">{report.event.input.name}</span>}
         actions={

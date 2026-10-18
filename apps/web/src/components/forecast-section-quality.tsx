@@ -77,13 +77,8 @@ export async function ForecastQuality({
   const amount = (value: string | null | undefined) => formatScore(value, locale)
   return (
     <div className="space-y-4">
-      {!embedded && (
-        <div className="flex gap-4 text-sm underline">
-          <Link href="/dashboard">{t('dashboard')}</Link>
-          <Link href="/forecasts">{t('planning')}</Link>
-        </div>
-      )}
       <PageHeader
+        pattern={embedded ? undefined : 'forecasts'}
         title={t('title')}
         description={t('context')}
         help={
@@ -91,6 +86,14 @@ export async function ForecastQuality({
             <p>{t('description')}</p>
             <p>{t('scoreNote')}</p>
           </HelpDisclosure>
+        }
+        back={
+          !embedded && (
+            <div className="flex gap-4 text-sm underline">
+              <Link href="/dashboard">{t('dashboard')}</Link>
+              <Link href="/forecasts">{t('planning')}</Link>
+            </div>
+          )
         }
       />
       <Form

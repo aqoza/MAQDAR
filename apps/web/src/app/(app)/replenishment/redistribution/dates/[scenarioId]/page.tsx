@@ -34,12 +34,15 @@ export default async function SavedTransferDates({
   const report = transferDateReportSchema.parse(result.data.report)
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      <Link className="inline-block underline" href="/replenishment/redistribution/dates">
-        {t('back')}
-      </Link>
       <PageHeader
+        pattern="replenishment"
         title={t('saved')}
         description={`${report.source.destination.policy.item_code} · ${report.source.source_location_code} → ${report.source.destination.policy.location_code} · ${report.source.destination.policy.cutoff}`}
+        back={
+          <Link className="inline-block underline" href="/replenishment/redistribution/dates">
+            {t('back')}
+          </Link>
+        }
       />
       <p className="text-sm text-muted-foreground">
         {t('savedAt', { time: format.dateTime(new Date(result.data.created_at), 'long') })}

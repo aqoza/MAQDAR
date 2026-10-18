@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
@@ -34,6 +35,7 @@ export default async function BatchPreview({
   if (!parsed.success)
     return (
       <div className="space-y-3">
+        <PageHeader pattern="replenishment" title={t('preview')} />
         <p role="alert">{t('invalidSelection')}</p>
         <Link className="underline" href="/replenishment/batches/new">
           {t('choose')}
@@ -47,7 +49,7 @@ export default async function BatchPreview({
   if (result.error)
     return (
       <div className="space-y-3">
-        <h1 className="text-page-title">{t('preview')}</h1>
+        <PageHeader pattern="replenishment" title={t('preview')} />
         <p role="alert">{t(batchErrorKey(result.error.hint))}</p>
         <Link className="underline" href={batchSelectionHref(parsed.data)}>
           {t('editSelection')}
@@ -57,11 +59,17 @@ export default async function BatchPreview({
   const report = batchPreviewSchema.parse(result.data)
   return (
     <div className="space-y-4">
-      <Link className="underline" href={batchSelectionHref(parsed.data)}>
-        {t('editSelection')}
-      </Link>
-      <h1 className="text-page-title">{t('preview')}</h1>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href={batchSelectionHref(parsed.data)}>
+            {t('editSelection')}
+          </Link>
+        }
+        title={t('preview')}
+      />
       <p>{t('description')}</p>
+
       <HandoffBatchEvidence report={report} />
       <HandoffBatchOverlap
         organizationId={context.active.id}

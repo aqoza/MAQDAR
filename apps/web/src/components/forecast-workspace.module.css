@@ -22,7 +22,8 @@
   color: var(--workspace-muted);
 }
 .method summary {
-  font-size: 12px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   padding-block: 4px;
 }
 .method details > div {
@@ -260,7 +261,8 @@
   z-index: 1;
   background: #f8faf8;
   color: var(--workspace-muted);
-  font-size: 12px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   font-weight: 500;
   text-align: start;
   white-space: nowrap;
@@ -271,7 +273,8 @@
   block-size: 44px;
   padding: 4px 12px;
   border-block-end: 1px solid #edf1ee;
-  font-size: 12px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   color: var(--workspace-muted);
   white-space: nowrap;
 }
@@ -294,8 +297,8 @@
 .runName {
   display: block;
   max-inline-size: 100%;
-  font-size: 14px;
-  line-height: 18px;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
   font-weight: 500;
   color: #243d33;
   text-align: start;
@@ -305,14 +308,15 @@
 }
 .runKind {
   display: block;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
 }
 .statusBadge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   white-space: nowrap;
 }
 .statusBadge::before {
@@ -341,7 +345,8 @@
   gap: 10px;
   min-block-size: 36px;
   padding: 8px 14px;
-  font-size: 12px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   color: var(--workspace-muted);
   border-block-start: 1px solid var(--workspace-border);
 }
@@ -369,12 +374,9 @@
 }
 .runMeta,
 .runId {
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   color: var(--workspace-muted);
-}
-.runId {
-  font-size: 11px;
 }
 .failedNote {
   color: #9f2436;
@@ -384,12 +386,14 @@
   border-block: 1px solid #edf1ee;
 }
 .historyWindow dt {
-  font-size: 12px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   color: var(--workspace-muted);
   margin-block-end: 4px;
 }
 .historyWindow dd {
-  font-size: 14px;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
   font-variant-numeric: tabular-nums;
 }
 .metrics {
@@ -399,14 +403,14 @@
   padding-block: 4px;
 }
 .metrics dt {
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   color: var(--workspace-muted);
 }
 .metrics dd {
-  font-size: 20px;
-  line-height: 26px;
-  font-weight: 600;
+  font-size: var(--text-evidence-value);
+  line-height: var(--text-evidence-value--line-height);
+  font-weight: var(--text-evidence-value--font-weight);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
@@ -498,7 +502,7 @@
   .field input,
   .filters input,
   .filters select {
-    font-size: 16px;
+    font-size: var(--text-section-title);
   }
   .locationInput svg {
     inset-block-start: 14px;

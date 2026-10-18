@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -43,6 +44,7 @@ export default async function BatchSelection({
   if (ids.length && !batchInputSchema.safeParse(ids).success)
     return (
       <div className="space-y-3">
+        <PageHeader pattern="replenishment" title={t('choose')} />
         <p role="alert">{t('invalidSelection')}</p>
         <Link className="underline" href="/replenishment/batches/new">
           {t('clear')}
@@ -100,11 +102,17 @@ export default async function BatchSelection({
   )
   return (
     <div className="space-y-4">
-      <Link className="underline" href="/replenishment/batches">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('choose')}</h1>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href="/replenishment/batches">
+            {t('back')}
+          </Link>
+        }
+        title={t('choose')}
+      />
       <p>{t('grouping')}</p>
+
       <section aria-label={t('selection')} className="space-y-3 workspace-panel">
         <h2 className="text-section-title">{t('selectedCount', { total: ids.length })}</h2>
         {chosen.length !== ids.length && <p role="alert">{t('sourceInvalid')}</p>}

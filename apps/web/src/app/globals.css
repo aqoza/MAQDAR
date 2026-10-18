@@ -19,9 +19,9 @@
   --text-subsection-title: 0.875rem;
   --text-subsection-title--line-height: 1.25rem;
   --text-subsection-title--font-weight: 600;
-  --text-metric: 1.75rem;
-  --text-metric--line-height: 2.25rem;
-  --text-metric--font-weight: 600;
+  --text-evidence-value: 1rem;
+  --text-evidence-value--line-height: 1.5rem;
+  --text-evidence-value--font-weight: 600;
   --text-kpi: 1.5rem;
   --text-kpi--line-height: 1.75rem;
   --text-kpi-compact: 1.25rem;
