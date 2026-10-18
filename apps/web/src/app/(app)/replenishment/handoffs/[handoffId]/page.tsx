@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import Link from 'next/link'
@@ -59,13 +60,17 @@ export default async function HandoffDetail({
       : 'priceChanged'
   return (
     <div className="space-y-4">
-      <Link className="underline" href="/replenishment/handoffs">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">
-        {t('detailTitle', { item: payload.estimate.source.item_code })}
-      </h1>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href="/replenishment/handoffs">
+            {t('back')}
+          </Link>
+        }
+        title={t('detailTitle', { item: payload.estimate.source.item_code })}
+      />
       <p>{t('description')}</p>
+
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
       <p className="break-all">{t('identity', { id: payload.handoff_id })}</p>
       <section className="space-y-2 workspace-panel" aria-label={t('currentContext')}>

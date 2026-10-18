@@ -45,7 +45,7 @@ export async function PurchaseCostReport({ report, locale }: { report: Report; l
         ).map(([label, value]) => (
           <div className="workspace-panel" key={label}>
             <dt className="text-sm text-muted-foreground">{t(label)}</dt>
-            <dd className="text-xl font-semibold tabular-nums">{value}</dd>
+            <dd className="text-evidence-value wrap-anywhere tabular-nums">{value}</dd>
           </div>
         ))}
       </dl>

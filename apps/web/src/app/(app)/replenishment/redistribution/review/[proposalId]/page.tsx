@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -79,13 +80,21 @@ export default async function TransferReviewDetail({
   const reviewer = ['owner', 'admin', 'approver'].includes(context.role ?? '')
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
-      <Link href="/replenishment/redistribution/review" className="underline">
-        {t('back')}
-      </Link>
-      <h1 className="text-page-title">{t('detailTitle', { item: row.item_code })}</h1>
-      <HelpDisclosure>
-        <p>{t('description')}</p>
-      </HelpDisclosure>
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link href="/replenishment/redistribution/review" className="underline">
+            {t('back')}
+          </Link>
+        }
+        title={t('detailTitle', { item: row.item_code })}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+          </HelpDisclosure>
+        }
+      />
+
       <h2 className="text-section-title">
         {t('revision', { revision: proposal.revision })} · {t(`statuses.${row.status}`)}
       </h2>

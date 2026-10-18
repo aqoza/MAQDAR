@@ -85,6 +85,6 @@ test('Import history keeps its illustrated header while the server response stre
   await expect(page.locator('[data-page-banner="imports"]')).toBeVisible()
   await page.getByRole('link', { name: 'New import', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'New import', exact: true })).toBeVisible()
-  await expect(page.locator('[data-page-banner]')).toHaveCount(0)
+  await expect(page.locator('[data-page-banner="imports"]')).toHaveCount(1)
   expect(errors).toEqual([])
 })

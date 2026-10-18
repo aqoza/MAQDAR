@@ -57,10 +57,16 @@ export default async function NewSupplierScenario({
   }
   return (
     <div className="space-y-4">
-      <Link className="underline" href={`/replenishment/${draft.data}`}>
-        {t('source')}
-      </Link>
-      <PageHeader title={t('new')} description={t('description')} />
+      <PageHeader
+        pattern="replenishment"
+        title={t('new')}
+        description={t('description')}
+        back={
+          <Link className="underline" href={`/replenishment/${draft.data}`}>
+            {t('source')}
+          </Link>
+        }
+      />
       <p>
         {source.data.item_code} · {source.data.location_code} ·{' '}
         {t('cutoff', { date: source.data.cutoff ?? '—' })}

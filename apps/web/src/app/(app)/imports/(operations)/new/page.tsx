@@ -57,6 +57,7 @@ export default async function NewImportPage({ searchParams }: PageProps<'/import
   return (
     <>
       <PageHeader
+        pattern="imports"
         title={t('newTitle')}
         description={t('newDescription')}
         actions={

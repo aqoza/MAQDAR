@@ -54,7 +54,8 @@
   padding: 8px 12px;
   border-block-end: 2px solid transparent;
   color: var(--muted-foreground);
-  font-size: 14px;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
   white-space: nowrap;
 }
 .workspace-navigation a:hover {
@@ -86,7 +87,8 @@
 }
 .workspace-table thead th,
 [data-app-content] [data-slot='table-head'] {
-  font-size: 12px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
   font-weight: 500;
 }
 .workspace-table tbody tr:hover {
@@ -95,13 +97,15 @@
 [data-slot='button'] {
   min-block-size: 36px;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
 }
 .page-actions > a {
   display: inline-flex;
   align-items: center;
   min-block-size: 36px;
-  font-size: 14px;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
 }
 [data-slot='card'] {
   min-inline-size: 0;
@@ -129,7 +133,8 @@
 }
 .help-disclosure > summary {
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
 }
 :where(
   .workspace-navigation a,
@@ -147,7 +152,8 @@
 @media (width < 48rem) {
   [data-app-content]
     :where(input:not([type='hidden'], [type='checkbox'], [type='radio']), select, textarea) {
-    font-size: 16px;
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
   }
   [data-slot='button'],
   .page-actions > a,

@@ -50,6 +50,7 @@ export default async function EventHistory({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="forecasts"
         title={t('history')}
         description={<span className="break-words">{source.data.item_code}</span>}
         actions={

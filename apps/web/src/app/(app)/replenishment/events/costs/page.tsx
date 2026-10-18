@@ -53,6 +53,7 @@ export default async function EventCostHistory({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('history')}
         description={<span className="break-words">{source.data.name}</span>}
         actions={

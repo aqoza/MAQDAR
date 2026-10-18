@@ -36,6 +36,7 @@ export default async function NewEventDraft({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('new')}
         description={<span className="break-words">{report.event.input.name}</span>}
         actions={

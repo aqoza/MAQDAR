@@ -40,7 +40,7 @@ export async function SupplierScenarioReport({
         ).map(([key, value, unit]) => (
           <div className="workspace-panel" key={key}>
             <p className="text-sm text-muted-foreground">{t(key)}</p>
-            <p className="text-2xl font-semibold tabular-nums">
+            <p className="text-evidence-value wrap-anywhere tabular-nums">
               {amount(value)} {unit ?? '—'}
             </p>
           </div>

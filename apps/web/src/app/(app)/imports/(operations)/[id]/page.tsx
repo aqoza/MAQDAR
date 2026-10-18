@@ -60,7 +60,7 @@ export default async function ImportPage({ params }: PageProps<'/imports/[id]'>)
     const t = await getTranslations('Imports')
     return (
       <>
-        <PageHeader title={t('title')} />
+        <PageHeader pattern="imports" title={t('title')} />
         <Alert variant="destructive">
           <AlertDescription>{t('loadFailed')}</AlertDescription>
         </Alert>
@@ -126,6 +126,7 @@ export default async function ImportPage({ params }: PageProps<'/imports/[id]'>)
   return (
     <>
       <PageHeader
+        pattern="imports"
         title={t('detailTitle', { date: format.dateTime(new Date(batch.created_at), 'long') })}
         description={format.list(entities.map((entity) => tClient(`entities.${entity}`)))}
         actions={

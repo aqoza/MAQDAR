@@ -46,6 +46,7 @@ export default async function BatchSelection({
   if (ids.length && !batchInputSchema.safeParse(ids).success)
     return (
       <div className="space-y-3">
+        <PageHeader pattern="replenishment" title={t('choose')} />
         <p role="alert">{t('invalidSelection')}</p>
         <Link className="underline" href="/replenishment/events/batches/new">
           {t('clear')}
@@ -104,10 +105,11 @@ export default async function BatchSelection({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('choose')}
         description={t('context')}
         help={<EventHandoffBatchesHelp />}
-        actions={
+        back={
           <Link className="underline" href="/replenishment/events/batches">
             {t('back')}
           </Link>

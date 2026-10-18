@@ -41,6 +41,7 @@ export default async function CapacityDetail({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('title')}
         description={t('description')}
         actions={

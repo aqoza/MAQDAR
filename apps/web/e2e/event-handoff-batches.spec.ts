@@ -66,6 +66,9 @@ with psycopg.connect(sys.argv[1]) as db:
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
       ).toBe(true)
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+      await expect(page.locator('[data-page-banner="replenishment"]')).toHaveCount(1)
+      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
       await page.screenshot({
         path: testInfo.outputPath(`event-batch-${name}-${width}.png`),
         fullPage: true,

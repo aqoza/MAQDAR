@@ -18,13 +18,18 @@ export async function NewForecastPage({ embedded = false }: { embedded?: boolean
   const from = new Date(Date.parse(to) - 364 * 86_400_000).toISOString().slice(0, 10)
   return (
     <div className="space-y-4">
-      {!embedded && (
-        <Link href="/forecasts" className="text-sm underline">
-          {t('back')}
-        </Link>
-      )}
-
-      <PageHeader title={t('title')} description={t('description')} />
+      <PageHeader
+        pattern={embedded ? undefined : 'forecasts'}
+        title={t('title')}
+        description={t('description')}
+        back={
+          !embedded && (
+            <Link href="/forecasts" className="text-sm underline">
+              {t('back')}
+            </Link>
+          )
+        }
+      />
       <NextIntlClientProvider messages={{ Forecasting: messages.Forecasting }}>
         <ForecastForm
           key={context.active.id}

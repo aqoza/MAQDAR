@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header'
 import { NextIntlClientProvider } from 'next-intl'
 import { PurchaseProposalForm } from '@/components/purchase-review-forms'
 import { isEditorRole } from '@/lib/auth/roles'
@@ -38,13 +39,14 @@ export default async function SavedPurchaseCost({
   const report = purchaseCostReportSchema.parse(data.report)
   return (
     <div className="space-y-4">
-      <h1 className="text-page-title">{t('saved')}</h1>
+      <PageHeader pattern="replenishment" title={t('saved')} />
       <p>
         {t('savedBy', {
           actor: data.submitted_by === context.userId ? t('you') : data.submitted_by,
           time: format.dateTime(new Date(data.created_at), 'long'),
         })}
       </p>
+
       <p>{t('immutable')}</p>
       <Link
         className="block underline"

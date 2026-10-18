@@ -55,6 +55,7 @@ export default async function NewCapacity({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('new')}
         description={t('description')}
         actions={

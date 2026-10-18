@@ -22,7 +22,7 @@ export function EventPolicyReport({ report }: { report: Report }) {
               <p className="text-xs text-muted-foreground">
                 {t('period', { start: report.event.source.cutoff, days: period.baseline.days })}
               </p>
-              <p className="break-words text-section-title tabular-nums">
+              <p className="break-words text-evidence-value tabular-nums">
                 <bdi>
                   {format(period.adjusted.target)} {unit}
                 </bdi>

@@ -84,6 +84,7 @@ export default async function EventPurchaseReviewDetail({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
         title={t('detailTitle', { item: row.item_code })}
         description={<span className="break-words">{row.event_name}</span>}
         actions={
