@@ -2,11 +2,16 @@ import { useTranslations } from 'next-intl'
 import { HelpSidePanel } from './help-side-panel'
 
 /** Resolve workbench copy on the server; the shared drawer handles interaction. */
-export function IntegrationResultsHelp() {
+export function IntegrationResultsHelp({ event = false }: { event?: boolean }) {
   const t = useTranslations('IntegrationWorkbench')
   return (
-    <HelpSidePanel title={t('help.title')} description={t('title')} closeLabel={t('help.close')}>
+    <HelpSidePanel
+      title={t('help.title')}
+      description={t(event ? 'eventTitle' : 'title')}
+      closeLabel={t('help.close')}
+    >
       <p>{t('help.intro')}</p>
+      {event && <p>{t('eventMeaning')}</p>}
       <section className="space-y-2">
         <h2 className="text-section-title text-primary">{t('help.statusTitle')}</h2>
         <p>{t('help.statusBody')}</p>

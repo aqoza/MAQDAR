@@ -1,6 +1,6 @@
 # Event purchase handoff acknowledgements (Step 19k)
 
-Status: implemented and locally verified; pull request review pending. Approved by the owner on 2026-10-18 after PR #81 was reviewed and merged as `4ed941c` with all three CI jobs passing.
+Status: merged in PR #83 as `60aea87` on 2026-10-19 (Asia/Dubai), after review without blocking findings and all three CI jobs passing. Approved by the owner on 2026-10-18 after PR #81 was reviewed and merged as `4ed941c` with all three CI jobs passing.
 
 ## Contract and acceptance
 
@@ -64,3 +64,5 @@ After review, the owner applies migrations with `pnpm exec supabase db push` bef
 - Eight targeted browser workflows pass across the two final test groups: five existing event/purchase/transfer read and acknowledgement regressions, plus the corrected event acknowledgement workflow and both event repeated-download flows against the rebased production build. The first event run exposed a test-only locale reset issue after all 12 layout captures; reloading and asserting LTR before English navigation fixes it. The corrected workflow passes with retries disabled, including key revocation.
 - All 12 history captures were visually inspected: individual and batch views at 375, 768, 1024, 1440 and 1920px, plus RTL batch views at 375 and 1440px. Long references wrap, rejection text is escaped, and mobile controls retain 44px targets with no page-level overflow.
 - Manual code/security review found no blocking issues. No independent agent review or automated security scanner was run. Hosted migrations and deployment were not performed.
+
+Step 19l adds the member-facing [event integration workbench](event-integration-workbench.md).

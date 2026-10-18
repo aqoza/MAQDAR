@@ -47,11 +47,44 @@ export const transferIntegrationListSpec: ListSpec = {
   ),
 }
 
-export function integrationPath(transfer = false) {
-  return `/replenishment/${transfer ? 'redistribution/' : ''}integrations`
+export type IntegrationFamily = 'purchase' | 'transfer' | 'event'
+
+export const integrationFamilies = {
+  purchase: {
+    prefix: '',
+    rpc: 'handoff_integration_workbench',
+    title: 'title',
+    context: 'context',
+    navigation: 'integrations',
+    link: 'purchaseLink',
+  },
+  transfer: {
+    prefix: 'redistribution/',
+    rpc: 'transfer_integration_workbench',
+    title: 'transferTitle',
+    context: 'transferContext',
+    navigation: 'redistribution',
+    link: 'transferLink',
+  },
+  event: {
+    prefix: 'events/',
+    rpc: 'event_purchase_integration_workbench',
+    title: 'eventTitle',
+    context: 'eventContext',
+    navigation: 'eventIntegrations',
+    link: 'eventLink',
+  },
+} as const
+
+export function integrationPath(family: IntegrationFamily = 'purchase') {
+  return `/replenishment/${integrationFamilies[family].prefix}integrations`
 }
 
-export function integrationParams(raw: RawSearchParams, transfer = false): ListParams {
+export function integrationParams(
+  raw: RawSearchParams,
+  family: IntegrationFamily = 'purchase',
+): ListParams {
+  const transfer = family === 'transfer'
   const parsed = parseListParams(raw, transfer ? transferIntegrationListSpec : integrationListSpec)
   const filters = Object.fromEntries(
     Object.entries(parsed.filters).filter(([key]) => key !== 'system'),
@@ -70,9 +103,14 @@ export function integrationParams(raw: RawSearchParams, transfer = false): ListP
   }
 }
 
-export function integrationHref(params: ListParams, page: number, transfer = false) {
+export function integrationHref(
+  params: ListParams,
+  page: number,
+  family: IntegrationFamily = 'purchase',
+) {
+  const transfer = family === 'transfer'
   return listHref(
-    integrationPath(transfer),
+    integrationPath(family),
     transfer ? transferIntegrationListSpec : integrationListSpec,
     params,
     { page },
@@ -118,9 +156,15 @@ export const transferIntegrationResultSchema = integrationResultSchema.extend({
     .max(100),
 })
 
+export const eventIntegrationResultSchema = integrationResultSchema.extend({
+  rows: z
+    .array(integrationResultSchema.shape.rows.element.extend({ event_name: z.string().nullable() }))
+    .max(100),
+})
+
 export function integrationEvidenceHref(
   row: { kind: 'handoff' | 'batch'; id: string },
-  transfer = false,
+  family: IntegrationFamily = 'purchase',
 ) {
-  return `/replenishment/${transfer ? 'redistribution/' : ''}${row.kind === 'batch' ? 'batches' : 'handoffs'}/${row.id}#acknowledgements`
+  return `/replenishment/${integrationFamilies[family].prefix}${row.kind === 'batch' ? 'batches' : 'handoffs'}/${row.id}#acknowledgements`
 }
