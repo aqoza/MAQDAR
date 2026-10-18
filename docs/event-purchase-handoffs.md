@@ -1,6 +1,6 @@
 # Event purchase handoffs — Step 19h
 
-Status: owner approved 2026-10-18; implemented and locally verified; review pending.
+Status: merged in PR #79 on 2026-10-18.
 
 ## Saved selection
 
