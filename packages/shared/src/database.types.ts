@@ -266,6 +266,12 @@ isOneToOne: false
       foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
       columns: ["organization_id","policy_id"]
 isOneToOne: false
+      referencedRelation: "excess_stock_candidates"
+      referencedColumns: ["organization_id","policy_id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
+      columns: ["organization_id","policy_id"]
+isOneToOne: false
       referencedRelation: "inventory_policies"
       referencedColumns: ["organization_id","id"]
     },{
@@ -488,6 +494,26 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     },{
       foreignKeyName: "event_supplier_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"excess_stock_assessments": {
+                  Row: {
+                    "confirmed": boolean,"created_at": string,"cutoff": string,"id": string,"location_id": string,"organization_id": string,"reason": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "confirmed": boolean,"created_at"?: string,"cutoff": string,"id"?: string,"location_id": string,"organization_id": string,"reason": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "confirmed"?: boolean,"created_at"?: string,"cutoff"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"reason"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "excess_stock_assessments_organization_id_location_id_fkey"
       columns: ["organization_id","location_id"]
 isOneToOne: false
       referencedRelation: "locations"
@@ -1058,6 +1084,12 @@ isOneToOne: false
       foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
+      referencedRelation: "excess_stock_candidates"
+      referencedColumns: ["organization_id","policy_id","location_id"]
+    },{
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
       referencedRelation: "inventory_policies"
       referencedColumns: ["organization_id","id","location_id"]
     },{
@@ -1370,6 +1402,12 @@ isOneToOne: false
       foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
       columns: ["organization_id","source_policy_id","source_location_id"]
 isOneToOne: false
+      referencedRelation: "excess_stock_candidates"
+      referencedColumns: ["organization_id","policy_id","location_id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
       referencedRelation: "inventory_policies"
       referencedColumns: ["organization_id","id","location_id"]
     },{
@@ -1399,6 +1437,12 @@ isOneToOne: false
                   }
                   Relationships: [
                     {
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "excess_stock_candidates"
+      referencedColumns: ["organization_id","policy_id","location_id"]
+    },{
       foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
@@ -1983,6 +2027,34 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"excess_stock_assessment_list": {
+                  Row: {
+                    "created_at": string | null,"cutoff": string | null,"id": string | null,"line_count": number | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"reason": string | null,"search_text": string | null,"totals": Json | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"cutoff"?: string | null,"id"?: string | null,"line_count"?: never,"location_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"reason"?: string | null,"search_text"?: never,"totals"?: never
+                         }
+                        Update: {
+                           "created_at"?: string | null,"cutoff"?: string | null,"id"?: string | null,"line_count"?: never,"location_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"reason"?: string | null,"search_text"?: never,"totals"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "excess_stock_assessments_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"excess_stock_candidates": {
+                  Row: {
+                    "cutoff": string | null,"finished_at": string | null,"id": string | null,"item_code": string | null,"item_id": string | null,"location_code": string | null,"location_id": string | null,"maximum": string | null,"organization_id": string | null,"policy_id": string | null,"quantity": string | null,"revision": number | null,"search_text": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+
+                  ]
                 },"forecast_quality": {
                   Row: {
                     "bias": string | null,"comparison": string | null,"evaluation": Json | null,"finished_at": string | null,"folds": Json | null,"from_date": string | null,"horizon": string | null,"id": string | null,"item_code": string | null,"item_id": string | null,"item_name": string | null,"location_code": string | null,"location_id": string | null,"mae": string | null,"method": string | null,"model": string | null,"organization_id": string | null,"rmse": string | null,"run_id": string | null,"search_text": string | null,"status": string | null,"to_date": string | null,"unit": string | null
@@ -2010,6 +2082,12 @@ isOneToOne: false
                          }
                         Relationships: [
                     {
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "excess_stock_candidates"
+      referencedColumns: ["organization_id","policy_id","location_id"]
+    },{
       foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
@@ -2219,6 +2297,12 @@ isOneToOne: false
       foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
       columns: ["organization_id","source_policy_id","source_location_id"]
 isOneToOne: false
+      referencedRelation: "excess_stock_candidates"
+      referencedColumns: ["organization_id","policy_id","location_id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
       referencedRelation: "inventory_policies"
       referencedColumns: ["organization_id","id","location_id"]
     },{
@@ -2256,6 +2340,12 @@ isOneToOne: false
                          }
                         Relationships: [
                     {
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "excess_stock_candidates"
+      referencedColumns: ["organization_id","policy_id","location_id"]
+    },{
       foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
@@ -2645,6 +2735,12 @@ isOneToOne: false
                            },
 "event_supplier_save":
 { Args: { "p_draft_id": string,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: string
+                           },
+"excess_stock_preview":
+{ Args: { "p_organization_id": string,"p_selections": Json }; Returns: Json
+                           },
+"excess_stock_save":
+{ Args: { "p_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_reason": string,"p_request_id": string,"p_selections": Json }; Returns: string
                            },
 "forecast_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string

@@ -6,6 +6,7 @@ export async function ReplenishmentNav({
   current,
 }: {
   current:
+    | 'excess'
     | 'eventIntegrations'
     | 'eventBatches'
     | 'eventHandoffs'
@@ -23,6 +24,7 @@ export async function ReplenishmentNav({
     ['drafts', '/replenishment'],
     ['redistribution', '/replenishment/redistribution'],
     ['locator', '/replenishment/stock-locator'],
+    ['excess', '/replenishment/excess'],
     ['review', '/replenishment/review'],
     ['eventReview', '/replenishment/events/review'],
     ['eventHandoffs', '/replenishment/events/handoffs'],
