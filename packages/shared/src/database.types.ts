@@ -308,6 +308,38 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"event_purchase_handoffs": {
+                  Row: {
+                    "created_at": string,"created_by": string,"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"proposal_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"id"?: string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"proposal_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"proposal_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_purchase_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_purchase_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_proposals"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_purchase_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_review_list"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"event_purchase_proposals": {
                   Row: {
                     "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"decision_request_id": string | null,"draft_id": string,"estimate_id": string,"id": string,"location_id": string,"organization_id": string,"reason": string,"request_id": string,"revision": number,"status": string,"submitted_by": string
@@ -1783,6 +1815,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"event_purchase_handoff_list": {
+                  Row: {
+                    "created_at": string | null,"currency": string | null,"event_name": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"minor_units": number | null,"organization_id": string | null,"proposal_id": string | null,"quantity": string | null,"search_text": string | null,"selected": boolean | null,"subtotal": string | null,"supplier_code": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "event_purchase_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_purchase_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_proposals"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_purchase_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_review_list"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"event_purchase_review_list": {
                   Row: {
                     "baseline_quantity": string | null,"baseline_subtotal": string | null,"cost_increase": string | null,"created_at": string | null,"currency": string | null,"draft_id": string | null,"estimate_id": string | null,"event_name": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"minor_units": number | null,"order_date": string | null,"organization_id": string | null,"quantity": string | null,"receipt_date": string | null,"revision": number | null,"search_text": string | null,"selected": boolean | null,"status": string | null,"subtotal": string | null,"supplier_code": string | null,"unit": string | null
@@ -2429,6 +2487,9 @@ isOneToOne: false
                            },
 "event_purchase_cost_save":
 { Args: { "p_delivery_id": string,"p_fingerprint": string,"p_organization_id": string,"p_price_confirmed": boolean,"p_request_id": string }; Returns: string
+                           },
+"event_purchase_handoff_create":
+{ Args: { "p_organization_id": string,"p_proposal_id": string }; Returns: string
                            },
 "event_purchase_proposal_decide":
 { Args: { "p_decision": string,"p_organization_id": string,"p_proposal_id": string,"p_reason": string,"p_request_id": string }; Returns: string

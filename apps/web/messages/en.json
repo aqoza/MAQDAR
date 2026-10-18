@@ -641,7 +641,8 @@
     "handoffs": "Purchase handoffs",
     "batches": "Purchase handoff batches",
     "integrations": "Integration workbench",
-    "eventReview": "Event review"
+    "eventReview": "Event review",
+    "eventHandoffs": "Event handoffs"
   },
   "Replenishment": {
     "help": {
@@ -1708,7 +1709,8 @@
       "event_delivery_scenarios": "Event delivery scenarios",
       "event_replenishment_drafts": "Event replenishment drafts",
       "event_purchase_cost_estimates": "Event purchase-cost comparisons",
-      "event_purchase_proposals": "Event purchase proposals"
+      "event_purchase_proposals": "Event purchase proposals",
+      "event_purchase_handoffs": "Event purchase handoffs"
     }
   },
   "Planning": {
@@ -3824,5 +3826,56 @@
     "checksHelp": "Submission and approval recheck current price, original supplier-item identity and active supplier/receiver evidence. Approval also requires no saved policy-recalculation flag and a known empty list of event additions before receipt. Existing inbound warnings remain visible. Saved commitments are not refreshed.",
     "event": "Event",
     "timingRequired": "Approval is blocked by event demand before receipt or missing event timing evidence. This is a timing concern, not a calculated shortage."
+  },
+  "EventPurchaseHandoffs": {
+    "title": "Event purchase handoffs",
+    "detailTitle": "Event purchase handoff · {item}",
+    "description": "Save the full approved event-adjusted quantity as planning evidence. Saving or downloading does not place an order, reserve stock or update inbound.",
+    "create": "Save event purchase handoff",
+    "createNote": "Capture the full approved adjusted quantity and cost, with baseline comparisons and event evidence.",
+    "save": "Save handoff",
+    "saving": "Saving…",
+    "open": "Open saved event handoff",
+    "back": "Back to event handoffs",
+    "planning": "Replenishment drafts",
+    "savedAt": "Saved {time}",
+    "identity": "Handoff {id}",
+    "currentContext": "Current context",
+    "current": "Selected approval",
+    "historical": "Historical approval",
+    "priceCurrent": "Price evidence matched when this page loaded. This is not a new quote.",
+    "priceChanged": "Current price evidence no longer matches this estimate. Create a new estimate and obtain approval before creating a new handoff.",
+    "priceUnknown": "Current price could not be checked. The saved file remains available as historical evidence.",
+    "immutableNote": "Saved files retain their original approval and evidence after later price or selection changes. Existing handoffs can be reopened without renewing evidence checks. Downloads do not refresh commitments or prevent duplicate external orders.",
+    "selectionChanged": "This proposal is no longer the selected approval. Refresh the proposal history before creating a handoff.",
+    "policyRequired": "The saved delivery requires policy recalculation. A compatible approved replacement is required.",
+    "json": "Download JSON",
+    "csv": "Download CSV",
+    "proposal": "Approved proposal",
+    "estimate": "Saved cost estimate",
+    "csvNote": "JSON preserves exact source values. CSV protects formula-like text with a leading apostrophe; spreadsheet applications may reformat numbers and dates.",
+    "search": "Search item or event",
+    "location": "Location code",
+    "supplier": "Supplier code",
+    "selection": "Selection",
+    "all": "All",
+    "filter": "Filter",
+    "reset": "Reset",
+    "count": "{total, plural, one {# handoff} other {# handoffs}}",
+    "item": "Item",
+    "quantity": "Selected adjusted quantity",
+    "subtotal": "Selected adjusted subtotal",
+    "inspect": "Inspect",
+    "inspectItem": "Inspect {item}",
+    "empty": "No handoffs match these filters. Create one from a selected approved proposal.",
+    "pagination": "Handoff pages",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}",
+    "batches": "Purchase handoff batches",
+    "context": "Export selected event purchases and inspect saved evidence.",
+    "event": "Event",
+    "selectionHelp": "The full adjusted quantity is the selection. Baseline quantities and differences are comparison evidence, not additional order lines. Separate event drafts and ordinary purchases remain independent and may overlap.",
+    "timingRequired": "Saved event timing evidence is missing or includes additions before receipt. This proposal cannot create a handoff."
   }
 }

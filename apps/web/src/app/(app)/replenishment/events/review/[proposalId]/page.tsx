@@ -1,3 +1,4 @@
+import { EventPurchaseHandoffForm } from '@/components/event-purchase-handoff-form'
 import { PageHeader } from '@/components/page-header'
 import { EventPurchaseReviewHelp } from '@/components/event-purchase-review-help'
 import Link from 'next/link'
@@ -67,6 +68,15 @@ export default async function EventPurchaseReviewDetail({
     const parsed = z.object({ status: z.string(), fingerprint: z.string() }).parse(current.data)
     priceMatches = parsed.status === 'available' && parsed.fingerprint === report.fingerprint
   }
+  const handoff = await db
+    .from('event_purchase_handoffs')
+    .select('id')
+    .eq('organization_id', context.active.id)
+    .eq('proposal_id', proposal.id)
+    .maybeSingle()
+  if (handoff.error) throw new Error('Event handoff unavailable')
+  const handoffText = await getTranslations('EventPurchaseHandoffs')
+  const editor = ['owner', 'admin', 'planner'].includes(context.role ?? '')
   const actor = (id: string | null) =>
     id === context.userId ? t('you') : t('member', { id: id ?? '—' })
   const withdrawal = proposal.submitted_by === context.userId
@@ -124,6 +134,17 @@ export default async function EventPurchaseReviewDetail({
           {t('sourceDraft')}
         </Link>
       </div>
+      {handoff.data ? (
+        <Link className="underline" href={`/replenishment/events/handoffs/${handoff.data.id}`}>
+          {handoffText('open')}
+        </Link>
+      ) : row.selected && editor ? (
+        <NextIntlClientProvider
+          messages={{ EventPurchaseHandoffs: messages.EventPurchaseHandoffs }}
+        >
+          <EventPurchaseHandoffForm organizationId={context.active.id} proposalId={proposal.id} />
+        </NextIntlClientProvider>
+      ) : null}
       <EventCostReport report={report} />
       {proposal.status === 'pending' && (
         <>
