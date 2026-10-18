@@ -1,5 +1,7 @@
 'use server'
 
+import { getTranslations } from 'next-intl/server'
+import { fieldErrorsFrom } from '@/lib/validation'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { fieldValues, type ActionState } from '@/lib/forms'
@@ -23,7 +25,10 @@ export async function submitOverride(_state: ActionState, form: FormData): Promi
     'reason',
   ])
   const parsed = proposalSchema.safeParse(values)
-  if (!parsed.success) return { ...(await invalidState('validation')), values }
+  if (!parsed.success) {
+    const t = await getTranslations('Validation')
+    return { ...(await invalidState('validation')), ...fieldErrorsFrom(parsed.error, t), values }
+  }
   const db = await createClient()
   const v = parsed.data
   const { error } = await db.rpc('policy_override_submit', {
@@ -47,7 +52,10 @@ export async function decideOverride(_state: ActionState, form: FormData): Promi
   if (!guard.ok) return guard.state
   const values = fieldValues(form, ['override_id', 'request_id', 'decision', 'reason'])
   const parsed = decisionSchema.safeParse(values)
-  if (!parsed.success) return { ...(await invalidState('validation')), values }
+  if (!parsed.success) {
+    const t = await getTranslations('Validation')
+    return { ...(await invalidState('validation')), ...fieldErrorsFrom(parsed.error, t), values }
+  }
   const db = await createClient()
   const v = parsed.data
   const { data, error } = await db.rpc('policy_override_decide', {

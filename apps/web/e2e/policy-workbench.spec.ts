@@ -95,6 +95,20 @@ with psycopg.connect(dsn) as db:
   await proposal
     .getByLabel('Proposal reason', { exact: true })
     .fill('Campaign requires additional cover')
+  await proposal.getByLabel('Proposed periodic-review maximum', { exact: true }).fill('5')
+  await proposal.getByRole('button', { name: 'Submit proposal', exact: true }).click()
+  const maximum = proposal.getByLabel('Proposed periodic-review maximum', { exact: true })
+  await expect(maximum).toHaveAttribute('aria-invalid', 'true')
+  await expect(maximum).toHaveAccessibleDescription(
+    'Must be at least the proposed reorder-point reference.',
+  )
+  await expect(maximum).toHaveValue('5')
+  await expect(
+    proposal.getByLabel('Proposed reorder-point reference', { exact: true }),
+  ).toHaveValue('6.123')
+  await expect(page.getByRole('heading', { name: /^Proposal 1/ })).toHaveCount(0)
+  await page.screenshot({ path: testInfo.outputPath('policy-validation.png'), fullPage: true })
+  await maximum.fill('12.456')
   await proposal.getByRole('button', { name: 'Submit proposal', exact: true }).click()
   await expect(
     page.getByRole('heading', { name: 'Proposal 1 · Awaiting review', exact: true }),

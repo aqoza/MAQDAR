@@ -4,7 +4,14 @@ import { parseListParams, type RawSearchParams, type ListSpec } from './master-d
 import { POLICY_STATUSES } from './inventory-policy'
 
 const QUANTITY_PATTERN = /^\d{1,15}(\.\d{1,3})?$/
-const quantity = z.string().transform(normalizeDigits).pipe(z.string().regex(QUANTITY_PATTERN))
+const quantity = z
+  .string()
+  .transform(normalizeDigits)
+  .pipe(
+    z
+      .string()
+      .refine((value) => QUANTITY_PATTERN.test(value), { params: { key: 'policyQuantity' } }),
+  )
 const reason = z.string().trim().min(1).max(2000)
 function thousandths(value: string) {
   const [whole, fraction = ''] = value.split('.')
@@ -23,6 +30,7 @@ export const proposalSchema = z
       !QUANTITY_PATTERN.test(v.reorder_point) ||
       !QUANTITY_PATTERN.test(v.order_up_to) ||
       thousandths(v.reorder_point) <= thousandths(v.order_up_to),
+    { path: ['order_up_to'], params: { key: 'maximumBelowReorder' } },
   )
 export const decisionSchema = z.object({
   override_id: z.guid(),
