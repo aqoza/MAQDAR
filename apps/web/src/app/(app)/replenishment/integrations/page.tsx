@@ -2,7 +2,7 @@ import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
-import { HelpDisclosure } from '@/components/help-disclosure'
+import { IntegrationResultsHelp } from '@/components/integration-results-help'
 import { PageHeader } from '@/components/page-header'
 import { ReplenishmentNav } from '@/components/replenishment-nav'
 import { TableScrollRegion } from '@/components/table-scroll-region'
@@ -42,16 +42,7 @@ export default async function IntegrationWorkbench({
   const inputClass = 'w-full min-w-0 rounded-md border bg-background p-2'
   return (
     <div className="space-y-4">
-      <PageHeader
-        title={t('title')}
-        description={t('context')}
-        help={
-          <HelpDisclosure>
-            <p>{t('meaning')}</p>
-            <p>{t('independence')}</p>
-          </HelpDisclosure>
-        }
-      />
+      <PageHeader title={t('title')} description={t('context')} help={<IntegrationResultsHelp />} />
       <ReplenishmentNav current="integrations" />
       <Form
         action="/replenishment/integrations"
