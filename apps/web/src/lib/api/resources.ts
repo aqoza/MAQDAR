@@ -1,6 +1,6 @@
 import { entitiesInLoadOrder, getEntity, isEntityName, type EntityName } from '../imports/contract'
 import { isTransactionEntity } from './limits'
-import { HANDOFF_RESOURCES, handoffOperationId } from './handoffs'
+import { READ_HANDOFF_RESOURCES, handoffOperationId } from './handoffs'
 import { acknowledgementOperationId } from './acknowledgements'
 
 /**
@@ -123,11 +123,11 @@ export function allOperationIds(): string[] {
       operationId(resource.entity, 'list'),
       operationId(resource.entity, 'upsert'),
     ]),
-    ...HANDOFF_RESOURCES.flatMap((resource) => [
+    ...READ_HANDOFF_RESOURCES.flatMap((resource) => [
       handoffOperationId(resource, false),
       handoffOperationId(resource, true),
     ]),
-    ...HANDOFF_RESOURCES.flatMap((resource) => [
+    ...READ_HANDOFF_RESOURCES.flatMap((resource) => [
       acknowledgementOperationId(resource, 'list'),
       acknowledgementOperationId(resource, 'create'),
       acknowledgementOperationId(resource, 'get'),

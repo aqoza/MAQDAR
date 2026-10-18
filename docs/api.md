@@ -8,14 +8,16 @@ The machine-readable OpenAPI 3.1.1 description is available at `/api/v1/openapi.
 
 An organization owner or administrator opens **Settings → API keys**, gives the key a name, chooses permissions and an expiry, and selects **Create key**. Copy the key from the dialog into the integration's secret store. It is shown once; Settings subsequently shows only a prefix and suffix. The database stores a SHA-256 hash, never the complete key.
 
-| Scope                           | Operations                                                                                |
-| ------------------------------- | ----------------------------------------------------------------------------------------- |
-| `master_data:read`              | List all master-data resources                                                            |
-| `master_data:write`             | Upsert all master-data resources                                                          |
-| `transactions:read`             | List all four transaction feeds                                                           |
-| `transactions:write`            | Upsert transaction feeds (clear by zero only for demand)                                  |
-| `purchase_handoffs:read`        | List and retrieve saved handoffs and batches across the whole organization                |
-| `purchase_handoffs:acknowledge` | Append external receipt/rejection reports to saved packages across the whole organization |
+| Scope                           | Operations                                                                                         |
+| ------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `master_data:read`              | List all master-data resources                                                                     |
+| `master_data:write`             | Upsert all master-data resources                                                                   |
+| `transactions:read`             | List all four transaction feeds                                                                    |
+| `transactions:write`            | Upsert transaction feeds (clear by zero only for demand)                                           |
+| `purchase_handoffs:read`        | List and retrieve saved handoffs and batches across the whole organization                         |
+| `purchase_handoffs:acknowledge` | Append external receipt/rejection reports to saved packages across the whole organization          |
+| `transfer_handoffs:acknowledge` | Append external receipt/rejection reports to saved transfer packages across the whole organization |
+| `transfer_handoffs:read`        | List and retrieve saved transfer handoffs and batches across the whole organization                |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -26,6 +28,10 @@ Send the key only in the `Authorization` header over HTTPS. Browser session cook
 ## Quick start
 
 For saved purchasing evidence, see [the handoff read API](handoff-read-api.md). It has separate creation-based pagination and an explicit permission; the transaction scopes do not include this access.
+
+For saved transfer evidence, see [the transfer handoff read API](transfer-handoff-read-api.md). It requires the separate `transfer_handoffs:read` permission and preserves original quantities, dispatch/receipt dates and freight while reporting live selection separately. Existing keys gain no access; browser downloads still require both locations. Reads do not reserve stock or execute transfers.
+
+For transfer receipt/rejection reporting, see [transfer acknowledgements](transfer-acknowledgements.md). Writes require `transfer_handoffs:acknowledge`; history reads require `transfer_handoffs:read`. Reports preserve saved evidence and do not transmit, reserve stock or execute transfers. Member history requires access to both locations.
 
 For external receipt/rejection reporting and event history, see [handoff acknowledgements](handoff-acknowledgements.md). Writes require `purchase_handoffs:acknowledge`; history reads require `purchase_handoffs:read`. Reports have no order or inventory side effects. Existing keys gain no new permission.
 
@@ -152,5 +158,7 @@ The Step 5b migration must be reviewed and applied by the owner before deploying
 The owner runs `pnpm exec supabase db push` after migration review. For Cloudflare, retain both `API_KEY_LIMITER` and `API_IP_LIMITER` bindings in each Wrangler environment, confirm their namespace IDs are available in the account, and set the Worker secret through the existing deployment process. Run `pnpm --filter web cf:build` to validate packaging before deployment. No hosted migration or deployment is performed by the development checks.
 
 Version 1 changes are additive. Clients should tolerate new response fields and error codes. If an operation is deprecated, its OpenAPI entry and `Deprecation`, optional `Sunset`, and `Link` response headers identify the change. No operations are currently deprecated.
+
+Network-link records include nullable `freight_unit` and `freight_valid_from` fields for [transfer freight estimates](transfer-freight-estimates.md). When a write supplies freight basis/cost/currency but omits either provenance field, the omitted field is cleared. Unrelated updates preserve both fields. These remain ordinary master-data reads/writes; the API does not create freight estimates or execute transfers.
 
 The three Step 6 resources (`stock-snapshots`, `open-orders`, `receipts`) use transaction scopes with UUID cursor paging and `updated_since`, like master-data lists. Their list default is 100, maximum 1,000, and atomic writes accept up to 1,000 records. See [transaction semantics and dashboard definitions](transactions-dashboard.md).

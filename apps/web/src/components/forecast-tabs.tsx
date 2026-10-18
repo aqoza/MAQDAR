@@ -10,10 +10,12 @@ export function ForecastTabs({
   label,
   tabs,
   panels,
+  header,
 }: {
   label: string
   tabs: { key: string; label: string }[]
   panels: ReactNode[]
+  header?: ReactNode
 }) {
   const id = useId()
   const [selected, setSelected] = useState(0)
@@ -42,30 +44,40 @@ export function ForecastTabs({
     document.getElementById(`${id}-tab-${tabs[next].key}`)?.focus()
   }
 
+  const navigation = (
+    <div className={styles.workflows} role="tablist" aria-label={label}>
+      {tabs.map((tab, index) => {
+        const Icon = icons[index]
+        return (
+          <button
+            key={tab.key}
+            type="button"
+            role="tab"
+            id={`${id}-tab-${tab.key}`}
+            aria-controls={`${id}-panel-${tab.key}`}
+            aria-selected={selected === index}
+            tabIndex={selected === index ? 0 : -1}
+            className={`${styles.workflow} ${selected === index ? styles.selected : ''}`}
+            onClick={() => setSelected(index)}
+            onKeyDown={(event) => onKeyDown(event, index)}
+          >
+            <Icon aria-hidden="true" />
+            <span>{tab.label}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
   return (
     <>
-      <div className={styles.workflows} role="tablist" aria-label={label}>
-        {tabs.map((tab, index) => {
-          const Icon = icons[index]
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              role="tab"
-              id={`${id}-tab-${tab.key}`}
-              aria-controls={`${id}-panel-${tab.key}`}
-              aria-selected={selected === index}
-              tabIndex={selected === index ? 0 : -1}
-              className={`${styles.workflow} ${selected === index ? styles.selected : ''}`}
-              onClick={() => setSelected(index)}
-              onKeyDown={(event) => onKeyDown(event, index)}
-            >
-              <Icon aria-hidden="true" />
-              <span>{tab.label}</span>
-            </button>
-          )
-        })}
-      </div>
+      {header ? (
+        <div className="page-banner" data-page-banner="forecasts">
+          {header}
+          {navigation}
+        </div>
+      ) : (
+        navigation
+      )}
       {tabs.map((tab, index) => (
         <div
           key={tab.key}

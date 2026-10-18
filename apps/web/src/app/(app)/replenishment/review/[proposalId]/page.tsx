@@ -20,7 +20,7 @@ export default async function PurchaseReviewDetail({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { proposalId } = await params
-  if (!z.uuid().safeParse(proposalId).success) notFound()
+  if (!z.guid().safeParse(proposalId).success) notFound()
   const [db, t, locale, format, messages] = await Promise.all([
     createClient(),
     getTranslations('PurchaseReview'),

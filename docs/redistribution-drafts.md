@@ -1,6 +1,6 @@
 # Redistribution drafts (Step 16)
 
-Status: implemented, review pending. PR #37 merged as `a16f232` with all three CI jobs passing, including browser tests and Cloudflare packaging.
+Status: merged in PR #38 as `2888553`. PR #37 merged as `a16f232` with all three CI jobs passing, including browser tests and Cloudflare packaging.
 
 ## Approved scope
 

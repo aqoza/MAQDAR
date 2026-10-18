@@ -60,6 +60,38 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"container_capacity_scenarios": {
+                  Row: {
+                    "batch_id": string,"created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "batch_id": string,"created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "batch_id"?: string,"created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "container_capacity_scenarios_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoff_batch_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "container_capacity_scenarios_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "purchase_handoff_batches"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "container_capacity_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"countries": {
                   Row: {
                     "code": string,"currency_code": string,"holiday_coverage_from": string | null,"holiday_coverage_to": string | null,"name_ar": string | null,"name_en": string,"timezone": string,"utc_offset_minutes": number,"vat_rate": number,"weekend_days": (number)[]
@@ -178,6 +210,128 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "planning_runs"
       referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
+                },"event_delivery_scenarios": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string,"supplier_scenario_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string,"supplier_scenario_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string,"supplier_scenario_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_delivery_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_delivery_scenarios_organization_id_supplier_scenario_fkey"
+      columns: ["organization_id","supplier_scenario_id"]
+isOneToOne: false
+      referencedRelation: "event_supplier_scenarios"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"event_policy_scenarios": {
+                  Row: {
+                    "created_at": string,"event_id": string,"id": string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"event_id": string,"id"?: string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"event_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_policy_scenarios_organization_id_event_id_fkey"
+      columns: ["organization_id","event_id"]
+isOneToOne: false
+      referencedRelation: "planned_event_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
+      columns: ["organization_id","policy_id"]
+isOneToOne: false
+      referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
+      columns: ["organization_id","policy_id"]
+isOneToOne: false
+      referencedRelation: "policy_workbench"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
+      columns: ["organization_id","policy_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_source_options"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"event_replenishment_drafts": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"scenario_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_replenishment_drafts_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_replenishment_drafts_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "event_policy_scenarios"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"event_supplier_scenarios": {
+                  Row: {
+                    "created_at": string,"draft_id": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"draft_id": string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"draft_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_supplier_scenarios_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "event_replenishment_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_supplier_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
     }
                   ]
                 },"forecast_results": {
@@ -544,14 +698,14 @@ isOneToOne: false
                   ]
                 },"network_links": {
                   Row: {
-                    "created_at": string,"currency": string | null,"freight_basis": string,"freight_cost": number | null,"from_location_id": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at": string
+                    "created_at": string,"currency": string | null,"freight_basis": string,"freight_cost": number | null,"freight_unit": string | null,"freight_valid_from": string | null,"from_location_id": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"from_location_id": string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at"?: string
+                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"freight_unit"?: string | null,"freight_valid_from"?: string | null,"from_location_id": string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"from_location_id"?: string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50"?: number,"lead_time_days_p90"?: number,"organization_id"?: string,"to_location_id"?: string,"updated_at"?: string
+                    "created_at"?: string,"currency"?: string | null,"freight_basis"?: string,"freight_cost"?: number | null,"freight_unit"?: string | null,"freight_valid_from"?: string | null,"from_location_id"?: string,"id"?: string,"is_active"?: boolean,"lead_time_days_p50"?: number,"lead_time_days_p90"?: number,"organization_id"?: string,"to_location_id"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -668,6 +822,38 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "countries"
       referencedColumns: ["code"]
+    }
+                  ]
+                },"planned_event_scenarios": {
+                  Row: {
+                    "created_at": string,"event_type": string,"forecast_id": string,"id": string,"location_id": string,"name": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"event_type": string,"forecast_id": string,"id"?: string,"location_id": string,"name": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"event_type"?: string,"forecast_id"?: string,"id"?: string,"location_id"?: string,"name"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "planned_event_scenarios_organization_id_forecast_id_fkey"
+      columns: ["organization_id","forecast_id"]
+isOneToOne: false
+      referencedRelation: "forecast_quality"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "planned_event_scenarios_organization_id_forecast_id_fkey"
+      columns: ["organization_id","forecast_id"]
+isOneToOne: false
+      referencedRelation: "forecast_results"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "planned_event_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
     }
                   ]
                 },"planning_runs": {
@@ -1112,14 +1298,14 @@ isOneToOne: false
                   ]
                 },"supplier_items": {
                   Row: {
-                    "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"supplier_id": string,"supplier_part_number": string | null,"unit_of_measure": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
+                    "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"shipping_valid_from": string | null,"shipping_volume_m3": number | null,"shipping_weight_kg": number | null,"supplier_id": string,"supplier_part_number": string | null,"unit_of_measure": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"currency": string,"id"?: string,"is_preferred"?: boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id": string,"pack_size"?: number,"supplier_id": string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price": number,"updated_at"?: string,"valid_from"?: string | null
+                    "created_at"?: string,"currency": string,"id"?: string,"is_preferred"?: boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id": string,"pack_size"?: number,"shipping_valid_from"?: string | null,"shipping_volume_m3"?: number | null,"shipping_weight_kg"?: number | null,"supplier_id": string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price": number,"updated_at"?: string,"valid_from"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"currency"?: string,"id"?: string,"is_preferred"?: boolean,"item_id"?: string,"lead_time_days"?: number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id"?: string,"pack_size"?: number,"supplier_id"?: string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price"?: number,"updated_at"?: string,"valid_from"?: string | null
+                    "created_at"?: string,"currency"?: string,"id"?: string,"is_preferred"?: boolean,"item_id"?: string,"lead_time_days"?: number,"lead_time_days_p90"?: number | null,"min_order_quantity"?: number,"organization_id"?: string,"pack_size"?: number,"shipping_valid_from"?: string | null,"shipping_volume_m3"?: number | null,"shipping_weight_kg"?: number | null,"supplier_id"?: string,"supplier_part_number"?: string | null,"unit_of_measure"?: string | null,"unit_price"?: number,"updated_at"?: string,"valid_from"?: string | null
                   }
                   Relationships: [
                     {
@@ -1209,6 +1395,252 @@ isOneToOne: false
       columns: ["organization_id","work_calendar_id"]
 isOneToOne: false
       referencedRelation: "work_calendars"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_date_scenarios": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"redistribution_id": string,"report": NonNullable<Json>,"request_id": string,"source_location_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"redistribution_id": string,"report": NonNullable<Json>,"request_id": string,"source_location_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"redistribution_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"source_location_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_date_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_redistribution_id_fkey"
+      columns: ["organization_id","redistribution_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_redistribution_id_fkey"
+      columns: ["organization_id","redistribution_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_freight_estimates": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"source_location_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"source_location_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"scenario_id"?: string,"source_location_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_freight_estimates_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "transfer_date_scenario_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "transfer_date_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_source_location_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_handoff_acknowledgements": {
+                  Row: {
+                    "api_key_id": string,"batch_id": string | null,"client_event_id": string,"external_reference": string,"external_system": string,"handoff_id": string | null,"id": string,"location_id": string,"organization_id": string,"reason": string | null,"recorded_at": string,"source_location_id": string,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "api_key_id": string,"batch_id"?: string | null,"client_event_id": string,"external_reference": string,"external_system": string,"handoff_id"?: string | null,"id"?: string,"location_id": string,"organization_id": string,"reason"?: string | null,"recorded_at"?: string,"source_location_id": string,"status": string
+                  }
+                  Update: {
+                    "api_key_id"?: string,"batch_id"?: string | null,"client_event_id"?: string,"external_reference"?: string,"external_system"?: string,"handoff_id"?: string | null,"id"?: string,"location_id"?: string,"organization_id"?: string,"reason"?: string | null,"recorded_at"?: string,"source_location_id"?: string,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_handoff_acknowledgem_organization_id_source_locat_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoff_acknowledgeme_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoff_acknowledgemen_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "transfer_handoff_batch_candidates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoff_acknowledgemen_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "transfer_handoff_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoff_acknowledgemen_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "transfer_handoffs"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoff_acknowledgements_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "transfer_handoff_batch_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoff_acknowledgements_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "transfer_handoff_batches"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_handoff_batches": {
+                  Row: {
+                    "created_at": string,"created_by": string,"handoff_ids": (string)[],"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"source_location_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"handoff_ids": (string)[],"id"?: string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"source_location_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"handoff_ids"?: (string)[],"id"?: string,"location_id"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"source_location_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_handoff_batches_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoff_batches_organization_id_source_location_i_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_handoffs": {
+                  Row: {
+                    "created_at": string,"created_by": string,"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"proposal_id": string,"source_location_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"id"?: string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"proposal_id": string,"source_location_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"proposal_id"?: string,"source_location_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "transfer_proposals"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "transfer_review_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_proposals": {
+                  Row: {
+                    "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"decision_request_id": string | null,"draft_id": string,"estimate_id": string,"id": string,"location_id": string,"organization_id": string,"reason": string,"request_id": string,"revision": number,"source_location_id": string,"status": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"decision_request_id"?: string | null,"draft_id": string,"estimate_id": string,"id"?: string,"location_id": string,"organization_id": string,"reason": string,"request_id": string,"revision": number,"source_location_id": string,"status"?: string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_reason"?: string | null,"decision_request_id"?: string | null,"draft_id"?: string,"estimate_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"reason"?: string,"request_id"?: string,"revision"?: number,"source_location_id"?: string,"status"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "transfer_freight_estimates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "transfer_freight_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
       referencedColumns: ["organization_id","id"]
     }
                   ]
@@ -1617,6 +2049,216 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"transfer_date_scenario_list": {
+                  Row: {
+                    "created_at": string | null,"destination_code": string | null,"dispatch_date": string | null,"id": string | null,"item_code": string | null,"location_id": string | null,"organization_id": string | null,"quantity": string | null,"redistribution_id": string | null,"requested_date": string | null,"search_text": string | null,"slow_receipt": string | null,"source_code": string | null,"source_location_id": string | null,"status": string | null,"typical_receipt": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"destination_code"?: never,"dispatch_date"?: never,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"quantity"?: never,"redistribution_id"?: string | null,"requested_date"?: never,"search_text"?: never,"slow_receipt"?: never,"source_code"?: never,"source_location_id"?: string | null,"status"?: never,"typical_receipt"?: never,"unit"?: never
+                         }
+                        Update: {
+                           "created_at"?: string | null,"destination_code"?: never,"dispatch_date"?: never,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"quantity"?: never,"redistribution_id"?: string | null,"requested_date"?: never,"search_text"?: never,"slow_receipt"?: never,"source_code"?: never,"source_location_id"?: string | null,"status"?: never,"typical_receipt"?: never,"unit"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "transfer_date_scenarios_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_redistribution_id_fkey"
+      columns: ["organization_id","redistribution_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_redistribution_id_fkey"
+      columns: ["organization_id","redistribution_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_date_scenarios_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_freight_list": {
+                  Row: {
+                    "basis": string | null,"created_at": string | null,"currency": string | null,"destination_code": string | null,"dispatch_date": string | null,"id": string | null,"item_code": string | null,"location_id": string | null,"minor_units": number | null,"organization_id": string | null,"scenario_id": string | null,"search_text": string | null,"source_code": string | null,"source_location_id": string | null,"status": string | null,"subtotal": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "basis"?: never,"created_at"?: string | null,"currency"?: never,"destination_code"?: never,"dispatch_date"?: never,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"minor_units"?: never,"organization_id"?: string | null,"scenario_id"?: string | null,"search_text"?: never,"source_code"?: never,"source_location_id"?: string | null,"status"?: never,"subtotal"?: never
+                         }
+                        Update: {
+                           "basis"?: never,"created_at"?: string | null,"currency"?: never,"destination_code"?: never,"dispatch_date"?: never,"id"?: string | null,"item_code"?: never,"location_id"?: string | null,"minor_units"?: never,"organization_id"?: string | null,"scenario_id"?: string | null,"search_text"?: never,"source_code"?: never,"source_location_id"?: string | null,"status"?: never,"subtotal"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "transfer_freight_estimates_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "transfer_date_scenario_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_scenario_id_fkey"
+      columns: ["organization_id","scenario_id"]
+isOneToOne: false
+      referencedRelation: "transfer_date_scenarios"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_freight_estimates_organization_id_source_location_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_handoff_batch_candidates": {
+                  Row: {
+                    "batch_count": number | null,"created_at": string | null,"currency": string | null,"dispatch_date": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"minor_units": number | null,"organization_id": string | null,"proposal_id": string | null,"quantity": string | null,"search_text": string | null,"selected": boolean | null,"source_code": string | null,"source_location_id": string | null,"subtotal": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "transfer_proposals"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "transfer_review_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_handoff_batch_list": {
+                  Row: {
+                    "created_at": string | null,"currency": string | null,"dispatch_date": string | null,"handoff_ids": (string)[] | null,"id": string | null,"line_count": number | null,"location_code": string | null,"location_id": string | null,"minor_units": number | null,"organization_id": string | null,"overlap_count": number | null,"search_text": string | null,"selected": boolean | null,"source_code": string | null,"source_location_id": string | null,"subtotal": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"currency"?: never,"dispatch_date"?: never,"handoff_ids"?: (string)[] | null,"id"?: string | null,"line_count"?: never,"location_code"?: never,"location_id"?: string | null,"minor_units"?: never,"organization_id"?: string | null,"overlap_count"?: never,"search_text"?: never,"selected"?: never,"source_code"?: never,"source_location_id"?: string | null,"subtotal"?: never
+                         }
+                        Update: {
+                           "created_at"?: string | null,"currency"?: never,"dispatch_date"?: never,"handoff_ids"?: (string)[] | null,"id"?: string | null,"line_count"?: never,"location_code"?: never,"location_id"?: string | null,"minor_units"?: never,"organization_id"?: string | null,"overlap_count"?: never,"search_text"?: never,"selected"?: never,"source_code"?: never,"source_location_id"?: string | null,"subtotal"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "transfer_handoff_batches_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoff_batches_organization_id_source_location_i_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_handoff_list": {
+                  Row: {
+                    "created_at": string | null,"currency": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"minor_units": number | null,"organization_id": string | null,"proposal_id": string | null,"quantity": string | null,"search_text": string | null,"selected": boolean | null,"source_code": string | null,"source_location_id": string | null,"subtotal": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "transfer_proposals"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "transfer_review_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_handoffs_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"transfer_review_list": {
+                  Row: {
+                    "created_at": string | null,"currency": string | null,"dispatch_date": string | null,"draft_id": string | null,"estimate_id": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"minor_units": number | null,"organization_id": string | null,"quantity": string | null,"revision": number | null,"search_text": string | null,"selected": boolean | null,"slow_receipt": string | null,"source_code": string | null,"source_location_id": string | null,"status": string | null,"subtotal": string | null,"typical_receipt": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "transfer_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_draft_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "redistribution_drafts"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "transfer_freight_estimates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_estimate_id_fkey"
+      columns: ["organization_id","estimate_id"]
+isOneToOne: false
+      referencedRelation: "transfer_freight_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "transfer_proposals_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 }
           }
           Functions: {
@@ -1644,11 +2286,29 @@ isOneToOne: false
 "api_organization":
 { Args: { "p_key_hash": string }; Returns: Json
                            },
+"api_transfer_handoff_acknowledge":
+{ Args: { "p_body": Json,"p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
+                           },
+"api_transfer_handoff_acknowledgements":
+{ Args: { "p_after"?: string,"p_event_id"?: string,"p_id": string,"p_key_hash": string,"p_limit"?: number,"p_resource": string }; Returns: Json
+                           },
+"api_transfer_handoff_get":
+{ Args: { "p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
+                           },
+"api_transfer_handoff_list":
+{ Args: { "p_after"?: string,"p_created_since"?: string,"p_key_hash": string,"p_limit"?: number,"p_resource": string }; Returns: Json
+                           },
 "api_upsert":
 { Args: { "p_body": Json,"p_entity": string,"p_key_hash": string,"p_request_id": string }; Returns: Json
                            },
 "classification_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_location_code": string,"p_options": Json,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
+                           },
+"container_capacity_preview":
+{ Args: { "p_batch_id": string,"p_confirmed": boolean,"p_organization_id": string,"p_payload": string,"p_volume": string }; Returns: Json
+                           },
+"container_capacity_save":
+{ Args: { "p_batch_id": string,"p_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_payload": string,"p_request_id": string,"p_volume": string }; Returns: string
                            },
 "create_api_key":
 { Args: { "p_display_prefix": string,"p_expires_in_days": number,"p_key_hash": string,"p_last4": string,"p_name": string,"p_organization_id": string,"p_scopes": (string)[] }; Returns: string
@@ -1667,6 +2327,30 @@ isOneToOne: false
                            },
 "delivery_scenario_save":
 { Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_requested_date": string,"p_supplier_scenario_id": string }; Returns: string
+                           },
+"event_delivery_preview":
+{ Args: { "p_calendars_confirmed": boolean,"p_organization_id": string,"p_requested_date": string,"p_scenario_id": string }; Returns: Json
+                           },
+"event_delivery_save":
+{ Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_requested_date": string,"p_scenario_id": string }; Returns: string
+                           },
+"event_policy_preview":
+{ Args: { "p_event_id": string,"p_organization_id": string,"p_policy_id": string,"p_reason": string }; Returns: Json
+                           },
+"event_policy_save":
+{ Args: { "p_event_id": string,"p_fingerprint": string,"p_organization_id": string,"p_policy_id": string,"p_reason": string,"p_request_id": string }; Returns: string
+                           },
+"event_replenishment_preview":
+{ Args: { "p_backorders": string,"p_event_uncommitted": boolean,"p_orders_confirmed": boolean,"p_organization_id": string,"p_scenario_id": string }; Returns: Json
+                           },
+"event_replenishment_save":
+{ Args: { "p_backorders": string,"p_event_uncommitted": boolean,"p_fingerprint": string,"p_orders_confirmed": boolean,"p_organization_id": string,"p_request_id": string,"p_scenario_id": string }; Returns: string
+                           },
+"event_supplier_preview":
+{ Args: { "p_draft_id": string,"p_organization_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: Json
+                           },
+"event_supplier_save":
+{ Args: { "p_draft_id": string,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: string
                            },
 "forecast_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
@@ -1728,6 +2412,15 @@ isOneToOne: false
 { Args: { "p_organization_id": string }; Returns: {
               "created_at": string,"email": string,"location_ids": (string)[],"role": string,"user_id": string
             }[]
+                           },
+"planned_event_preview":
+{ Args: { "p_additions": Json,"p_confirmed": boolean,"p_forecast_id": string,"p_name": string,"p_organization_id": string,"p_reason": string,"p_type": string,"p_unit": string }; Returns: Json
+                           },
+"planned_event_save":
+{ Args: { "p_additions": Json,"p_confirmed": boolean,"p_fingerprint": string,"p_forecast_id": string,"p_name": string,"p_organization_id": string,"p_reason": string,"p_request_id": string,"p_type": string,"p_unit": string }; Returns: string
+                           },
+"planned_event_source":
+{ Args: { "p_forecast_id": string,"p_organization_id": string }; Returns: Json
                            },
 "planning_cancel":
 { Args: { "p_organization_id": string,"p_run_id": string }; Returns: undefined
@@ -1801,11 +2494,44 @@ isOneToOne: false
 "set_member_role":
 { Args: { "p_organization_id": string,"p_role": string,"p_user_id": string }; Returns: undefined
                            },
+"stock_locator":
+{ Args: { "p_day": string,"p_filters"?: Json,"p_item_code": string,"p_organization_id": string,"p_page"?: number,"p_receiving_code": string,"p_size"?: number,"p_unit": string }; Returns: Json
+                           },
 "supplier_scenario_preview":
 { Args: { "p_draft_id": string,"p_organization_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: Json
                            },
 "supplier_scenario_save":
 { Args: { "p_draft_id": string,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: string
+                           },
+"transfer_date_preview":
+{ Args: { "p_calendars_confirmed": boolean,"p_organization_id": string,"p_redistribution_id": string,"p_requested_date": string }; Returns: Json
+                           },
+"transfer_date_save":
+{ Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_redistribution_id": string,"p_request_id": string,"p_requested_date": string }; Returns: string
+                           },
+"transfer_freight_preview":
+{ Args: { "p_organization_id": string,"p_scenario_id": string,"p_terms_confirmed": boolean }; Returns: Json
+                           },
+"transfer_freight_save":
+{ Args: { "p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_scenario_id": string,"p_terms_confirmed": boolean }; Returns: string
+                           },
+"transfer_handoff_batch_create":
+{ Args: { "p_handoff_ids": (string)[],"p_organization_id": string }; Returns: string
+                           },
+"transfer_handoff_batch_preview":
+{ Args: { "p_handoff_ids": (string)[],"p_organization_id": string }; Returns: Json
+                           },
+"transfer_handoff_create":
+{ Args: { "p_organization_id": string,"p_proposal_id": string }; Returns: string
+                           },
+"transfer_integration_workbench":
+{ Args: { "p_filters"?: Json,"p_organization_id": string,"p_page"?: number,"p_size"?: number }; Returns: Json
+                           },
+"transfer_proposal_decide":
+{ Args: { "p_decision": string,"p_organization_id": string,"p_proposal_id": string,"p_reason": string,"p_request_id": string }; Returns: string
+                           },
+"transfer_proposal_submit":
+{ Args: { "p_estimate_id": string,"p_organization_id": string,"p_reason": string,"p_request_id": string }; Returns: string
                            },
 "update_organization_preferences":
 { Args: { "p_default_locale": string,"p_numbering_system": string,"p_organization_id": string,"p_time_zone": string }; Returns: undefined

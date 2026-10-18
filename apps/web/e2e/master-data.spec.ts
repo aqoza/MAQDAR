@@ -359,7 +359,7 @@ test('settings: an admin sets time zone and numbering, the viewer sees them read
   browser,
   page,
 }) => {
-  await openSettings(page)
+  await openSettings(page, 'preferences')
   await field(page, 'Time zone').selectOption('Asia/Dubai')
   await field(page, 'Numbering').selectOption('arab')
   await page.getByRole('button', { name: 'Save preferences', exact: true }).click()
@@ -372,7 +372,7 @@ test('settings: an admin sets time zone and numbering, the viewer sees them read
   const viewerPage = await context.newPage()
   await signInWithPassword(viewerPage, viewer.email, viewer.password)
   await expectActiveOrganization(viewerPage, organization.name)
-  await openSettings(viewerPage)
+  await openSettings(viewerPage, 'preferences')
   await expect(summaryValue(viewerPage, 'Default language')).toHaveText('English')
   await expect(summaryValue(viewerPage, 'Time zone')).toHaveText('Asia/Dubai')
   await expect(summaryValue(viewerPage, 'Numbering')).toHaveText('Arabic-Indic (١٢٣)')

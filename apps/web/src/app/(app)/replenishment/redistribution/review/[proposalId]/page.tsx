@@ -1,0 +1,165 @@
+import { HelpDisclosure } from '@/components/help-disclosure'
+import Link from 'next/link'
+import { notFound, redirect } from 'next/navigation'
+import { NextIntlClientProvider } from 'next-intl'
+import { getFormatter, getLocale, getMessages, getTranslations } from 'next-intl/server'
+import { z } from 'zod'
+import { TransferDecisionForm } from '@/components/transfer-review-forms'
+import { TransferFreightReport } from '@/components/transfer-freight-report'
+import { TransferHandoffForm } from '@/components/transfer-handoff-form'
+import { getActiveContext } from '@/lib/organizations/context'
+import { createClient } from '@/lib/supabase/server'
+import { transferFreightReportSchema } from '@/lib/transfer-freight'
+import { workbenchRowSchema, transferTimingBlocked } from '@/lib/transfer-review'
+
+export default async function TransferReviewDetail({
+  params,
+}: {
+  params: Promise<{ proposalId: string }>
+}) {
+  const context = await getActiveContext()
+  if (!context?.active) redirect('/organizations')
+  const { proposalId } = await params
+  if (!z.guid().safeParse(proposalId).success) notFound()
+  const [db, t, locale, format, messages] = await Promise.all([
+    createClient(),
+    getTranslations('TransferReview'),
+    getLocale(),
+    getFormatter(),
+    getMessages(),
+  ])
+  const [record, list] = await Promise.all([
+    db
+      .from('transfer_proposals')
+      .select('*')
+      .eq('organization_id', context.active.id)
+      .eq('id', proposalId)
+      .maybeSingle(),
+    db
+      .from('transfer_review_list')
+      .select('*')
+      .eq('organization_id', context.active.id)
+      .eq('id', proposalId)
+      .maybeSingle(),
+  ])
+  if (record.error || list.error) throw new Error('Transfer review unavailable')
+  if (!record.data || !list.data) notFound()
+  const proposal = record.data
+  const row = workbenchRowSchema.parse(list.data)
+  const source = await db
+    .from('transfer_freight_estimates')
+    .select('report,scenario_id')
+    .eq('organization_id', context.active.id)
+    .eq('id', proposal.estimate_id)
+    .single()
+  if (source.error) throw new Error('Transfer evidence unavailable')
+  const report = transferFreightReportSchema.parse(source.data.report)
+  const handoff = await db
+    .from('transfer_handoffs')
+    .select('id')
+    .eq('organization_id', context.active.id)
+    .eq('proposal_id', proposal.id)
+    .maybeSingle()
+  if (handoff.error) throw new Error('Transfer handoff unavailable')
+  const handoffT = await getTranslations('TransferHandoffs')
+  let freightMatches = false
+  if (proposal.status === 'pending') {
+    const current = await db.rpc('transfer_freight_preview', {
+      p_organization_id: context.active.id,
+      p_scenario_id: source.data.scenario_id,
+      p_terms_confirmed: true,
+    })
+    if (current.error) throw new Error('Current freight evidence unavailable')
+    const parsed = transferFreightReportSchema.parse(current.data)
+    freightMatches = parsed.status === 'available' && parsed.fingerprint === report.fingerprint
+  }
+  const actor = (id: string | null) =>
+    id === context.userId ? t('you') : t('member', { id: id ?? '—' })
+  const withdrawal = proposal.submitted_by === context.userId
+  const reviewer = ['owner', 'admin', 'approver'].includes(context.role ?? '')
+  return (
+    <div className="min-w-0 space-y-4 wrap-anywhere">
+      <Link href="/replenishment/redistribution/review" className="underline">
+        {t('back')}
+      </Link>
+      <h1 className="text-page-title">{t('detailTitle', { item: row.item_code })}</h1>
+      <HelpDisclosure>
+        <p>{t('description')}</p>
+      </HelpDisclosure>
+      <h2 className="text-section-title">
+        {t('revision', { revision: proposal.revision })} · {t(`statuses.${row.status}`)}
+      </h2>
+      {row.selected && <p role="status">{t('selected')}</p>}
+      {row.status === 'approved' && !row.selected && <p>{t('historicalApproval')}</p>}
+      <p>
+        {t('submitted', {
+          actor: actor(proposal.submitted_by),
+          time: format.dateTime(new Date(proposal.created_at), 'long'),
+        })}
+      </p>
+      <p className="whitespace-pre-wrap break-words">
+        {t('reason')}: {proposal.reason}
+      </p>
+      {proposal.decided_at && (
+        <>
+          <p>
+            {t('decided', {
+              actor: actor(proposal.decided_by),
+              time: format.dateTime(new Date(proposal.decided_at), 'long'),
+            })}
+          </p>
+          <p className="whitespace-pre-wrap break-words">
+            {t('decisionReason')}: {proposal.decision_reason}
+          </p>
+        </>
+      )}
+      <div className="flex flex-wrap gap-4">
+        <Link
+          className="underline"
+          href={`/replenishment/redistribution/review?draft=${proposal.draft_id}`}
+        >
+          {t('draftHistory')}
+        </Link>
+        <Link
+          className="underline"
+          href={`/replenishment/redistribution/freight/${proposal.estimate_id}`}
+        >
+          {t('estimate')}
+        </Link>
+        <Link className="underline" href={`/replenishment/redistribution/${proposal.draft_id}`}>
+          {t('sourceDraft')}
+        </Link>
+      </div>
+      <TransferFreightReport report={report} locale={locale} />
+      {handoff.data ? (
+        <Link
+          href={`/replenishment/redistribution/handoffs/${handoff.data.id}`}
+          className="underline"
+        >
+          {handoffT('open')}
+        </Link>
+      ) : row.selected && ['owner', 'admin', 'planner'].includes(context.role ?? '') ? (
+        <NextIntlClientProvider messages={{ TransferHandoffs: messages.TransferHandoffs }}>
+          <TransferHandoffForm organizationId={context.active.id} proposalId={proposal.id} />
+        </NextIntlClientProvider>
+      ) : null}
+      {proposal.status === 'pending' && (
+        <>
+          <p role="status">{t(freightMatches ? 'freightCurrent' : 'freightChanged')}</p>
+          {transferTimingBlocked(report) && <p role="alert">{t('timingRequired')}</p>}
+          {(withdrawal || reviewer) && (
+            <NextIntlClientProvider messages={{ TransferReview: messages.TransferReview }}>
+              <TransferDecisionForm
+                organizationId={context.active.id}
+                proposalId={proposal.id}
+                requestId={crypto.randomUUID()}
+                withdrawal={withdrawal}
+                approveBlocked={!freightMatches || transferTimingBlocked(report)}
+              />
+            </NextIntlClientProvider>
+          )}
+        </>
+      )}
+    </div>
+  )
+}

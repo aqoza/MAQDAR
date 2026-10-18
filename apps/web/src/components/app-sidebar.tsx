@@ -71,10 +71,10 @@ export function AppSidebar({
   return (
     // The sidebar's `side` is physical by design; it follows the text direction.
     <Sidebar collapsible="icon" side={dir === 'rtl' ? 'right' : 'left'} dir={dir}>
-      <SidebarHeader className="gap-2">
+      <SidebarHeader className="gap-2 app-sidebar-header">
         <Link
           href="/dashboard"
-          className="px-2 pt-1 font-semibold tracking-tight group-data-[collapsible=icon]:hidden"
+          className="app-brand px-2 pt-1 font-semibold tracking-tight group-data-[collapsible=icon]:hidden"
         >
           {tCommon('appName')}
         </Link>
@@ -110,7 +110,7 @@ export function AppSidebar({
       </SidebarContent>
       <SidebarFooter>
         <SidebarSeparator />
-        <div className="flex flex-col gap-1 px-2 group-data-[collapsible=icon]:hidden">
+        <div className="app-account flex flex-col gap-1 px-2 group-data-[collapsible=icon]:hidden">
           <p className="text-muted-foreground truncate text-xs" title={user.email}>
             <span className="sr-only">{tCommon('signedInAs')} </span>
             {user.email}

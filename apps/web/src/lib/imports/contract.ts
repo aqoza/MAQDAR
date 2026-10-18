@@ -356,6 +356,8 @@ export const COLUMN_LABEL_PATHS: {
     ],
     freight_basis: ['NetworkLinks.fields.freight_basis'],
     freight_cost: ['NetworkLinks.fields.freight_cost'],
+    freight_unit: ['NetworkLinks.fields.freight_unit'],
+    freight_valid_from: ['NetworkLinks.fields.freight_valid_from'],
     currency: ['NetworkLinks.fields.currency'],
     is_active: ['NetworkLinks.fields.is_active'],
   },
@@ -421,6 +423,9 @@ export const COLUMN_LABEL_PATHS: {
     work_calendar_code: ['Suppliers.fields.work_calendar_id', 'Suppliers.columns.calendar'],
   },
   supplier_items: {
+    shipping_weight_kg: ['SupplierItems.fields.shipping_weight_kg'],
+    shipping_volume_m3: ['SupplierItems.fields.shipping_volume_m3'],
+    shipping_valid_from: ['SupplierItems.fields.shipping_valid_from'],
     supplier_code: ['SupplierItems.fields.supplier_id', 'SupplierItems.columns.supplier'],
     item_code: ['SupplierItems.fields.item_code'],
     supplier_part_number: [

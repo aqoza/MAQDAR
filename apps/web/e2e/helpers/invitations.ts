@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test'
+import { selectSettingsSection } from './settings'
 
 export const INVITATION_URL = /\/invitations\/[^/?#]+(?:[?#].*)?$/
 
@@ -12,6 +13,7 @@ export type RoleLabel =
  */
 export async function inviteMember(page: Page, email: string, role: RoleLabel): Promise<void> {
   if (!/\/settings(?:[?#].*)?$/.test(page.url())) await page.goto('/settings')
+  await selectSettingsSection(page, 'invitations')
   const form = page.locator('form', {
     has: page.getByRole('button', { name: 'Send invitation', exact: true }),
   })
@@ -24,6 +26,7 @@ export async function inviteMember(page: Page, email: string, role: RoleLabel): 
 /** Revokes the pending invitation addressed to `email` from Settings and checks it disappears. */
 export async function revokeInvitation(page: Page, email: string): Promise<void> {
   if (!/\/settings(?:[?#].*)?$/.test(page.url())) await page.goto('/settings')
+  await selectSettingsSection(page, 'invitations')
   const revoke = page.getByRole('button', { name: 'Revoke', exact: true })
   // The innermost element holding both the address and a Revoke button is that invitation's row.
   const row = page.locator('li, tr, div').filter({ hasText: email }).filter({ has: revoke }).last()

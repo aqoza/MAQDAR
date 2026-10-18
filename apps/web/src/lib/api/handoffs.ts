@@ -3,6 +3,11 @@ import { isRfc3339DateTime, isWellFormedCursor, type ListQueryFailure } from './
 
 export const HANDOFF_RESOURCES = ['purchase-handoffs', 'purchase-handoff-batches'] as const
 export type HandoffResource = (typeof HANDOFF_RESOURCES)[number]
+export const TRANSFER_HANDOFF_RESOURCES = ['transfer-handoffs', 'transfer-handoff-batches'] as const
+export type TransferHandoffResource = (typeof TRANSFER_HANDOFF_RESOURCES)[number]
+export const READ_HANDOFF_RESOURCES = [...HANDOFF_RESOURCES, ...TRANSFER_HANDOFF_RESOURCES] as const
+export type ReadHandoffResource = (typeof READ_HANDOFF_RESOURCES)[number]
+export const TRANSFER_HANDOFF_SCOPE = 'transfer_handoffs:read' as const
 export const HANDOFF_SCOPE = 'purchase_handoffs:read' as const
 export const HANDOFF_LIST_DEFAULT = 25
 export const HANDOFF_LIST_MAX = 100
@@ -12,8 +17,23 @@ export function isHandoffResource(value: string): value is HandoffResource {
   return (HANDOFF_RESOURCES as readonly string[]).includes(value)
 }
 
-export function handoffOperationId(resource: HandoffResource, detail: boolean): string {
-  return `${detail ? 'get' : 'list'}${resource === 'purchase-handoffs' ? 'PurchaseHandoffs' : 'PurchaseHandoffBatches'}`
+export function isTransferHandoffResource(value: string): value is TransferHandoffResource {
+  return (TRANSFER_HANDOFF_RESOURCES as readonly string[]).includes(value)
+}
+export function isReadHandoffResource(value: string): value is ReadHandoffResource {
+  return isHandoffResource(value) || isTransferHandoffResource(value)
+}
+export function handoffReadScope(resource: ReadHandoffResource) {
+  return isTransferHandoffResource(resource) ? TRANSFER_HANDOFF_SCOPE : HANDOFF_SCOPE
+}
+export function handoffOperationId(resource: ReadHandoffResource, detail: boolean): string {
+  const names = {
+    'purchase-handoffs': 'PurchaseHandoffs',
+    'purchase-handoff-batches': 'PurchaseHandoffBatches',
+    'transfer-handoffs': 'TransferHandoffs',
+    'transfer-handoff-batches': 'TransferHandoffBatches',
+  } as const
+  return `${detail ? 'get' : 'list'}${names[resource]}`
 }
 
 export const handoffIdSchema = z.uuid()

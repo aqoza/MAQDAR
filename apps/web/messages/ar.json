@@ -204,6 +204,9 @@
     },
     "fields": {
       "supplier_id": "المورد",
+      "shipping_weight_kg": "وزن الشحن لكل وحدة (كجم)",
+      "shipping_volume_m3": "حجم الشحن لكل وحدة (م³)",
+      "shipping_valid_from": "قياسات الشحن سارية من",
       "item_code": "رقم القطعة",
       "supplier_part_number": "رقم قطعة المورد",
       "valid_from": "السعر ساري من",
@@ -306,7 +309,9 @@
       "freight_basis": "أساس احتساب الشحن",
       "freight_cost": "تكلفة الشحن",
       "currency": "عملة الشحن",
-      "is_active": "نشط"
+      "is_active": "نشط",
+      "freight_unit": "وحدة الشحن",
+      "freight_valid_from": "سريان تكلفة الشحن من"
     },
     "filters": {
       "from": "من",
@@ -524,6 +529,48 @@
       "notFound": "المنظمة غير موجودة."
     }
   },
+  "Members": {
+    "title": "الأعضاء",
+    "description": "الأشخاص الذين لديهم صلاحية الوصول إلى هذه المنظمة.",
+    "email": "البريد الإلكتروني",
+    "role": "الدور",
+    "since": "عضو منذ",
+    "locations": "المواقع",
+    "allLocations": "جميع المواقع",
+    "noLocations": "لم تُعيّن مواقع",
+    "assignLocations": "تعيين المواقع",
+    "you": "أنت",
+    "remove": "إزالة",
+    "leave": "مغادرة المنظمة",
+    "removeConfirmTitle": "إزالة {email}؟",
+    "removeConfirmDescription": "يفقد العضو صلاحية الوصول فورًا. يمكنك دعوته مرة أخرى لاحقًا.",
+    "leaveConfirmTitle": "مغادرة {organization}؟",
+    "leaveConfirmDescription": "تفقد صلاحية الوصول إلى هذه المنظمة فورًا. يمكن للمسؤول دعوتك مرة أخرى لاحقًا.",
+    "saved": "تم الحفظ."
+  },
+  "InviteMembers": {
+    "title": "الدعوات",
+    "description": "ادعُ زملاءك عبر البريد الإلكتروني. تظل الدعوات صالحة لمدة 7 أيام. ويعمل كل رابط يُرسل بالبريد لمدة ساعة واحدة، ويمكن إعادة إرسال الدعوة.",
+    "email": "البريد الإلكتروني",
+    "role": "الدور",
+    "send": "إرسال دعوة",
+    "resend": "إعادة الإرسال",
+    "revoke": "إلغاء الدعوة",
+    "pending": "الدعوات المعلّقة",
+    "none": "لا توجد دعوات معلّقة.",
+    "sentTo": "أُرسلت الدعوة إلى {email}.",
+    "resentTo": "أُعيد إرسال الدعوة إلى {email}.",
+    "sentAt": "أُرسلت في {date}",
+    "expiresAt": "تنتهي في {date}",
+    "errors": {
+      "alreadyMember": "{email} عضو في هذه المنظمة بالفعل.",
+      "cooldown": "تم إرسال دعوة إلى هذا العنوان قبل أقل من دقيقتين.",
+      "tooMany": "أُرسلت هذه الدعوة مرات أكثر من الحد المسموح.",
+      "emailRateLimited": "بلغت خدمة البريد الإلكتروني حدّ الإرسال مؤقتًا. حاول مرة أخرى بعد بضع دقائق.",
+      "emailNotAuthorized": "لا يمكن لهذا العنوان تلقي البريد من خدمة البريد الإلكتروني الحالية.",
+      "roleCeiling": "المالكون وحدهم يستطيعون دعوة أعضاء بدور المالك."
+    }
+  },
   "ApiKeys": {
     "title": "مفاتيح واجهة البرمجة",
     "description": "تتيح المفاتيح للأنظمة الأخرى، مثل نظام تخطيط الموارد (ERP) أو مستودع البيانات، قراءة بيانات هذه المنظمة وتحديثها عبر واجهة REST.",
@@ -573,6 +620,16 @@
         "badge": "تقارير استلام الحزم",
         "label": "تسجيل استلام حزم الشراء",
         "description": "تسجيل تقارير الاستلام أو الرفض من النظام الخارجي للحزم المحفوظة على مستوى المؤسسة. لا ينشئ هذا الإذن أوامر شراء."
+      },
+      "transferHandoffsRead": {
+        "label": "قراءة ملفات تسليم التحويلات",
+        "badge": "تسليم التحويلات: قراءة",
+        "description": "عرض ملفات تسليم التحويلات والحزم المحفوظة على مستوى المؤسسة بالكامل، بما فيها الموافقات السابقة. لا يحجز هذا الإذن المخزون ولا ينفذ التحويلات."
+      },
+      "transferHandoffsAcknowledge": {
+        "label": "تسجيل تقارير تسليم التحويلات",
+        "badge": "تسليم التحويلات: تسجيل التقارير",
+        "description": "تسجيل تقارير الاستلام أو الرفض الخارجية للمؤسسة. لا يحجز المخزون ولا ينفذ التحويلات."
       }
     },
     "secret": {
@@ -631,6 +688,21 @@
   "Settings": {
     "title": "الإعدادات",
     "description": "المنظمة والأعضاء والتفضيلات.",
+    "navigation": {
+      "label": "أقسام الإعدادات",
+      "searchLabel": "البحث عن إعداد",
+      "searchPlaceholder": "ابحث عن إعداد...",
+      "clearSearch": "مسح البحث في الإعدادات",
+      "noResults": "لا توجد إعدادات مطابقة. جرّب بحثًا آخر.",
+      "chooseSection": "قسم الإعدادات: {section}",
+      "password": "كلمة المرور",
+      "language": "لغة الواجهة",
+      "groups": {
+        "workspace": "مساحة العمل",
+        "access": "الأعضاء والوصول",
+        "account": "حسابك"
+      }
+    },
     "organization": {
       "title": "المنظمة",
       "description": "الاسم والعملة والدولة وخيارات اللغة.",
@@ -1321,7 +1393,56 @@
     "sold": "Units sold",
     "lost": "Lost sales units",
     "table": "View daily data",
-    "date": "Business date"
+    "date": "Business date",
+    "metrics": "نظرة عامة على المخزون",
+    "stockAvailability": "توفر المخزون",
+    "compactCounts": "{available, number} من {observed, number} زوج مرصود",
+    "compactMetricCounts": "{available, number} / {observed, number} مرصود",
+    "valueCompactNote": "المخزون الفعلي بالتكلفة المسجلة",
+    "stockOutsCompactNote": "أزواج مرصودة دون مخزون متاح",
+    "coverageCompactNote": "أزواج لها أرصدة مخزون",
+    "missingCompactNote": "أزواج دون رصيد مخزون مسجل",
+    "currency": "عملة العرض",
+    "allCurrencyTotals": "إجماليات جميع العملات",
+    "trendUnavailable": "مقارنة التغير غير متاحة: لم تُحدد فترة المقارنة وأساس الحساب.",
+    "byLocation": "توفر المخزون حسب الموقع",
+    "location": "الموقع",
+    "availableObserved": "المتاح / المرصود",
+    "locationCatalog": "فتح دليل المواقع",
+    "locationsLink": "المواقع",
+    "locationPreview": "حتى 5 مواقع مسموحة مرتبة حسب الرمز. التوفر محسوب للأزواج المرصودة.",
+    "locationCoverage": "{missing, number} مفقود · {stale, number} قديم",
+    "locationUnavailable": "تعذر تحميل توفر المخزون للمواقع. أعد التحميل للمحاولة.",
+    "noLocations": "لا توجد مواقع نشطة متاحة.",
+    "riskTitle": "أصناف معرضة لنفاد المخزون",
+    "item": "الصنف",
+    "onHand": "المتوفر",
+    "forecast30": "التوقع (30 يومًا)",
+    "daysLeft": "الأيام المتبقية",
+    "riskUnavailable": "مخاطر النفاد المتوقعة غير متاحة بعد",
+    "riskDependency": "حساب المخاطر وأيام التغطية يحتاج إلى قواعد معتمدة للتوقع وتاريخ المخزون وتطابق الوحدات. لا تُفترض قيم للمخاطر.",
+    "reviewPolicies": "مراجعة السياسات المحفوظة",
+    "insights": "مؤشرات التخطيط",
+    "planningLink": "التخطيط",
+    "availabilityFact": "توفر المخزون المرصود",
+    "stockOutFact": "{count, number} زوج دون مخزون متاح",
+    "stockOutInsight": "أرصدة المخزون الحالية؛ ليست عددًا للمخاطر المستقبلية.",
+    "missingFact": "{count, number} زوج دون رصيد مخزون مسجل",
+    "missingInsight": "التغطية غير معروفة. غياب الرصيد لا يعني مخزونًا صفريًا.",
+    "freshnessTitle": "حداثة أرصدة المخزون",
+    "freshnessCompact": "{stale, number} أقدم من 7 أيام. الأقدم: {oldest}.",
+    "informationTitle": "استمرار حركة قطع الغيار حول العالم",
+    "informationDescription": "راجع التوقعات المحفوظة وخطط استنادًا إلى الأدلة.",
+    "notificationsUnavailable": "تنبيهات التخطيط غير متاحة بعد",
+    "taglineLine1": "قطع غيار",
+    "taglineLine2": "أكثر ذكاءً.",
+    "taglineLine3": "تشغيل أكثر استمرارية.",
+    "locationLabel": "رمز الموقع",
+    "allLocations": "كل المواقع (اتركه فارغًا لكل المواقع المتاحة)",
+    "limitedSuggestions": "تظهر أول 50 نتيجة. يمكنك إدخال رمز أي موقع نشط مسموح.",
+    "last30Days": "آخر 30 يومًا",
+    "changeReportingDate": "تغيير تاريخ التقرير",
+    "units": "الوحدات"
   },
   "Audit": {
     "title": "Audit log",
@@ -1336,5 +1457,11 @@
     "INSERT": "Inserted",
     "UPDATE": "Updated",
     "DELETE": "Deleted"
+  },
+  "DashboardState": {
+    "loading": "جارٍ تحميل لوحة التحكم",
+    "title": "لوحة التحكم غير متاحة",
+    "message": "تعذر تحميل لوحة التحكم. يرجى المحاولة مرة أخرى.",
+    "retry": "إعادة المحاولة"
   }
 }

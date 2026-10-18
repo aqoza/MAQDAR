@@ -40,8 +40,19 @@ export const integrationListSpec: ListSpec = {
   ],
 }
 
-export function integrationParams(raw: RawSearchParams): ListParams {
-  const parsed = parseListParams(raw, integrationListSpec)
+export const transferIntegrationListSpec: ListSpec = {
+  ...integrationListSpec,
+  filters: integrationListSpec.filters!.map((filter) =>
+    filter.param === 'supplier' ? { ...filter, param: 'source', column: 'source_code' } : filter,
+  ),
+}
+
+export function integrationPath(transfer = false) {
+  return `/replenishment/${transfer ? 'redistribution/' : ''}integrations`
+}
+
+export function integrationParams(raw: RawSearchParams, transfer = false): ListParams {
+  const parsed = parseListParams(raw, transfer ? transferIntegrationListSpec : integrationListSpec)
   const filters = Object.fromEntries(
     Object.entries(parsed.filters).filter(([key]) => key !== 'system'),
   )
@@ -59,8 +70,13 @@ export function integrationParams(raw: RawSearchParams): ListParams {
   }
 }
 
-export function integrationHref(params: ReturnType<typeof integrationParams>, page: number) {
-  return listHref('/replenishment/integrations', integrationListSpec, params, { page })
+export function integrationHref(params: ListParams, page: number, transfer = false) {
+  return listHref(
+    integrationPath(transfer),
+    transfer ? transferIntegrationListSpec : integrationListSpec,
+    params,
+    { page },
+  )
 }
 
 export const integrationResultSchema = z.object({
@@ -71,7 +87,7 @@ export const integrationResultSchema = z.object({
   rows: z
     .array(
       z.object({
-        id: z.uuid(),
+        id: z.guid(),
         kind: z.enum(['handoff', 'batch']),
         created_at: z.string(),
         item_code: z.string().nullable(),
@@ -79,19 +95,32 @@ export const integrationResultSchema = z.object({
         location_code: z.string(),
         line_count: z.number().int().positive(),
         selected: z.boolean(),
-        event_id: z.uuid().nullable(),
+        event_id: z.guid().nullable(),
         external_system: z.string().nullable(),
         external_reference: z.string().nullable(),
         status: z.enum(['received', 'rejected', 'no_report']),
         reason: z.string().nullable(),
         recorded_at: z.string().nullable(),
-        api_key_id: z.uuid().nullable(),
+        api_key_id: z.guid().nullable(),
         client_event_id: z.uuid().nullable(),
       }),
     )
     .max(100),
 })
 
-export function integrationEvidenceHref(row: { kind: 'handoff' | 'batch'; id: string }) {
-  return `/replenishment/${row.kind === 'batch' ? 'batches' : 'handoffs'}/${row.id}#acknowledgements`
+export const transferIntegrationResultSchema = integrationResultSchema.extend({
+  rows: z
+    .array(
+      integrationResultSchema.shape.rows.element
+        .omit({ supplier_code: true })
+        .extend({ source_code: z.string() }),
+    )
+    .max(100),
+})
+
+export function integrationEvidenceHref(
+  row: { kind: 'handoff' | 'batch'; id: string },
+  transfer = false,
+) {
+  return `/replenishment/${transfer ? 'redistribution/' : ''}${row.kind === 'batch' ? 'batches' : 'handoffs'}/${row.id}#acknowledgements`
 }

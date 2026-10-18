@@ -32,7 +32,7 @@ export default async function NewPurchaseCost({
     searchParams,
   ])
   const values = purchaseCostParams(raw)
-  const delivery = z.uuid().safeParse(values.delivery)
+  const delivery = z.guid().safeParse(values.delivery)
   if (!delivery.success) notFound()
   const source = await db
     .from('delivery_scenarios')

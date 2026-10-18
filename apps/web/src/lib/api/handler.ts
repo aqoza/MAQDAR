@@ -1,6 +1,6 @@
 import type { EntityName } from '../imports/contract'
 import {
-  ACKNOWLEDGE_SCOPE,
+  acknowledgementScope,
   ACKNOWLEDGEMENT_BODY_BYTES,
   acknowledgementInputSchema,
   acknowledgementOperationId,
@@ -8,12 +8,13 @@ import {
   type AcknowledgementInput,
 } from './acknowledgements'
 import {
-  HANDOFF_SCOPE,
+  handoffReadScope,
+  isReadHandoffResource,
+  isTransferHandoffResource,
+  type ReadHandoffResource,
   handoffIdSchema,
   handoffOperationId,
-  isHandoffResource,
   parseHandoffQuery,
-  type HandoffResource,
 } from './handoffs'
 import { readBodyText } from '../imports/route'
 import {
@@ -336,20 +337,22 @@ async function checkUpsertRequest(
 type Operation =
   | {
       kind: 'acknowledgement'
-      resource: HandoffResource
+      resource: ReadHandoffResource
       id: string
       eventId: string | null
       write: boolean
     }
-  | { kind: 'handoff'; resource: HandoffResource; id: string | null }
+  | { kind: 'handoff'; resource: ReadHandoffResource; id: string | null }
   | { kind: 'organization' }
   | { kind: 'list'; resource: ApiResource }
   | { kind: 'upsert'; resource: ApiResource }
 
 function requiredScopeOf(operation: Operation): ApiScope | null {
   if (operation.kind === 'acknowledgement')
-    return operation.write ? ACKNOWLEDGE_SCOPE : HANDOFF_SCOPE
-  if (operation.kind === 'handoff') return HANDOFF_SCOPE
+    return operation.write
+      ? acknowledgementScope(operation.resource)
+      : handoffReadScope(operation.resource)
+  if (operation.kind === 'handoff') return handoffReadScope(operation.resource)
   if (operation.kind === 'organization') return null
   return scopeFor(operation.resource.entity, operation.kind === 'list' ? 'read' : 'write')
 }
@@ -448,16 +451,30 @@ async function runOperation(
           problemOutcome(await confirmKeyThen(ctx, keyHash, requiredScope, pending)),
         )
       }
-      const result =
-        operation.id !== null
+      const resource = operation.resource
+      const result = isTransferHandoffResource(resource)
+        ? operation.id !== null
+          ? await deps.rpc('api_transfer_handoff_get', {
+              p_key_hash: keyHash,
+              p_resource: resource,
+              p_id: operation.id,
+            })
+          : await deps.rpc('api_transfer_handoff_list', {
+              p_key_hash: keyHash,
+              p_resource: resource,
+              p_limit: query.limit,
+              p_after: query.cursor,
+              p_created_since: query.createdSince,
+            })
+        : operation.id !== null
           ? await deps.rpc('api_handoff_get', {
               p_key_hash: keyHash,
-              p_resource: operation.resource,
+              p_resource: resource,
               p_id: operation.id,
             })
           : await deps.rpc('api_handoff_list', {
               p_key_hash: keyHash,
-              p_resource: operation.resource,
+              p_resource: resource,
               p_limit: query.limit,
               p_after: query.cursor,
               p_created_since: query.createdSince,
@@ -576,7 +593,7 @@ export async function handleResource(
   segment: string,
   deps: ApiDeps,
 ): Promise<Response> {
-  if (isHandoffResource(segment)) return handleHandoff(request, method, segment, null, deps)
+  if (isReadHandoffResource(segment)) return handleHandoff(request, method, segment, null, deps)
   const route: ResourceRoute | null = parseResourceSegment(segment)
   if (!route) return notFound(request, method, deps)
 
@@ -603,7 +620,7 @@ export async function handleResource(
 export async function handleHandoff(
   request: Request,
   method: ApiMethod,
-  resource: HandoffResource,
+  resource: ReadHandoffResource,
   id: string | null,
   deps: ApiDeps,
 ): Promise<Response> {
@@ -614,7 +631,7 @@ export async function handleHandoff(
   return methodNotAllowed(request, method, deps, operation, READ_ONLY_ALLOW)
 }
 
-/** Only the two handoff resources have detail routes; other nested paths retain JSON 404s. */
+/** Only saved handoff resources have detail routes; other nested paths retain JSON 404s. */
 export async function handleResourceDetail(
   request: Request,
   method: ApiMethod,
@@ -623,7 +640,7 @@ export async function handleResourceDetail(
   deps: ApiDeps,
 ): Promise<Response> {
   if (
-    isHandoffResource(resource) &&
+    isReadHandoffResource(resource) &&
     (rest.length === 2 || rest.length === 3) &&
     rest[1] === 'acknowledgements'
   ) {
@@ -640,7 +657,7 @@ export async function handleResourceDetail(
       )
     return methodNotAllowed(request, method, deps, operation, allow)
   }
-  if (!isHandoffResource(resource) || rest.length !== 1) return notFound(request, method, deps)
+  if (!isReadHandoffResource(resource) || rest.length !== 1) return notFound(request, method, deps)
   return handleHandoff(request, method, resource, rest[0], deps)
 }
 
@@ -723,12 +740,13 @@ async function runAcknowledgement(
     const checked = await checkAcknowledgementBody(request, ctx.requestId)
     if (!checked.ok)
       return finish(ctx, problemOutcome(await confirmKeyThen(ctx, keyHash, scope, checked.problem)))
-    const result = await ctx.deps.rpc('api_handoff_acknowledge', {
-      p_key_hash: keyHash,
-      p_resource: operation.resource,
-      p_id: operation.id,
-      p_body: checked.body,
-    })
+    const args = { p_key_hash: keyHash, p_id: operation.id, p_body: checked.body }
+    const result = isTransferHandoffResource(operation.resource)
+      ? await ctx.deps.rpc('api_transfer_handoff_acknowledge', {
+          ...args,
+          p_resource: operation.resource,
+        })
+      : await ctx.deps.rpc('api_handoff_acknowledge', { ...args, p_resource: operation.resource })
     addDbTime(ctx, result.ms)
     if (!result.ok) return finish(ctx, problemOutcome(rpcProblem(ctx, result, scope)))
     const response: { data?: { id?: unknown }; replayed?: unknown } = JSON.parse(result.text)
@@ -747,14 +765,22 @@ async function runAcknowledgement(
     })
   }
   if (!query.ok) return crashed(ctx) // Detail queries were refused above; lists were validated.
-  const result = await ctx.deps.rpc('api_handoff_acknowledgements', {
+  const args = {
     p_key_hash: keyHash,
-    p_resource: operation.resource,
     p_id: operation.id,
     p_event_id: operation.eventId,
     p_after: query.cursor,
     p_limit: query.limit,
-  })
+  }
+  const result = isTransferHandoffResource(operation.resource)
+    ? await ctx.deps.rpc('api_transfer_handoff_acknowledgements', {
+        ...args,
+        p_resource: operation.resource,
+      })
+    : await ctx.deps.rpc('api_handoff_acknowledgements', {
+        ...args,
+        p_resource: operation.resource,
+      })
   addDbTime(ctx, result.ms)
   return finish(
     ctx,

@@ -32,6 +32,7 @@ import {
   type TimeZoneOption,
 } from './organization-settings-form'
 import { SetPasswordCard } from './set-password-card'
+import { SettingsWorkspace, type SettingsSection } from './settings-workspace'
 
 /** The REST API's description and documentation, linked from the API keys card. */
 const OPENAPI_HREF = '/api/v1/openapi.json'
@@ -51,7 +52,12 @@ export default async function SettingsPage() {
   const organization = context.active
   const admin = isAdminRole(context.role)
 
-  const t = await getTranslations('Settings')
+  const [t, tMembers, tInvitations, tApiKeys] = await Promise.all([
+    getTranslations('Settings'),
+    getTranslations('Members'),
+    getTranslations('InviteMembers'),
+    getTranslations('ApiKeys'),
+  ])
   const supabase = await createClient()
 
   const [currenciesResult, countriesResult] = await Promise.all([
@@ -117,10 +123,15 @@ export default async function SettingsPage() {
     activeApiKeys = keyRecords.filter((key) => isActiveApiKey(key, now.getTime())).length
   }
 
-  return (
-    <>
-      <PageHeader title={t('title')} description={t('description')} />
-      <div className="grid items-start gap-4 xl:grid-cols-2">
+  const sections: SettingsSection[] = [
+    {
+      key: 'organization',
+      group: 'workspace',
+      label: t('organization.title'),
+      searchText: (['name', 'slug', 'baseCurrency', 'homeCountry', 'arabicEnabled'] as const)
+        .map((key) => t(`organization.${key}`))
+        .join(' '),
+      panel: (
         <Card>
           <CardHeader>
             <CardTitle>{t('organization.title')}</CardTitle>
@@ -142,7 +153,18 @@ export default async function SettingsPage() {
             )}
           </CardContent>
         </Card>
-
+      ),
+    },
+    {
+      key: 'preferences',
+      group: 'workspace',
+      label: t('preferences.title'),
+      searchText: [
+        t('preferences.defaultLocale'),
+        t('preferences.timeZone'),
+        t('preferences.numberingSystem'),
+      ].join(' '),
+      panel: (
         <Card>
           <CardHeader>
             <CardTitle>{t('preferences.title')}</CardTitle>
@@ -160,33 +182,76 @@ export default async function SettingsPage() {
             )}
           </CardContent>
         </Card>
-      </div>
-      {admin && context.role ? (
-        <>
-          <MembersCard
-            members={members}
-            locations={locations}
-            actorRole={context.role}
-            currentUserId={context.userId}
-            organizationName={organization.name}
-          />
-          <InvitationsCard invitations={invitations} roles={assignableRoles(context.role)} />
-          <ApiKeysCard
-            keys={apiKeys}
-            scopes={scopeOptions(API_SCOPES)}
-            expiryDays={API_LIMITS.keyExpiryDays}
-            defaultExpiryDays={API_LIMITS.defaultKeyExpiryDays}
-            activeCount={activeApiKeys}
-            maxActive={API_LIMITS.activeKeysPerOrganization}
-            openApiHref={OPENAPI_HREF}
-            docsHref={API_DOCS_HREF}
-          />
-        </>
-      ) : null}
-
-      <div className="grid items-start gap-4 xl:grid-cols-2">
-        <SetPasswordCard email={context.email ?? ''} />
-
+      ),
+    },
+    ...(admin && context.role
+      ? ([
+          {
+            key: 'members',
+            group: 'access',
+            label: tMembers('title'),
+            searchText: `${tMembers('email')} ${tMembers('role')} ${tMembers('locations')}`,
+            panel: (
+              <MembersCard
+                members={members}
+                locations={locations}
+                actorRole={context.role}
+                currentUserId={context.userId}
+                organizationName={organization.name}
+              />
+            ),
+          },
+          {
+            key: 'invitations',
+            group: 'access',
+            label: tInvitations('title'),
+            searchText: [
+              tInvitations('description'),
+              tInvitations('email'),
+              tInvitations('role'),
+            ].join(' '),
+            panel: (
+              <InvitationsCard invitations={invitations} roles={assignableRoles(context.role)} />
+            ),
+          },
+          {
+            key: 'api-keys',
+            group: 'access',
+            label: tApiKeys('title'),
+            searchText: [
+              tApiKeys('description'),
+              tApiKeys('create.name'),
+              tApiKeys('create.expiry'),
+              tApiKeys('create.scopes'),
+            ].join(' '),
+            panel: (
+              <ApiKeysCard
+                keys={apiKeys}
+                scopes={scopeOptions(API_SCOPES)}
+                expiryDays={API_LIMITS.keyExpiryDays}
+                defaultExpiryDays={API_LIMITS.defaultKeyExpiryDays}
+                activeCount={activeApiKeys}
+                maxActive={API_LIMITS.activeKeysPerOrganization}
+                openApiHref={OPENAPI_HREF}
+                docsHref={API_DOCS_HREF}
+              />
+            ),
+          },
+        ] satisfies SettingsSection[])
+      : []),
+    {
+      key: 'password',
+      group: 'account',
+      label: t('navigation.password'),
+      searchText: `${t('account.setPassword')} ${t('account.password')}`,
+      panel: <SetPasswordCard email={context.email ?? ''} />,
+    },
+    {
+      key: 'language',
+      group: 'account',
+      label: t('navigation.language'),
+      searchText: t('language.description'),
+      panel: (
         <Card>
           <CardHeader>
             <CardTitle>{t('language.title')}</CardTitle>
@@ -200,7 +265,14 @@ export default async function SettingsPage() {
             )}
           </CardContent>
         </Card>
-      </div>
+      ),
+    },
+  ]
+
+  return (
+    <>
+      <PageHeader pattern="settings" title={t('title')} description={t('description')} />
+      <SettingsWorkspace key={organization.id} sections={sections} />
     </>
   )
 }

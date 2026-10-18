@@ -14,7 +14,7 @@ export const deliveryScenarioStatuses = [
 ] as const
 const date = z.iso.date()
 export const deliveryScenarioInputSchema = z.object({
-  scenario: z.uuid(),
+  scenario: z.guid(),
   requested: date.refine((v) => v >= '1900-01-01' && v <= '2100-12-31'),
   confirmed: z.enum(['true', 'false']),
 })
@@ -30,9 +30,9 @@ export function deliveryScenarioParams(raw: RawSearchParams) {
     confirmed: first('confirmed') ?? 'false',
   }
 }
-const calendar = z.object({
+export const calendarEvidenceSchema = z.object({
   country: z.string(),
-  calendar_id: z.uuid().nullable(),
+  calendar_id: z.guid().nullable(),
   calendar_code: z.string().nullable(),
   calendar_updated_at: z.string().nullable(),
   active: z.boolean(),
@@ -55,8 +55,8 @@ const calendar = z.object({
   holidays: z.array(z.object({ date, sector: z.string(), name: z.string(), source: z.string() })),
   overrides: z.array(
     z.object({
-      id: z.uuid(),
-      calendar_id: z.uuid().nullable(),
+      id: z.guid(),
+      calendar_id: z.guid().nullable(),
       starts_on: date,
       ends_on: date,
       kind: z.enum(['closure', 'working_day']),
@@ -74,7 +74,7 @@ export const calendarReasons = [
   'weekend',
   'weekly_pattern',
 ] as const
-const search = z.object({
+export const calendarSearchSchema = z.object({
   status: z.enum(['resolved', 'calendar_unknown', 'calendar_inactive', 'search_exhausted']),
   date: date.nullable(),
   days: z
@@ -86,13 +86,13 @@ const search = z.object({
         weekend: z.boolean(),
         holiday: z.boolean().nullable(),
         verified: z.boolean(),
-        override_id: z.uuid().nullable(),
+        override_id: z.guid().nullable(),
       }),
     )
     .max(90),
 })
-const entity = z.object({
-  id: z.uuid(),
+export const calendarEntitySchema = z.object({
+  id: z.guid(),
   code: z.string(),
   name: z.string(),
   active: z.boolean(),
@@ -101,14 +101,14 @@ const entity = z.object({
 export const deliveryScenarioReportSchema = z.object({
   method: z.literal('delivery-dates-v1'),
   status: z.enum(deliveryScenarioStatuses),
-  location_id: z.uuid(),
+  location_id: z.guid(),
   requested_date: date,
   calendars_confirmed: z.boolean(),
   blocked_stage: z.enum(['supplier', 'receiver']).nullable(),
   source: z.object({
-    scenario_id: z.uuid(),
+    scenario_id: z.guid(),
     fingerprint: z.string(),
-    draft_id: z.uuid(),
+    draft_id: z.guid(),
     item_code: z.string(),
     location_code: z.string(),
     supplier_code: z.string(),
@@ -120,12 +120,12 @@ export const deliveryScenarioReportSchema = z.object({
     lead_time: z.number().int().nonnegative().nullable(),
     cutoff: date,
   }),
-  supplier: entity.nullable(),
-  receiver: entity.nullable(),
-  supplier_calendar: calendar.nullable(),
-  receiver_calendar: calendar.nullable(),
-  order_search: search.nullable(),
-  receipt_search: search.nullable(),
+  supplier: calendarEntitySchema.nullable(),
+  receiver: calendarEntitySchema.nullable(),
+  supplier_calendar: calendarEvidenceSchema.nullable(),
+  receiver_calendar: calendarEvidenceSchema.nullable(),
+  order_search: calendarSearchSchema.nullable(),
+  receipt_search: calendarSearchSchema.nullable(),
   order_date: date.nullable(),
   nominal_receipt: date.nullable(),
   receipt_date: date.nullable(),

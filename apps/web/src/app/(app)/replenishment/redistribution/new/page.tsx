@@ -37,7 +37,7 @@ export default async function NewRedistribution({
     searchParams,
   ])
   const values = redistributionParams(raw)
-  if (!z.uuid().safeParse(values.draft).success) notFound()
+  if (!z.guid().safeParse(values.draft).success) notFound()
   const draftId = values.draft!
   const organizationId = context.active.id
   const draft = await db
@@ -99,7 +99,7 @@ export default async function NewRedistribution({
         />
       </div>
     )
-  if (!z.uuid().safeParse(values.policy).success) notFound()
+  if (!z.guid().safeParse(values.policy).success) notFound()
   const policy = await db
     .from('policy_workbench')
     .select('id,location_id,location_code,calculated_maximum,unit,to_date')
@@ -130,7 +130,7 @@ export default async function NewRedistribution({
   if (revisions.error) throw new Error('Source revisions unavailable')
   let options = revisions.data ?? []
   if (
-    z.uuid().safeParse(values.maximum).success &&
+    z.guid().safeParse(values.maximum).success &&
     !options.some((option) => option.id === values.maximum)
   ) {
     const selected = await db

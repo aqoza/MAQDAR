@@ -3,28 +3,28 @@ import { purchaseCostReportSchema } from './purchase-costs'
 import { csvReport } from './imports/report'
 import { parseListParams, type ListSpec, type RawSearchParams } from './master-data/list-params'
 
-export const handoffInputSchema = z.object({ proposal_id: z.uuid() })
+export const handoffInputSchema = z.object({ proposal_id: z.guid() })
 export const handoffPayloadSchema = z.object({
   schema_version: z.literal('purchase-handoff-v1'),
   purpose: z.literal('planning_only'),
   notice: z.string(),
-  handoff_id: z.uuid(),
-  organization_id: z.uuid(),
-  created_by: z.uuid(),
+  handoff_id: z.guid(),
+  organization_id: z.guid(),
+  created_by: z.guid(),
   created_at: z.string(),
   proposal: z.object({
-    id: z.uuid(),
+    id: z.guid(),
     revision: z.number().int().positive(),
-    estimate_id: z.uuid(),
-    draft_id: z.uuid(),
-    submitted_by: z.uuid(),
+    estimate_id: z.guid(),
+    draft_id: z.guid(),
+    submitted_by: z.guid(),
     submitted_at: z.string(),
     reason: z.string(),
-    approved_by: z.uuid(),
+    approved_by: z.guid(),
     approved_at: z.string(),
     approval_reason: z.string(),
   }),
-  evidence: z.object({ policy_id: z.uuid(), forecast_id: z.uuid(), draft_fingerprint: z.string() }),
+  evidence: z.object({ policy_id: z.guid(), forecast_id: z.guid(), draft_fingerprint: z.string() }),
   estimate: purchaseCostReportSchema,
 })
 export type HandoffPayload = z.infer<typeof handoffPayloadSchema>
@@ -111,8 +111,8 @@ export const handoffListSpec: ListSpec = {
 }
 export const handoffListParams = (raw: RawSearchParams) => parseListParams(raw, handoffListSpec)
 export const handoffRowSchema = z.object({
-  id: z.uuid(),
-  proposal_id: z.uuid(),
+  id: z.guid(),
+  proposal_id: z.guid(),
   created_at: z.string(),
   selected: z.boolean(),
   item_code: z.string(),

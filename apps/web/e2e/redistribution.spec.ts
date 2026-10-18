@@ -101,7 +101,7 @@ print(json.dumps(dict(draft=str(draft),source=str(source),policy=str(policies[1]
   await page.getByRole('button', { name: 'Refresh redistribution preview', exact: true }).click()
   await expect(page.getByText('Redistribution quantity available', { exact: true })).toBeVisible()
   await expect(page.getByText('8.75 EA', { exact: true })).toHaveCount(2)
-  await expect(page.getByRole('alert')).toContainText('overdue or late inbound')
+  await expect(page.getByRole('alert').filter({ hasText: 'overdue or late inbound' })).toBeVisible()
   await page.getByRole('link', { name: 'Older approved revisions', exact: true }).click()
   await page
     .getByRole('combobox', { name: 'Source maximum selection', exact: true })

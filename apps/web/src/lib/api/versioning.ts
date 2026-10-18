@@ -9,7 +9,7 @@ import { allOperationIds } from './resources'
  */
 
 export const API_VERSION = 'v1'
-export const OPENAPI_DOCUMENT_VERSION = '1.2.0'
+export const OPENAPI_DOCUMENT_VERSION = '1.4.0'
 
 export type DeprecationEntry = {
   /** OpenAPI operationId (`listItems`, `upsertDemandHistory`, `getOrganization`). */

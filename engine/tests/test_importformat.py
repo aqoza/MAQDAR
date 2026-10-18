@@ -121,7 +121,7 @@ def test_generator_headers_are_unchanged():
         column = entity.column("work_calendar_code")
         assert column.omittable and column.nullable and column.lookup == "work_calendars"
     for entity in importformat.ENTITIES:
-        if entity.name not in ("locations", "suppliers", "demand_history", "stock_snapshots", "open_orders", "supplier_items"):
+        if entity.name not in ("locations", "suppliers", "demand_history", "stock_snapshots", "open_orders", "supplier_items", "network_links"):
             assert entity.minimal_header == entity.header, entity.name
     for name, legacy in (
         ('demand_history', ['item_code','location_code','demand_date','quantity','lost_sales_quantity']),
@@ -131,8 +131,11 @@ def test_generator_headers_are_unchanged():
     ):
         entity = importformat.ENTITY_BY_NAME[name]
         assert entity.minimal_header == legacy
-        assert entity.header == legacy + ['unit_of_measure']
-        assert entity.accepted_headers == [legacy, entity.header]
+        extra = ['shipping_weight_kg', 'shipping_volume_m3', 'shipping_valid_from'] if name == 'supplier_items' else []
+        assert entity.header == legacy + ['unit_of_measure'] + extra
+        assert entity.accepted_headers[:2] == [legacy, legacy + ['unit_of_measure']]
+        assert entity.accepted_headers[-1] == entity.header
+        assert len(entity.accepted_headers) == 2 + len(extra)
         assert entity.column('unit_of_measure').nullable
 
 
@@ -208,7 +211,10 @@ def test_numeric_and_text_metadata():
         for column in entity.columns:
             if column.kind in ("decimal", "money"):
                 assert column.scale is not None and column.integer_digits is not None, (entity.name, column.name)
-                if column.name not in ("latitude", "longitude", "rate"):
+                if column.name in ('shipping_weight_kg', 'shipping_volume_m3'):
+                    assert (column.scale, column.integer_digits) == (6, 9)
+                    assert column.greater_than == 0 and column.nullable and column.omittable
+                elif column.name not in ("latitude", "longitude", "rate"):
                     assert (column.scale, column.integer_digits) == (3, 12), (entity.name, column.name)
             if column.kind == "money":
                 assert column.min_value == 0, (entity.name, column.name)
@@ -417,3 +423,12 @@ def test_sql_seed_matches_the_latest_migration():
     assert block == importformat.to_sql(), (
         f"{path.name} is stale: run `uv run maqdar-synth format --sql` and replace the block between the markers"
     )
+
+
+def test_freight_provenance_is_additive_and_optional():
+    entity = importformat.ENTITY_BY_NAME['network_links']
+    assert entity.minimal_header == ['from_location_code', 'to_location_code', 'lead_time_days_p50', 'lead_time_days_p90', 'freight_basis', 'freight_cost', 'currency', 'is_active']
+    assert entity.header[-2:] == ['freight_unit', 'freight_valid_from']
+    for name in entity.header[-2:]:
+        assert entity.column(name).nullable
+        assert entity.column(name).omittable

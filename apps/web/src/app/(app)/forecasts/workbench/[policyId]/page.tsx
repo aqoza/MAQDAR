@@ -21,7 +21,7 @@ export default async function PolicyReview({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { policyId } = await params
-  if (!z.uuid().safeParse(policyId).success) notFound()
+  if (!z.guid().safeParse(policyId).success) notFound()
   const page = workbenchParams(await searchParams).page
   const [db, t, policy, locale, format, messages] = await Promise.all([
     createClient(),

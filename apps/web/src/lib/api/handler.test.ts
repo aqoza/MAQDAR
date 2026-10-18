@@ -39,6 +39,8 @@ const BASE = 'https://maqdar.test/api/v1'
 const LEAK = 'permission denied for function api_upsert (secret detail)'
 
 const ALL_SCOPES = [
+  'transfer_handoffs:read',
+  'transfer_handoffs:acknowledge',
   'purchase_handoffs:read',
   'purchase_handoffs:acknowledge',
   'master_data:read',
@@ -177,7 +179,18 @@ function only<T>(items: T[]): T {
 
 beforeEach(() => resetRateLimitWarning())
 
-describe('handoff acknowledgements', () => {
+describe.each([
+  'purchase-handoffs',
+  'purchase-handoff-batches',
+  'transfer-handoffs',
+  'transfer-handoff-batches',
+] as const)('%s acknowledgements', (resource) => {
+  const writeRpc = resource.startsWith('transfer')
+    ? 'api_transfer_handoff_acknowledge'
+    : 'api_handoff_acknowledge'
+  const readRpc = resource.startsWith('transfer')
+    ? 'api_transfer_handoff_acknowledgements'
+    : 'api_handoff_acknowledgements'
   const id = '98000000-0000-4000-8000-000000000001'
   const event = '98000000-0000-4000-8000-000000000002'
   const value = {
@@ -186,7 +199,7 @@ describe('handoff acknowledgements', () => {
     external_reference: '00123',
     status: 'received',
   }
-  const base = `/purchase-handoffs/${id}/acknowledgements`
+  const base = `/${resource}/${id}/acknowledgements`
   const route = (
     state: Fake,
     method: ApiMethod,
@@ -201,7 +214,7 @@ describe('handoff acknowledgements', () => {
         ...(payload === undefined ? {} : { body: payload }),
       }),
       method,
-      'purchase-handoffs',
+      resource,
       [id, 'acknowledgements', ...(suffix.startsWith('/') ? [suffix.slice(1)] : [])],
       state.deps,
     )
@@ -209,7 +222,7 @@ describe('handoff acknowledgements', () => {
     'returns creation/retry status and a readable location (replayed %s)',
     async (replayed) => {
       const raw = JSON.stringify({ data: { id: event, external_reference: '00123' }, replayed })
-      const state = fake({ rpc: { api_handoff_acknowledge: ok(raw) } })
+      const state = fake({ rpc: { [writeRpc]: ok(raw) } })
       const response = await route(state, 'POST', '', JSON.stringify(value))
       expect(response.status).toBe(replayed ? 200 : 201)
       expect(response.headers.get('location')).toBe(`/api/v1${base}/${event}`)
@@ -217,8 +230,8 @@ describe('handoff acknowledgements', () => {
       expect(await response.text()).toBe(raw)
       expect(state.rpcCalls).toEqual([
         {
-          name: 'api_handoff_acknowledge',
-          args: { p_key_hash: HASH, p_resource: 'purchase-handoffs', p_id: id, p_body: value },
+          name: writeRpc,
+          args: { p_key_hash: HASH, p_resource: resource, p_id: id, p_body: value },
         },
       ])
       expect(JSON.stringify(state.logs)).not.toContain('00123')
@@ -227,7 +240,7 @@ describe('handoff acknowledgements', () => {
     },
   )
   it('uses the read RPC for lists, details and HEAD and refuses event mutations', async () => {
-    const state = fake({ rpc: { api_handoff_acknowledgements: ok('{"data":[]}') } })
+    const state = fake({ rpc: { [readRpc]: ok('{"data":[]}') } })
     expect((await route(state, 'GET', '?limit=2&cursor=abc')).status).toBe(200)
     expect(state.rpcCalls[0].args).toMatchObject({ p_limit: 2, p_after: 'abc', p_event_id: null })
     expect((await route(state, 'GET', `/${event}`)).status).toBe(200)
@@ -257,7 +270,7 @@ describe('handoff acknowledgements', () => {
     const state = fake({
       rpc: {
         api_organization: ok(organizationText()),
-        api_handoff_acknowledge: rpcError('MQ409', 'acknowledgement_conflict'),
+        [writeRpc]: rpcError('MQ409', 'acknowledgement_conflict'),
       },
     })
     expect(
@@ -284,7 +297,7 @@ describe('handoff acknowledgements', () => {
         headers: { cookie: 'session=ignored', 'content-type': 'application/json' },
       }),
       'POST',
-      'purchase-handoffs',
+      resource,
       [id, 'acknowledgements'],
       anonymous.deps,
     )
@@ -293,14 +306,16 @@ describe('handoff acknowledgements', () => {
   })
 })
 
-describe('read-only handoff routes', () => {
+describe.each(['purchase', 'transfer'] as const)('read-only %s handoff routes', (kind) => {
+  const listRpc = kind === 'transfer' ? 'api_transfer_handoff_list' : 'api_handoff_list'
+  const getRpc = kind === 'transfer' ? 'api_transfer_handoff_get' : 'api_handoff_get'
   const id = '98000000-0000-4000-8000-000000000001'
-  it.each(['purchase-handoffs', 'purchase-handoff-batches'])(
+  it.each([`${kind}-handoffs`, `${kind}-handoff-batches`])(
     'passes list arguments and original detail JSON for %s',
     async (resource) => {
       const raw =
         '{"data":{"payload":{"subtotal":"999999999999999.999"},"current":{"selected":false}}}'
-      const state = fake({ rpc: { api_handoff_list: ok('{"data":[]}'), api_handoff_get: ok(raw) } })
+      const state = fake({ rpc: { [listRpc]: ok('{"data":[]}'), [getRpc]: ok(raw) } })
       const list = await handleResource(
         request(`/${resource}?limit=2&created_since=2026-10-01T00:00:00Z&cursor=abc`, {
           headers: AUTH,
@@ -311,7 +326,7 @@ describe('read-only handoff routes', () => {
       )
       expect(list.status).toBe(200)
       expect(state.rpcCalls[0]).toEqual({
-        name: 'api_handoff_list',
+        name: listRpc,
         args: {
           p_key_hash: HASH,
           p_resource: resource,
@@ -332,7 +347,7 @@ describe('read-only handoff routes', () => {
       expect(detail.headers.get('cache-control')).toContain('no-store')
       expect(detail.headers.get('set-cookie')).toBeNull()
       expect(state.rpcCalls[1]).toEqual({
-        name: 'api_handoff_get',
+        name: getRpc,
         args: { p_key_hash: HASH, p_resource: resource, p_id: id },
       })
       expect(state.upsertCalls).toEqual([])
@@ -348,12 +363,12 @@ describe('read-only handoff routes', () => {
     },
   )
   it('authenticates before reporting malformed query or ID', async () => {
-    for (const scopes of [[], ['purchase_handoffs:read']]) {
+    for (const scopes of [[], [`${kind}_handoffs:read`]]) {
       const state = fake({ rpc: { api_organization: ok(organizationText(scopes)) } })
       const response = await handleResourceDetail(
-        request('/purchase-handoffs/bad', { headers: AUTH }),
+        request(`/${kind}-handoffs/bad`, { headers: AUTH }),
         'GET',
-        'purchase-handoffs',
+        `${kind}-handoffs`,
         ['bad'],
         state.deps,
       )
@@ -367,9 +382,9 @@ describe('read-only handoff routes', () => {
     expect(
       (
         await handleResource(
-          request('/purchase-handoffs?limit=0', { headers: AUTH }),
+          request(`/${kind}-handoffs?limit=0`, { headers: AUTH }),
           'GET',
-          'purchase-handoffs',
+          `${kind}-handoffs`,
           expired.deps,
         )
       ).status,
@@ -378,9 +393,9 @@ describe('read-only handoff routes', () => {
     expect(
       (
         await handleResource(
-          request('/purchase-handoffs', { headers: { cookie: 'session=ignored' } }),
+          request(`/${kind}-handoffs`, { headers: { cookie: 'session=ignored' } }),
           'GET',
-          'purchase-handoffs',
+          `${kind}-handoffs`,
           signedIn.deps,
         )
       ).status,
@@ -392,9 +407,9 @@ describe('read-only handoff routes', () => {
     expect(
       (
         await handleResourceDetail(
-          request(`/purchase-handoffs/${id}?payload=1`, { headers: AUTH }),
+          request(`/${kind}-handoffs/${id}?payload=1`, { headers: AUTH }),
           'GET',
-          'purchase-handoffs',
+          `${kind}-handoffs`,
           [id],
           state.deps,
         )
@@ -402,9 +417,9 @@ describe('read-only handoff routes', () => {
     ).toBe(400)
     for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'] as const) {
       const result = await handleResourceDetail(
-        request(`/purchase-handoffs/${id}`, { method, headers: AUTH }),
+        request(`/${kind}-handoffs/${id}`, { method, headers: AUTH }),
         method,
-        'purchase-handoffs',
+        `${kind}-handoffs`,
         [id],
         state.deps,
       )
@@ -417,9 +432,9 @@ describe('read-only handoff routes', () => {
     expect(
       (
         await handleResourceDetail(
-          request('/purchase-handoffs/x/json'),
+          request(`/${kind}-handoffs/x/json`),
           'GET',
-          'purchase-handoffs',
+          `${kind}-handoffs`,
           ['x', 'json'],
           state.deps,
         )
@@ -434,11 +449,11 @@ describe('read-only handoff routes', () => {
       ['MQ403', 'scope', 403],
       ['MQ422', 'cursor', 400],
     ] as const) {
-      const state = fake({ rpc: { api_handoff_list: rpcError(code, hint) } })
+      const state = fake({ rpc: { [listRpc]: rpcError(code, hint) } })
       const result = await handleResource(
-        request('/purchase-handoffs', { headers: AUTH }),
+        request(`/${kind}-handoffs`, { headers: AUTH }),
         'GET',
-        'purchase-handoffs',
+        `${kind}-handoffs`,
         state.deps,
       )
       expect(result.status).toBe(status)
@@ -1605,3 +1620,27 @@ describe('GET /api/v1/openapi.json', () => {
     }
   })
 })
+
+it.each(['transfer-handoffs', 'transfer-handoff-batches'])(
+  'does not expose unknown transfer subroutes on %s',
+  async (resource) => {
+    const state = fake()
+    for (const method of ['GET', 'POST', 'OPTIONS'] as const) {
+      expect(
+        (
+          await handleResourceDetail(
+            request(`/${resource}/id/unknown`, { headers: AUTH }),
+            method,
+            resource,
+            ['id', 'unknown'],
+            state.deps,
+          )
+        ).status,
+      ).toBe(404)
+    }
+    const preflight = await handleResource(request(`/${resource}`), 'OPTIONS', resource, state.deps)
+    expect(preflight.status).toBe(204)
+    expect(preflight.headers.get('allow')).toBe('GET, HEAD, OPTIONS')
+    expect(state.rpcCalls).toEqual([])
+  },
+)

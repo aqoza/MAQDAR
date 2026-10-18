@@ -44,10 +44,14 @@ describe('buildRpcRequest (J9)', () => {
 
   it('admits api_* RPCs only', () => {
     expect(API_RPC_NAMES).toEqual([
+      'api_transfer_handoff_acknowledge',
+      'api_transfer_handoff_acknowledgements',
       'api_handoff_acknowledge',
       'api_handoff_acknowledgements',
       'api_handoff_list',
       'api_handoff_get',
+      'api_transfer_handoff_list',
+      'api_transfer_handoff_get',
       'api_organization',
       'api_list',
       'api_list_demand',

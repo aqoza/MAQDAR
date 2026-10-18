@@ -1,0 +1,32 @@
+[
+  {
+    "mode": "entry",
+    "loading": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 100
+    },
+    "loaded": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 100
+    }
+  },
+  {
+    "mode": "reload",
+    "loading": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 100
+    },
+    "loaded": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 100
+    }
+  }
+]

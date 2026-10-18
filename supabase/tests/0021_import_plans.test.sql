@@ -167,7 +167,7 @@ select is(
   (public.import_stage_chunk('00000000-0000-4000-8000-a210000b0002', 1::smallint, 1,
      (select jsonb_agg(jsonb_build_array(g, 'S-' || (1 + g % 5),
                          'P-' || lpad(g::text, 6, '0'),
-                         null, '12', null, null, null, '9.5', 'SAR', null, null, null) order by g)
+                         null, '12', null, null, null, '9.5', 'SAR', null, null, null, null, null, null) order by g)
       from generate_series(1, 5000) as g)::text) ->> 'errors_added')::int,
   0,
   'B: the 5,000-row supplier-items chunk stages without errors'

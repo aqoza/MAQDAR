@@ -1,0 +1,50 @@
+{
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+  "devicePixelRatio": 1,
+  "locale": "en",
+  "font": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif",
+  "regions": {
+    ".dashboard-filters": {
+      "x": 275,
+      "y": 149,
+      "width": 1376,
+      "height": 88.140625
+    },
+    ".dashboard-metrics": {
+      "x": 275,
+      "y": 249.140625,
+      "width": 1376,
+      "height": 107
+    },
+    ".dashboard-demand": {
+      "x": 275,
+      "y": 372.140625,
+      "width": 1066,
+      "height": 280
+    },
+    ".dashboard-locations": {
+      "x": 275,
+      "y": 668.140625,
+      "width": 537.796875,
+      "height": 251
+    },
+    ".dashboard-risk": {
+      "x": 828.796875,
+      "y": 668.140625,
+      "width": 512.203125,
+      "height": 251
+    },
+    ".dashboard-insights": {
+      "x": 1357,
+      "y": 372.140625,
+      "width": 294,
+      "height": 401
+    },
+    ".dashboard-information": {
+      "x": 1357,
+      "y": 785.140625,
+      "width": 294,
+      "height": 139
+    }
+  }
+}

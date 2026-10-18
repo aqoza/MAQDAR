@@ -68,6 +68,8 @@ export default async function ReplenishmentPage({
   return (
     <div className="space-y-4">
       <PageHeader
+        pattern="replenishment"
+        navigation={<ReplenishmentNav current="drafts" />}
         title={t('title')}
         description={t('context')}
         help={
@@ -84,7 +86,6 @@ export default async function ReplenishmentPage({
           </Link>
         }
       />
-      <ReplenishmentNav current="drafts" />
       <Form
         action="/replenishment"
         className="workspace-toolbar flex flex-wrap items-end gap-3"

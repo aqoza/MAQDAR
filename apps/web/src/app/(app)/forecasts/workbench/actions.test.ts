@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   rpc: vi.fn(),
   revalidate: vi.fn(),
 }))
+vi.mock('@/lib/validation', () => import('../../../../lib/validation'))
 vi.mock('@/lib/forms', () => import('../../../../lib/forms'))
 vi.mock('@/lib/policy-workbench', () => import('../../../../lib/policy-workbench'))
 vi.mock('@/lib/organizations/guard', () => ({
@@ -14,6 +15,7 @@ vi.mock('@/lib/organizations/guard', () => ({
   rpcErrorState: async (e: { code: string }) => ({ status: 'error', code: e.code }),
 }))
 vi.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ rpc: mocks.rpc }) }))
+vi.mock('next-intl/server', () => ({ getTranslations: async () => (key: string) => key }))
 vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidate }))
 vi.mock('next/navigation', () => ({
   redirect: () => {
@@ -92,4 +94,28 @@ it('preserves input and hides internal rejection details', async () => {
   const result = await decideOverride(idleState, form())
   expect(result).toMatchObject({ code: 'MQ403', values: { reason: 'Reviewed' } })
   expect(JSON.stringify(result)).not.toContain('private')
+})
+
+it('identifies an inverted maximum and preserves entered values without writing', async () => {
+  const f = form()
+  f.set('reorder_point', '500')
+  f.set('order_up_to', '400')
+  expect(await submitOverride(idleState, f)).toMatchObject({
+    code: 'validation',
+    fieldErrors: { order_up_to: 'maximumBelowReorder' },
+    values: { reorder_point: '500', order_up_to: '400', reason: 'Reviewed' },
+  })
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('identifies malformed quantities and whitespace-only reasons before writing', async () => {
+  const f = form()
+  f.set('reorder_point', 'NaN')
+  f.set('reason', '  ')
+  expect(await submitOverride(idleState, f)).toMatchObject({
+    fieldErrors: { reorder_point: 'policyQuantity', reason: 'required' },
+  })
+  expect(await decideOverride(idleState, f)).toMatchObject({
+    fieldErrors: { reason: 'required' },
+  })
+  expect(mocks.rpc).not.toHaveBeenCalled()
 })

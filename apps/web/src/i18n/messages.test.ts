@@ -36,6 +36,18 @@ describe('message files', () => {
     }
   })
 
+  it('Settings member and invitation messages are fully translated into Arabic', () => {
+    for (const namespace of ['Members', 'InviteMembers'] as const) {
+      const source = flatten(en[namespace])
+      const translated = flatten(ar[namespace])
+      expect(Object.keys(translated).sort(), namespace).toEqual(Object.keys(source).sort())
+      for (const [key, value] of Object.entries(translated)) {
+        expect(value, `${namespace}.${key}`).toMatch(/[\u0600-\u06ff]/)
+        expect(value, `${namespace}.${key}`).not.toBe(source[key])
+      }
+    }
+  })
+
   it('Arabic falls back to English for untranslated keys', () => {
     const merged = flatten(messagesFor('ar'))
     expect(Object.keys(merged).sort()).toEqual(Object.keys(flatEn).sort())

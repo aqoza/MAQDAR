@@ -19,7 +19,7 @@ export default async function SavedDeliveryScenario({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { scenarioId } = await params
-  if (!z.uuid().safeParse(scenarioId).success) notFound()
+  if (!z.guid().safeParse(scenarioId).success) notFound()
   const [db, t, locale, format] = await Promise.all([
     createClient(),
     getTranslations('DeliveryScenarios'),

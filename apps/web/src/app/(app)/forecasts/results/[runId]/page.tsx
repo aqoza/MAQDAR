@@ -28,7 +28,7 @@ export default async function ForecastResults({
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
   const { item } = await searchParams
-  if (!z.uuid().safeParse(runId).success || (item && !z.uuid().safeParse(item).success)) notFound()
+  if (!z.guid().safeParse(runId).success || (item && !z.guid().safeParse(item).success)) notFound()
   const [db, t, locale] = await Promise.all([
     createClient(),
     getTranslations('Forecasting'),
@@ -45,6 +45,7 @@ export default async function ForecastResults({
   if (run.status !== 'succeeded') redirect('/forecasts')
   const expanded = z.object({ method: z.literal('expanded-v1') }).safeParse(run.options).success
   const regional = z.object({ method: z.literal('regional-v1') }).safeParse(run.options).success
+  const events = await getTranslations('PlannedEvents')
   const prepared = await getTranslations('PreparedForecast')
   const { data: rows, error } = await db
     .from('forecast_results')
@@ -159,6 +160,18 @@ export default async function ForecastResults({
                 horizon={detail.output.forecast.length}
               />
             </NextIntlClientProvider>
+          )}
+          {selected && (
+            <div className="flex flex-wrap gap-4">
+              {isEditorRole(context.role) && (
+                <Link className="underline" href={`/forecasts/events/new?forecast=${selected.id}`}>
+                  {events('new')}
+                </Link>
+              )}
+              <Link className="underline" href={`/forecasts/events?forecast=${selected.id}`}>
+                {events('history')}
+              </Link>
+            </div>
           )}
           <p>{t('observed', { from: detail.source.start_day, to: detail.source.end_day })}</p>
           {!detail.source.preparation && (

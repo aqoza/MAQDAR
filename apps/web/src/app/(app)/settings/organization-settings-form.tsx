@@ -18,6 +18,7 @@ import { ActiveOrganizationField } from '@/components/active-organization'
 import { type AppLocale, type NumberingSystem, appLocales, numberingSystems } from '@/i18n/config'
 import { idleState } from '@/lib/forms'
 import { updateOrganizationSettings, updatePreferences } from './actions'
+import styles from './settings-workspace.module.css'
 
 export type ReferenceOption = { code: string; name_en: string }
 
@@ -55,23 +56,25 @@ export function OrganizationSettingsForm({
     <form action={formAction} className="flex flex-col gap-4">
       <ActiveOrganizationField />
       <FieldGroup>
-        <Field data-invalid={errors.name ? true : undefined}>
-          <FieldLabel htmlFor="organization-name">{t('name')}</FieldLabel>
-          <Input
-            id="organization-name"
-            name="name"
-            required
-            maxLength={200}
-            autoComplete="organization"
-            defaultValue={values.name ?? organization.name}
-            aria-invalid={errors.name ? true : undefined}
-          />
-          <FieldError>{errors.name}</FieldError>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="organization-slug">{t('slug')}</FieldLabel>
-          <Input id="organization-slug" value={organization.slug} readOnly disabled />
-        </Field>
+        <div className={styles.identityFields}>
+          <Field data-invalid={errors.name ? true : undefined}>
+            <FieldLabel htmlFor="organization-name">{t('name')}</FieldLabel>
+            <Input
+              id="organization-name"
+              name="name"
+              required
+              maxLength={200}
+              autoComplete="organization"
+              defaultValue={values.name ?? organization.name}
+              aria-invalid={errors.name ? true : undefined}
+            />
+            <FieldError>{errors.name}</FieldError>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="organization-slug">{t('slug')}</FieldLabel>
+            <Input id="organization-slug" value={organization.slug} readOnly disabled />
+          </Field>
+        </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <Field data-invalid={errors.base_currency ? true : undefined}>
             <FieldLabel htmlFor="organization-currency">{t('baseCurrency')}</FieldLabel>
@@ -123,7 +126,7 @@ export function OrganizationSettingsForm({
           />
         </Field>
       </FieldGroup>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className={styles.formFooter}>
         <Button type="submit" disabled={pending}>
           {pending ? tCommon('saving') : tCommon('save')}
         </Button>
@@ -255,7 +258,7 @@ export function OrganizationPreferencesForm({
           <FieldError>{errors.time_zone}</FieldError>
         </Field>
       </FieldGroup>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className={styles.formFooter}>
         <Button type="submit" disabled={pending}>
           {pending ? tCommon('saving') : t('save')}
         </Button>

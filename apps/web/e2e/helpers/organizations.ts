@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test'
+import { selectSettingsSection, type SettingsSectionKey } from './settings'
 
 export const DASHBOARD_URL = /\/dashboard(?:[?#].*)?$/
 export const ORGANIZATIONS_URL = /\/organizations(?:[?#].*)?$/
@@ -84,8 +85,12 @@ export async function switchOrganization(page: Page, from: string, to: string): 
 }
 
 /** Opens Settings from the sidebar. */
-export async function openSettings(page: Page): Promise<void> {
+export async function openSettings(
+  page: Page,
+  section: SettingsSectionKey = 'organization',
+): Promise<void> {
   await page.getByRole('link', { name: 'Settings', exact: true }).click()
   // Navigation may include the first compilation of Settings under next dev.
   await page.waitForURL(/\/settings(?:[?#].*)?$/)
+  await selectSettingsSection(page, section)
 }

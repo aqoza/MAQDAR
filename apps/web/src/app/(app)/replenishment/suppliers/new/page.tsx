@@ -32,7 +32,7 @@ export default async function NewSupplierScenario({
     searchParams,
   ])
   const values = supplierScenarioParams(raw)
-  const draft = z.uuid().safeParse(values.draft)
+  const draft = z.guid().safeParse(values.draft)
   if (!draft.success) notFound()
   const source = await db
     .from('replenishment_draft_list')

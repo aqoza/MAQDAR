@@ -7,7 +7,7 @@ const integer = z
   .transform(Number)
 export const policyRequestSchema = z
   .object({
-    forecast_id: z.uuid(),
+    forecast_id: z.guid(),
     request_id: z.uuid(),
     lead_time: integer.pipe(z.number().int().min(0).max(89)),
     review_interval: integer.pipe(z.number().int().min(1).max(90)),
@@ -43,9 +43,9 @@ export const policyEvidenceSchema = z.object({
   }),
   forecast: z.object({
     source: z.object({ unit_provenance: unitProvenanceSchema.optional() }).optional(),
-    id: z.uuid(),
-    run_id: z.uuid(),
-    item_id: z.uuid(),
+    id: z.guid(),
+    run_id: z.guid(),
+    item_id: z.guid(),
     method: z.enum(['baseline-v1', 'expanded-v1', 'regional-v1']),
     to_date: z.iso.date(),
     horizon: z.number().int(),

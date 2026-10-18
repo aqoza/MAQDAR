@@ -75,16 +75,21 @@ with psycopg.connect(dsn) as db:
     .getByRole('heading', { name: 'Observed stock availability', exact: true })
     .locator('..')
   await expect(availability).toContainText('50%')
-  await expect(availability).toContainText('1 of 2 observed item/location pairs')
-  await expect(
-    page.getByText('Snapshots older than seven days: 1.', { exact: false }),
-  ).toBeVisible()
-  await expect(page.getByText('3.375', { exact: false })).toBeVisible()
+  await expect(availability).toContainText('1 / 2 observed')
+  await expect(page.getByText('1 older than 7 days.', { exact: false })).toBeVisible()
+  await expect(page.locator('.dashboard-currencies summary')).toContainText('3.375')
   await page.getByLabel('Reporting date', { exact: true }).fill('2026-09-01')
   await page.getByRole('button', { name: 'Apply filters', exact: true }).click()
   await expect(availability).toContainText('Unavailable')
-  await expect(availability).toContainText('0 of 0 observed')
+  await expect(availability).toContainText('0 / 0 observed')
   await page.getByRole('link', { name: 'Saved forecast quality', exact: true }).click()
+  await expect(page).toHaveURL(/\/forecasts\/quality\?location=KPI-0$/)
+  await page.getByRole('link', { name: 'Reset', exact: true }).click()
+  await expect(page).toHaveURL(/\/forecasts\/quality$/)
+  await expect(page.getByRole('link', { name: 'Next', exact: true })).not.toHaveAttribute(
+    'href',
+    /location=/,
+  )
   const table = page.getByRole('table', { name: 'Saved forecast quality', exact: true })
   await expect(table.getByRole('row')).toHaveCount(26)
   await page.getByRole('link', { name: 'Next', exact: true }).click()
@@ -118,8 +123,10 @@ with psycopg.connect(dsn) as db:
     ).toBeVisible()
     await branchPage.goto('/dashboard?day=2026-10-10')
     await expect(
-      branchPage.getByText('1 of 2 observed item/location pairs', { exact: false }),
-    ).toBeVisible()
+      branchPage
+        .getByRole('heading', { name: 'Observed stock availability', exact: true })
+        .locator('..'),
+    ).toContainText('1 / 2 observed')
   } finally {
     await branchContext.close()
   }

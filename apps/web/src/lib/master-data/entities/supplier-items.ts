@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { resolveItemCodeFields } from '../item-codes'
-import { integerSchema, optionalIntegerSchema } from '../numbers'
+import { integerSchema, optionalIntegerSchema, optionalDecimalSchema } from '../numbers'
 import {
   codeSchema,
   currencyCodeSchema,
@@ -27,7 +27,7 @@ export const SUPPLIER_PART_NUMBER_MAX_LENGTH = 100
 
 export const supplierItemSchema = z
   .object({
-    supplier_id: z.string().trim().min(1).toLowerCase().pipe(z.uuid()),
+    supplier_id: z.string().trim().min(1).toLowerCase().pipe(z.guid()),
     item_code: codeSchema({ allowSlash: true }),
     supplier_part_number: optionalText(SUPPLIER_PART_NUMBER_MAX_LENGTH),
     lead_time_days: integerSchema({ min: 0 }),
@@ -38,6 +38,17 @@ export const supplierItemSchema = z
     currency: z.string().trim().min(1).pipe(currencyCodeSchema),
     is_preferred: z.boolean(),
     valid_from: optionalDateSchema,
+    shipping_weight_kg: optionalDecimalSchema({
+      scale: 6,
+      integerDigits: 9,
+      greaterThan: 0,
+    }).prefault(''),
+    shipping_volume_m3: optionalDecimalSchema({
+      scale: 6,
+      integerDigits: 9,
+      greaterThan: 0,
+    }).prefault(''),
+    shipping_valid_from: optionalDateSchema.prefault(''),
     unit_of_measure: z
       .union([z.literal(''), z.enum(UNITS_OF_MEASURE)])
       .optional()
@@ -116,7 +127,7 @@ export const supplierItems = defineEntity({
   basePath: '/suppliers/supplier-items',
   importEntity: 'supplier_items',
   listSelect: `id, supplier_part_number, lead_time_days, min_order_quantity, pack_size, unit_of_measure, unit_price, currency, is_preferred, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code, name_en, name_ar)`,
-  editSelect: `id, supplier_id, supplier_part_number, lead_time_days, lead_time_days_p90, min_order_quantity, pack_size, unit_of_measure, unit_price, currency, is_preferred, valid_from, updated_at, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code)`,
+  editSelect: `id, supplier_id, supplier_part_number, lead_time_days, lead_time_days_p90, min_order_quantity, pack_size, unit_of_measure, unit_price, currency, is_preferred, valid_from, shipping_weight_kg, shipping_volume_m3, shipping_valid_from, updated_at, ...${SUPPLIER}(supplier_code:code), ...${ITEM}(item_code:code)`,
   list: {
     // Default order follows supplier_items_organization_id_supplier_id_item_id_key (rows of one
     // supplier together; an incremental sort by id breaks ties).
@@ -164,6 +175,9 @@ export const supplierItems = defineEntity({
       options: { source: 'enum', values: UNITS_OF_MEASURE },
     },
     { name: 'unit_price', kind: 'decimal', required: true, hint: true },
+    { name: 'shipping_weight_kg', kind: 'decimal', hint: true },
+    { name: 'shipping_volume_m3', kind: 'decimal', hint: true },
+    { name: 'shipping_valid_from', kind: 'date', hint: true },
     { name: 'currency', kind: 'select', required: true, options: { source: 'currencies' } },
     { name: 'is_preferred', kind: 'switch', hint: true, wide: true },
   ],
@@ -194,6 +208,9 @@ export const supplierItems = defineEntity({
         currency: input.currency,
         is_preferred: input.is_preferred,
         valid_from: input.valid_from,
+        shipping_weight_kg: input.shipping_weight_kg,
+        shipping_volume_m3: input.shipping_volume_m3,
+        shipping_valid_from: input.shipping_valid_from,
       },
     }
   },
@@ -209,5 +226,8 @@ export const supplierItems = defineEntity({
     supplier_items_organization_id_item_id_fkey: 'item_code',
     supplier_items_one_preferred_key: 'is_preferred',
     supplier_items_check: 'lead_time_days_p90',
+    supplier_items_shipping_weight_check: 'shipping_weight_kg',
+    supplier_items_shipping_volume_check: 'shipping_volume_m3',
+    supplier_items_shipping_date_check: 'shipping_valid_from',
   },
 })

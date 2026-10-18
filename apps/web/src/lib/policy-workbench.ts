@@ -4,7 +4,14 @@ import { parseListParams, type RawSearchParams, type ListSpec } from './master-d
 import { POLICY_STATUSES } from './inventory-policy'
 
 const QUANTITY_PATTERN = /^\d{1,15}(\.\d{1,3})?$/
-const quantity = z.string().transform(normalizeDigits).pipe(z.string().regex(QUANTITY_PATTERN))
+const quantity = z
+  .string()
+  .transform(normalizeDigits)
+  .pipe(
+    z
+      .string()
+      .refine((value) => QUANTITY_PATTERN.test(value), { params: { key: 'policyQuantity' } }),
+  )
 const reason = z.string().trim().min(1).max(2000)
 function thousandths(value: string) {
   const [whole, fraction = ''] = value.split('.')
@@ -12,7 +19,7 @@ function thousandths(value: string) {
 }
 export const proposalSchema = z
   .object({
-    policy_id: z.uuid(),
+    policy_id: z.guid(),
     request_id: z.uuid(),
     reorder_point: quantity,
     order_up_to: quantity,
@@ -23,9 +30,10 @@ export const proposalSchema = z
       !QUANTITY_PATTERN.test(v.reorder_point) ||
       !QUANTITY_PATTERN.test(v.order_up_to) ||
       thousandths(v.reorder_point) <= thousandths(v.order_up_to),
+    { path: ['order_up_to'], params: { key: 'maximumBelowReorder' } },
   )
 export const decisionSchema = z.object({
-  override_id: z.uuid(),
+  override_id: z.guid(),
   request_id: z.uuid(),
   decision: z.enum(['approved', 'rejected', 'withdrawn']),
   reason,
@@ -50,9 +58,9 @@ export const workbenchSpec: ListSpec = {
 }
 export const workbenchParams = (raw: RawSearchParams) => parseListParams(raw, workbenchSpec)
 export const workbenchRowSchema = z.object({
-  id: z.uuid(),
-  run_id: z.uuid(),
-  location_id: z.uuid(),
+  id: z.guid(),
+  run_id: z.guid(),
+  location_id: z.guid(),
   item_code: z.string(),
   location_code: z.string(),
   unit: z.string().nullable(),

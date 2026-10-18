@@ -9,11 +9,13 @@ export async function HandoffAcknowledgements({
   organizationId,
   recordId,
   batch = false,
+  transfer = false,
   pageValue,
 }: {
   organizationId: string
   recordId: string
   batch?: boolean
+  transfer?: boolean
   pageValue?: string | string[]
 }) {
   const page =
@@ -24,7 +26,7 @@ export async function HandoffAcknowledgements({
     getFormatter(),
   ])
   const result = await db
-    .from('purchase_handoff_acknowledgements')
+    .from(transfer ? 'transfer_handoff_acknowledgements' : 'purchase_handoff_acknowledgements')
     .select(
       'id,client_event_id,api_key_id,recorded_at,external_system,external_reference,status,reason',
       { count: 'exact' },
@@ -35,7 +37,7 @@ export async function HandoffAcknowledgements({
     .order('id')
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1)
   if (result.error) throw new Error('Acknowledgement history unavailable')
-  const base = `/replenishment/${batch ? 'batches' : 'handoffs'}/${recordId}`
+  const base = `/replenishment/${transfer ? 'redistribution/' : ''}${batch ? 'batches' : 'handoffs'}/${recordId}`
   return (
     <section id="acknowledgements" className="space-y-3 workspace-panel" aria-label={t('title')}>
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -45,7 +47,7 @@ export async function HandoffAcknowledgements({
         </span>
       </div>
       <HelpDisclosure>
-        <p>{t('meaning')}</p>
+        <p>{t(transfer ? 'transferMeaning' : 'meaning')}</p>
         <p>{t(batch ? 'batchNote' : 'singleNote')}</p>
       </HelpDisclosure>
       {!result.data?.length && <p className="text-muted-foreground">{t('empty')}</p>}

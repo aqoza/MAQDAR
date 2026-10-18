@@ -312,8 +312,8 @@ select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list
   {"location_code": "RUH-C", "name_en": "Riyadh central", "name_ar": "المركز", "location_type": "central", "country_code": "SA", "city": null, "latitude": null, "longitude": null, "timezone": "Asia/Riyadh", "parent_location_code": null, "is_active": true, "work_calendar_code": null}]$$),
   'locations: coordinates are canonical decimal strings, parent and calendar resolve to codes');
 select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list:network_links'))), pg_temp.sorted($$[
-  {"from_location_code": "RUH-C", "to_location_code": "RUH-B1", "lead_time_days_p50": 1, "lead_time_days_p90": 3, "freight_basis": "per_unit", "freight_cost": "0.75", "currency": "SAR", "is_active": true},
-  {"from_location_code": "RUH-B1", "to_location_code": "RUH-C", "lead_time_days_p50": 2, "lead_time_days_p90": 4, "freight_basis": "none", "freight_cost": null, "currency": null, "is_active": false}]$$),
+  {"from_location_code": "RUH-C", "to_location_code": "RUH-B1", "lead_time_days_p50": 1, "lead_time_days_p90": 3, "freight_basis": "per_unit", "freight_cost": "0.75", "currency": "SAR", "is_active": true, "freight_unit": null, "freight_valid_from": null},
+  {"from_location_code": "RUH-B1", "to_location_code": "RUH-C", "lead_time_days_p50": 2, "lead_time_days_p90": 4, "freight_basis": "none", "freight_cost": null, "currency": null, "is_active": false, "freight_unit": null, "freight_valid_from": null}]$$),
   'network_links: integers are JSON numbers, money is a canonical string, both ends resolve to codes');
 select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list:brands'))), pg_temp.sorted($$[
   {"brand_code": "BOSCH", "name_en": "Bosch", "name_ar": null, "brand_type": "aftermarket", "country_of_origin": "DE", "is_active": true},
@@ -335,8 +335,8 @@ select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list
   {"supplier_code": "S2", "name_en": "Supplier two", "name_ar": "مورد", "country_code": "SA", "currency": "SAR", "lead_time_days_p50": 5, "lead_time_days_p90": 9, "is_active": false, "work_calendar_code": null}]$$),
   'suppliers: values as stored, the calendar resolves to a code');
 select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list:supplier_items'))), pg_temp.sorted($$[
-  {"supplier_code": "S1", "item_code": "P-1", "supplier_part_number": "B-0001", "lead_time_days": 30, "lead_time_days_p90": null, "min_order_quantity": "10", "pack_size": "2.5", "unit_price": "0.125", "currency": "EUR", "is_preferred": true, "valid_from": "2026-01-01", "unit_of_measure": null},
-  {"supplier_code": "S2", "item_code": "P-1", "supplier_part_number": null, "lead_time_days": 5, "lead_time_days_p90": 8, "min_order_quantity": "0", "pack_size": "1", "unit_price": "7", "currency": "SAR", "is_preferred": false, "valid_from": null, "unit_of_measure": null}]$$),
+  {"supplier_code": "S1", "item_code": "P-1", "supplier_part_number": "B-0001", "lead_time_days": 30, "lead_time_days_p90": null, "min_order_quantity": "10", "pack_size": "2.5", "unit_price": "0.125", "currency": "EUR", "is_preferred": true, "valid_from": "2026-01-01", "unit_of_measure": null, "shipping_weight_kg": null, "shipping_volume_m3": null, "shipping_valid_from": null},
+  {"supplier_code": "S2", "item_code": "P-1", "supplier_part_number": null, "lead_time_days": 5, "lead_time_days_p90": 8, "min_order_quantity": "0", "pack_size": "1", "unit_price": "7", "currency": "SAR", "is_preferred": false, "valid_from": null, "unit_of_measure": null, "shipping_weight_kg": null, "shipping_volume_m3": null, "shipping_valid_from": null}]$$),
   'supplier_items: decimals and money are canonical strings, supplier and item resolve to codes');
 select is(pg_temp.sorted(pg_temp.records((select body from lists where k = 'list:fx_rates'))), pg_temp.sorted($$[
   {"from_currency": "EUR", "to_currency": "SAR", "valid_from": "2026-01-01", "rate": "4.0512345678", "note": null},

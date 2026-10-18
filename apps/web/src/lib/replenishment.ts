@@ -27,9 +27,9 @@ const quantity = z
   .transform(normalizeDigits)
   .pipe(z.string().regex(/^\d{1,15}(\.\d{1,3})?$/))
 const selection = z.object({
-  policy: z.uuid(),
+  policy: z.guid(),
   basis: z.enum(['calculated', 'approved']),
-  override: z.uuid().optional(),
+  override: z.guid().optional(),
 })
 const explicitBasis = (v: z.infer<typeof selection>) =>
   (v.basis === 'approved') === Boolean(v.override)
@@ -62,7 +62,7 @@ export const replenishmentReportSchema = z.object({
   method: z.literal('replenishment-gap-v1'),
   status: z.enum(replenishmentStatuses),
   policy: comparisonSchema,
-  location_id: z.uuid(),
+  location_id: z.guid(),
   protection_end: z.iso.date().nullable(),
   backorders: decimal,
   orders_confirmed: z.boolean(),
@@ -74,10 +74,10 @@ export const replenishmentReportSchema = z.object({
   orders: z
     .array(
       z.object({
-        id: z.uuid(),
+        id: z.guid(),
         order_code: z.string(),
         line_code: z.string(),
-        supplier_id: z.uuid(),
+        supplier_id: z.guid(),
         supplier_code: z.string().nullable(),
         expected_date: z.iso.date(),
         quantity: decimal,
