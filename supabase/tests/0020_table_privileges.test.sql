@@ -30,6 +30,12 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('event_purchase_proposals', 'anon', 'r', ''),
+    ('event_purchase_proposals', 'authenticated', 'r', 'SELECT'),
+    ('event_purchase_proposals', 'service_role', 'r', ''),
+    ('event_purchase_review_list', 'anon', 'v', ''),
+    ('event_purchase_review_list', 'authenticated', 'v', 'SELECT'),
+    ('event_purchase_review_list', 'service_role', 'v', ''),
     ('event_purchase_cost_estimates', 'anon', 'r', ''),
     ('event_purchase_cost_estimates', 'authenticated', 'r', 'SELECT'),
     ('event_purchase_cost_estimates', 'service_role', 'r', ''),
@@ -498,6 +504,8 @@ select set_eq(
     ('public.transfer_handoff_batch_create(uuid, uuid[])', 'authenticated'),
     ('public.purchase_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.purchase_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),
+    ('public.event_purchase_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),
+    ('public.event_purchase_proposal_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
     ('public.purchase_proposal_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
     ('public.event_purchase_cost_preview(uuid, uuid, boolean)', 'authenticated'),
     ('public.event_purchase_cost_save(uuid, uuid, boolean, uuid, text)', 'authenticated'),

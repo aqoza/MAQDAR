@@ -1,6 +1,10 @@
+import { NextIntlClientProvider } from 'next-intl'
+import { EventPurchaseProposalForm } from '@/components/event-purchase-review-forms'
+import { isEditorRole } from '@/lib/auth/roles'
+import { isZeroQuantity } from '@/lib/event-deliveries'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { getFormatter, getTranslations } from 'next-intl/server'
+import { getFormatter, getTranslations, getMessages } from 'next-intl/server'
 import { z } from 'zod'
 import { PageHeader } from '@/components/page-header'
 import { EventCostReport } from '@/components/event-cost-report'
@@ -17,10 +21,12 @@ export default async function EventCostDetail({
   if (!context?.active) redirect('/organizations')
   const { estimateId } = await params
   if (!z.guid().safeParse(estimateId).success) notFound()
-  const [db, t, format] = await Promise.all([
+  const [db, t, format, review, messages] = await Promise.all([
     createClient(),
     getTranslations('EventCosts'),
     getFormatter(),
+    getTranslations('EventPurchaseReview'),
+    getMessages(),
   ])
   const { data, error } = await db
     .from('event_purchase_cost_estimates')
@@ -57,7 +63,24 @@ export default async function EventCostDetail({
         </bdi>{' '}
         · {t('cutoff', { date: report.source.source.draft.scenario.event.source.cutoff })}
       </p>
+      <Link
+        className="underline"
+        href={`/replenishment/events/review?draft=${report.source.source.input.draft_id}`}
+      >
+        {review('draftHistory')}
+      </Link>
       <EventCostReport report={report} />
+      {report.status === 'available' &&
+        !isZeroQuantity(report.adjusted.quantity) &&
+        isEditorRole(context.role) && (
+          <NextIntlClientProvider messages={{ EventPurchaseReview: messages.EventPurchaseReview }}>
+            <EventPurchaseProposalForm
+              organizationId={context.active.id}
+              estimateId={estimateId}
+              requestId={crypto.randomUUID()}
+            />
+          </NextIntlClientProvider>
+        )}
       <p className="text-xs text-muted-foreground">
         {t('savedAt', { time: format.dateTime(new Date(data.created_at), 'long') })}
       </p>
