@@ -2805,6 +2805,23 @@
     "integrations": "Transfer integration workbench"
   },
   "IntegrationWorkbench": {
+    "help": {
+      "title": "How to read these results",
+      "close": "Close",
+      "intro": "Each result shows the latest report recorded by the server for a package and an exact system label.",
+      "statusTitle": "Reported statuses",
+      "statusBody": "Received and rejected reflect system reports; they do not verify purchase orders.",
+      "noReportTitle": "No report does not mean failed delivery.",
+      "noReportBody": "No report is recorded for this package and system.",
+      "labelsTitle": "System labels",
+      "labelsBody": "Names are supplied by API key holders. Matching is exact, including case and spaces.",
+      "filterTitle": "Using the system filter",
+      "filterBody": "Leave it blank to show all reported systems. Enter an exact label to also include packages without a report from that system.",
+      "historiesTitle": "Separate histories",
+      "historiesBody": "Batches, individual handoffs, and overlapping batches each retain their own reporting history.",
+      "selectionTitle": "Planning selection",
+      "selectionBody": "Current refers to the current planning context."
+    },
     "title": "Integration workbench",
     "context": "Latest reported receipt and rejection by system",
     "meaning": "Each result shows the latest server-recorded report for one package and exact system label. System names are supplied by API key holders. No report means absent evidence, not failed delivery. Received and rejected are reports, not verified purchase orders.",

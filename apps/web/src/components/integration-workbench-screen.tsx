@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { HelpDisclosure } from '@/components/help-disclosure'
+import { IntegrationResultsHelp } from '@/components/integration-results-help'
 import { PageHeader } from '@/components/page-header'
 import { ReplenishmentNav } from '@/components/replenishment-nav'
 import { TableScrollRegion } from '@/components/table-scroll-region'
@@ -57,10 +58,14 @@ export async function IntegrationWorkbenchScreen({
         title={t(transfer ? 'transferTitle' : 'title')}
         description={t(transfer ? 'transferContext' : 'context')}
         help={
-          <HelpDisclosure>
-            <p>{t(transfer ? 'transferMeaning' : 'meaning')}</p>
-            <p>{t('independence')}</p>
-          </HelpDisclosure>
+          transfer ? (
+            <HelpDisclosure>
+              <p>{t('transferMeaning')}</p>
+              <p>{t('independence')}</p>
+            </HelpDisclosure>
+          ) : (
+            <IntegrationResultsHelp />
+          )
         }
       />
       <div className="flex flex-wrap gap-4">
