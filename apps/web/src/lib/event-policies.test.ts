@@ -34,3 +34,13 @@ it('reads only the supported fields from the form', () => {
   Object.entries({ ...valid, target: '123' }).forEach(([key, value]) => form.set(key, value))
   expect(eventPolicyFormValues(form)).toEqual(valid)
 })
+
+it('accepts saved PostgreSQL references while preserving strict request tokens', () => {
+  const resourceId = '45fccdfa-6816-12b4-6722-8b9776fc6925'
+  const input = { ...valid, event_id: resourceId, policy_id: resourceId }
+  expect(eventPolicySaveSchema.parse(input)).toMatchObject({
+    event_id: resourceId,
+    policy_id: resourceId,
+  })
+  expect(eventPolicySaveSchema.safeParse({ ...input, request_id: resourceId }).success).toBe(false)
+})

@@ -3,8 +3,8 @@ import { eventReportSchema } from './planned-events'
 import { policyEvidenceSchema } from './inventory-policy'
 
 export const eventPolicyInputSchema = z.object({
-  event_id: z.uuid(),
-  policy_id: z.uuid(),
+  event_id: z.guid(),
+  policy_id: z.guid(),
   reason: z.string().trim().min(1).max(2000),
 })
 export const eventPolicySaveSchema = eventPolicyInputSchema.extend({
@@ -31,9 +31,9 @@ export const eventPolicyReportSchema = z.object({
   method: z.literal('event-policy-v1'),
   status: z.literal('available'),
   input: eventPolicyInputSchema,
-  location_id: z.uuid(),
+  location_id: z.guid(),
   event: eventReportSchema,
-  policy: z.object({ id: z.uuid(), run_id: z.uuid(), evidence: policyEvidenceSchema }),
+  policy: z.object({ id: z.guid(), run_id: z.guid(), evidence: policyEvidenceSchema }),
   periods: z.object({ lead_time: comparison, protection: comparison }),
   outside_addition: decimal,
   daily: z

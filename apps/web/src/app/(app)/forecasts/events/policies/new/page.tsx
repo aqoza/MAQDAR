@@ -23,7 +23,7 @@ export default async function NewEventPolicy({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { event, policy, page } = await searchParams
-  if (!z.uuid().safeParse(event).success || (policy && !z.uuid().safeParse(policy).success))
+  if (!z.guid().safeParse(event).success || (policy && !z.guid().safeParse(policy).success))
     notFound()
   const [db, t, messages] = await Promise.all([
     createClient(),

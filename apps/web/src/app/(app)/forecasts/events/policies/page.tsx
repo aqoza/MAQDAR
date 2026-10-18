@@ -15,7 +15,7 @@ export default async function EventPolicyHistory({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { event, page } = await searchParams
-  if (!z.uuid().safeParse(event).success) notFound()
+  if (!z.guid().safeParse(event).success) notFound()
   const [db, t, format] = await Promise.all([
     createClient(),
     getTranslations('EventPolicies'),
