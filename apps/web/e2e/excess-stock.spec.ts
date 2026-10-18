@@ -161,7 +161,9 @@ with psycopg.connect(sys.argv[1]) as db:
   // The route's loading boundary can send a 200 before the streamed notFound result.
   // Assert the denied UI and absence of saved evidence, rather than the initial response status.
   await branchPage.goto(savedUrl)
-  await expect(branchPage.getByRole('heading', { name: '404', exact: true })).toBeVisible()
+  await expect(
+    branchPage.getByRole('heading', { name: 'Page not found', exact: true }),
+  ).toBeVisible()
   await expect(branchPage.getByText('39.375 KWD', { exact: true })).toHaveCount(0)
   await python(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
@@ -172,7 +174,9 @@ with psycopg.connect(sys.argv[1]) as db:
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('delete from public.membership_locations where organization_id=%s and user_id=%s',(sys.argv[2],'${branch}'))`)
   await branchPage.reload()
-  await expect(branchPage.getByRole('heading', { name: '404', exact: true })).toBeVisible()
+  await expect(
+    branchPage.getByRole('heading', { name: 'Page not found', exact: true }),
+  ).toBeVisible()
   await expect(branchPage.getByText('39.375 KWD', { exact: true })).toHaveCount(0)
   await branchContext.close()
   await page.goto('/settings')
