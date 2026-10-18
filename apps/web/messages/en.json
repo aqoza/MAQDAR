@@ -1040,6 +1040,8 @@
     "itemCodeFormat": "Use letters, digits, dots, underscores, hyphens and slashes, starting with a letter or digit (up to 64 characters).",
     "timeZone": "Choose a valid time zone.",
     "endBeforeStart": "Must be on or after the start date.",
+    "policyQuantity": "Enter a nonnegative quantity with up to 15 whole digits and 3 decimal places.",
+    "maximumBelowReorder": "Must be at least the proposed reorder-point reference.",
     "p90BelowP50": "Must be at least the typical (p50) lead time.",
     "mustDiffer": "Choose two different values.",
     "countryRequired": "Choose a country to observe its public holidays.",
