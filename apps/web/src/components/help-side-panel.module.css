@@ -6,7 +6,7 @@
   max-inline-size: 26.25rem;
   color: var(--help-ink);
   border-color: var(--help-divider);
-  box-shadow: 0 0 1.5rem rgb(19 74 61 / 14%);
+  box-shadow: 0 0 0.125rem rgb(0 0 0 / 5%);
 }
 
 .header {
