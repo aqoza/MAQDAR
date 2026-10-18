@@ -61,8 +61,9 @@ for (const width of [375, 1440]) {
         await expect(dialog.locator('p')).toHaveText([title, ...paragraphs])
         await expect(
           dialog.getByRole('heading', { name: messages.Common.methodDetails }),
-        ).toHaveCSS('font-size', '20px')
-        await expect(dialog.locator('p').last()).toHaveCSS('font-size', '14px')
+        ).toHaveCSS('font-size', '16px')
+        await expect(dialog.locator('p').first()).toHaveCSS('font-size', '12px')
+        await expect(dialog.locator('p').last()).toHaveCSS('font-size', '13px')
         await expect(dialog).toHaveCSS('background-color', 'rgb(255, 255, 255)')
         expect(await search.boundingBox()).toEqual(before)
         const bounds = (await dialog.boundingBox())!

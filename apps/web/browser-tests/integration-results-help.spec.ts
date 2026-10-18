@@ -19,17 +19,17 @@ for (const width of [375, 1440]) {
       await expect(dialog.getByText('No report does not mean failed delivery.')).toBeVisible()
       await expect(dialog.getByRole('heading', { name: 'How to read these results' })).toHaveCSS(
         'font-size',
-        '20px',
+        '16px',
       )
       await expect(dialog.getByRole('heading', { name: 'Reported statuses' })).toHaveCSS(
         'font-size',
-        '16px',
+        '13px',
       )
       await expect(
         dialog.getByText(
           'Names are supplied by API key holders. Matching is exact, including case and spaces.',
         ),
-      ).toHaveCSS('font-size', '14px')
+      ).toHaveCSS('font-size', '13px')
       await expect(dialog).toHaveCSS('background-color', 'rgb(255, 255, 255)')
       expect(await supplier.boundingBox()).toEqual(before)
       const bounds = (await dialog.boundingBox())!
