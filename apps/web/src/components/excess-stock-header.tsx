@@ -38,12 +38,20 @@ export async function ExcessStockHeader({
         </HelpSidePanel>
       }
       actions={
-        <Link
-          className="rounded-md border bg-background px-3 py-2"
-          href={create ? '/replenishment/excess/new' : '/replenishment/excess'}
-        >
-          {t(create ? 'new' : 'history')}
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            className="rounded-md border bg-background px-3 py-2"
+            href="/replenishment/excess/review"
+          >
+            {t('dispositions')}
+          </Link>
+          <Link
+            className="rounded-md border bg-background px-3 py-2"
+            href={create ? '/replenishment/excess/new' : '/replenishment/excess'}
+          >
+            {t(create ? 'new' : 'history')}
+          </Link>
+        </div>
       }
     />
   )

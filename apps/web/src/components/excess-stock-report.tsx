@@ -3,8 +3,17 @@ import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 import type { ExcessReport } from '@/lib/excess-stock'
 import { formatCostDecimal } from '@/lib/purchase-costs'
 import { TableScrollRegion } from './table-scroll-region'
+import { positiveExcess } from '@/lib/excess-disposition'
 
-export async function ExcessStockReport({ report }: { report: ExcessReport }) {
+export async function ExcessStockReport({
+  report,
+  assessmentId,
+  canPropose = false,
+}: {
+  report: ExcessReport
+  assessmentId?: string
+  canPropose?: boolean
+}) {
   const [t, stock, locale, format] = await Promise.all([
     getTranslations('ExcessStock'),
     getTranslations('StockComparison'),
@@ -118,6 +127,14 @@ export async function ExcessStockReport({ report }: { report: ExcessReport }) {
                         </details>
                       </div>
                     </details>
+                    {assessmentId && canPropose && positiveExcess(c.quantity_above) && (
+                      <Link
+                        className="mt-2 inline-flex underline"
+                        href={`/replenishment/excess/review/new?assessment=${assessmentId}&item=${line.item_id}`}
+                      >
+                        {t('proposeDisposition', { item: c.item_code })}
+                      </Link>
+                    )}
                   </td>
                 </tr>
               )
