@@ -1,4 +1,4 @@
-import { HelpDisclosure } from '@/components/help-disclosure'
+import { ReplenishmentDraftsHelp } from '@/components/replenishment-drafts-help'
 import { PageHeader } from '@/components/page-header'
 import { ReplenishmentNav } from '@/components/replenishment-nav'
 import type { Metadata } from 'next'
@@ -72,11 +72,7 @@ export default async function ReplenishmentPage({
         navigation={<ReplenishmentNav current="drafts" />}
         title={t('title')}
         description={t('context')}
-        help={
-          <HelpDisclosure>
-            <p>{t('description')}</p>
-          </HelpDisclosure>
-        }
+        help={<ReplenishmentDraftsHelp />}
         actions={
           <Link
             className="rounded-md bg-primary px-3 py-2 text-primary-foreground"

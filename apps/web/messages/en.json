@@ -642,6 +642,17 @@
     "integrations": "Integration workbench"
   },
   "Replenishment": {
+    "help": {
+      "title": "How to read these drafts",
+      "close": "Close",
+      "policyTitle": "Policy comparison",
+      "policyBody": "Inspect the stock-and-inbound position against a saved policy maximum.",
+      "gapTitle": "Unrounded gap",
+      "gapBody": "Each draft shows the unrounded gap against that maximum.",
+      "note": "A planning draft, not a purchase order.",
+      "nextTitle": "Handled separately",
+      "nextBody": "Supplier constraints, arrival scheduling, and order execution follow separately."
+    },
     "title": "Replenishment drafts",
     "description": "Inspect the stock-and-inbound position against a saved policy maximum. These drafts show an unrounded gap; supplier constraints, arrival scheduling and order execution follow separately.",
     "new": "Preview replenishment draft",
