@@ -1,5 +1,13 @@
 # UI regression ledger
 
+## Dashboard metrics
+
+- Downstream consumers: the Dashboard metric strip and its currency disclosure. Other pages do not use these classes; shared type tokens and headers are unchanged.
+- Dependency evidence: `rg -n 'dashboard-metric|dashboard-currencies' apps/web/src` and `rg -n "dashboard.css" apps/web/src/app/globals.css` identify the stylesheet, DashboardMetrics and DashboardValuation.
+- Acceptance commands: `pnpm --filter web test`, `pnpm lint`, `pnpm typecheck`, `pnpm check:logical`, `pnpm --filter web build`, and `pnpm --filter web test:e2e dashboard-reference.spec.ts responsive.spec.ts`. Existing browser suites run sequentially against local fixtures or CI, never hosted tenants.
+- Propagation: changes to metric layout require populated and empty dashboard checks at phone, tablet, laptop, desktop and RTL widths. Shared header/token changes additionally require the downstream suites below.
+- Regression point: TEST-DASHBOARD-METRIC-001 requires single-line numeric values that fit their metric body and no page-wide overflow at 375, 768, 800 and 1024px. See [dashboard-metric-wrapping.md](dashboard-metric-wrapping.md).
+
 Audit bases for the full header pass: `8a078f5`, then main `4707e36` including event batches, acknowledgements and the event integration workbench. Commands run from the repository root against a local production build and isolated local Supabase/Mailpit. Set `PLAYWRIGHT_BASE_URL` and `MAQDAR_TEST_DSN` for that stack. These browser suites share data infrastructure and run sequentially. No hosted mutation, merge or deployment is part of these commands.
 
 ## Shared header and loading
