@@ -437,10 +437,16 @@ with psycopg.connect(sys.argv[1]) as db:
     .context()
     .addCookies([{ name: 'locale', value: 'ar', url: new URL(page.url()).origin }])
   await page.reload()
+  // React may stage a hidden streamed copy while replacing the localized page.
+  // Assert a single visible history, rather than selecting either copy by order.
+  const rtlHistory = page.locator('#acknowledgements:visible')
   for (const width of [375, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 })
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    await page.locator('#acknowledgements').scrollIntoViewIfNeeded()
+    await expect(rtlHistory).toHaveCount(1)
+    await expect(rtlHistory).toContainText('يقدّم حامل مفتاح التكامل')
+    await expect(rtlHistory).toContainText(rejected.reason)
+    await rtlHistory.scrollIntoViewIfNeeded()
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true)

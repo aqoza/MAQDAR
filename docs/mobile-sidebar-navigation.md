@@ -13,3 +13,5 @@ pnpm --filter web test:e2e mobile-sidebar.spec.ts responsive-planning.spec.ts da
 The focused suite covers English and Arabic RTL, pointer/keyboard activation, the active link, brand navigation, modified clicks, Escape/focus restoration and collapsed desktop navigation. Helpers refuse to create fixtures outside loopback Supabase. The existing responsive suite now requires automatic dismissal before testing a separate Escape dismissal.
 
 No hosted migration is required. Hosted retesting follows deployment; local success must not be described as an already deployed fix.
+
+The complete CI suite also exposed a disposition acknowledgement test race during the Arabic reload. A local production-build reproduction confirmed one visible section and one hidden React streamed section. The RTL check now requires exactly one visible history, its Arabic explanation and the saved rejection reason before scrolling and capturing each viewport. It continues to fail for duplicate visible histories or missing content.
