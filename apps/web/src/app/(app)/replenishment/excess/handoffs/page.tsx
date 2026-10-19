@@ -34,6 +34,7 @@ export default async function Handoffs({
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
+  const bt = await getTranslations('ExcessDispositionBatches')
   const org = context.active.id
   const params = handoffListParams(await searchParams)
   const [db, t, dt, locale, format] = await Promise.all([
@@ -83,6 +84,14 @@ export default async function Handoffs({
         title={t('title')}
         description={t('context')}
         help={<ExcessDispositionHandoffsHelp />}
+        actions={
+          <Link
+            className="rounded-md border bg-background px-3 py-2"
+            href="/replenishment/excess/batches"
+          >
+            {bt('title')}
+          </Link>
+        }
         back={
           <Link className="underline" href="/replenishment/excess/review">
             {t('review')}

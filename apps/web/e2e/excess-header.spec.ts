@@ -60,7 +60,13 @@ test('excess header actions preserve shared typography and mobile targets', asyn
           ),
         })
         const actions = banner.locator('.page-actions a')
-        await expect(actions).toHaveCount(2)
+        await expect(actions).toHaveCount(3)
+        await expect(actions.nth(0)).toHaveAttribute('href', '/replenishment/excess/handoffs')
+        await expect(actions.nth(1)).toHaveAttribute('href', '/replenishment/excess/review')
+        await expect(actions.nth(2)).toHaveAttribute(
+          'href',
+          route.endsWith('/new') ? '/replenishment/excess' : '/replenishment/excess/new',
+        )
         measurements.push({
           locale,
           route,
@@ -91,6 +97,8 @@ test('excess header actions preserve shared typography and mobile targets', asyn
           await actions.first().focus()
           await page.keyboard.press('Tab')
           await expect(actions.nth(1)).toBeFocused()
+          await page.keyboard.press('Tab')
+          await expect(actions.nth(2)).toBeFocused()
         }
       }
     }

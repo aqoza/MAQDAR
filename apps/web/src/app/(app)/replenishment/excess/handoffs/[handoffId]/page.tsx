@@ -42,6 +42,7 @@ export default async function Handoff({ params }: { params: Promise<{ handoffId:
   if (record.error || current.error) throw new Error('Disposition handoff unavailable')
   if (!record.data || !current.data) notFound()
   const p = handoffPayloadSchema.parse(record.data.payload)
+  const bt = await getTranslations('ExcessDispositionBatches')
   const d = p.disposition
   return (
     <div className="min-w-0 space-y-4">
@@ -56,7 +57,16 @@ export default async function Handoff({ params }: { params: Promise<{ handoffId:
           </Link>
         }
         actions={
-          <div className="flex flex-wrap gap-3">
+          <>
+            {['owner', 'admin', 'planner'].includes(context.active.role) &&
+              current.data.selected && (
+                <Link
+                  className="rounded-md border bg-background px-3 py-2"
+                  href={`/replenishment/excess/batches/new?handoff=${handoffId}`}
+                >
+                  {bt('create')}
+                </Link>
+              )}
             <a
               download
               className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
@@ -71,7 +81,7 @@ export default async function Handoff({ params }: { params: Promise<{ handoffId:
             >
               {t('csv')}
             </a>
-          </div>
+          </>
         }
       />
       <section className="workspace-panel space-y-3">
