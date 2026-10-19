@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test'
 import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle } from './helpers/typography'
 
 test('excess header actions preserve shared typography and mobile targets', async ({
   page,
@@ -42,9 +43,7 @@ test('excess header actions preserve shared typography and mobile targets', asyn
         const banner = page.locator('[data-page-banner="replenishment"]')
         await expect(banner).toHaveCount(1)
         const title = page.getByRole('heading', { level: 1 })
-        await expect(title).toHaveCSS('font-size', '20px')
-        await expect(title).toHaveCSS('line-height', '28px')
-        await expect(title).toHaveCSS('font-weight', '600')
+        await expectPageTitle(title)
         const family = await page
           .locator('html')
           .evaluate((node) => getComputedStyle(node).fontFamily)

@@ -5,6 +5,7 @@ import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { inviteAndAccept } from './helpers/imports'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection, type SettingsSectionKey } from './helpers/settings'
+import { expectPageTitle } from './helpers/typography'
 
 const sections: SettingsSectionKey[] = [
   'organization',
@@ -131,8 +132,7 @@ test('all settings panels fit desktop, laptop, mobile and Arabic with shared typ
         await selectSettingsSection(page, section)
         await page.evaluate(() => document.fonts.ready)
         await expect(page.getByRole('tabpanel')).toHaveCount(1)
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
+        await expectPageTitle(page.getByRole('heading', { level: 1 }))
         const active = page.locator(`[data-settings-section="${section}"]`)
         await expect(active).toHaveCSS('font-size', '14px')
         await expect(active.locator('svg')).toHaveCSS('width', '16px')

@@ -6,6 +6,7 @@ import { test, expect } from '@playwright/test'
 import { expectRepeatedDownloads } from './helpers/downloads'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { expectPageTitle } from './helpers/typography'
 
 test.use({ actionTimeout: 15_000 })
 test('event batches preserve complete comparisons, overlap and scoped history at five widths', async ({
@@ -67,8 +68,7 @@ with psycopg.connect(sys.argv[1]) as db:
       ).toBe(true)
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
       await expect(page.locator('[data-page-banner="replenishment"]')).toHaveCount(1)
-      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
-      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
+      await expectPageTitle(page.getByRole('heading', { level: 1 }))
       await page.screenshot({
         path: testInfo.outputPath(`event-batch-${name}-${width}.png`),
         fullPage: true,

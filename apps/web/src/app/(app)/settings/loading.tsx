@@ -9,7 +9,9 @@ export default function SettingsLoading() {
       <div aria-hidden="true">
         <PageHeader
           pattern="settings"
-          title={<span className="bg-muted block h-7 w-40 animate-pulse rounded-md" />}
+          title={
+            <span className="bg-muted block h-[var(--text-page-title--line-height)] w-40 animate-pulse rounded-md" />
+          }
           description={
             <span className="bg-muted block h-5 w-64 max-w-full animate-pulse rounded-md" />
           }

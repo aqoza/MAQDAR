@@ -9,6 +9,7 @@ import {
 import { inviteAndAccept } from './helpers/imports'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle } from './helpers/typography'
 
 async function createWorkspace(page: Page) {
   const id = randomUUID()
@@ -185,8 +186,7 @@ test('replenishment policy selection keeps the forecast banner, filters and back
       const banner = page.locator('[data-page-banner="forecasts"]')
       await expect(banner).toHaveCount(1)
       const heading = page.getByRole('heading', { level: 1 })
-      await expect(heading).toHaveCSS('font-size', '20px')
-      await expect(heading).toHaveCSS('line-height', '28px')
+      await expectPageTitle(heading)
       const background = (await banner.locator('.page-banner-backdrop').boundingBox())!
       expect(background.y).toBe(0)
       if (width >= 768) expect(background.height).toBe(100)

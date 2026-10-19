@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { expectPageTitle } from './helpers/typography'
 
 const screens = [
   { path: '/dashboard', title: 'Dashboard', reset: null },
@@ -108,9 +109,7 @@ for (const { width, height } of [
         await expect(
           page.getByRole('heading', { level: 1, name: screen.title, exact: true }),
         ).toBeVisible()
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-weight', '600')
+        await expectPageTitle(page.getByRole('heading', { level: 1 }))
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS(
           'font-family',
           itemsFontFamily,

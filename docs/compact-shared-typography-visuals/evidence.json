@@ -1,0 +1,82 @@
+{
+  "contract": "design.MD: owner-approved page titles 16px/24px/600 and compact record values 14px/20px/600, consistently across laptop, desktop, mobile and Arabic RTL.",
+  "contractDetails": {
+    "surface": "MAQDAR shared authenticated page headers and compact planning records",
+    "job": "Read planning records and navigate between operational pages with the owner-approved compact typography.",
+    "reference": "design.MD; owner selection on 2026-10-19; reported disposition-batch title and location code",
+    "constraints": [
+      "Page titles are 16px/24px/600 and compact record values are 14px/20px/600 at every viewport.",
+      "Body, subtitle, sidebar and action text remain 14px/20px; captions remain 12px/16px.",
+      "Preserve locale font families, natural wrapping, local table scrolling, mobile 16px inputs and 44px action targets.",
+      "Preserve documented Dashboard numeric KPI, login display and help-panel exceptions.",
+      "Preserve calculations, currency precision, authorization, HTTP 404 behavior and existing loading boundaries."
+    ]
+  },
+  "targetViewports": ["1280x800", "1366x768", "1440x900", "375x900", "390x844"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Browser workflows verify named controls, keyboard action order, visible focus and 44px mobile targets in LTR/RTL. Sixteen isolated UI fixtures pass, including help-dialog focus trapping, Escape and focus restoration. Loading and login checks exercise reduced motion. Representative captures were inspected for text legibility and wrapping; this is not a full accessibility certification."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "Inspected laptop, desktop and mobile captures in English and Arabic RTL. Browser matrices assert the approved computed type roles, locale font families and no page overflow; horizontal tables remain locally scrollable. The disposition batch checks all four record values at 375, 768, 1024, 1366, 1440 and 1920px. These are Chromium CSS viewports, not physical-device or Safari checks."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "The Imports streaming and shared-header tests pass with illustrated loading banners, stable existing boundaries and reduced motion; loading title placeholders now use the shared 24px title line-height variable."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "The excess-stock list capture and workflow retain the compact heading, filter controls, empty-result explanation and new-assessment action."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "Header-consistency exercises the Forecasts error/recovery state with the shared banner and compact title, including Arabic RTL."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "Dashboard fixtures retain truthful unavailable valuation, missing stock observations and currency-specific data without introducing sample production metrics."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Disposition batches are selected, previewed and saved through the real local application. The saved detail title and location, intent, date and exact currency value use the approved compact roles; original CSV/JSON downloads are checked unchanged."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Disposition batch, header and Imports workflows retain tenant/location restrictions, hidden-record HTTP 404 assertions and viewer boundaries. No permission or data-access code changes."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1280x800",
+      "artifact": "excess-header-list-en-1280.png",
+      "observation": "English laptop list: compact title, unchanged sidebar/body scale and naturally wrapping header actions."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "laptop-en-before-after.png",
+      "observation": "Actual local production captures show the disposition-batch page title reduced from 20px to 16px and record values from 16px to 14px."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "laptop-ar-before-after.png",
+      "observation": "Arabic RTL before/after uses the same compact roles and the configured Arabic font family without clipping the header or record values."
+    },
+    {
+      "viewport": "1440x900",
+      "artifact": "batch-detail-1440.png",
+      "observation": "Saved disposition batch: all four summary values use 14px/20px/600; header and download controls retain readable text and keyboard focus."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "after-batch-ar-375.png",
+      "observation": "Arabic RTL mobile detail: compact title, naturally stacked record values, 44px actions and local table scrolling."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "excess-header-create-ar-390.png",
+      "observation": "Arabic RTL mobile create screen preserves the compact title and 44px actions with no page overflow. Existing untranslated planning copy uses the documented English fallback."
+    }
+  ]
+}

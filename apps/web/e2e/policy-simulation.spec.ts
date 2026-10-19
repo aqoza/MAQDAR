@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 import { test, expect } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { expectPageTitle } from './helpers/typography'
 
 test('policy simulation freezes recorded sales, exposes two exact ledgers and preserves scoped history', async ({
   page,
@@ -81,7 +82,7 @@ print(json.dumps(dict(policy=str(policy),run=str(run),location=str(location))))`
       'font-size',
       width < 768 ? '16px' : '14px',
     )
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     if (width === 375)
       expect(
         (await form.getByRole('button', { name: 'Queue simulation' }).boundingBox())!.height,
@@ -133,7 +134,7 @@ with psycopg.connect(sys.argv[1]) as db:
       await expect.poll(() => ledger.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0)
     }
     await ledger.evaluate((node) => node.scrollTo({ left: 0 }))
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     await page.screenshot({
       path: testInfo.outputPath(`simulation-result-${width}.png`),
       fullPage: true,
@@ -185,6 +186,7 @@ with psycopg.connect(sys.argv[1]) as db:
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true)
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     await page.screenshot({
       path: testInfo.outputPath(`simulation-result-rtl-${width}.png`),
       fullPage: true,
@@ -196,6 +198,7 @@ with psycopg.connect(sys.argv[1]) as db:
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true)
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     await page.screenshot({
       path: testInfo.outputPath(`simulation-form-rtl-${width}.png`),
       fullPage: true,

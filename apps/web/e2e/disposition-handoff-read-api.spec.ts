@@ -10,6 +10,7 @@ import {
   signInWithPassword,
 } from './helpers/auth'
 import { createOrganization, openSettings } from './helpers/organizations'
+import { expectPageTitle } from './helpers/typography'
 import { generateApiKey } from '../src/lib/api/keys'
 
 test.use({ actionTimeout: 30_000 })
@@ -134,7 +135,7 @@ with psycopg.connect(sys.argv[1]) as db:
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
     ).toBe(true)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     await page.screenshot({
       path: testInfo.outputPath(`disposition-api-settings-${width}.png`),
       fullPage: true,

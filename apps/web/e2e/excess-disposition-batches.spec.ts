@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve } from 'node:path'
+import { writeFile } from 'node:fs/promises'
 import { test, expect } from '@playwright/test'
 import {
   createConfirmedUser,
@@ -11,6 +12,7 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle, expectEvidenceValue } from './helpers/typography'
 
 test.use({ actionTimeout: 30_000 })
 test('disposition batches preserve compatible selections, exact files, overlap and source deletion history', async ({
@@ -114,18 +116,54 @@ with psycopg.connect(sys.argv[1]) as db:
   }
   const errors: string[] = []
   page.on('pageerror', (e) => errors.push(e.message))
-  const widths = [375, 768, 1024, 1440, 1920]
+  const widths = [375, 768, 1024, 1366, 1440, 1920]
   const capture = async (name: string) => {
     for (const width of widths) {
-      await page.setViewportSize({ width, height: 900 })
+      await page.setViewportSize({ width, height: width === 1366 ? 768 : 900 })
       await page.evaluate(() => document.fonts.ready)
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
-      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
-      for (const action of await page.locator('.page-actions > a').all()) {
+      await expectPageTitle(page.getByRole('heading', { level: 1 }))
+      const family = await page
+        .locator('html')
+        .evaluate((node) => getComputedStyle(node).fontFamily)
+      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-family', family)
+      const values = page.locator('main .text-evidence-value:visible')
+      if (['batch-preview', 'batch-detail', 'batch-ar'].includes(name)) {
+        await expect(values).toHaveCount(4)
+      }
+      for (const value of await values.all()) {
+        await expectEvidenceValue(value)
+        await expect(value).toHaveCSS('font-family', family)
+      }
+      for (const action of await page
+        .locator('[data-page-banner]:visible .page-actions > a')
+        .all()) {
+        await expect(action).toBeVisible()
         await expect(action).toHaveCSS('font-size', '14px')
         if (width < 768) expect((await action.boundingBox())!.height).toBeGreaterThanOrEqual(44)
       }
       await page.screenshot({ path: testInfo.outputPath(`${name}-${width}.png`), fullPage: true })
+      const typography = await page
+        .locator('main h1, main .text-evidence-value')
+        .evaluateAll((nodes) =>
+          nodes
+            .filter((node) => node.getBoundingClientRect().height > 0)
+            .map((node) => {
+              const css = getComputedStyle(node)
+              return {
+                role: node.tagName === 'H1' ? 'page-title' : 'evidence-value',
+                text: node.textContent?.trim(),
+                size: css.fontSize,
+                lineHeight: css.lineHeight,
+                weight: css.fontWeight,
+                family: css.fontFamily,
+              }
+            }),
+        )
+      await writeFile(
+        testInfo.outputPath(`${name}-${width}-type.json`),
+        JSON.stringify(typography, null, 2),
+      )
     }
   }
   await page.goto('/replenishment/excess/handoffs')
@@ -149,10 +187,7 @@ with psycopg.connect(sys.argv[1]) as db:
   await capture('batch-selection')
   await page.getByRole('link', { name: 'Preview batch', exact: true }).click()
   await expect(page.getByText('7.49925 KWD', { exact: true })).toBeVisible()
-  await expect(page.getByText('7.49925 KWD', { exact: true }).locator('..')).toHaveCSS(
-    'font-size',
-    '16px',
-  )
+  await expectEvidenceValue(page.getByText('7.49925 KWD', { exact: true }).locator('..'))
   await capture('batch-preview')
   await page.getByRole('button', { name: 'Save batch', exact: true }).click()
   await expect(page).toHaveURL(/\/excess\/batches\/[0-9a-f-]+$/)
@@ -258,10 +293,6 @@ with psycopg.connect(sys.argv[1]) as db:
   await page.getByRole('radio', { name: 'العربية' }).click()
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await page.goto(batchUrl)
-  for (const width of [375, 1440]) {
-    await page.setViewportSize({ width, height: 900 })
-    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
-    await page.screenshot({ path: testInfo.outputPath(`batch-ar-${width}.png`), fullPage: true })
-  }
+  await capture('batch-ar')
   expect(errors).toEqual([])
 })
