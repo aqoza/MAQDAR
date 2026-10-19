@@ -20,7 +20,9 @@
 
 Sizes are expressed in rem in the implementation so browser text scaling is respected. Page-title tracking is `-0.025em`; body and navigation keep normal tracking. Font stacks come from `--font-sans`: Inter first for English and the configured Arabic font first for RTL. Never set a different page-specific font family.
 
-The login brand-panel headline is a display-type exception requested by the owner on 2026-10-19: 32–56px (`clamp(2rem, 3.3vw, 3.5rem)`), line-height 1.08, weight 600, and tracking -0.055em; mobile uses 32px with line-height 1.1. The owner also requested a larger sign-in heading: 32–40px (`clamp(2rem, 2.5vw, 2.5rem)`), line-height 1.12, weight 600, and tracking -0.045em; mobile uses 32px. These exceptions apply only to the two login headings. Form labels, inputs and buttons, authenticated page titles, navigation, and all other shared type roles retain the scale above.
+The login brand-panel headline is a display-type exception requested by the owner on 2026-10-19: 32–56px (`clamp(2rem, 3.3vw, 3.5rem)`), line-height 1.08, weight 600, and tracking -0.055em. The owner also requested a larger sign-in heading: 32–40px (`clamp(2rem, 2.5vw, 2.5rem)`), line-height 1.12, weight 600, and tracking -0.045em; mobile uses 32px. These exceptions apply only to the two login headings. Form labels, inputs and buttons, authenticated page titles, navigation, and all other shared type roles retain the scale above.
+
+Below 768px, the login brand panel becomes a compact logo-and-tagline bar so both sign-in options fit in the initial portrait viewport at 320×568 and larger. Keep 16px input text and 56px controls; viewports at most 700px tall use 48px controls and tighter spacing, retaining the 44px password toggle. Allow normal vertical scrolling for guidance, errors, browser text enlargement, and the on-screen keyboard. The desktop/tablet layout at 768px and above stays unchanged.
 
 ## Shared application shell
 
