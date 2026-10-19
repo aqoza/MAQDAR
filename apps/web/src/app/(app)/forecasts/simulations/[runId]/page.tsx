@@ -12,6 +12,7 @@ import { createClient } from '@/lib/supabase/server'
 import { isActiveRun } from '@/lib/planning'
 import { simulationEvidenceSchema } from '@/lib/policy-simulation'
 import { sensitivityEvidenceSchema } from '@/lib/policy-sensitivity'
+import { configurationsEvidenceSchema } from '@/lib/policy-configurations'
 import { firstParam, type RawSearchParams } from '@/lib/master-data/list-params'
 
 export default async function SimulationResult({
@@ -25,11 +26,12 @@ export default async function SimulationResult({
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
   if (!z.guid().safeParse(runId).success) notFound()
-  const [db, t, planning, sensitivity] = await Promise.all([
+  const [db, t, planning, sensitivity, configurations] = await Promise.all([
     createClient(),
     getTranslations('PolicySimulation'),
     getTranslations('Planning'),
     getTranslations('PolicySensitivity'),
+    getTranslations('PolicyConfigurations'),
   ])
   const { data: run, error } = await db
     .from('planning_runs')
@@ -55,7 +57,9 @@ export default async function SimulationResult({
   const comparison =
     response?.data && method === 'periodic-sensitivity-v1'
       ? sensitivityEvidenceSchema.parse(response.data.evidence)
-      : null
+      : response?.data && method === 'periodic-configurations-v1'
+        ? configurationsEvidenceSchema.parse(response.data.evidence)
+        : null
   const original =
     response?.data && !comparison ? simulationEvidenceSchema.parse(response.data.evidence) : null
   const evidence = comparison ?? original
@@ -63,7 +67,13 @@ export default async function SimulationResult({
     <div className="min-w-0 space-y-4">
       <PageHeader
         pattern="forecasts"
-        title={method === 'periodic-sensitivity-v1' ? sensitivity('title') : t('title')}
+        title={
+          method === 'periodic-configurations-v1'
+            ? configurations('title')
+            : method === 'periodic-sensitivity-v1'
+              ? sensitivity('title')
+              : t('title')
+        }
         description={`${run.locations?.code ?? ''} · ${run.from_date} – ${run.to_date}`}
         back={
           <Link href="/forecasts/simulations" className="underline">
@@ -84,9 +94,20 @@ export default async function SimulationResult({
                 {comparison ? sensitivity('source') : t('sourcePolicy')}
               </Link>
               {original && isEditorRole(context.role) && (
-                <Link href={`/forecasts/simulations/compare?source=${runId}`} className="underline">
-                  {sensitivity('create')}
-                </Link>
+                <>
+                  <Link
+                    href={`/forecasts/simulations/compare?source=${runId}`}
+                    className="underline"
+                  >
+                    {sensitivity('create')}
+                  </Link>
+                  <Link
+                    href={`/forecasts/simulations/configure?source=${runId}`}
+                    className="underline"
+                  >
+                    {configurations('create')}
+                  </Link>
+                </>
               )}
             </>
           ) : undefined

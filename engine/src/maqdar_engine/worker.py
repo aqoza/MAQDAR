@@ -61,6 +61,10 @@ def process_one(connection: psycopg.Connection) -> bool:
             from maqdar_engine.policy_sensitivity import calculate
             result = calculate(task)
             connection.execute('select app.simulation_finish(%s,%s,%s)', (run_id, token, Jsonb(result))).fetchone()
+        elif task['kind'] == 'simulation' and task.get('method') == 'periodic-configurations-v1':
+            from maqdar_engine.policy_configurations import calculate
+            result = calculate(task)
+            connection.execute('select app.simulation_finish(%s,%s,%s)', (run_id, token, Jsonb(result))).fetchone()
         elif task['kind'] == 'preparation' and task.get('method') == 'preparation-v1':
             from maqdar_engine.preparation import prepare
             rows = prepare(task)

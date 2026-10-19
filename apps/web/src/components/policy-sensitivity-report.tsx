@@ -2,17 +2,22 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { TableScrollRegion } from '@/components/table-scroll-region'
 import { PolicySimulationLedger } from '@/components/policy-simulation-ledger'
+import type { ConfigurationsEvidence } from '@/lib/policy-configurations'
 import type { SensitivityEvidence } from '@/lib/policy-sensitivity'
 
 export async function PolicySensitivityReport({
   evidence,
   selected,
 }: {
-  evidence: SensitivityEvidence
+  evidence: SensitivityEvidence | ConfigurationsEvidence
   selected: string | undefined
 }) {
   const [t, simulation, locale] = await Promise.all([
-    getTranslations('PolicySensitivity'),
+    getTranslations(
+      evidence.method === 'periodic-configurations-v1'
+        ? 'PolicyConfigurations'
+        : 'PolicySensitivity',
+    ),
     getTranslations('PolicySimulation'),
     getLocale(),
   ])
@@ -29,6 +34,8 @@ export async function PolicySensitivityReport({
       : 0
   const variant = variants[chosen]
   const common = variants[0].metrics
+  const configuration =
+    evidence.method === 'periodic-configurations-v1' ? evidence.output.variants[chosen] : null
   return (
     <div className="min-w-0 space-y-4">
       <p>
@@ -63,6 +70,12 @@ export async function PolicySensitivityReport({
             <tr>
               <th className="p-3 text-start">{t('variant')}</th>
               <th className="p-3 text-start">{simulation('maximum')}</th>
+              {evidence.method === 'periodic-configurations-v1' && (
+                <>
+                  <th className="p-3 text-start">{t('lead')}</th>
+                  <th className="p-3 text-start">{t('review')}</th>
+                </>
+              )}
               {(
                 [
                   'average_closing_stock',
@@ -86,6 +99,12 @@ export async function PolicySensitivityReport({
               <tr key={row.name} className="border-t">
                 <th className="p-3 text-start font-medium">{label(index)}</th>
                 <td className="p-3 tabular-nums">{amount(row.maximum)}</td>
+                {'lead_time' in row && (
+                  <>
+                    <td className="p-3 tabular-nums">{amount(row.lead_time)}</td>
+                    <td className="p-3 tabular-nums">{amount(row.review_interval)}</td>
+                  </>
+                )}
                 {(
                   [
                     'average_closing_stock',
@@ -112,17 +131,20 @@ export async function PolicySensitivityReport({
       <section className="workspace-panel min-w-0 space-y-3">
         <h2 className="text-section-title">{t('inspectLedger')}</h2>
         <form method="get" className="flex flex-wrap items-end gap-3">
-          <div className="grid min-w-0 gap-1">
+          <div className="grid w-full min-w-0 max-w-full gap-1 sm:w-auto">
             <label htmlFor="sensitivity-variant">{t('variant')}</label>
             <select
               id="sensitivity-variant"
               name="variant"
               defaultValue={String(chosen)}
-              className="min-h-11 max-w-full rounded-md border bg-background p-2"
+              className="min-h-11 w-full min-w-0 max-w-full rounded-md border bg-background p-2"
             >
               {variants.map((row, index) => (
                 <option key={row.name} value={index}>
                   {label(index)} · {amount(row.maximum)} {evidence.policy.unit}
+                  {'lead_time' in row
+                    ? ` · ${t('settings', { lead: row.lead_time, review: row.review_interval })}`
+                    : ''}
                 </option>
               ))}
             </select>
@@ -131,6 +153,14 @@ export async function PolicySensitivityReport({
             {t('showLedger')}
           </button>
         </form>
+        {configuration && (
+          <p>
+            {t('settings', {
+              lead: configuration.lead_time,
+              review: configuration.review_interval,
+            })}
+          </p>
+        )}
         <p>
           {simulation('metrics.received_quantity')}: {amount(variant.metrics.received_quantity)} ·{' '}
           {simulation('metrics.immediate_fulfilled')}: {amount(variant.metrics.immediate_fulfilled)}
