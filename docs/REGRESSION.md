@@ -1,5 +1,9 @@
 # UI regression ledger
 
+## Policy simulation conflicts
+
+- `SIM-CONFLICT-001`: a blocked simulation submission must show simulation-specific active-run/request-reuse guidance, preserve the entered quantities and leave the original run queued. Do not display the generic organization-owner conflict copy. Run the simulation action tests and `pnpm --filter web test:e2e policy-simulation.spec.ts` against loopback fixtures. Database errors, tenant checks and queue limits remain unchanged.
+
 ## Mobile sidebar navigation
 
 - `MOBILE-NAV-001`: ordinary navigation and brand-link activation dismiss the mobile drawer, including the active route. Modified clicks retain the drawer and desktop navigation retains collapse state. Verify English and Arabic RTL with `pnpm --filter web test:e2e mobile-sidebar.spec.ts responsive-planning.spec.ts dashboard-reference.spec.ts` against loopback fixtures. The generated sidebar primitive and all tenant/permission queries remain unchanged. See [mobile-sidebar-navigation.md](mobile-sidebar-navigation.md).

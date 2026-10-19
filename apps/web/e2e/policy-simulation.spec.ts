@@ -96,6 +96,19 @@ print(json.dumps(dict(policy=str(policy),run=str(run),location=str(location))))`
   await expect(page).toHaveURL(/\/forecasts\/simulations\/[0-9a-f-]+$/)
   const resultUrl = page.url()
   await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+  await page.goto(newUrl)
+  await form.getByLabel('Replay through').fill('2026-10-05')
+  await form.getByLabel('Opening available stock').fill('2')
+  await form.getByLabel('Alternative periodic maximum').fill('8')
+  await form.getByRole('checkbox').nth(0).check()
+  await form.getByRole('checkbox').nth(1).check()
+  await form.getByRole('button', { name: 'Queue simulation' }).click()
+  await expect(form.getByRole('alert')).toHaveText(
+    'A planning run is already active, or this request was reused with different inputs. Check the simulation history before trying again.',
+  )
+  await expect(form.getByLabel('Opening available stock')).toHaveValue('2')
+  await page.goto(resultUrl)
+  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
   await python(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('update public.demand_history set quantity=999 where organization_id=%s',(sys.argv[2],))`)
