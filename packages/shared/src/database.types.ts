@@ -2807,6 +2807,12 @@ isOneToOne: false
 "api_event_purchase_handoff_list":
 { Args: { "p_after"?: string,"p_created_since"?: string,"p_key_hash": string,"p_limit"?: number,"p_resource": string }; Returns: Json
                            },
+"api_excess_disposition_handoff_get":
+{ Args: { "p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
+                           },
+"api_excess_disposition_handoff_list":
+{ Args: { "p_after"?: string,"p_created_since"?: string,"p_key_hash": string,"p_limit"?: number,"p_resource": string }; Returns: Json
+                           },
 "api_handoff_acknowledge":
 { Args: { "p_body": Json,"p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
                            },

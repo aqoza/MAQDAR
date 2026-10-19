@@ -3,7 +3,7 @@
   "info": {
     "title": "MAQDAR API",
     "version": "1.4.0",
-    "description": "Bulk upserts and lists of MAQDAR master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer maqdar_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
+    "description": "Bulk upserts and lists of MAQDAR master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer maqdar_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
     "x-maqdar-import-format": 1
   },
   "servers": [
@@ -17,6 +17,10 @@
     }
   ],
   "tags": [
+    {
+      "name": "Disposition handoffs",
+      "description": "Original disposition evidence and exact reference inventory values, with separate live source context."
+    },
     {
       "name": "Event purchase handoffs",
       "description": "Saved full event-adjusted selections and baseline comparisons; live selection stays separate."
@@ -69,7 +73,8 @@
     "transfer_handoffs:read": "Read saved transfer handoffs and batches across the organization; no reservation or transfer execution.",
     "transfer_handoffs:acknowledge": "Append external receipt or rejection reports for saved transfer handoffs and batches across the organization; no reservation or transfer execution.",
     "event_purchase_handoffs:read": "Read saved event purchase handoffs and batches across the organization, including adjusted selections and baseline comparisons; no order execution.",
-    "event_purchase_handoffs:acknowledge": "Append external receipt or rejection reports for saved event purchase handoffs and batches across the organization; no transmission or order execution."
+    "event_purchase_handoffs:acknowledge": "Append external receipt or rejection reports for saved event purchase handoffs and batches across the organization; no transmission or order execution.",
+    "excess_disposition_handoffs:read": "Read saved disposition handoffs and batches across the organization, including retained evidence after source deletion; no returns, write-offs or stock movements."
   },
   "paths": {
     "/organization": {
@@ -3127,6 +3132,274 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EventPurchaseHandoffBatchDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/excess-disposition-handoffs": {
+      "get": {
+        "operationId": "listExcessDispositionHandoffs",
+        "tags": [
+          "Disposition handoffs"
+        ],
+        "summary": "List saved planning packages",
+        "description": "Organization-wide access requires excess_disposition_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Reference values are not recovery proceeds or accounting write-offs. Other scopes grant no disposition access. GET and HEAD never create returns, scrap, reservations, stock movements or acknowledgements. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
+        "x-maqdar-scopes": [
+          "excess_disposition_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "created_since",
+            "in": "query",
+            "description": "Inclusive RFC 3339 timestamp with offset. Keep unchanged while following a cursor.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of saved summaries and live selection.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispositionHandoffPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/excess-disposition-handoffs/{id}": {
+      "get": {
+        "operationId": "getExcessDispositionHandoffs",
+        "tags": [
+          "Disposition handoffs"
+        ],
+        "summary": "Read saved planning evidence",
+        "description": "Organization-wide access requires excess_disposition_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Reference values are not recovery proceeds or accounting write-offs. Other scopes grant no disposition access. GET and HEAD never create returns, scrap, reservations, stock movements or acknowledgements. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
+        "x-maqdar-scopes": [
+          "excess_disposition_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved evidence and live selection.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExcessDispositionHandoffDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/excess-disposition-handoff-batches": {
+      "get": {
+        "operationId": "listExcessDispositionHandoffBatches",
+        "tags": [
+          "Disposition handoffs"
+        ],
+        "summary": "List saved planning packages",
+        "description": "Organization-wide access requires excess_disposition_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Reference values are not recovery proceeds or accounting write-offs. Other scopes grant no disposition access. GET and HEAD never create returns, scrap, reservations, stock movements or acknowledgements. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
+        "x-maqdar-scopes": [
+          "excess_disposition_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "created_since",
+            "in": "query",
+            "description": "Inclusive RFC 3339 timestamp with offset. Keep unchanged while following a cursor.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of saved summaries and live selection.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispositionHandoffPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/excess-disposition-handoff-batches/{id}": {
+      "get": {
+        "operationId": "getExcessDispositionHandoffBatches",
+        "tags": [
+          "Disposition handoffs"
+        ],
+        "summary": "Read saved planning evidence",
+        "description": "Organization-wide access requires excess_disposition_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Reference values are not recovery proceeds or accounting write-offs. Other scopes grant no disposition access. GET and HEAD never create returns, scrap, reservations, stock movements or acknowledgements. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
+        "x-maqdar-scopes": [
+          "excess_disposition_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved evidence and live selection.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExcessDispositionHandoffBatchDetail"
                 }
               }
             }
@@ -9370,7 +9643,8 @@
                   "transfer_handoffs:read",
                   "transfer_handoffs:acknowledge",
                   "event_purchase_handoffs:read",
-                  "event_purchase_handoffs:acknowledge"
+                  "event_purchase_handoffs:acknowledge",
+                  "excess_disposition_handoffs:read"
                 ]
               }
             }
@@ -9835,7 +10109,8 @@
                     "transfer_handoffs:read",
                     "transfer_handoffs:acknowledge",
                     "event_purchase_handoffs:read",
-                    "event_purchase_handoffs:acknowledge"
+                    "event_purchase_handoffs:acknowledge",
+                    "excess_disposition_handoffs:read"
                   ]
                 }
               },
@@ -25517,6 +25792,1902 @@
               },
               "payload": {
                 "$ref": "#/components/schemas/EventPurchaseHandoffBatchPayload"
+              }
+            }
+          }
+        }
+      },
+      "DispositionHandoffSummary": {
+        "type": "object",
+        "required": [
+          "kind",
+          "location_code",
+          "item_code",
+          "currency",
+          "reference_value",
+          "cutoff",
+          "line_count",
+          "handoff_ids"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "supplier_return",
+              "scrap"
+            ]
+          },
+          "location_code": {
+            "type": "string"
+          },
+          "item_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Null for a batch; inspect its saved lines."
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "reference_value": {
+            "type": "string",
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "description": "Exact saved reference inventory value, with no currency rounding. Neither recovery proceeds nor an accounting write-off. Quantities remain separate in the saved lines."
+          },
+          "cutoff": {
+            "type": "string",
+            "format": "date"
+          },
+          "line_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "handoff_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Original member IDs. May overlap other batches; does not reserve quantity."
+          }
+        }
+      },
+      "DispositionHandoffSelection": {
+        "type": "object",
+        "required": [
+          "selection",
+          "checked_at"
+        ],
+        "properties": {
+          "selection": {
+            "type": "string",
+            "enum": [
+              "current",
+              "historical",
+              "unavailable"
+            ]
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Live selection at request time, separate from saved evidence. Current means every original member exists and remains selected; historical means at least one is superseded; unavailable means source context is missing. Missing members take precedence over historical members. This checks neither as-of evidence validity nor live stock availability, supplier eligibility or execution."
+      },
+      "DispositionHandoffRecord": {
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "summary",
+          "current"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/DispositionHandoffSummary"
+          },
+          "current": {
+            "$ref": "#/components/schemas/DispositionHandoffSelection"
+          }
+        }
+      },
+      "DispositionHandoffPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/DispositionHandoffRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Opaque cursor, or null at the end."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation-time upper bound fixed by the first page; not a transaction snapshot or status watermark."
+          }
+        }
+      },
+      "ExcessDispositionHandoffPayload": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "excess-disposition-handoff-v1"
+          },
+          "purpose": {
+            "type": "string",
+            "const": "planning_only"
+          },
+          "notice": {
+            "type": "string"
+          },
+          "handoff_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "created_by": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "proposal": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "revision": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "submitted_by": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "submitted_at": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "approved_by": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "approved_at": {
+                "type": "string"
+              },
+              "approval_reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "revision",
+              "submitted_by",
+              "submitted_at",
+              "reason",
+              "approved_by",
+              "approved_at",
+              "approval_reason"
+            ]
+          },
+          "assessment": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "submitted_by": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "as_of_confirmed": {
+                "type": "boolean",
+                "const": true
+              },
+              "fingerprint": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "id",
+              "submitted_by",
+              "created_at",
+              "reason",
+              "as_of_confirmed",
+              "fingerprint"
+            ]
+          },
+          "disposition": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "supplier_return",
+                  "scrap"
+                ]
+              },
+              "item_id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "item_code": {
+                "type": "string"
+              },
+              "location_id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "location_code": {
+                "type": "string"
+              },
+              "cutoff": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "quantity": {
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d+)?$"
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reference_value": {
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d+)?$"
+              },
+              "currency": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3
+              }
+            },
+            "required": [
+              "kind",
+              "item_id",
+              "item_code",
+              "location_id",
+              "location_code",
+              "cutoff",
+              "quantity",
+              "unit",
+              "reference_value",
+              "currency"
+            ]
+          },
+          "line": {
+            "type": "object",
+            "properties": {
+              "item_id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "comparison": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "available",
+                      "policy_unavailable",
+                      "prepared_group",
+                      "group_not_interchangeable",
+                      "date_mismatch",
+                      "policy_unit_unknown",
+                      "stock_missing",
+                      "stock_stale",
+                      "stock_unit_unknown",
+                      "unit_mismatch"
+                    ]
+                  },
+                  "policy_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                  },
+                  "run_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                  },
+                  "forecast_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                  },
+                  "item_code": {
+                    "type": "string"
+                  },
+                  "location_code": {
+                    "type": "string"
+                  },
+                  "day": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "cutoff": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "unit": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "unit_provenance": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "method": {
+                            "type": "string",
+                            "const": "source-units-v1"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "consistent",
+                              "unknown",
+                              "conflicting"
+                            ]
+                          },
+                          "unit": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "EA",
+                                  "SET",
+                                  "L",
+                                  "KG"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "rows": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "unknown_rows": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "units": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "EA",
+                                "SET",
+                                "L",
+                                "KG"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "method",
+                          "status",
+                          "unit",
+                          "rows",
+                          "unknown_rows",
+                          "units"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "basis": {
+                    "type": "string",
+                    "enum": [
+                      "calculated",
+                      "approved"
+                    ]
+                  },
+                  "override_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "revision": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "maximum": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^-?\\d+(\\.\\d+)?$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "quantity_above": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^-?\\d+(\\.\\d+)?$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "value_above": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^-?\\d+(\\.\\d+)?$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "snapshot": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                          },
+                          "date": {
+                            "type": "string",
+                            "format": "date",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          },
+                          "age": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "unit": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "quantity": {
+                            "type": "string",
+                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                          },
+                          "allocated": {
+                            "type": "string",
+                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                          },
+                          "available": {
+                            "type": "string",
+                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                          },
+                          "unit_cost": {
+                            "type": "string",
+                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                          },
+                          "currency": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "date",
+                          "updated_at",
+                          "age",
+                          "unit",
+                          "quantity",
+                          "allocated",
+                          "available",
+                          "unit_cost",
+                          "currency"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "pool": {
+                    "type": "object",
+                    "properties": {
+                      "available": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "inventory_values": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "currency": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string",
+                              "pattern": "^-?\\d+(\\.\\d+)?$"
+                            }
+                          },
+                          "required": [
+                            "currency",
+                            "value"
+                          ]
+                        }
+                      },
+                      "members": {
+                        "maxItems": 100,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "item_id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                            },
+                            "item_code": {
+                              "type": "string"
+                            },
+                            "unit_provenance": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "method": {
+                                      "type": "string",
+                                      "const": "source-units-v1"
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "enum": [
+                                        "consistent",
+                                        "unknown",
+                                        "conflicting"
+                                      ]
+                                    },
+                                    "unit": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "EA",
+                                            "SET",
+                                            "L",
+                                            "KG"
+                                          ]
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "rows": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "unknown_rows": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "units": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "enum": [
+                                          "EA",
+                                          "SET",
+                                          "L",
+                                          "KG"
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "method",
+                                    "status",
+                                    "unit",
+                                    "rows",
+                                    "unknown_rows",
+                                    "units"
+                                  ]
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "available",
+                                "stock_missing",
+                                "stock_stale",
+                                "stock_unit_unknown",
+                                "unit_mismatch"
+                              ]
+                            },
+                            "inventory_value": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^-?\\d+(\\.\\d+)?$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "snapshot": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                                    },
+                                    "date": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "updated_at": {
+                                      "type": "string"
+                                    },
+                                    "age": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "unit": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "quantity": {
+                                      "type": "string",
+                                      "pattern": "^-?\\d+(\\.\\d+)?$"
+                                    },
+                                    "allocated": {
+                                      "type": "string",
+                                      "pattern": "^-?\\d+(\\.\\d+)?$"
+                                    },
+                                    "available": {
+                                      "type": "string",
+                                      "pattern": "^-?\\d+(\\.\\d+)?$"
+                                    },
+                                    "unit_cost": {
+                                      "type": "string",
+                                      "pattern": "^-?\\d+(\\.\\d+)?$"
+                                    },
+                                    "currency": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "date",
+                                    "updated_at",
+                                    "age",
+                                    "unit",
+                                    "quantity",
+                                    "allocated",
+                                    "available",
+                                    "unit_cost",
+                                    "currency"
+                                  ]
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "item_id",
+                            "item_code",
+                            "unit_provenance",
+                            "status",
+                            "inventory_value",
+                            "snapshot"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "available",
+                      "inventory_values",
+                      "members"
+                    ]
+                  }
+                },
+                "required": [
+                  "status",
+                  "policy_id",
+                  "run_id",
+                  "forecast_id",
+                  "item_code",
+                  "location_code",
+                  "day",
+                  "cutoff",
+                  "unit",
+                  "unit_provenance",
+                  "basis",
+                  "override_id",
+                  "revision",
+                  "maximum",
+                  "quantity_above",
+                  "value_above",
+                  "snapshot"
+                ]
+              },
+              "policy": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  },
+                  "evidence": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "status",
+                  "summary",
+                  "evidence"
+                ]
+              },
+              "override": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                      },
+                      "revision": {
+                        "type": "number"
+                      },
+                      "submitted_by": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "decided_by": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                      },
+                      "decided_at": {
+                        "type": "string"
+                      },
+                      "decision_reason": {
+                        "type": "string"
+                      },
+                      "reorder_point": {
+                        "type": "string",
+                        "pattern": "^\\d+(\\.\\d+)?$"
+                      },
+                      "order_up_to": {
+                        "type": "string",
+                        "pattern": "^\\d+(\\.\\d+)?$"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "revision",
+                      "submitted_by",
+                      "reason",
+                      "decided_by",
+                      "decided_at",
+                      "decision_reason",
+                      "reorder_point",
+                      "order_up_to"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "item_id",
+              "comparison",
+              "policy",
+              "override"
+            ]
+          }
+        },
+        "required": [
+          "schema_version",
+          "purpose",
+          "notice",
+          "handoff_id",
+          "organization_id",
+          "created_by",
+          "created_at",
+          "proposal",
+          "assessment",
+          "disposition",
+          "line"
+        ]
+      },
+      "ExcessDispositionHandoffBatchPayload": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "excess-disposition-handoff-batch-v1"
+          },
+          "purpose": {
+            "type": "string",
+            "const": "planning_only"
+          },
+          "notice": {
+            "type": "string"
+          },
+          "batch_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "created_by": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "location_id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "location_code": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "supplier_return",
+                  "scrap"
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              },
+              "cutoff": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "line_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50
+              },
+              "reference_value": {
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d+)?$"
+              }
+            },
+            "required": [
+              "location_id",
+              "location_code",
+              "kind",
+              "currency",
+              "cutoff",
+              "line_count",
+              "reference_value"
+            ]
+          },
+          "lines": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "schema_version": {
+                  "type": "string",
+                  "const": "excess-disposition-handoff-v1"
+                },
+                "purpose": {
+                  "type": "string",
+                  "const": "planning_only"
+                },
+                "notice": {
+                  "type": "string"
+                },
+                "handoff_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                },
+                "organization_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "proposal": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "submitted_by": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "submitted_at": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "approved_by": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "approved_at": {
+                      "type": "string"
+                    },
+                    "approval_reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "revision",
+                    "submitted_by",
+                    "submitted_at",
+                    "reason",
+                    "approved_by",
+                    "approved_at",
+                    "approval_reason"
+                  ]
+                },
+                "assessment": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "submitted_by": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "as_of_confirmed": {
+                      "type": "boolean",
+                      "const": true
+                    },
+                    "fingerprint": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "submitted_by",
+                    "created_at",
+                    "reason",
+                    "as_of_confirmed",
+                    "fingerprint"
+                  ]
+                },
+                "disposition": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "supplier_return",
+                        "scrap"
+                      ]
+                    },
+                    "item_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "item_code": {
+                      "type": "string"
+                    },
+                    "location_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "location_code": {
+                      "type": "string"
+                    },
+                    "cutoff": {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                    },
+                    "quantity": {
+                      "type": "string",
+                      "pattern": "^\\d+(\\.\\d+)?$"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "reference_value": {
+                      "type": "string",
+                      "pattern": "^\\d+(\\.\\d+)?$"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 3
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "item_id",
+                    "item_code",
+                    "location_id",
+                    "location_code",
+                    "cutoff",
+                    "quantity",
+                    "unit",
+                    "reference_value",
+                    "currency"
+                  ]
+                },
+                "line": {
+                  "type": "object",
+                  "properties": {
+                    "item_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "comparison": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "available",
+                            "policy_unavailable",
+                            "prepared_group",
+                            "group_not_interchangeable",
+                            "date_mismatch",
+                            "policy_unit_unknown",
+                            "stock_missing",
+                            "stock_stale",
+                            "stock_unit_unknown",
+                            "unit_mismatch"
+                          ]
+                        },
+                        "policy_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                        },
+                        "run_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                        },
+                        "forecast_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                        },
+                        "item_code": {
+                          "type": "string"
+                        },
+                        "location_code": {
+                          "type": "string"
+                        },
+                        "day": {
+                          "type": "string",
+                          "format": "date",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                        },
+                        "cutoff": {
+                          "type": "string",
+                          "format": "date",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                        },
+                        "unit": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "unit_provenance": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "method": {
+                                  "type": "string",
+                                  "const": "source-units-v1"
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": [
+                                    "consistent",
+                                    "unknown",
+                                    "conflicting"
+                                  ]
+                                },
+                                "unit": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "EA",
+                                        "SET",
+                                        "L",
+                                        "KG"
+                                      ]
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "rows": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "unknown_rows": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "units": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "EA",
+                                      "SET",
+                                      "L",
+                                      "KG"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "method",
+                                "status",
+                                "unit",
+                                "rows",
+                                "unknown_rows",
+                                "units"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "basis": {
+                          "type": "string",
+                          "enum": [
+                            "calculated",
+                            "approved"
+                          ]
+                        },
+                        "override_id": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "revision": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "maximum": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^-?\\d+(\\.\\d+)?$"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "quantity_above": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^-?\\d+(\\.\\d+)?$"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "value_above": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^-?\\d+(\\.\\d+)?$"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "snapshot": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                                },
+                                "date": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "updated_at": {
+                                  "type": "string"
+                                },
+                                "age": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "unit": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "quantity": {
+                                  "type": "string",
+                                  "pattern": "^-?\\d+(\\.\\d+)?$"
+                                },
+                                "allocated": {
+                                  "type": "string",
+                                  "pattern": "^-?\\d+(\\.\\d+)?$"
+                                },
+                                "available": {
+                                  "type": "string",
+                                  "pattern": "^-?\\d+(\\.\\d+)?$"
+                                },
+                                "unit_cost": {
+                                  "type": "string",
+                                  "pattern": "^-?\\d+(\\.\\d+)?$"
+                                },
+                                "currency": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "date",
+                                "updated_at",
+                                "age",
+                                "unit",
+                                "quantity",
+                                "allocated",
+                                "available",
+                                "unit_cost",
+                                "currency"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "pool": {
+                          "type": "object",
+                          "properties": {
+                            "available": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^-?\\d+(\\.\\d+)?$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "inventory_values": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "currency": {
+                                    "type": "string"
+                                  },
+                                  "value": {
+                                    "type": "string",
+                                    "pattern": "^-?\\d+(\\.\\d+)?$"
+                                  }
+                                },
+                                "required": [
+                                  "currency",
+                                  "value"
+                                ]
+                              }
+                            },
+                            "members": {
+                              "maxItems": 100,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "item_id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                                  },
+                                  "item_code": {
+                                    "type": "string"
+                                  },
+                                  "unit_provenance": {
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "method": {
+                                            "type": "string",
+                                            "const": "source-units-v1"
+                                          },
+                                          "status": {
+                                            "type": "string",
+                                            "enum": [
+                                              "consistent",
+                                              "unknown",
+                                              "conflicting"
+                                            ]
+                                          },
+                                          "unit": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string",
+                                                "enum": [
+                                                  "EA",
+                                                  "SET",
+                                                  "L",
+                                                  "KG"
+                                                ]
+                                              },
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          },
+                                          "rows": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "unknown_rows": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "units": {
+                                            "type": "array",
+                                            "items": {
+                                              "type": "string",
+                                              "enum": [
+                                                "EA",
+                                                "SET",
+                                                "L",
+                                                "KG"
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        "required": [
+                                          "method",
+                                          "status",
+                                          "unit",
+                                          "rows",
+                                          "unknown_rows",
+                                          "units"
+                                        ]
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "available",
+                                      "stock_missing",
+                                      "stock_stale",
+                                      "stock_unit_unknown",
+                                      "unit_mismatch"
+                                    ]
+                                  },
+                                  "inventory_value": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^-?\\d+(\\.\\d+)?$"
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "snapshot": {
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                                          },
+                                          "date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                          },
+                                          "updated_at": {
+                                            "type": "string"
+                                          },
+                                          "age": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "unit": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ]
+                                          },
+                                          "quantity": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                                          },
+                                          "allocated": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                                          },
+                                          "available": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                                          },
+                                          "unit_cost": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d+(\\.\\d+)?$"
+                                          },
+                                          "currency": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "id",
+                                          "date",
+                                          "updated_at",
+                                          "age",
+                                          "unit",
+                                          "quantity",
+                                          "allocated",
+                                          "available",
+                                          "unit_cost",
+                                          "currency"
+                                        ]
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "item_id",
+                                  "item_code",
+                                  "unit_provenance",
+                                  "status",
+                                  "inventory_value",
+                                  "snapshot"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "available",
+                            "inventory_values",
+                            "members"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "policy_id",
+                        "run_id",
+                        "forecast_id",
+                        "item_code",
+                        "location_code",
+                        "day",
+                        "cutoff",
+                        "unit",
+                        "unit_provenance",
+                        "basis",
+                        "override_id",
+                        "revision",
+                        "maximum",
+                        "quantity_above",
+                        "value_above",
+                        "snapshot"
+                      ]
+                    },
+                    "policy": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "summary": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        },
+                        "evidence": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "summary",
+                        "evidence"
+                      ]
+                    },
+                    "override": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                            },
+                            "revision": {
+                              "type": "number"
+                            },
+                            "submitted_by": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                            },
+                            "reason": {
+                              "type": "string"
+                            },
+                            "decided_by": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                            },
+                            "decided_at": {
+                              "type": "string"
+                            },
+                            "decision_reason": {
+                              "type": "string"
+                            },
+                            "reorder_point": {
+                              "type": "string",
+                              "pattern": "^\\d+(\\.\\d+)?$"
+                            },
+                            "order_up_to": {
+                              "type": "string",
+                              "pattern": "^\\d+(\\.\\d+)?$"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "revision",
+                            "submitted_by",
+                            "reason",
+                            "decided_by",
+                            "decided_at",
+                            "decision_reason",
+                            "reorder_point",
+                            "order_up_to"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "item_id",
+                    "comparison",
+                    "policy",
+                    "override"
+                  ]
+                }
+              },
+              "required": [
+                "schema_version",
+                "purpose",
+                "notice",
+                "handoff_id",
+                "organization_id",
+                "created_by",
+                "created_at",
+                "proposal",
+                "assessment",
+                "disposition",
+                "line"
+              ]
+            }
+          }
+        },
+        "required": [
+          "schema_version",
+          "purpose",
+          "notice",
+          "batch_id",
+          "organization_id",
+          "created_by",
+          "created_at",
+          "summary",
+          "lines"
+        ]
+      },
+      "ExcessDispositionHandoffDetail": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "created_at",
+              "summary",
+              "current",
+              "payload"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "summary": {
+                "$ref": "#/components/schemas/DispositionHandoffSummary"
+              },
+              "current": {
+                "$ref": "#/components/schemas/DispositionHandoffSelection"
+              },
+              "payload": {
+                "$ref": "#/components/schemas/ExcessDispositionHandoffPayload"
+              }
+            }
+          }
+        }
+      },
+      "ExcessDispositionHandoffBatchDetail": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "created_at",
+              "summary",
+              "current",
+              "payload"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "summary": {
+                "$ref": "#/components/schemas/DispositionHandoffSummary"
+              },
+              "current": {
+                "$ref": "#/components/schemas/DispositionHandoffSelection"
+              },
+              "payload": {
+                "$ref": "#/components/schemas/ExcessDispositionHandoffBatchPayload"
               }
             }
           }

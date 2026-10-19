@@ -26,6 +26,7 @@ import {
 } from './resources'
 import { OPENAPI_DOCUMENT_VERSION, deprecationFor } from './versioning'
 import { handoffPaths, handoffSchemas } from './handoff-openapi'
+import { dispositionHandoffPaths, dispositionHandoffSchemas } from './disposition-handoff-openapi'
 import { eventHandoffPaths, eventHandoffSchemas } from './event-handoff-openapi'
 import { transferHandoffPaths, transferHandoffSchemas } from './transfer-handoff-openapi'
 import { acknowledgementPaths, acknowledgementSchemas } from './acknowledgement-openapi'
@@ -929,7 +930,13 @@ export function buildOpenApi(): OpenApiDocument {
     schemas[names.request] = requestSchema(entity)
     schemas[names.page] = pageSchema(entity)
   }
-  Object.assign(paths, handoffPaths(), transferHandoffPaths(), eventHandoffPaths())
+  Object.assign(
+    paths,
+    handoffPaths(),
+    transferHandoffPaths(),
+    eventHandoffPaths(),
+    dispositionHandoffPaths(),
+  )
   Object.assign(paths, acknowledgementPaths())
   Object.assign(
     schemas,
@@ -937,6 +944,7 @@ export function buildOpenApi(): OpenApiDocument {
     handoffSchemas(),
     transferHandoffSchemas(),
     eventHandoffSchemas(),
+    dispositionHandoffSchemas(),
     acknowledgementSchemas(),
   )
 
@@ -951,6 +959,11 @@ export function buildOpenApi(): OpenApiDocument {
     servers: [{ url: API_BASE_PATH }],
     security: [{ bearerAuth: [] }],
     tags: [
+      {
+        name: 'Disposition handoffs',
+        description:
+          'Original disposition evidence and exact reference inventory values, with separate live source context.',
+      },
       {
         name: 'Event purchase handoffs',
         description:

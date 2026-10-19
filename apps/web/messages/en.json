@@ -942,6 +942,11 @@
         "label": "Acknowledge event purchase handoffs",
         "description": "Record external receipt or rejection reports for event purchase handoffs and batches across the whole organization. Does not transmit packages or create orders.",
         "badge": "Event purchase handoffs: acknowledge"
+      },
+      "excessDispositionHandoffsRead": {
+        "label": "Read disposition handoffs",
+        "description": "Read saved disposition handoffs and batches across the whole organization, including retained evidence after source deletion. Does not create returns, write-offs or stock movements.",
+        "badge": "Disposition handoffs: read"
       }
     },
     "secret": {

@@ -14,6 +14,7 @@ import {
   isReadHandoffResource,
   isTransferHandoffResource,
   isEventHandoffResource,
+  isDispositionHandoffResource,
   type ReadHandoffResource,
   handoffIdSchema,
   handoffOperationId,
@@ -455,47 +456,61 @@ async function runOperation(
         )
       }
       const resource = operation.resource
-      const result = isEventHandoffResource(resource)
+      const result = isDispositionHandoffResource(resource)
         ? operation.id !== null
-          ? await deps.rpc('api_event_purchase_handoff_get', {
+          ? await deps.rpc('api_excess_disposition_handoff_get', {
               p_key_hash: keyHash,
               p_resource: resource,
               p_id: operation.id,
             })
-          : await deps.rpc('api_event_purchase_handoff_list', {
+          : await deps.rpc('api_excess_disposition_handoff_list', {
               p_key_hash: keyHash,
               p_resource: resource,
               p_limit: query.limit,
               p_after: query.cursor,
               p_created_since: query.createdSince,
             })
-        : isTransferHandoffResource(resource)
+        : isEventHandoffResource(resource)
           ? operation.id !== null
-            ? await deps.rpc('api_transfer_handoff_get', {
+            ? await deps.rpc('api_event_purchase_handoff_get', {
                 p_key_hash: keyHash,
                 p_resource: resource,
                 p_id: operation.id,
               })
-            : await deps.rpc('api_transfer_handoff_list', {
+            : await deps.rpc('api_event_purchase_handoff_list', {
                 p_key_hash: keyHash,
                 p_resource: resource,
                 p_limit: query.limit,
                 p_after: query.cursor,
                 p_created_since: query.createdSince,
               })
-          : operation.id !== null
-            ? await deps.rpc('api_handoff_get', {
-                p_key_hash: keyHash,
-                p_resource: resource,
-                p_id: operation.id,
-              })
-            : await deps.rpc('api_handoff_list', {
-                p_key_hash: keyHash,
-                p_resource: resource,
-                p_limit: query.limit,
-                p_after: query.cursor,
-                p_created_since: query.createdSince,
-              })
+          : isTransferHandoffResource(resource)
+            ? operation.id !== null
+              ? await deps.rpc('api_transfer_handoff_get', {
+                  p_key_hash: keyHash,
+                  p_resource: resource,
+                  p_id: operation.id,
+                })
+              : await deps.rpc('api_transfer_handoff_list', {
+                  p_key_hash: keyHash,
+                  p_resource: resource,
+                  p_limit: query.limit,
+                  p_after: query.cursor,
+                  p_created_since: query.createdSince,
+                })
+            : operation.id !== null
+              ? await deps.rpc('api_handoff_get', {
+                  p_key_hash: keyHash,
+                  p_resource: resource,
+                  p_id: operation.id,
+                })
+              : await deps.rpc('api_handoff_list', {
+                  p_key_hash: keyHash,
+                  p_resource: resource,
+                  p_limit: query.limit,
+                  p_after: query.cursor,
+                  p_created_since: query.createdSince,
+                })
       addDbTime(ctx, result.ms)
       if (!result.ok) return finish(ctx, problemOutcome(rpcProblem(ctx, result, requiredScope)))
       return finish(ctx, { kind: 'json', status: 200, body: result.text })

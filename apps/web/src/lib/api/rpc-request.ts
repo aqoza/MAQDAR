@@ -2,7 +2,12 @@ import type { Database } from '@maqdar/shared/database.types'
 import type { EntityName } from '../imports/contract'
 import type { RpcErrorLike } from '../rpc-errors'
 import type { KeyHash } from './keys'
-import type { HandoffResource, TransferHandoffResource, EventHandoffResource } from './handoffs'
+import type {
+  HandoffResource,
+  TransferHandoffResource,
+  EventHandoffResource,
+  DispositionHandoffResource,
+} from './handoffs'
 import type { AcknowledgementInput } from './acknowledgements'
 
 /**
@@ -14,6 +19,18 @@ import type { AcknowledgementInput } from './acknowledgements'
 
 /** The `api_*` RPCs of the `rest_api` migration and the arguments the Worker sends them. */
 export type ApiRpcArgs = {
+  api_excess_disposition_handoff_list: {
+    p_key_hash: KeyHash
+    p_resource: DispositionHandoffResource
+    p_after: string | null
+    p_limit: number
+    p_created_since: string | null
+  }
+  api_excess_disposition_handoff_get: {
+    p_key_hash: KeyHash
+    p_resource: DispositionHandoffResource
+    p_id: string
+  }
   api_event_purchase_handoff_acknowledge: {
     p_key_hash: KeyHash
     p_resource: EventHandoffResource
@@ -150,6 +167,8 @@ export type MissingApiRpcs = [GeneratedApiRpcName] extends [never]
   : Exclude<DeclaredApiRpcName, GeneratedApiRpcName>
 
 export const API_RPC_NAMES = [
+  'api_excess_disposition_handoff_list',
+  'api_excess_disposition_handoff_get',
   'api_event_purchase_handoff_acknowledge',
   'api_event_purchase_handoff_acknowledgements',
   'api_event_purchase_handoff_list',

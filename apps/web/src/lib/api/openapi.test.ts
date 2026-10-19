@@ -1,3 +1,5 @@
+import { handoffFixture as dispositionFixture } from '../excess-disposition-handoffs.fixture'
+import { batchFixture as dispositionBatchFixture } from '../excess-disposition-batches.fixture'
 import { ACKNOWLEDGEMENT_RESOURCES } from './acknowledgements'
 import { handoffFixture as eventHandoffFixture } from '../event-purchase-handoffs.fixture'
 import { batchFixture as eventBatchFixture } from '../event-handoff-batches.fixture'
@@ -240,17 +242,19 @@ describe('structure', () => {
       )
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
-        : path.startsWith('/event-purchase-handoff')
-          ? [
-              method === 'post'
-                ? 'event_purchase_handoffs:acknowledge'
-                : 'event_purchase_handoffs:read',
-            ]
-          : path.startsWith('/transfer-handoff')
-            ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
-            : path.startsWith('/purchase-handoff')
-              ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
-              : []
+        : path.startsWith('/excess-disposition-handoff')
+          ? ['excess_disposition_handoffs:read']
+          : path.startsWith('/event-purchase-handoff')
+            ? [
+                method === 'post'
+                  ? 'event_purchase_handoffs:acknowledge'
+                  : 'event_purchase_handoffs:read',
+              ]
+            : path.startsWith('/transfer-handoff')
+              ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
+              : path.startsWith('/purchase-handoff')
+                ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
+                : []
       expect(operation['x-maqdar-scopes'], operation.operationId).toEqual(scopes)
       expect(operation.deprecated === true).toBe(deprecationFor(operation.operationId) !== null)
     }
@@ -426,5 +430,35 @@ it('documents complete event evidence with independent read and acknowledgement 
     expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.get?.['x-maqdar-scopes']).toEqual([
       'event_purchase_handoffs:read',
     ])
+  }
+})
+
+it('documents exact disposition files, unavailable live context and read-only scope', () => {
+  expect(valid(schema('ExcessDispositionHandoffPayload'), dispositionFixture)).toBe(true)
+  expect(valid(schema('ExcessDispositionHandoffBatchPayload'), dispositionBatchFixture)).toBe(true)
+  expect(
+    valid(schema('ExcessDispositionHandoffPayload'), {
+      ...dispositionFixture,
+      disposition: { ...dispositionFixture.disposition, reference_value: 7.49925 },
+    }),
+  ).toBe(false)
+  for (const selection of ['current', 'historical', 'unavailable'])
+    expect(
+      valid(schema('DispositionHandoffSelection'), {
+        selection,
+        checked_at: '2026-10-19T00:00:00Z',
+      }),
+    ).toBe(true)
+  expect(
+    valid(schema('DispositionHandoffSelection'), {
+      selected: false,
+      checked_at: '2026-10-19T00:00:00Z',
+    }),
+  ).toBe(false)
+  for (const resource of ['excess-disposition-handoffs', 'excess-disposition-handoff-batches']) {
+    expect(doc.paths[`/${resource}`].get['x-maqdar-scopes']).toEqual([
+      'excess_disposition_handoffs:read',
+    ])
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]).toBeUndefined()
   }
 })

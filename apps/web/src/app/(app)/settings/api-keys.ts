@@ -21,6 +21,7 @@ export const SCOPE_MESSAGE_KEYS = {
   'transfer_handoffs:acknowledge': 'transferHandoffsAcknowledge',
   'event_purchase_handoffs:read': 'eventPurchaseHandoffsRead',
   'event_purchase_handoffs:acknowledge': 'eventPurchaseHandoffsAcknowledge',
+  'excess_disposition_handoffs:read': 'excessDispositionHandoffsRead',
 } as const satisfies Record<ApiScope, string>
 
 export type ScopeMessageKey = (typeof SCOPE_MESSAGE_KEYS)[ApiScope]

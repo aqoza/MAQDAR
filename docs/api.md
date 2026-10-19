@@ -20,6 +20,7 @@ An organization owner or administrator opens **Settings → API keys**, gives th
 | `transfer_handoffs:read`              | List and retrieve saved transfer handoffs and batches across the whole organization                             |
 | `event_purchase_handoffs:read`        | List and retrieve saved event purchase handoffs and batches across the whole organization                       |
 | `event_purchase_handoffs:acknowledge` | Append external received/rejected reports for saved event purchase handoffs and batches across the organization |
+| `excess_disposition_handoffs:read`    | List and retrieve saved disposition handoffs and copied batches across the whole organization                   |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -30,6 +31,8 @@ Send the key only in the `Authorization` header over HTTPS. Browser session cook
 ## Quick start
 
 For full adjusted selections and baseline comparisons, see [the event purchase handoff read API](event-handoff-read-api.md). It requires explicit `event_purchase_handoffs:read`; prior purchase/transfer scopes do not grant event access. Saved evidence is unchanged and live selection is separate.
+
+For disposition planning evidence, see [the disposition handoff read API](disposition-handoff-read-api.md). Its explicit `excess_disposition_handoffs:read` permission preserves exact reference inventory values and separate line quantities. Current, historical or unavailable source context stays outside the immutable payload; copied batches remain readable after source deletion. Existing permissions grant no disposition access. Browser location restrictions remain, and reads create no returns, write-offs or stock movements.
 
 For saved purchasing evidence, see [the handoff read API](handoff-read-api.md). It has separate creation-based pagination and an explicit permission; the transaction scopes do not include this access.
 
