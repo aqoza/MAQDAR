@@ -1,0 +1,109 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`freezes the v1 JSON and CSV contracts 1`] = `
+"{
+  "assessment": {
+    "as_of_confirmed": true,
+    "created_at": "2026-10-18T11:00:00Z",
+    "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "id": "a2000000-0000-4000-8000-000000000006",
+    "reason": "As-of stock review",
+    "submitted_by": "a2000000-0000-4000-8000-000000000003"
+  },
+  "created_at": "2026-10-19T03:00:00.000001Z",
+  "created_by": "a2000000-0000-4000-8000-000000000003",
+  "disposition": {
+    "currency": "KWD",
+    "cutoff": "2026-10-10",
+    "item_code": "ITEM-1",
+    "item_id": "a2000000-0000-4000-8000-000000000007",
+    "kind": "supplier_return",
+    "location_code": "DXB",
+    "location_id": "a2000000-0000-4000-8000-000000000008",
+    "quantity": "3.333",
+    "reference_value": "3.749625",
+    "unit": "EA"
+  },
+  "handoff_id": "a2000000-0000-4000-8000-000000000001",
+  "line": {
+    "comparison": {
+      "basis": "calculated",
+      "cutoff": "2026-10-10",
+      "day": "2026-10-10",
+      "forecast_id": "a2000000-0000-4000-8000-000000000011",
+      "item_code": "ITEM-1",
+      "location_code": "DXB",
+      "maximum": "10.001",
+      "override_id": null,
+      "policy_id": "a2000000-0000-4000-8000-000000000009",
+      "quantity_above": "18.000",
+      "revision": null,
+      "run_id": "a2000000-0000-4000-8000-000000000010",
+      "snapshot": {
+        "age": 0,
+        "allocated": "2.000",
+        "available": "28.001",
+        "currency": "KWD",
+        "date": "2026-10-10",
+        "id": "a2000000-0000-4000-8000-000000000012",
+        "quantity": "30.001",
+        "unit": "EA",
+        "unit_cost": "1.125",
+        "updated_at": "2026-10-10T12:00:00Z"
+      },
+      "status": "available",
+      "unit": "EA",
+      "unit_provenance": {
+        "method": "source-units-v1",
+        "rows": 1,
+        "status": "consistent",
+        "unit": "EA",
+        "units": [
+          "EA"
+        ],
+        "unknown_rows": 0
+      },
+      "value_above": "20.250000"
+    },
+    "item_id": "a2000000-0000-4000-8000-000000000007",
+    "override": null,
+    "policy": {
+      "evidence": {
+        "original_model": {
+          "decimals": [
+            "0.0001"
+          ],
+          "method": "baseline-v1"
+        }
+      },
+      "status": "available",
+      "summary": {
+        "protection": {
+          "target": "10.001"
+        }
+      }
+    }
+  },
+  "notice": "As-of disposition planning evidence only. Not a supplier return, scrap execution, stock reservation or accounting write-off. Reference value is not recovery proceeds.",
+  "organization_id": "a2000000-0000-4000-8000-000000000002",
+  "proposal": {
+    "approval_reason": "Independent review",
+    "approved_at": "2026-10-18T13:00:00Z",
+    "approved_by": "a2000000-0000-4000-8000-000000000005",
+    "id": "a2000000-0000-4000-8000-000000000004",
+    "reason": "Planned return",
+    "revision": 1,
+    "submitted_at": "2026-10-18T12:00:00Z",
+    "submitted_by": "a2000000-0000-4000-8000-000000000003"
+  },
+  "purpose": "planning_only",
+  "schema_version": "excess-disposition-handoff-v1"
+}
+"
+`;
+
+exports[`freezes the v1 JSON and CSV contracts 2`] = `
+"﻿"schema_version","purpose","notice","handoff_id","organization_id","created_at","created_by","proposal_id","proposal_revision","submitted_by","submitted_at","proposal_reason","approved_by","approved_at","approval_reason","assessment_id","assessment_reason","assessment_created_at","assessment_submitted_by","assessment_as_of_confirmed","assessment_fingerprint","disposition_kind","item_id","item_code","location_id","location_code","cutoff","quantity","unit","reference_inventory_value","currency","snapshot_unit_cost","snapshot_id","snapshot_date","snapshot_updated_at","snapshot_quantity","snapshot_allocated","snapshot_available","saved_quantity_above_maximum","selected_maximum","maximum_basis","policy_id","policy_run_id","forecast_id","override_id","override_revision","assessment_line_json"
+"excess-disposition-handoff-v1","planning_only","As-of disposition planning evidence only. Not a supplier return, scrap execution, stock reservation or accounting write-off. Reference value is not recovery proceeds.","a2000000-0000-4000-8000-000000000001","a2000000-0000-4000-8000-000000000002","2026-10-19T03:00:00.000001Z","a2000000-0000-4000-8000-000000000003","a2000000-0000-4000-8000-000000000004","1","a2000000-0000-4000-8000-000000000003","2026-10-18T12:00:00Z","Planned return","a2000000-0000-4000-8000-000000000005","2026-10-18T13:00:00Z","Independent review","a2000000-0000-4000-8000-000000000006","As-of stock review","2026-10-18T11:00:00Z","a2000000-0000-4000-8000-000000000003","true","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","supplier_return","a2000000-0000-4000-8000-000000000007","ITEM-1","a2000000-0000-4000-8000-000000000008","DXB","2026-10-10","3.333","EA","3.749625","KWD","1.125","a2000000-0000-4000-8000-000000000012","2026-10-10","2026-10-10T12:00:00Z","30.001","2.000","28.001","18.000","10.001","calculated","a2000000-0000-4000-8000-000000000009","a2000000-0000-4000-8000-000000000010","a2000000-0000-4000-8000-000000000011","","","{""comparison"":{""basis"":""calculated"",""cutoff"":""2026-10-10"",""day"":""2026-10-10"",""forecast_id"":""a2000000-0000-4000-8000-000000000011"",""item_code"":""ITEM-1"",""location_code"":""DXB"",""maximum"":""10.001"",""override_id"":null,""policy_id"":""a2000000-0000-4000-8000-000000000009"",""quantity_above"":""18.000"",""revision"":null,""run_id"":""a2000000-0000-4000-8000-000000000010"",""snapshot"":{""age"":0,""allocated"":""2.000"",""available"":""28.001"",""currency"":""KWD"",""date"":""2026-10-10"",""id"":""a2000000-0000-4000-8000-000000000012"",""quantity"":""30.001"",""unit"":""EA"",""unit_cost"":""1.125"",""updated_at"":""2026-10-10T12:00:00Z""},""status"":""available"",""unit"":""EA"",""unit_provenance"":{""method"":""source-units-v1"",""rows"":1,""status"":""consistent"",""unit"":""EA"",""units"":[""EA""],""unknown_rows"":0},""value_above"":""20.250000""},""item_id"":""a2000000-0000-4000-8000-000000000007"",""override"":null,""policy"":{""evidence"":{""original_model"":{""decimals"":[""0.0001""],""method"":""baseline-v1""}},""status"":""available"",""summary"":{""protection"":{""target"":""10.001""}}}}"
+"
+`;

@@ -500,6 +500,38 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"excess_disposition_handoffs": {
+                  Row: {
+                    "created_at": string,"created_by": string,"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"proposal_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"id"?: string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"proposal_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"proposal_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "excess_disposition_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "excess_disposition_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "excess_disposition_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "excess_disposition_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "excess_disposition_proposals"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"excess_disposition_proposals": {
                   Row: {
                     "assessment_id": string,"created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"decision_request_id": string | null,"id": string,"item_id": string,"kind": string,"line": NonNullable<Json>,"location_id": string,"organization_id": string,"quantity": number,"reason": string,"reference_value": number,"request_id": string,"revision": number,"status": string,"submitted_by": string
@@ -2059,6 +2091,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"excess_disposition_handoff_list": {
+                  Row: {
+                    "assessment_id": string | null,"created_at": string | null,"currency": string | null,"cutoff": string | null,"id": string | null,"item_code": string | null,"item_id": string | null,"kind": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"proposal_id": string | null,"quantity": string | null,"reference_value": string | null,"search_text": string | null,"selected": boolean | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "excess_disposition_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "excess_disposition_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "excess_disposition_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "excess_disposition_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "excess_disposition_proposals"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"excess_disposition_list": {
                   Row: {
                     "assessment_id": string | null,"created_at": string | null,"currency": string | null,"cutoff": string | null,"id": string | null,"item_code": string | null,"item_id": string | null,"kind": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"quantity": string | null,"reference_value": string | null,"revision": number | null,"search_text": string | null,"selected": boolean | null,"status": string | null,"unit": string | null
@@ -2796,6 +2854,9 @@ isOneToOne: false
                            },
 "excess_disposition_decide":
 { Args: { "p_decision": string,"p_organization_id": string,"p_proposal_id": string,"p_reason": string,"p_request_id": string }; Returns: string
+                           },
+"excess_disposition_handoff_create":
+{ Args: { "p_organization_id": string,"p_proposal_id": string }; Returns: string
                            },
 "excess_disposition_preview":
 { Args: { "p_assessment_id": string,"p_item_id": string,"p_organization_id": string }; Returns: Json

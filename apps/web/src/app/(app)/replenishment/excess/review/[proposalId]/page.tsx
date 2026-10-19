@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { PageHeader } from '@/components/page-header'
 import { ExcessDispositionHelp } from '@/components/excess-disposition-help'
 import { ExcessDispositionEvidence } from '@/components/excess-disposition-evidence'
+import { ExcessDispositionHandoffForm } from '@/components/excess-disposition-handoff-form'
 import { ExcessDispositionDecision } from '@/components/excess-disposition-forms'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
@@ -58,6 +59,15 @@ export default async function Disposition({ params }: { params: Promise<{ propos
       throw new Error('Disposition evidence unavailable')
     if (!current.error) matches = dispositionSourceSchema.parse(current.data).matches
   }
+  const handoff = await db
+    .from('excess_disposition_handoffs')
+    .select('id')
+    .eq('organization_id', context.active.id)
+    .eq('proposal_id', proposalId)
+    .maybeSingle()
+  if (handoff.error) throw new Error('Disposition handoff unavailable')
+  const ht = await getTranslations('ExcessDispositionHandoffs')
+  const editor = ['owner', 'admin', 'planner'].includes(context.active.role)
   const source = dispositionSourceSchema.parse({ ...row, matches, line: proposal.line })
   const withdrawal = proposal.submitted_by === context.userId
   const reviewer = ['owner', 'admin', 'approver'].includes(context.active.role)
@@ -134,6 +144,20 @@ export default async function Disposition({ params }: { params: Promise<{ propos
           {t('lineHistory')}
         </Link>
       </section>
+      {handoff.data ? (
+        <Link
+          className="inline-flex underline"
+          href={`/replenishment/excess/handoffs/${handoff.data.id}`}
+        >
+          {ht('open')}
+        </Link>
+      ) : row.selected && editor ? (
+        <NextIntlClientProvider
+          messages={{ ExcessDispositionHandoffs: messages.ExcessDispositionHandoffs }}
+        >
+          <ExcessDispositionHandoffForm organizationId={context.active.id} proposalId={row.id} />
+        </NextIntlClientProvider>
+      ) : null}
       <ExcessDispositionEvidence source={source} />
       {row.status === 'pending' && (
         <>
