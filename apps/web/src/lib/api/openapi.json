@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.1",
   "info": {
-    "title": "MAQDAR API",
+    "title": "ZeeSpare API",
     "version": "1.4.0",
-    "description": "Bulk upserts and lists of MAQDAR master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer maqdar_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read, excess_disposition_handoffs:acknowledge), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
+    "description": "Bulk upserts and lists of ZeeSpare master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer maqdar_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read, excess_disposition_handoffs:acknowledge), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
     "x-maqdar-import-format": 1
   },
   "servers": [
@@ -5460,7 +5460,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "maqdar_sk_…",
-        "description": "A MAQDAR API key. Operations list the scope they need in x-maqdar-scopes."
+        "description": "A ZeeSpare API key. Operations list the scope they need in x-maqdar-scopes."
       }
     },
     "parameters": {
@@ -10462,7 +10462,7 @@
               "null"
             ],
             "format": "uuid",
-            "description": "The import in MAQDAR history; null when nothing changed (not recorded)."
+            "description": "The import in ZeeSpare history; null when nothing changed (not recorded)."
           },
           "recorded": {
             "type": "boolean",
@@ -10635,7 +10635,7 @@
           },
           "demand_window": {
             "type": "object",
-            "description": "Demand dates MAQDAR accepts: from (inclusive) to until_exclusive.",
+            "description": "Demand dates ZeeSpare accepts: from (inclusive) to until_exclusive.",
             "properties": {
               "from": {
                 "type": "string",

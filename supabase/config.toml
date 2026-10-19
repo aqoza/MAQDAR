@@ -254,7 +254,7 @@ otp_expiry = 3600
 # a POST so link-scanning mail gateways cannot consume the one-time token. Mirror into the hosted
 # Dashboard by hand (the default hosted template is an implicit-flow link the app cannot complete).
 [auth.email.template.invite]
-subject = "You are invited to MAQDAR"
+subject = "You are invited to ZeeSpare"
 content_path = "./supabase/templates/invite.html"
 
 # Uncomment to customize notification email template
@@ -266,11 +266,11 @@ content_path = "./supabase/templates/invite.html"
 # Local sign-in emails link to /auth/confirm with a token hash (works for magic links and
 # first-time sign-ups). Mirror these templates into the hosted Dashboard by hand.
 [auth.email.template.magic_link]
-subject = "Sign in to MAQDAR"
+subject = "Sign in to ZeeSpare"
 content_path = "./supabase/templates/sign-in-link.html"
 
 [auth.email.template.confirmation]
-subject = "Sign in to MAQDAR"
+subject = "Sign in to ZeeSpare"
 content_path = "./supabase/templates/sign-in-link.html"
 
 [auth.sms]

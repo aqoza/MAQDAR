@@ -1,0 +1,24 @@
+{
+  "name": "ZeeSpare",
+  "domain": "https://zeespare.com",
+  "descriptor": "Service parts planning",
+  "tagline": "Service parts. Smarter plans.",
+  "colors": {
+    "forest": "#103E31",
+    "emerald": "#155C46",
+    "lime": "#C2F970",
+    "paper": "#F7F8F2",
+    "ink": "#172F27",
+    "muted": "#60736A"
+  },
+  "typography": {
+    "family": "Inter",
+    "arabic": "Noto Sans Arabic",
+    "wordmark": {
+      "weight": 650,
+      "tracking": "-0.045em"
+    }
+  },
+  "minimumMarkSizePx": 20,
+  "clearSpace": "At least one quarter of mark height on every side"
+}

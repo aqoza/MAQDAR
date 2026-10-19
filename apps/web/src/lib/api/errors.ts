@@ -38,7 +38,7 @@ export const REQUEST_ERROR_TEXT: Readonly<Record<RequestErrorCode, string>> = {
 /** English text per contract error and warning code (`import_errors.code`). */
 export const CONTRACT_ERROR_TEXT: Readonly<Record<string, string>> = {
   required: 'A value is required.',
-  required_for_new: 'New records need this field; send it, or create the record in MAQDAR first.',
+  required_for_new: 'New records need this field; send it, or create the record in ZeeSpare first.',
   too_long: 'The value is too long.',
   invalid_code:
     'Not a valid code: 1-64 letters, digits and . _ -, starting with a letter or digit.',
