@@ -72,3 +72,18 @@ def test_expected_organization_mismatch_fails_closed(monkeypatch):
     monkeypatch.setattr('maqdar_engine.scoped_worker.psycopg.connect', connector)
     assert main() == 1
     assert not any('claim' in c.args[0] for c in db.execute.call_args_list)
+
+
+def test_supervised_probe_exposes_health_but_never_claims(monkeypatch):
+    monkeypatch.setattr('sys.argv', ['maqdar-simulation-worker', '--probe'])
+    monkeypatch.setenv('MAQDAR_WORKER_DSN', 'host=127.0.0.1')
+    monkeypatch.setenv('MAQDAR_EXPECTED_ORGANIZATION', '00000000-0000-4000-8000-000000000001')
+    connector = MagicMock()
+    db = connector.return_value.__enter__.return_value
+    db.execute.return_value.fetchone.return_value = ('00000000-0000-4000-8000-000000000001',)
+    monkeypatch.setattr('maqdar_engine.scoped_worker.psycopg.connect', connector)
+    stopped = MagicMock()
+    stopped.is_set.side_effect = [False, True]
+    monkeypatch.setattr('maqdar_engine.scoped_worker.threading.Event', lambda: stopped)
+    assert main() == 0
+    assert not any('claim' in c.args[0] for c in db.execute.call_args_list)
