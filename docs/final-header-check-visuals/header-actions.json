@@ -1,0 +1,442 @@
+[
+  {
+    "locale": "en",
+    "route": "/replenishment/excess",
+    "width": 1280,
+    "height": 800,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess/new",
+    "width": 1280,
+    "height": 800,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess",
+    "width": 1366,
+    "height": 768,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess/new",
+    "width": 1366,
+    "height": 768,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess",
+    "width": 1440,
+    "height": 900,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess/new",
+    "width": 1440,
+    "height": 900,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess",
+    "width": 375,
+    "height": 900,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess/new",
+    "width": 375,
+    "height": 900,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess",
+    "width": 390,
+    "height": 844,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "route": "/replenishment/excess/new",
+    "width": 390,
+    "height": 844,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess",
+    "width": 1280,
+    "height": 800,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess/new",
+    "width": 1280,
+    "height": 800,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess",
+    "width": 1366,
+    "height": 768,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess/new",
+    "width": 1366,
+    "height": 768,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess",
+    "width": 1440,
+    "height": 900,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess/new",
+    "width": 1440,
+    "height": 900,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 38,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess",
+    "width": 375,
+    "height": 900,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess/new",
+    "width": 375,
+    "height": 900,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess",
+    "width": 390,
+    "height": 844,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "New assessment",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "route": "/replenishment/excess/new",
+    "width": 390,
+    "height": 844,
+    "actions": [
+      {
+        "label": "Disposition review",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      },
+      {
+        "label": "Saved assessments",
+        "height": 44,
+        "fontSize": "14px",
+        "lineHeight": "20px",
+        "fontFamily": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+      }
+    ]
+  }
+]

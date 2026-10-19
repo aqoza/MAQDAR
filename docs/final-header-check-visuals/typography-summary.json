@@ -1,0 +1,39 @@
+{
+  "baseRevision": "78555bd364321d604877dd1c7cff481a80649388",
+  "patch": "Remove the redundant ExcessStockHeader action wrapper so shared mobile link styles apply.",
+  "source": "Fresh Chromium production-build captures at normal browser zoom",
+  "typeCaptureFiles": 40,
+  "screenshots": 305,
+  "roles": {
+    "page-title": {
+      "samples": 40,
+      "styles": [["20px", "28px", "600"]]
+    },
+    "subtitle": {
+      "samples": 30,
+      "styles": [["14px", "20px", "400"]]
+    },
+    "navigation": {
+      "samples": 216,
+      "styles": [
+        ["14px", "20px", "400"],
+        ["14px", "20px", "500"]
+      ]
+    },
+    "evidence-value": {
+      "samples": 155,
+      "styles": [["16px", "24px", "600"]]
+    },
+    "method-caption": {
+      "samples": 65,
+      "styles": [["12px", "16px", "500"]]
+    },
+    "button": {
+      "samples": 15,
+      "styles": [["14px", "20px", "500"]]
+    }
+  },
+  "groupedHeaderObservations": 20,
+  "groupedHeaderLinks": 40,
+  "violations": []
+}

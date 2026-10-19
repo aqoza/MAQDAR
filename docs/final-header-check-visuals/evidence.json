@@ -1,0 +1,65 @@
+{
+  "contract": "design.MD: Items typography reference; page titles 20/28/600, body/navigation/actions 14/20, evidence values 16/24/600, captions 12/16. Continuous compact section artwork; mobile inputs 16/24 and controls at least 44px. Keep approved login exceptions, permissions, HTTP status and business semantics.",
+  "targetViewports": ["1280x800", "1366x768", "1440x900", "375x900", "390x844"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Focused regression asserts mobile target bounds and keyboard order in English and RTL. Existing suites exercise focus restoration, keyboard tabs, local table scrolling and reduced-motion loading. Rendered screenshots inspected for fit and readability; no palette change."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "Real local production build: English and Arabic list/create actions at all five target viewports; existing header, Dashboard and responsive planning suites cover desktop through mobile without hiding page overflow."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "Real throttled Imports/Settings loading retains the illustrated section header; reduced-motion loading remains static."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Empty Items, excess lists and no-stock Dashboard keep truthful empty/unavailable states."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "Existing malformed local policy fixture exercises error/retry/back; invalid item UUID preserves HTTP 404 and Items banner."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "Populated Dashboard shows scoped inventory/demand alongside truthful unavailable forecast risk."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Local RPC fixtures render approved transfer/purchase details and saved excess/disposition evidence; no production metrics are fabricated."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Settings viewer test verifies read-only fields, hidden administrative tools and safe deep-link fallback."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1280x800",
+      "artifact": "excess-header-list-en-1280.png",
+      "observation": "Laptop header uses compact shared title, sidebar and action roles."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "laptop-comparison.png",
+      "observation": "Dashboard, Items and transfer detail retain their documented roles and compact continuous artwork, including Arabic RTL."
+    },
+    {
+      "viewport": "1440x900",
+      "artifact": "excess-header-list-en-1440.png",
+      "observation": "Header links stay 14px/20px, with no page overflow."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "mobile-before-after.png",
+      "observation": "Direct actual before/after comparison: action targets grow from 38px to 44px while typography remains 14px/20px; RTL wrapping is preserved."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "excess-header-create-ar-390.png",
+      "observation": "Arabic-direction create view keeps 20px/28px title and readable 14px links with 44px targets."
+    }
+  ]
+}

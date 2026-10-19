@@ -12,6 +12,8 @@ Audit bases for the full header pass: `8a078f5`, then main `4707e36` including e
 
 ## Shared header and loading
 
+- `EXCESS-HEADER-001`: `excess-header.spec.ts` covers both grouped-action consumers (excess-stock list/create), shared 20px/28px titles and 14px/20px action text, locale font families, keyboard order, viewport bounds, and 44px mobile action targets. It checks 1280×800, 1366×768, 1440×900, 375×900 and 390×844 in English and Arabic RTL. The section-local fix changes only `ExcessStockHeader`'s action wrapper, with no shared CSS, navigation, loading or type-token change. Include `excess-stock.spec.ts` for preview/saved consumers and `excess-disposition.spec.ts` for the related review workflow, alongside the existing header/responsive/Dashboard/Settings suites. See [final-header-check.md](final-header-check.md).
+
 - Downstream consumers: master data; Forecasts; Imports; ordinary/event Replenishment and transfers; Settings/Audit.
 - Dependency evidence: `rg -n 'PageHeader|SectionLoading|PageHeaderArt' apps/web/src` and [the 117-route source inventory](header-consistency-visuals/routes.json). Master-data wrappers call ListScreen/EditScreen; the Forecasts workspace composes embedded section components under its existing banner.
 - Acceptance commands: `pnpm --filter web test -- src/components/page-header-contract.test.ts`, `pnpm typecheck`, `pnpm check:logical`. The browser ledger below also requires existing hidden-record HTTP 404 assertions; do not add ancestor streaming that changes them to HTTP 200.
