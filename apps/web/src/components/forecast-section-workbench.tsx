@@ -79,11 +79,16 @@ export async function PolicyWorkbench({
         title={t('title')}
         description={t('context')}
         actions={
-          !embedded ? (
-            <Link href="/forecasts" className="text-sm underline">
-              {t('planning')}
+          <>
+            {!embedded && (
+              <Link href="/forecasts" className="text-sm underline">
+                {t('planning')}
+              </Link>
+            )}
+            <Link href="/forecasts/simulations" className="underline">
+              {t('simulations')}
             </Link>
-          ) : undefined
+          </>
         }
         help={
           <HelpDisclosure>

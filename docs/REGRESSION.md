@@ -1,5 +1,9 @@
 # UI regression ledger
 
+## Mobile sidebar navigation
+
+- `MOBILE-NAV-001`: ordinary navigation and brand-link activation dismiss the mobile drawer, including the active route. Modified clicks retain the drawer and desktop navigation retains collapse state. Verify English and Arabic RTL with `pnpm --filter web test:e2e mobile-sidebar.spec.ts responsive-planning.spec.ts dashboard-reference.spec.ts` against loopback fixtures. The generated sidebar primitive and all tenant/permission queries remain unchanged. See [mobile-sidebar-navigation.md](mobile-sidebar-navigation.md).
+
 ## Dashboard metrics
 
 - Downstream consumers: the Dashboard metric strip and its currency disclosure. Other pages do not use these classes; shared type tokens and headers are unchanged.

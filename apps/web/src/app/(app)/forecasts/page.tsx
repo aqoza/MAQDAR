@@ -65,7 +65,7 @@ export default async function ForecastsPage() {
       run.locations?.code ||
       run.location_id
     const kind = t(
-      `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation' | 'policy'}`,
+      `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation' | 'policy' | 'simulation'}`,
     )
     const resultLink =
       run.kind === 'classification'
@@ -76,7 +76,9 @@ export default async function ForecastsPage() {
             ? { href: `/forecasts/results/${run.id}`, label: t('forecastResults') }
             : run.kind === 'policy'
               ? { href: `/forecasts/policies/${run.id}`, label: t('policyResults') }
-              : null
+              : run.kind === 'simulation'
+                ? { href: `/forecasts/simulations/${run.id}`, label: t('simulationResults') }
+                : null
     return {
       id: run.id,
       location,

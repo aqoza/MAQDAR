@@ -68,6 +68,11 @@ export default async function PolicyReview({
           </Link>
         }
         title={t('detailTitle', { item: row.item_code })}
+        actions={
+          <Link href={`/forecasts/simulations/new?policy=${policyId}`} className="underline">
+            {t('simulate')}
+          </Link>
+        }
         description={
           <>
             {row.location_code} · {row.to_date} · {row.unit ?? policy('itemUnits')}

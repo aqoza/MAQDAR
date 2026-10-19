@@ -1816,7 +1816,8 @@
       "classification": "Demand classification",
       "forecast": "Forecast baselines",
       "preparation": "Demand preparation",
-      "policy": "Inventory policy"
+      "policy": "Inventory policy",
+      "simulation": "Policy simulation"
     },
     "forecast": "Create forecast",
     "forecastResults": "View forecast results",
@@ -1864,7 +1865,8 @@
       "savedNote": "Saved as-of this run. Later imports are not included.",
       "canceledNote": "This run was canceled. No results were published.",
       "runId": "Run ID: {id}"
-    }
+    },
+    "simulationResults": "View simulation"
   },
   "Classification": {
     "title": "Classify demand",
@@ -2254,7 +2256,9 @@
     "compareRevision": "Compare stock using revision {revision}",
     "draftCalculated": "Draft replenishment with calculated maximum",
     "draftRevision": "Draft replenishment with revision {revision}",
-    "context": "Saved recommendations and review decisions"
+    "context": "Saved recommendations and review decisions",
+    "simulate": "Simulate policy",
+    "simulations": "Policy simulations"
   },
   "ForecastQuality": {
     "title": "Saved forecast quality",
@@ -4356,5 +4360,78 @@
     "selectionChanged": "A selected proposal has been replaced. Choose its current approved handoff.",
     "evidenceChanged": "A selected line’s as-of evidence changed. Create a new assessment and approval before batching it.",
     "unavailable": "The batch is unavailable. Check your access and selected handoffs."
+  },
+  "PolicySimulation": {
+    "title": "Policy simulations",
+    "description": "Compare fixed policies against recorded sold demand.",
+    "create": "Create policy simulation",
+    "history": "Simulation history",
+    "sourcePolicy": "Source policy",
+    "forecasts": "Forecasts",
+    "choosePolicy": "Choose a saved policy",
+    "empty": "No policy simulations yet. Choose a saved individual-item policy to begin.",
+    "toDate": "Replay through",
+    "opening_stock": "Opening available stock",
+    "alternative_maximum": "Alternative periodic maximum",
+    "history_confirmed": "I confirm this item/location has complete sold-demand history for the replay window; missing days may be treated as zero.",
+    "empty_start_confirmed": "I confirm both scenarios start with the entered available stock, no incoming orders and no backlog. This is a simulated starting state.",
+    "pending": "Queuing…",
+    "submit": "Queue simulation",
+    "readOnly": "Only owners, administrators and planners can queue simulations.",
+    "ineligible": "Choose an available individual-item policy with consistent saved demand units.",
+    "noCompletedDates": "No completed post-cutoff dates are available within this policy’s forecast horizon.",
+    "fixedInputs": "Cutoff {cutoff} · lead {lead} calendar days · review every {review} days · calculated maximum {maximum} {unit}",
+    "startingState": "Both scenarios start with {stock} {unit} available, no incoming orders and no backlog.",
+    "interpretation": "Recorded-sales replay only. Historical stock-outs may have suppressed sales; recorded lost sales are shown separately and are not added to demand. Results are not actual achieved service or future performance. No policy, stock, inbound or operational order is changed.",
+    "method": "At the start of each day, receive due simulated orders and serve older backlog first. Review on the first day and every saved review interval, ordering max(maximum − (stock + on-order − backlog), 0). Zero-lead orders arrive before that day’s demand; other orders arrive after the fixed calendar-day lead. Keep each maximum fixed, carry shortages as backlog, and assume unlimited supply. MOQ, packs, calendars and supply variability are excluded.",
+    "ratios": "Ledger quantities and metric totals are exact. Average closing stock and the immediate-fill fraction are rounded half-up to six decimal places; percentages are displayed to two decimals. Zero recorded demand has no fill fraction. No winner is selected automatically.",
+    "captured": "Captured {time}: {recorded} days with records and {missing} confirmed zero days.",
+    "comparison": "Recorded-sales comparison",
+    "metric": "Measure",
+    "maximum": "Periodic maximum",
+    "baseline": "Saved policy",
+    "alternative": "Alternative maximum",
+    "ledger": "{variant} — daily ledger",
+    "unavailable": "Unavailable",
+    "yes": "Yes",
+    "no": "No",
+    "location": "Location",
+    "window": "Replay window",
+    "status": "Status",
+    "inspect": "Inspect simulation",
+    "pagination": "Simulation pages",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}",
+    "metrics": {
+      "average_closing_stock": "Average closing stock",
+      "backlog_days": "Days ending with backlog",
+      "ending_backlog": "Ending backlog",
+      "ending_stock": "Ending available stock",
+      "ending_on_order": "Ending simulated on-order",
+      "immediate_fill_rate": "Recorded sales met immediately",
+      "sold_quantity": "Recorded sold quantity",
+      "immediate_fulfilled": "Quantity met immediately",
+      "lost_sales_quantity": "Recorded lost sales (separate)",
+      "ordered_quantity": "Simulated quantity ordered",
+      "received_quantity": "Simulated quantity received",
+      "order_count": "Simulated orders"
+    },
+    "columns": {
+      "date": "Date",
+      "review": "Review day",
+      "opening_stock": "Opening stock",
+      "receipts": "Receipts",
+      "backlog_fulfilled": "Older backlog served",
+      "order_quantity": "Ordered",
+      "order_due": "Order due",
+      "demand": "Recorded sold",
+      "lost_sales": "Lost sales (separate)",
+      "immediate_fulfilled": "Met immediately",
+      "new_backlog": "New backlog",
+      "closing_stock": "Closing stock",
+      "closing_backlog": "Closing backlog",
+      "closing_on_order": "Closing on-order"
+    }
   }
 }
