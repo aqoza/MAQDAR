@@ -13,6 +13,7 @@ export async function ExcessStockHeader({
 }) {
   const t = await getTranslations('ExcessStock')
   const ht = await getTranslations('ExcessDispositionHandoffs')
+  const it = await getTranslations('IntegrationWorkbench')
   return (
     <PageHeader
       pattern="replenishment"
@@ -40,6 +41,12 @@ export async function ExcessStockHeader({
       }
       actions={
         <>
+          <Link
+            className="rounded-md border bg-background px-3 py-2"
+            href="/replenishment/excess/integrations"
+          >
+            {it('dispositionLink')}
+          </Link>
           <Link
             className="rounded-md border bg-background px-3 py-2"
             href="/replenishment/excess/handoffs"

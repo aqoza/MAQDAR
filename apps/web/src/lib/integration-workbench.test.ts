@@ -3,6 +3,7 @@ import {
   integrationParams,
   integrationHref,
   integrationEvidenceHref,
+  dispositionIntegrationResultSchema,
 } from './integration-workbench'
 
 describe('integration workbench URL state', () => {
@@ -119,5 +120,96 @@ describe('event integration URL boundaries', () => {
     expect(integrationEvidenceHref({ kind: 'batch', id: 'two' }, 'event')).toBe(
       '/replenishment/events/batches/two#acknowledgements',
     )
+  })
+})
+
+describe('disposition integration boundaries', () => {
+  it('preserves intent, unavailable context and exact system identity without unrelated scopes', () => {
+    const params = integrationParams(
+      {
+        supplier: 'SUP',
+        source: 'SOURCE',
+        location: 'DC',
+        intent: 'scrap',
+        kind: 'batch',
+        selection: 'unavailable',
+        system: ' ERP /+?& العربية ',
+        status: 'no_report',
+      },
+      'disposition',
+    )
+    expect(params.filters).toEqual({
+      location: 'DC',
+      intent: 'scrap',
+      kind: 'batch',
+      selection: 'unavailable',
+      system: ' ERP /+?& العربية ',
+      status: 'no_report',
+    })
+    const url = new URL(integrationHref(params, 2, 'disposition'), 'https://example.com')
+    expect(url.pathname).toBe('/replenishment/excess/integrations')
+    expect(integrationParams(Object.fromEntries(url.searchParams), 'disposition')).toMatchObject({
+      page: 2,
+      filters: params.filters,
+    })
+    for (const family of ['purchase', 'event', 'transfer'] as const) {
+      expect(
+        integrationParams({ intent: 'scrap', selection: 'unavailable' }, family).filters,
+      ).toEqual({})
+    }
+    expect(
+      integrationParams({ intent: 'write_off', selection: 'selected' }, 'disposition').filters,
+    ).toEqual({})
+  })
+  it('opens the actual disposition package history', () => {
+    expect(integrationEvidenceHref({ kind: 'handoff', id: 'one' }, 'disposition')).toBe(
+      '/replenishment/excess/handoffs/one#acknowledgements',
+    )
+    expect(integrationEvidenceHref({ kind: 'batch', id: 'two' }, 'disposition')).toBe(
+      '/replenishment/excess/batches/two#acknowledgements',
+    )
+  })
+  it('keeps unavailable context independent of reported status', () => {
+    const row = {
+      id: '11111111-1111-4111-8111-111111111111',
+      kind: 'batch',
+      created_at: '2026-10-19',
+      item_code: null,
+      location_code: 'DC',
+      line_count: 2,
+      disposition_kind: 'supplier_return',
+      selection: 'unavailable',
+      event_id: null,
+      external_system: 'ERP',
+      external_reference: null,
+      status: 'no_report',
+      reason: null,
+      recorded_at: null,
+      api_key_id: null,
+      client_event_id: null,
+    }
+    const result = { total: 1, page: 1, size: 25, as_of: '2026-10-19', rows: [row] }
+    expect(dispositionIntegrationResultSchema.parse(result).rows[0]).toMatchObject({
+      selection: 'unavailable',
+      status: 'no_report',
+    })
+    for (const status of ['received', 'rejected']) {
+      expect(
+        dispositionIntegrationResultSchema.safeParse({ ...result, rows: [{ ...row, status }] })
+          .success,
+      ).toBe(true)
+    }
+    expect(
+      dispositionIntegrationResultSchema.safeParse({
+        ...result,
+        rows: [{ ...row, selection: undefined, selected: false }],
+      }).success,
+    ).toBe(false)
+    expect(
+      dispositionIntegrationResultSchema.safeParse({
+        ...result,
+        rows: [{ ...row, status: 'failed' }],
+      }).success,
+    ).toBe(false)
   })
 })

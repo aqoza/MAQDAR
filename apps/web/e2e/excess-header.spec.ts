@@ -61,6 +61,7 @@ test('excess header actions preserve shared typography and mobile targets', asyn
         })
         const actions = banner.locator('.page-actions a')
         for (const href of [
+          '/replenishment/excess/integrations',
           '/replenishment/excess/handoffs',
           '/replenishment/excess/review',
           route.endsWith('/new') ? '/replenishment/excess' : '/replenishment/excess/new',

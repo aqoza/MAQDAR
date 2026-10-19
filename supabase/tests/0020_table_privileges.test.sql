@@ -463,6 +463,7 @@ select set_eq(
     ('public.handoff_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.transfer_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.event_purchase_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
+    ('public.excess_disposition_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.stock_locator(uuid, text, text, text, date, jsonb, integer, integer)', 'authenticated'),
     ('public.transfer_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.transfer_proposal_submit(uuid, uuid, uuid, text)', 'authenticated'),

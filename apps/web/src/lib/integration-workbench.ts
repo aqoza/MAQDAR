@@ -47,9 +47,42 @@ export const transferIntegrationListSpec: ListSpec = {
   ),
 }
 
-export type IntegrationFamily = 'purchase' | 'transfer' | 'event'
+export const dispositionIntegrationListSpec: ListSpec = {
+  ...integrationListSpec,
+  filters: [
+    ...integrationListSpec
+      .filters!.filter((filter) => filter.param !== 'supplier')
+      .map((filter) =>
+        filter.param === 'selection'
+          ? { ...filter, values: ['current', 'historical', 'unavailable'] }
+          : filter,
+      ),
+    {
+      param: 'intent',
+      column: 'disposition_kind',
+      kind: 'enum',
+      values: ['supplier_return', 'scrap'],
+    },
+  ],
+}
+
+export type IntegrationFamily = 'purchase' | 'transfer' | 'event' | 'disposition'
+
+function integrationSpec(family: IntegrationFamily) {
+  if (family === 'disposition') return dispositionIntegrationListSpec
+  if (family === 'transfer') return transferIntegrationListSpec
+  return integrationListSpec
+}
 
 export const integrationFamilies = {
+  disposition: {
+    prefix: 'excess/',
+    rpc: 'excess_disposition_integration_workbench',
+    title: 'dispositionTitle',
+    context: 'dispositionContext',
+    navigation: 'excess',
+    link: 'dispositionLink',
+  },
   purchase: {
     prefix: '',
     rpc: 'handoff_integration_workbench',
@@ -84,8 +117,7 @@ export function integrationParams(
   raw: RawSearchParams,
   family: IntegrationFamily = 'purchase',
 ): ListParams {
-  const transfer = family === 'transfer'
-  const parsed = parseListParams(raw, transfer ? transferIntegrationListSpec : integrationListSpec)
+  const parsed = parseListParams(raw, integrationSpec(family))
   const filters = Object.fromEntries(
     Object.entries(parsed.filters).filter(([key]) => key !== 'system'),
   )
@@ -108,13 +140,7 @@ export function integrationHref(
   page: number,
   family: IntegrationFamily = 'purchase',
 ) {
-  const transfer = family === 'transfer'
-  return listHref(
-    integrationPath(family),
-    transfer ? transferIntegrationListSpec : integrationListSpec,
-    params,
-    { page },
-  )
+  return listHref(integrationPath(family), integrationSpec(family), params, { page })
 }
 
 export const integrationResultSchema = z.object({
@@ -159,6 +185,19 @@ export const transferIntegrationResultSchema = integrationResultSchema.extend({
 export const eventIntegrationResultSchema = integrationResultSchema.extend({
   rows: z
     .array(integrationResultSchema.shape.rows.element.extend({ event_name: z.string().nullable() }))
+    .max(100),
+})
+
+export const dispositionIntegrationResultSchema = integrationResultSchema.extend({
+  rows: z
+    .array(
+      integrationResultSchema.shape.rows.element
+        .omit({ supplier_code: true, selected: true })
+        .extend({
+          disposition_kind: z.enum(['supplier_return', 'scrap']),
+          selection: z.enum(['current', 'historical', 'unavailable']),
+        }),
+    )
     .max(100),
 })
 

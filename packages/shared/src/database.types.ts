@@ -2992,6 +2992,9 @@ isOneToOne: false
 "excess_disposition_handoff_create":
 { Args: { "p_organization_id": string,"p_proposal_id": string }; Returns: string
                            },
+"excess_disposition_integration_workbench":
+{ Args: { "p_filters"?: Json,"p_organization_id": string,"p_page"?: number,"p_size"?: number }; Returns: Json
+                           },
 "excess_disposition_preview":
 { Args: { "p_assessment_id": string,"p_item_id": string,"p_organization_id": string }; Returns: Json
                            },

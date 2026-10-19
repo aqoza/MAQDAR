@@ -16,6 +16,7 @@ import {
   integrationPath,
   integrationFamilies,
   eventIntegrationResultSchema,
+  dispositionIntegrationResultSchema,
   type IntegrationFamily,
 } from '@/lib/integration-workbench'
 
@@ -27,6 +28,7 @@ export async function IntegrationWorkbenchScreen({
   family?: IntegrationFamily
 }) {
   const transfer = family === 'transfer'
+  const disposition = family === 'disposition'
   const configuration = integrationFamilies[family]
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
@@ -44,11 +46,13 @@ export async function IntegrationWorkbenchScreen({
   })
   if (response.error) throw new Error('Integration workbench unavailable')
   const result = (
-    family === 'event'
-      ? eventIntegrationResultSchema
-      : transfer
-        ? transferIntegrationResultSchema
-        : integrationResultSchema
+    disposition
+      ? dispositionIntegrationResultSchema
+      : family === 'event'
+        ? eventIntegrationResultSchema
+        : transfer
+          ? transferIntegrationResultSchema
+          : integrationResultSchema
   ).parse(response.data)
   if (result.page !== params.page) redirect(integrationHref(params, result.page, family))
   const pages = lastPage(result.total, result.size)
@@ -68,6 +72,22 @@ export async function IntegrationWorkbenchScreen({
               {t(integrationFamilies[other].link)}
             </Link>
           ))}
+        {disposition && (
+          <>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/excess/handoffs"
+            >
+              {t('dispositionHandoffs')}
+            </Link>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/excess/batches"
+            >
+              {t('dispositionBatches')}
+            </Link>
+          </>
+        )}
         {family === 'event' && (
           <>
             <Link
@@ -101,10 +121,13 @@ export async function IntegrationWorkbenchScreen({
         key={JSON.stringify(params)}
       >
         <label className="col-span-2 grid min-w-0 grid-rows-[1fr_auto] gap-1 sm:col-span-1">
-          {t(family === 'event' ? 'eventSearch' : 'search')}
+          {t(disposition ? 'dispositionSearch' : family === 'event' ? 'eventSearch' : 'search')}
           <input name="q" maxLength={100} defaultValue={params.q} className={inputClass} />
         </label>
-        {([transfer ? 'source' : 'supplier', 'location', 'system'] as const).map((field) => (
+        {(disposition
+          ? (['location', 'system'] as const)
+          : ([transfer ? 'source' : 'supplier', 'location', 'system'] as const)
+        ).map((field) => (
           <label
             className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'system' ? 'col-span-2 sm:col-span-1' : ''}`}
             key={field}
@@ -129,7 +152,13 @@ export async function IntegrationWorkbenchScreen({
         {(
           [
             ['kind', ['handoff', 'batch']],
-            ['selection', ['current', 'historical']],
+            [
+              'selection',
+              disposition
+                ? (['current', 'historical', 'unavailable'] as const)
+                : (['current', 'historical'] as const),
+            ],
+            ...(disposition ? [['intent', ['supplier_return', 'scrap']] as const] : []),
             ['status', ['received', 'rejected', 'no_report']],
           ] as const
         ).map(([field, values]) => (
@@ -137,7 +166,7 @@ export async function IntegrationWorkbenchScreen({
             className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'status' ? 'col-span-2 sm:col-span-1' : ''}`}
             key={field}
           >
-            {t(field)}
+            {t(disposition && field === 'selection' ? 'liveContext' : field)}
             <select name={field} defaultValue={params.filters[field] ?? ''} className={inputClass}>
               <option value="">{t('all')}</option>
               {values.map((value) => (
@@ -181,8 +210,12 @@ export async function IntegrationWorkbenchScreen({
               {(
                 [
                   'package',
-                  transfer ? 'sourceDestination' : 'supplierLocation',
-                  'selection',
+                  disposition
+                    ? 'intentLocation'
+                    : transfer
+                      ? 'sourceDestination'
+                      : 'supplierLocation',
+                  disposition ? 'liveContext' : 'selection',
                   'reportedBy',
                   'latestReport',
                   'inspect',
@@ -224,11 +257,17 @@ export async function IntegrationWorkbenchScreen({
                 </th>
                 <td className="p-3">
                   <p className="max-w-48 break-words">
-                    {'source_code' in row ? row.source_code : row.supplier_code}
+                    {'disposition_kind' in row
+                      ? t(row.disposition_kind)
+                      : 'source_code' in row
+                        ? row.source_code
+                        : row.supplier_code}
                   </p>
                   <p className="max-w-48 break-words text-muted-foreground">{row.location_code}</p>
                 </td>
-                <td className="p-3">{t(row.selected ? 'current' : 'historical')}</td>
+                <td className="p-3">
+                  {t('selection' in row ? row.selection : row.selected ? 'current' : 'historical')}
+                </td>
                 <td className="min-w-40 p-3">
                   <p className="max-w-56 whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
                     {row.external_system ?? t('noSystem')}
