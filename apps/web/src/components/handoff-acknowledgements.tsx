@@ -4,6 +4,24 @@ import { createClient } from '@/lib/supabase/server'
 import { HelpDisclosure } from '@/components/help-disclosure'
 
 const PAGE_SIZE = 20
+const FAMILIES = {
+  purchase: { table: 'purchase_handoff_acknowledgements', prefix: '', meaning: 'meaning' },
+  transfer: {
+    table: 'transfer_handoff_acknowledgements',
+    prefix: 'redistribution/',
+    meaning: 'transferMeaning',
+  },
+  event: {
+    table: 'event_purchase_handoff_acknowledgements',
+    prefix: 'events/',
+    meaning: 'eventMeaning',
+  },
+  disposition: {
+    table: 'excess_disposition_handoff_acknowledgements',
+    prefix: 'excess/',
+    meaning: 'dispositionMeaning',
+  },
+} as const
 
 export async function HandoffAcknowledgements({
   organizationId,
@@ -15,7 +33,7 @@ export async function HandoffAcknowledgements({
   organizationId: string
   recordId: string
   batch?: boolean
-  kind?: 'purchase' | 'transfer' | 'event'
+  kind?: keyof typeof FAMILIES
   pageValue?: string | string[]
 }) {
   const page =
@@ -25,14 +43,9 @@ export async function HandoffAcknowledgements({
     getTranslations('HandoffAcknowledgements'),
     getFormatter(),
   ])
+  const family = FAMILIES[kind]
   const result = await db
-    .from(
-      kind === 'event'
-        ? 'event_purchase_handoff_acknowledgements'
-        : kind === 'transfer'
-          ? 'transfer_handoff_acknowledgements'
-          : 'purchase_handoff_acknowledgements',
-    )
+    .from(family.table)
     .select(
       'id,client_event_id,api_key_id,recorded_at,external_system,external_reference,status,reason',
       { count: 'exact' },
@@ -43,7 +56,7 @@ export async function HandoffAcknowledgements({
     .order('id')
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1)
   if (result.error) throw new Error('Acknowledgement history unavailable')
-  const base = `/replenishment/${kind === 'event' ? 'events/' : kind === 'transfer' ? 'redistribution/' : ''}${batch ? 'batches' : 'handoffs'}/${recordId}`
+  const base = `/replenishment/${family.prefix}${batch ? 'batches' : 'handoffs'}/${recordId}`
   return (
     <section id="acknowledgements" className="space-y-3 workspace-panel" aria-label={t('title')}>
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -53,11 +66,7 @@ export async function HandoffAcknowledgements({
         </span>
       </div>
       <HelpDisclosure>
-        <p>
-          {t(
-            kind === 'event' ? 'eventMeaning' : kind === 'transfer' ? 'transferMeaning' : 'meaning',
-          )}
-        </p>
+        <p>{t(family.meaning)}</p>
         <p>{t(batch ? 'batchNote' : 'singleNote')}</p>
       </HelpDisclosure>
       {!result.data?.length && <p className="text-muted-foreground">{t('empty')}</p>}

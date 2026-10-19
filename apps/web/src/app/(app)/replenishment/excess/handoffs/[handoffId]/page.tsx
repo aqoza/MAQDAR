@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -13,10 +14,17 @@ import { formatCostDecimal } from '@/lib/purchase-costs'
 export async function generateMetadata() {
   return { title: (await getTranslations('ExcessDispositionHandoffs'))('title') }
 }
-export default async function Handoff({ params }: { params: Promise<{ handoffId: string }> }) {
+export default async function Handoff({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ handoffId: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
+}) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { handoffId } = await params
+  const query = await searchParams
   if (!z.guid().safeParse(handoffId).success) notFound()
   const [db, t, dt, format, locale] = await Promise.all([
     createClient(),
@@ -130,6 +138,12 @@ export default async function Handoff({ params }: { params: Promise<{ handoffId:
         <p role="status">{t(current.data.selected ? 'current' : 'historical')}</p>
         <p className="text-xs text-muted-foreground">{t('selectionNote')}</p>
       </section>
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={handoffId}
+        kind="disposition"
+        pageValue={query.ack_page}
+      />
       <ExcessDispositionEvidence
         source={{
           assessment_id: p.assessment.id,

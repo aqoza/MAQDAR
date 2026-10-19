@@ -173,9 +173,10 @@ with psycopg.connect(sys.argv[1]) as db:
   }
   for (const path of [`${api}/${ids[0]}`, `${batches}/${batch}`]) {
     const reports = await request.get(`${path}/acknowledgements`, { headers })
-    expect(reports.status()).toBe(404)
+    expect(reports.status()).toBe(200)
+    expect((await reports.json()).data).toEqual([])
     expect((await request.post(`${path}/acknowledgements`, { headers, data: {} })).status()).toBe(
-      404,
+      403,
     )
   }
   const orgResponse = await request.get('/api/v1/organization', { headers })

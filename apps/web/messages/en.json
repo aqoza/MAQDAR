@@ -947,6 +947,11 @@
         "label": "Read disposition handoffs",
         "description": "Read saved disposition handoffs and batches across the whole organization, including retained evidence after source deletion. Does not create returns, write-offs or stock movements.",
         "badge": "Disposition handoffs: read"
+      },
+      "excessDispositionHandoffsAcknowledge": {
+        "label": "Acknowledge disposition handoffs",
+        "description": "Record external receipt or rejection reports for saved disposition handoffs and batches across the whole organization, including retained batches after source deletion. Does not create returns, write-offs or stock movements.",
+        "badge": "Disposition: acknowledge"
       }
     },
     "secret": {
@@ -2972,7 +2977,8 @@
     "next": "Older reports",
     "page": "Page {page}",
     "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when MAQDAR saved the report.",
-    "eventMeaning": "Reports are supplied by an integration key holder. They do not verify external acceptance or create orders. Full adjusted selections, baseline comparisons and event evidence remain unchanged."
+    "eventMeaning": "Reports are supplied by an integration key holder. They do not verify external acceptance or create orders. Full adjusted selections, baseline comparisons and event evidence remain unchanged.",
+    "dispositionMeaning": "Reports are supplied by an integration key holder. They do not verify supplier acceptance, create returns, authorize scrap, write off inventory or move stock. Saved quantities and reference inventory values remain unchanged. Reports on copied batches remain available after source handoffs are deleted."
   },
   "TransferDates": {
     "title": "Transfer date scenarios",
