@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Final merged-header check — requested 2026-10-19
+
+Verify current merged main at 13-inch laptop and mobile CSS viewports in English and Arabic RTL. Correct the confirmed 38px mobile excess-stock header actions by using the existing `PageHeader` action container and 44px target styles. Keep the shared type scale, approved login exceptions, routes and planning semantics. Record fresh screenshots and checks, then open a PR without deployment. See [final-header-check.md](final-header-check.md).
+
 ## Merged header and type verification — requested 2026-10-19
 
 Verify merged headers and shared Items typography at laptop/mobile widths and Arabic RTL. Include the subsequently merged Dashboard wrapping and excess-stock screens. Keep currency-specific assessment totals on `text-evidence-value`, with explicit 1366×768 and mobile/RTL browser coverage. Preserve business rules and the existing header architecture; open a reviewable PR without deployment. See [merged-header-verification.md](merged-header-verification.md).

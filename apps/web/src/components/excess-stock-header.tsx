@@ -38,7 +38,7 @@ export async function ExcessStockHeader({
         </HelpSidePanel>
       }
       actions={
-        <div className="flex flex-wrap gap-3">
+        <>
           <Link
             className="rounded-md border bg-background px-3 py-2"
             href="/replenishment/excess/review"
@@ -51,7 +51,7 @@ export async function ExcessStockHeader({
           >
             {t(create ? 'new' : 'history')}
           </Link>
-        </div>
+        </>
       }
     />
   )
