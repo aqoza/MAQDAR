@@ -32,6 +32,7 @@ def scoped(dsn):
     runtime = make_conninfo(dsn, user=role, password=password)
     yield dict(dsn=dsn, runtime=runtime, org=org, foreign=foreign, location=location, other_location=other_location, role=role)
     with psycopg.connect(dsn, autocommit=True) as db:
+        db.execute("update public.planning_runs set status='canceled',finished_at=now() where organization_id=any(%s) and status in ('queued','running')", ([org, foreign],))
         db.execute('delete from planning.simulation_worker_scopes where organization_id=%s', (org,))
         for table in ('q_planning', 'a_planning'):
             db.execute(sql.SQL("delete from pgmq.{} where message->>'run_id' in (select id::text from public.planning_runs where organization_id=any(%s))").format(sql.Identifier(table)), ([org, foreign],))
