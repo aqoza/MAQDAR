@@ -188,3 +188,16 @@ it('retains configuration inputs and hides database errors after rejection', asy
   expect(result.values?.configurations).toBe(input.get('configurations'))
   expect(mocks.redirect).not.toHaveBeenCalled()
 })
+it('uses simulation-specific guidance for configuration queue and retry conflicts', async () => {
+  mocks.rpc.mockResolvedValue({ error: { code: 'MQ409', message: 'private conflict detail' } })
+  const input = configurationsForm()
+  const result = await enqueueConfigurations(idleState, input)
+  expect(result).toMatchObject({
+    status: 'error',
+    code: 'MQ409',
+    message: 'Check simulation history before trying again.',
+  })
+  expect(result.values?.configurations).toBe(input.get('configurations'))
+  expect(mocks.t).toHaveBeenCalledWith('conflict')
+  expect(mocks.redirect).not.toHaveBeenCalled()
+})

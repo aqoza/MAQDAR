@@ -93,7 +93,13 @@ export async function enqueueConfigurations(
     p_configurations: parsed.data.configurations,
     p_reuse_confirmed: true,
   })
-  if (error) return { ...(await rpcErrorState(error)), values }
+  if (error) {
+    if (error.code === 'MQ409') {
+      const t = await getTranslations('PolicySimulation')
+      return { status: 'error', code: error.code, message: t('conflict'), values }
+    }
+    return { ...(await rpcErrorState(error)), values }
+  }
   revalidatePath('/forecasts')
   revalidatePath('/forecasts/simulations')
   redirect(`/forecasts/simulations/${data}`)
