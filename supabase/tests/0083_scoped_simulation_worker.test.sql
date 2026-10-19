@@ -20,9 +20,7 @@ select ok(has_function_privilege('maqdar_simulation_worker','app.scoped_simulati
 select ok(has_function_privilege('maqdar_simulation_worker','app.scoped_simulation_task(uuid,uuid)','EXECUTE'),'scoped task granted');
 select ok(has_function_privilege('maqdar_simulation_worker','app.scoped_simulation_finish(uuid,uuid,jsonb)','EXECUTE'),'scoped publication granted');
 select ok(has_function_privilege('maqdar_simulation_worker','app.scoped_simulation_fail(uuid,uuid)','EXECUTE'),'scoped failure granted');
-set local role maqdar_simulation_worker;
-select throws_ok($$select app.scoped_simulation_identity()$$,'42501',null,'SET ROLE without a bound session_user grants no tenant');
-reset role;
+select throws_ok($$select app.scoped_simulation_identity()$$,'42501',null,'an unbound session_user grants no tenant');
 select ok(not has_function_privilege('anon','app.scoped_simulation_claim()','EXECUTE'),'anonymous cannot claim');
 select ok(not has_function_privilege('authenticated','app.scoped_simulation_claim()','EXECUTE'),'browser cannot claim');
 select ok(not has_function_privilege('service_role','app.scoped_simulation_claim()','EXECUTE'),'web service cannot claim');

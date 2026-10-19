@@ -181,19 +181,23 @@ def test_real_scoped_python_worker_publishes_one_immutable_result(scoped):
         assert db.execute('select count(*) from planning.leases where run_id=%s', (target,)).fetchone()[0] == 0
 
 
-def test_scoped_sensitivity_uses_same_identity_and_publication(scoped):
-    from test_policy_sensitivity import task as sensitivity_task
+@pytest.mark.parametrize('method', ['periodic-sensitivity-v1', 'periodic-configurations-v1'])
+def test_scoped_comparisons_use_same_identity_and_publication(scoped, method):
+    if method == 'periodic-sensitivity-v1':
+        from test_policy_sensitivity import task as comparison_task
+    else:
+        from test_policy_configurations import task as comparison_task
     target = queued(scoped)
     with psycopg.connect(scoped['dsn']) as db:
         replay = db.execute('select payload from planning.simulation_inputs where run_id=%s', (target,)).fetchone()[0]
-        payload = sensitivity_task()
+        payload = comparison_task()
         payload['policy'] = replay['policy']
         payload['source_simulation']['evidence']['policy'] = replay['policy']
         db.execute('update planning.simulation_inputs set payload=%s where run_id=%s', (Jsonb(payload), target))
     with runtime(scoped) as db:
         assert process_one(db) is True
     with psycopg.connect(scoped['dsn']) as db:
-        assert db.execute('select result->>\'method\' from public.planning_runs where id=%s', (target,)).fetchone()[0] == 'periodic-sensitivity-v1'
+        assert db.execute('select result->>\'method\' from public.planning_runs where id=%s', (target,)).fetchone()[0] == method
 
 
 def test_cancellation_and_invalid_output_cannot_publish(scoped):
