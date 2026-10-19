@@ -258,6 +258,8 @@ for (const { width, height } of [
       await drawer.getByRole('link', { name: 'Forecasts', exact: true }).focus()
       await page.keyboard.press('Enter')
       await expect(page).toHaveURL(/\/forecasts$/)
+      await expect(drawer).toBeHidden()
+      await toggle.click()
       await page.keyboard.press('Escape')
       await expect(drawer).toBeHidden()
       await expect(toggle).toBeFocused()
