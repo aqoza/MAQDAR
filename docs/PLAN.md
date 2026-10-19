@@ -175,9 +175,12 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 
 | Step | Scope                                                                                                                                                                                                                       | Status                       |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| 21   | **Individual-item policy simulation:** captured recorded-sales replay, calculated versus alternative periodic maximum, controlled opening stock, fixed lead/review times, exact daily ledgers and scoped immutable history. | Implemented — review pending |
+| 21   | **Individual-item policy simulation:** captured recorded-sales replay, calculated versus alternative periodic maximum, controlled opening stock, fixed lead/review times, exact daily ledgers and scoped immutable history. | Merged — PR #101             |
+| 21b  | **Policy sensitivity comparisons:** one captured simulation, calculated maximum versus up to ten explicit alternatives, compact metrics and selected daily ledgers with immutable scoped evidence.                          | Implemented — review pending |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
+
+See [policy-sensitivity.md](policy-sensitivity.md) for the approved multiple-maximum comparison contract.
 
 ## Decision log
 
@@ -535,3 +538,7 @@ PR #98 was reviewed at `e50fe80` with no blocking findings and merged as `6b0c56
 ### Step 21 approved decisions (2026-10-19)
 
 PR #99 was reviewed at `0a2c0cc` without blocking findings and merged as `d9a80c9` after all three CI jobs passed. The owner approved the first Phase 4 simulation increment: compare one saved individual-item policy with one alternative periodic maximum against completed recorded sales after its cutoff, within its saved forecast horizon. Require known matching units, complete-history confirmation, the same entered opening stock, an explicitly empty initial pipeline and zero backlog. Keep lead time and review interval fixed; receive and review before daily demand, carry unmet sales as backlog and show lost sales separately. Retain immutable inputs, two daily ledgers, average closing stock, backlog metrics and the fraction of recorded sales met immediately without selecting a winner. Editors queue; members inspect under location access. Preserve the compact green design at all five widths and Arabic RTL. Prepared groups, live commitments, MOQ, calendars, variable supply and operational orders remain excluded. Acceptance, exact daily sequence and rollout: [policy-simulation.md](policy-simulation.md).
+
+### Step 21b approved decisions (2026-10-19)
+
+PR #101 was reviewed at `3ec4974` without blocking findings and merged as `bb12550` after all three PR CI jobs passed. The owner approved saved sensitivity comparisons from one completed original simulation: calculated maximum versus up to ten explicitly entered alternatives, with a compact comparison table and inspectable daily ledgers. Reuse captured demand, known units, window, opening stock, fixed lead/review times and empty initial pipeline/backlog, changing only the maximum and requiring confirmation. Keep exact calculations, separate lost sales, immutable evidence, canonical retries and existing editor/location access; select no winner and change no policy or operational order. Retain compact green typography at all five widths and Arabic RTL. See [policy-sensitivity.md](policy-sensitivity.md).

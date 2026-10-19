@@ -4,26 +4,36 @@ import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { PageHeader } from '@/components/page-header'
 import { PolicySimulationReport } from '@/components/policy-simulation-report'
+import { PolicySensitivityReport } from '@/components/policy-sensitivity-report'
 import { PlanningRefresh, CancelPlanningRun } from '@/components/planning-controls'
 import { getActiveContext } from '@/lib/organizations/context'
 import { isEditorRole } from '@/lib/auth/roles'
 import { createClient } from '@/lib/supabase/server'
 import { isActiveRun } from '@/lib/planning'
 import { simulationEvidenceSchema } from '@/lib/policy-simulation'
+import { sensitivityEvidenceSchema } from '@/lib/policy-sensitivity'
+import { firstParam, type RawSearchParams } from '@/lib/master-data/list-params'
 
-export default async function SimulationResult({ params }: { params: Promise<{ runId: string }> }) {
+export default async function SimulationResult({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ runId: string }>
+  searchParams: Promise<RawSearchParams>
+}) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
   if (!z.guid().safeParse(runId).success) notFound()
-  const [db, t, planning] = await Promise.all([
+  const [db, t, planning, sensitivity] = await Promise.all([
     createClient(),
     getTranslations('PolicySimulation'),
     getTranslations('Planning'),
+    getTranslations('PolicySensitivity'),
   ])
   const { data: run, error } = await db
     .from('planning_runs')
-    .select('id,kind,status,from_date,to_date,locations(code)')
+    .select('id,kind,status,from_date,to_date,options,locations(code)')
     .eq('organization_id', context.active.id)
     .eq('id', runId)
     .maybeSingle()
@@ -41,12 +51,19 @@ export default async function SimulationResult({ params }: { params: Promise<{ r
       : null
   if (response?.error || (run.status === 'succeeded' && !response?.data))
     throw new Error('Simulation result unavailable')
-  const evidence = response?.data ? simulationEvidenceSchema.parse(response.data.evidence) : null
+  const method = (run.options as { method?: string } | null)?.method
+  const comparison =
+    response?.data && method === 'periodic-sensitivity-v1'
+      ? sensitivityEvidenceSchema.parse(response.data.evidence)
+      : null
+  const original =
+    response?.data && !comparison ? simulationEvidenceSchema.parse(response.data.evidence) : null
+  const evidence = comparison ?? original
   return (
     <div className="min-w-0 space-y-4">
       <PageHeader
         pattern="forecasts"
-        title={t('title')}
+        title={method === 'periodic-sensitivity-v1' ? sensitivity('title') : t('title')}
         description={`${run.locations?.code ?? ''} · ${run.from_date} – ${run.to_date}`}
         back={
           <Link href="/forecasts/simulations" className="underline">
@@ -55,9 +72,23 @@ export default async function SimulationResult({ params }: { params: Promise<{ r
         }
         actions={
           evidence ? (
-            <Link href={`/forecasts/workbench/${evidence.policy.id}`} className="underline">
-              {t('sourcePolicy')}
-            </Link>
+            <>
+              <Link
+                href={
+                  comparison
+                    ? `/forecasts/simulations/${comparison.source_simulation.run_id}`
+                    : `/forecasts/workbench/${evidence.policy.id}`
+                }
+                className="underline"
+              >
+                {comparison ? sensitivity('source') : t('sourcePolicy')}
+              </Link>
+              {original && isEditorRole(context.role) && (
+                <Link href={`/forecasts/simulations/compare?source=${runId}`} className="underline">
+                  {sensitivity('create')}
+                </Link>
+              )}
+            </>
           ) : undefined
         }
       />
@@ -89,7 +120,14 @@ export default async function SimulationResult({ params }: { params: Promise<{ r
             })}{' '}
             · {evidence.policy.item_code}
           </p>
-          <PolicySimulationReport evidence={evidence} />
+          {comparison ? (
+            <PolicySensitivityReport
+              evidence={comparison}
+              selected={firstParam((await searchParams).variant)}
+            />
+          ) : (
+            original && <PolicySimulationReport evidence={original} />
+          )}
         </>
       )}
     </div>
