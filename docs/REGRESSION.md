@@ -12,6 +12,8 @@ Audit bases for the full header pass: `8a078f5`, then main `4707e36` including e
 
 ## Shared header and loading
 
+- `EXCESS-HEADER-002`: after the PR #91/#92 integration, require each handoff, review and history/new destination exactly once rather than assuming there are only two actions. Verify every rendered link's visibility, 14px/20px typography, bounds and 44px mobile target; traverse the complete action sequence with the keyboard in LTR and RTL. Retain the five-viewport list/create matrix and existing workflow suites.
+
 - `EXCESS-HEADER-001`: `excess-header.spec.ts` covers both grouped-action consumers (excess-stock list/create), shared 20px/28px titles and 14px/20px action text, locale font families, keyboard order, viewport bounds, and 44px mobile action targets. It checks 1280×800, 1366×768, 1440×900, 375×900 and 390×844 in English and Arabic RTL. The section-local fix changes only `ExcessStockHeader`'s action wrapper, with no shared CSS, navigation, loading or type-token change. Include `excess-stock.spec.ts` for preview/saved consumers and `excess-disposition.spec.ts` for the related review workflow, alongside the existing header/responsive/Dashboard/Settings suites. See [final-header-check.md](final-header-check.md).
 
 - Downstream consumers: master data; Forecasts; Imports; ordinary/event Replenishment and transfers; Settings/Audit.

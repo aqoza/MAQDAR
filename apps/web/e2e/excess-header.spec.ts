@@ -60,7 +60,13 @@ test('excess header actions preserve shared typography and mobile targets', asyn
           ),
         })
         const actions = banner.locator('.page-actions a')
-        await expect(actions).toHaveCount(2)
+        for (const href of [
+          '/replenishment/excess/handoffs',
+          '/replenishment/excess/review',
+          route.endsWith('/new') ? '/replenishment/excess' : '/replenishment/excess/new',
+        ]) {
+          await expect(banner.locator(`.page-actions a[href="${href}"]`)).toHaveCount(1)
+        }
         measurements.push({
           locale,
           route,
@@ -70,6 +76,7 @@ test('excess header actions preserve shared typography and mobile targets', asyn
               const css = getComputedStyle(link)
               return {
                 label: link.textContent?.trim(),
+                href: link.getAttribute('href'),
                 height: link.getBoundingClientRect().height,
                 fontSize: css.fontSize,
                 lineHeight: css.lineHeight,
@@ -78,7 +85,9 @@ test('excess header actions preserve shared typography and mobile targets', asyn
             }),
           ),
         })
-        for (const action of await actions.all()) {
+        const actionLinks = await actions.all()
+        for (const action of actionLinks) {
+          await expect(action).toBeVisible()
           await expect(action).toHaveCSS('font-size', '14px')
           await expect(action).toHaveCSS('line-height', '20px')
           await expect(action).toHaveCSS('font-family', family)
@@ -89,8 +98,10 @@ test('excess header actions preserve shared typography and mobile targets', asyn
         }
         if (width === 1366) {
           await actions.first().focus()
-          await page.keyboard.press('Tab')
-          await expect(actions.nth(1)).toBeFocused()
+          for (const action of actionLinks.slice(1)) {
+            await page.keyboard.press('Tab')
+            await expect(action).toBeFocused()
+          }
         }
       }
     }
