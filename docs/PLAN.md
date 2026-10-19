@@ -173,11 +173,11 @@ Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-sce
 
 Step 21 begins the simulation center. Deferred Phase 3 work, including automatic approval, operational allocation/reservations and outbound transmission, remains on the roadmap.
 
-| Step | Scope                                                                                                                                                                                                                       | Status                       |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| 21   | **Individual-item policy simulation:** captured recorded-sales replay, calculated versus alternative periodic maximum, controlled opening stock, fixed lead/review times, exact daily ledgers and scoped immutable history. | Merged — PR #101             |
-| 21b  | **Policy sensitivity comparisons:** one captured simulation, calculated maximum versus up to ten explicit alternatives, compact metrics and selected daily ledgers with immutable scoped evidence.                          | Implemented — review pending |
-| 21c  | **Policy configuration comparisons:** captured original simulation versus up to ten explicit maximum/lead/review tuples, exact metrics and daily ledgers without extending history.                                         | Implemented — review pending |
+| Step | Scope                                                                                                                                                                                                                       | Status                                                                           |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| 21   | **Individual-item policy simulation:** captured recorded-sales replay, calculated versus alternative periodic maximum, controlled opening stock, fixed lead/review times, exact daily ledgers and scoped immutable history. | Merged — PR #101                                                                 |
+| 21b  | **Policy sensitivity comparisons:** one captured simulation, calculated maximum versus up to ten explicit alternatives, compact metrics and selected daily ledgers with immutable scoped evidence.                          | [PR #103](https://github.com/aqoza/MAQDAR/pull/103)                              |
+| 21c  | **Policy configuration comparisons:** captured original simulation versus up to ten explicit maximum/lead/review tuples, exact metrics and daily ledgers without extending history.                                         | Implemented — [PR #105](https://github.com/aqoza/MAQDAR/pull/105) review pending |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
