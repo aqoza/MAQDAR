@@ -6,6 +6,7 @@ import { test, expect } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle } from './helpers/typography'
 
 test.use({ actionTimeout: 30_000 })
 test('capacity retains exact evidence, checks selection and fits five widths', async ({
@@ -98,7 +99,7 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.setViewportSize({ width, height: 900 })
     await page.evaluate(() => document.fonts.ready)
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     await expect(page.locator('tbody tr').first()).toHaveCSS('font-size', '14px')
     for (const control of await page.locator('main input:not([type=hidden]):visible').all()) {
       const box = (await control.boundingBox())!

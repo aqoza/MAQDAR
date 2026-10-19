@@ -10,6 +10,7 @@ import {
   signInWithPassword,
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { expectPageTitle } from './helpers/typography'
 import { generateApiKey } from '../src/lib/api/keys'
 
 test.use({ actionTimeout: 30_000 })
@@ -227,7 +228,7 @@ with psycopg.connect(sys.argv[1]) as db:
     const tableRegion = page.getByRole('region', { name: 'Disposition integration workbench' })
     await tableRegion.focus()
     await expect(tableRegion).toBeFocused()
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     await expect(page.getByLabel('Exact system label')).toHaveCSS(
       'font-size',
       width < 768 ? '16px' : '14px',

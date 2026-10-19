@@ -9,6 +9,7 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle } from './helpers/typography'
 
 test('dashboard reference renders real scoped data at the reference viewports', async ({
   page,
@@ -323,8 +324,7 @@ test('dashboard reference renders real scoped data at the reference viewports', 
     await expect(page).toHaveURL(new RegExp(`${href}$`))
     const title = page.getByRole('heading', { level: 1 })
     await expect(title).toBeVisible()
-    await expect(title).toHaveCSS('font-size', '20px')
-    await expect(title).toHaveCSS('line-height', '28px')
+    await expectPageTitle(title)
     await expect(title).toHaveCSS('font-family', arabicFontFamily)
     for (const link of await page.locator('[data-sidebar="group"] a').all()) {
       await expect(link).toHaveCSS('font-size', '14px')

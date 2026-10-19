@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { expectPageTitle } from '../e2e/helpers/typography'
 
 for (const width of [375, 1440]) {
   for (const direction of ['ltr', 'rtl']) {
@@ -33,13 +34,13 @@ for (const width of [375, 1440]) {
         '12px',
       )
       // The modal makes the page inert; its visual typography must still stay unchanged.
-      await expect(
+      await expectPageTitle(
         page.getByRole('heading', {
           name: 'Replenishment drafts',
           exact: true,
           includeHidden: true,
         }),
-      ).toHaveCSS('font-size', '20px')
+      )
       await expect(dialog).toHaveCSS('background-color', 'rgb(255, 255, 255)')
       await expect(dialog).toHaveCSS('border-radius', '24px')
       await expect(

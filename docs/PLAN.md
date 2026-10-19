@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Compact shared typography — approved 2026-10-19
+
+The owner selected 16px/24px page titles and 14px/20px record values after highlighting the disposition-batch title and location code. Update the shared tokens and current design rules across every consumer, retain body/sidebar typography and documented Dashboard/login exceptions, and enforce the approved roles in browser checks. Verify actual laptop, mobile and Arabic RTL screenshots, including current disposition integrations, then open a PR without merging or deployment. See [compact-shared-typography.md](compact-shared-typography.md).
+
 ## Merged header audit and Forecasts alignment — requested 2026-10-19
 
 Verify merged main at 13-inch laptop and mobile viewports in English and Arabic RTL. The fresh audit found correct shared typography but a 20px tagline-to-title gap in the Forecasts workspace, exceeding the 12px design rule. Align that title to the start of its existing row and enforce the gap across all section headers. Preserve the type scale, method controls, tabs and planning behavior; retain screenshots and open a focused PR without deployment. See [forecast-header-alignment.md](forecast-header-alignment.md).

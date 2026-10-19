@@ -440,7 +440,7 @@ with psycopg.connect(sys.argv[1]) as db:
   for (const width of [375, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 })
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    await page.locator('#acknowledgements').scrollIntoViewIfNeeded()
+    await page.locator('#acknowledgements:visible').scrollIntoViewIfNeeded()
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true)

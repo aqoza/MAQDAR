@@ -13,7 +13,7 @@ export async function SectionLoading({ pattern }: { pattern: PageHeaderPattern }
         <PageHeader
           pattern={pattern}
           title={
-            <span className="bg-muted block h-7 w-56 max-w-full animate-pulse rounded-md motion-reduce:animate-none" />
+            <span className="bg-muted block h-[var(--text-page-title--line-height)] w-56 max-w-full animate-pulse rounded-md motion-reduce:animate-none" />
           }
           description={
             <span className="bg-muted block h-5 w-72 max-w-full animate-pulse rounded-md motion-reduce:animate-none" />
