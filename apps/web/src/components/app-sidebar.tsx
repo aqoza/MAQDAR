@@ -92,7 +92,7 @@ export function AppSidebar({
         <Link
           href="/dashboard"
           onClick={closeMobileNavigation}
-          className="app-brand px-2 pt-1 font-semibold tracking-tight group-data-[collapsible=icon]:hidden"
+          className="app-brand px-2 pt-1 font-semibold tracking-tight max-md:flex max-md:min-h-11 max-md:items-center group-data-[collapsible=icon]:hidden"
         >
           {tCommon('appName')}
         </Link>
@@ -112,6 +112,7 @@ export function AppSidebar({
                 return (
                   <SidebarMenuItem key={key}>
                     <SidebarMenuButton
+                      className="max-md:min-h-11"
                       render={<Link href={href} onClick={closeMobileNavigation} />}
                       isActive={isActive}
                       tooltip={t(key)}
