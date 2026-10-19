@@ -243,7 +243,11 @@ describe('structure', () => {
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
         : path.startsWith('/excess-disposition-handoff')
-          ? ['excess_disposition_handoffs:read']
+          ? [
+              method === 'post'
+                ? 'excess_disposition_handoffs:acknowledge'
+                : 'excess_disposition_handoffs:read',
+            ]
           : path.startsWith('/event-purchase-handoff')
             ? [
                 method === 'post'
@@ -459,6 +463,11 @@ it('documents exact disposition files, unavailable live context and read-only sc
     expect(doc.paths[`/${resource}`].get['x-maqdar-scopes']).toEqual([
       'excess_disposition_handoffs:read',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]).toBeUndefined()
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.post?.['x-maqdar-scopes']).toEqual([
+      'excess_disposition_handoffs:acknowledge',
+    ])
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.get?.['x-maqdar-scopes']).toEqual([
+      'excess_disposition_handoffs:read',
+    ])
   }
 })

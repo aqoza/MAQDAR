@@ -5,7 +5,12 @@ import {
   acknowledgementScope,
   ACKNOWLEDGEMENT_RESOURCES,
 } from './acknowledgements'
-import { handoffReadScope, isTransferHandoffResource, isEventHandoffResource } from './handoffs'
+import {
+  handoffReadScope,
+  isTransferHandoffResource,
+  isEventHandoffResource,
+  isDispositionHandoffResource,
+} from './handoffs'
 import type { Schema } from './openapi'
 
 const ref = (name: string) => ({ $ref: `#/components/schemas/${name}` })
@@ -105,11 +110,13 @@ export function acknowledgementPaths(): Record<string, Record<string, Schema>> {
       paths[path][action === 'create' ? 'post' : 'get'] = {
         operationId: acknowledgementOperationId(resource, action),
         tags: [
-          isEventHandoffResource(resource)
-            ? 'Event purchase handoffs'
-            : isTransferHandoffResource(resource)
-              ? 'Transfer handoffs'
-              : 'Purchase handoffs',
+          isDispositionHandoffResource(resource)
+            ? 'Disposition handoffs'
+            : isEventHandoffResource(resource)
+              ? 'Event purchase handoffs'
+              : isTransferHandoffResource(resource)
+                ? 'Transfer handoffs'
+                : 'Purchase handoffs',
         ],
         summary:
           action === 'create'
@@ -118,10 +125,15 @@ export function acknowledgementPaths(): Record<string, Record<string, Schema>> {
         description: [
           'Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.',
           action === 'create'
-            ? "client_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, or event purchase independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries."
+            ? "client_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, or disposition independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries."
             : action === 'list'
               ? 'Newest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.'
               : 'The event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.',
+          ...(isDispositionHandoffResource(resource)
+            ? [
+                'Disposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.',
+              ]
+            : []),
           `GET/HEAD require ${handoffReadScope(resource)}; POST requires ${acknowledgementScope(resource)}. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.`,
         ].join('\n\n'),
         'x-maqdar-scopes': [

@@ -3,6 +3,8 @@ import {
   parseHandoffQuery,
   isTransferHandoffResource,
   isEventHandoffResource,
+  isDispositionHandoffResource,
+  DISPOSITION_HANDOFF_RESOURCES,
   EVENT_HANDOFF_RESOURCES,
   HANDOFF_RESOURCES,
   TRANSFER_HANDOFF_RESOURCES,
@@ -13,6 +15,7 @@ export const ACKNOWLEDGEMENT_RESOURCES = [
   ...HANDOFF_RESOURCES,
   ...TRANSFER_HANDOFF_RESOURCES,
   ...EVENT_HANDOFF_RESOURCES,
+  ...DISPOSITION_HANDOFF_RESOURCES,
 ] as const
 export type AcknowledgementResource = (typeof ACKNOWLEDGEMENT_RESOURCES)[number]
 export function isAcknowledgementResource(value: string): value is AcknowledgementResource {
@@ -22,7 +25,9 @@ export function isAcknowledgementResource(value: string): value is Acknowledgeme
 export const ACKNOWLEDGE_SCOPE = 'purchase_handoffs:acknowledge' as const
 export const TRANSFER_ACKNOWLEDGE_SCOPE = 'transfer_handoffs:acknowledge' as const
 export const EVENT_ACKNOWLEDGE_SCOPE = 'event_purchase_handoffs:acknowledge' as const
+export const DISPOSITION_ACKNOWLEDGE_SCOPE = 'excess_disposition_handoffs:acknowledge' as const
 export function acknowledgementScope(resource: AcknowledgementResource) {
+  if (isDispositionHandoffResource(resource)) return DISPOSITION_ACKNOWLEDGE_SCOPE
   if (isEventHandoffResource(resource)) return EVENT_ACKNOWLEDGE_SCOPE
   return isTransferHandoffResource(resource) ? TRANSFER_ACKNOWLEDGE_SCOPE : ACKNOWLEDGE_SCOPE
 }
@@ -68,6 +73,8 @@ export function acknowledgementOperationId(
   action: 'list' | 'get' | 'create',
 ) {
   const names = {
+    'excess-disposition-handoffs': 'ExcessDispositionHandoff',
+    'excess-disposition-handoff-batches': 'ExcessDispositionHandoffBatch',
     'event-purchase-handoffs': 'EventPurchaseHandoff',
     'event-purchase-handoff-batches': 'EventPurchaseHandoffBatch',
     'purchase-handoffs': 'PurchaseHandoff',

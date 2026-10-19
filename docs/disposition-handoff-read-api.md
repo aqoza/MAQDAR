@@ -20,7 +20,7 @@ Approved on 2026-10-19. Integrations can list saved disposition handoffs and bat
 | GET / HEAD | `/api/v1/excess-disposition-handoff-batches`      | Saved batch summaries and live context         |
 | GET / HEAD | `/api/v1/excess-disposition-handoff-batches/{id}` | Original copied batch payload and live context |
 
-Use `Authorization: Bearer <key>` from Settings. Cookie sessions do not authenticate these routes. HEAD performs the same checks and returns no body. OPTIONS returns the allowed methods; mutations return 405 and acknowledgement subroutes return 404. [Generated OpenAPI](../apps/web/src/lib/api/openapi.json) describes all required fields.
+Use `Authorization: Bearer <key>` from Settings. Cookie sessions do not authenticate these routes. HEAD performs the same checks and returns no body. OPTIONS returns the allowed methods; package mutations return 405. Step 20f adds separately scoped [acknowledgement subroutes](disposition-handoff-acknowledgements.md). [Generated OpenAPI](../apps/web/src/lib/api/openapi.json) describes all required fields.
 
 List responses contain `data`, `next_cursor` and `as_of`; detail responses contain `data`. Every record has `id`, `created_at`, `summary` and `current`; only details include `payload`. Summaries contain saved location code, disposition kind, currency, cutoff, exact `reference_value`, `line_count`, original `handoff_ids`, and `item_code` (null for batches). There is no pooled quantity or unit. Inspect each saved line for its approved quantity and unit. Overlapping batches may repeat original member IDs and do not reserve quantities or prevent duplicate external execution.
 
@@ -30,13 +30,13 @@ Single payloads use `excess-disposition-handoff-v1`; batches use `excess-disposi
 
 `limit` defaults to 25, range 1–100. `created_since` is an inclusive RFC 3339 creation timestamp with offset. Pass `next_cursor` unchanged with the same filter; limit may change. Ordering is `created_at DESC, id ASC`; a null next cursor ends traversal. Cursors cannot be reused for another organization, resource or filter.
 
-The first page fixes `as_of` as a creation-time upper bound, **not a transaction snapshot or selection-change watermark**. Late commits and deletions can affect traversal. Reconcile overlapping creation windows and deduplicate by ID; re-read known IDs for live selection. Silence is not delivery failure. These routes offer no external delivery report.
+The first page fixes `as_of` as a creation-time upper bound, **not a transaction snapshot or selection-change watermark**. Late commits and deletions can affect traversal. Reconcile overlapping creation windows and deduplicate by ID; re-read known IDs for live selection. Silence is not delivery failure. Package reads do not infer external delivery status; Step 20f exposes separately recorded report history.
 
 ## Verification
 
 - `supabase/tests/0077_disposition_handoff_read_api.test.sql`: real assessment/review/handoff/batch RPC fixtures; scoped issuance, expiry/revocation/creator authority, legacy scope isolation, tenant/branch isolation, cursor ties/bounds, exact payload equality, selection transitions, deletion retention and no operational writes.
 - `supabase/tests/0020_table_privileges.test.sql`: exhaustive grants, with only two additional service-role RPCs; projection remains private.
-- API auth/handler/OpenAPI tests: distinct routing, raw response preservation, HEAD/OPTIONS/mutations, required scope before malformed-request errors, complete versioned schemas and no acknowledgement capability.
+- API auth/handler/OpenAPI tests: distinct routing, raw response preservation, HEAD/OPTIONS/mutations, required scope before malformed-request errors, complete versioned schemas and independent acknowledgement permissions added in Step 20f.
 - `apps/web/e2e/disposition-handoff-read-api.spec.ts`: real Settings issuance/revocation, all five widths and RTL, keyboard toggles, authenticated HTTP list/detail traversal, cookie-download equality, explicit legacy denial, tenant isolation and saved context lifecycle. Existing purchase/transfer/event reader suites cover compatibility.
 - Run database suites sequentially before production browser suites on the local stack. Do not reset shared data. Record actual completed checks in the PR.
 

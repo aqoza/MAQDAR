@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -10,10 +11,17 @@ import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { batchPayloadSchema } from '@/lib/excess-disposition-batches'
 
-export default async function BatchDetail({ params }: { params: Promise<{ batchId: string }> }) {
+export default async function BatchDetail({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ batchId: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
+}) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { batchId } = await params
+  const query = await searchParams
   if (!z.guid().safeParse(batchId).success) notFound()
   const [db, t, format] = await Promise.all([
     createClient(),
@@ -74,6 +82,13 @@ export default async function BatchDetail({ params }: { params: Promise<{ batchI
           {t('batchIdentity', { id: batchId })}
         </p>
       </section>
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={batchId}
+        kind="disposition"
+        batch
+        pageValue={query.ack_page}
+      />
       <ExcessDispositionBatchEvidence report={payload} />
       <ExcessDispositionBatchOverlap
         organizationId={context.active.id}
