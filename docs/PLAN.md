@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Post-PR #92 main CI — requested 2026-10-19
+
+Fix the header regression's obsolete two-action assumption after PR #91 added disposition handoffs. Require the current handoff/review/history-or-new destinations and check every rendered action's shared typography, viewport bounds, mobile target size and keyboard order. Preserve application behavior and existing visual standards; verify against merged main and open a focused fix PR.
+
 ## Final merged-header check — requested 2026-10-19
 
 Verify current merged main at 13-inch laptop and mobile CSS viewports in English and Arabic RTL. Correct the confirmed 38px mobile excess-stock header actions by using the existing `PageHeader` action container and 44px target styles. Keep the shared type scale, approved login exceptions, routes and planning semantics. Record fresh screenshots and checks, then open a PR without deployment. See [final-header-check.md](final-header-check.md).
