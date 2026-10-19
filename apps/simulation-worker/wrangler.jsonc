@@ -9,7 +9,8 @@
   "observability": { "enabled": true },
   "vars": {
     "ENABLED": "false",
-    "MAQDAR_EXPECTED_ORGANIZATION": "REPLACE_WITH_REVIEWED_ACME_UUID"
+    "MODE": "probe",
+    "MAQDAR_EXPECTED_ORGANIZATION": "REPLACE_WITH_REVIEWED_ACME_UUID",
   },
   "triggers": { "crons": ["* * * * *"] },
   "containers": [
@@ -17,14 +18,14 @@
       "class_name": "AcmeSimulationContainer",
       "scheduling_policy": "durable_object",
       "images": {
-        "base": { "dockerfile": "../../engine/Dockerfile.simulation", "build_context": "../.." }
-      }
-    }
+        "base": { "dockerfile": "../../engine/Dockerfile.simulation", "build_context": "../.." },
+      },
+    },
   ],
   "durable_objects": {
-    "bindings": [{ "name": "ACME_SIMULATION", "class_name": "AcmeSimulationContainer" }]
+    "bindings": [{ "name": "ACME_SIMULATION", "class_name": "AcmeSimulationContainer" }],
   },
   "exports": {
-    "AcmeSimulationContainer": { "type": "durable-object", "storage": "sqlite" }
-  }
+    "AcmeSimulationContainer": { "type": "durable-object", "storage": "sqlite" },
+  },
 }

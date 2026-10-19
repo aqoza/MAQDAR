@@ -102,3 +102,44 @@ jobs:
           cache-dependency-glob: engine/uv.lock
       - run: uv sync --locked
       - run: uv run pytest
+
+  simulation-container:
+    name: Simulation container (build, non-root, fail-closed bootstrap)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: '0.12.23'
+          enable-cache: true
+          cache-dependency-glob: engine/uv.lock
+      - name: Build the native scoped worker without publishing
+        run: docker build --platform linux/amd64 -f engine/Dockerfile.simulation -t simulation-worker:ci .
+      - name: Restricted user and safe startup failure
+        run: |
+          test "$(docker inspect simulation-worker:ci --format '{{.Config.User}}')" = worker
+          set +e
+          docker run --rm --network none simulation-worker:ci > bootstrap.log 2>&1
+          status=$?
+          set -e
+          test "$status" = 1
+          grep -Fx 'Simulation bootstrap failed: check verified connection and CA.' bootstrap.log
+          test "$(wc -l < bootstrap.log)" = 1
+      - name: Start isolated CI database
+        run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,realtime
+      - name: Real image probe, scoped publication and lease recovery
+        run: uv run --project engine pytest engine/tests/test_scoped_container_db.py -q
+        env:
+          MAQDAR_TEST_DSN: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+          MAQDAR_CONTAINER_IMAGE: simulation-worker:ci
+          MAQDAR_TEST_DB_CONTAINER: supabase_db_MAQDAR
+      - name: Stop CI database
+        if: always()
+        run: pnpm exec supabase stop --no-backup

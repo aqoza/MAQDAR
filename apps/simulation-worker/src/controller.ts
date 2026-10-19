@@ -1,5 +1,6 @@
 export interface RuntimeConfig {
   ENABLED: string
+  MODE: string
   MAQDAR_EXPECTED_ORGANIZATION: string
   MAQDAR_WORKER_DSN: string
   MAQDAR_DATABASE_CA: string
@@ -11,7 +12,7 @@ export interface ContainerHandle {
   readonly images: Record<string, string>
   start(options: {
     image: string
-    instance: 'lite'
+    instance: 'basic'
     enableInternet: boolean
     env: Record<string, string>
   }): void
@@ -28,6 +29,7 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
   if (
     !config.MAQDAR_WORKER_DSN ||
     !config.MAQDAR_DATABASE_CA ||
+    !['probe', 'consume'].includes(config.MODE) ||
     !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
       config.MAQDAR_EXPECTED_ORGANIZATION,
     )
@@ -38,12 +40,13 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
   if (starting) {
     container.start({
       image: container.images.base,
-      instance: 'lite',
+      instance: 'basic',
       enableInternet: true,
       env: {
         MAQDAR_WORKER_DSN: config.MAQDAR_WORKER_DSN,
         MAQDAR_DATABASE_CA: config.MAQDAR_DATABASE_CA,
         MAQDAR_EXPECTED_ORGANIZATION: config.MAQDAR_EXPECTED_ORGANIZATION,
+        MAQDAR_WORKER_MODE: config.MODE,
       },
     })
   }

@@ -159,6 +159,7 @@ def test_disabled_scope_never_falls_back_to_global(scoped):
         db.execute('update planning.simulation_worker_scopes set enabled=false where organization_id=%s', (scoped['org'],))
     before = transport(scoped, scoped['org'])
     with runtime(scoped) as db:
+        assert db.execute('select app.scoped_simulation_identity()').fetchone()[0] == scoped['org']
         with pytest.raises(psycopg.Error) as error:
             db.execute('select * from app.scoped_simulation_claim()')
         assert error.value.sqlstate == '42501'
@@ -262,4 +263,25 @@ def test_capability_membership_revocation_fails_closed(scoped):
             admin.execute(sql.SQL('revoke maqdar_simulation_worker from {}').format(sql.Identifier(scoped['role'])))
         with pytest.raises(psycopg.Error) as error:
             db.execute('select * from app.scoped_simulation_claim()')
+        assert error.value.sqlstate == '42501'
+
+
+def test_added_browser_membership_invalidates_runtime_scope(scoped):
+    with psycopg.connect(scoped['dsn'], autocommit=True) as admin:
+        admin.execute(sql.SQL('grant authenticated to {}').format(sql.Identifier(scoped['role'])))
+    with runtime(scoped) as db:
+        with pytest.raises(psycopg.Error) as error:
+            db.execute('select app.scoped_simulation_identity()')
+        assert error.value.sqlstate == '42501'
+
+
+def test_dropped_recreated_login_does_not_inherit_old_scope(scoped):
+    password = conninfo_to_dict(scoped['runtime'])['password']
+    with psycopg.connect(scoped['dsn'], autocommit=True) as admin:
+        admin.execute(sql.SQL('drop role {}').format(sql.Identifier(scoped['role'])))
+        admin.execute(sql.SQL('create role {} login noinherit password {}').format(sql.Identifier(scoped['role']), sql.Literal(password)))
+        admin.execute(sql.SQL('grant maqdar_simulation_worker to {}').format(sql.Identifier(scoped['role'])))
+    with runtime(scoped) as db:
+        with pytest.raises(psycopg.Error) as error:
+            db.execute('select app.scoped_simulation_identity()')
         assert error.value.sqlstate == '42501'

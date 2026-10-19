@@ -9,3 +9,8 @@
 !engine/src/**
 engine/src/**/__pycache__/
 engine/src/**/*.pyc
+**/.env
+**/.env.*
+**/.dev.vars*
+**/*.pem
+**/.tmp/**

@@ -37,7 +37,8 @@ begin
  end if;
  if tg_op='DELETE' then return old; end if;
  if not exists(select 1 from pg_roles where oid=new.login_oid and rolname=new.login_name
-  and rolcanlogin and not rolsuper and not rolcreatedb and not rolcreaterole and not rolbypassrls
+  and rolcanlogin and not rolinherit and not rolsuper and not rolcreatedb and not rolcreaterole and not rolbypassrls
+  and not exists(select 1 from pg_auth_members m where m.member=pg_roles.oid and m.roleid<>'maqdar_simulation_worker'::regrole)
   and pg_has_role(oid,'maqdar_simulation_worker','MEMBER') and not pg_has_role(oid,'maqdar_worker','MEMBER')) then
   raise exception using errcode='42501',message='dedicated simulation login required';
  end if;
@@ -47,19 +48,26 @@ revoke all on function app.simulation_scope_guard() from public,anon,authenticat
 create trigger simulation_scope_guard before insert or update or delete on planning.simulation_worker_scopes
  for each row execute function app.simulation_scope_guard();
 
-create function app.scoped_simulation_identity() returns uuid
+create function app.simulation_runtime_organization(p_require_enabled boolean) returns uuid
 language plpgsql security definer set search_path='' as $$
 declare organization uuid;
 begin
  perform pg_advisory_xact_lock_shared(hashtextextended('maqdar.simulation.routing',0));
  select s.organization_id into organization from planning.simulation_worker_scopes s
  join pg_roles r on r.oid=s.login_oid and r.rolname=s.login_name
- where r.rolname=session_user and s.enabled and r.rolcanlogin
-  and not r.rolsuper and not r.rolcreatedb and not r.rolcreaterole and not r.rolbypassrls
+ where r.rolname=session_user and (s.enabled or not p_require_enabled) and r.rolcanlogin
+  and not r.rolinherit and not r.rolsuper and not r.rolcreatedb and not r.rolcreaterole and not r.rolbypassrls
+  and not exists(select 1 from pg_auth_members m where m.member=r.oid and m.roleid<>'maqdar_simulation_worker'::regrole)
   and pg_has_role(r.oid,'maqdar_simulation_worker','MEMBER') and not pg_has_role(r.oid,'maqdar_worker','MEMBER');
  if organization is null then raise exception using errcode='42501',message='simulation runtime is not enabled'; end if;
  return organization;
 end; $$;
+revoke all on function app.simulation_runtime_organization(boolean)
+ from public,anon,authenticated,service_role,maqdar_worker,maqdar_simulation_worker;
+
+-- Paused deployments can verify the bound identity without receiving any task.
+create function app.scoped_simulation_identity() returns uuid
+language sql security definer set search_path='' as $$select app.simulation_runtime_organization(false)$$;
 
 -- Selection is authorized BEFORE the equivalent of pgmq.read changes vt/read_ct.
 -- Keep the existing queue-first + run-SKIP-LOCKED lock order and lease durations.
@@ -72,7 +80,9 @@ begin
  perform pg_advisory_xact_lock_shared(hashtextextended('maqdar.simulation.routing',0));
  for n in 1..10 loop
   select q.*,p.id as resolved_run into m from pgmq.q_planning q
-   left join public.planning_runs p on p.id::text=q.message->>'run_id'
+   left join public.planning_runs p on p.id=case
+    when q.message->>'run_id' ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+    then (q.message->>'run_id')::uuid end
    where q.vt<=clock_timestamp() and
     ((p_organization_id is not null and p.organization_id=p_organization_id and p.kind='simulation')
      or (p_organization_id is null and not exists(select 1 from planning.simulation_worker_scopes s
@@ -113,12 +123,12 @@ language sql security definer set search_path='' as $$select * from app.planning
 create function app.scoped_simulation_claim()
 returns table(run_id uuid,lease_token uuid)
 language sql security definer set search_path='' as $$
- select * from app.planning_claim_scoped(app.scoped_simulation_identity())
+ select * from app.planning_claim_scoped(app.simulation_runtime_organization(true))
 $$;
 
 create function app.scoped_simulation_task(p_run_id uuid,p_token uuid) returns jsonb
 language plpgsql security definer set search_path='' as $$
-declare organization uuid:=app.scoped_simulation_identity();
+declare organization uuid:=app.simulation_runtime_organization(true);
 begin
  perform 1 from public.planning_runs where id=p_run_id and organization_id=organization and kind='simulation' for update;
  if not found then return null; end if;
@@ -126,7 +136,7 @@ begin
 end; $$;
 create function app.scoped_simulation_fail(p_run_id uuid,p_token uuid) returns boolean
 language plpgsql security definer set search_path='' as $$
-declare organization uuid:=app.scoped_simulation_identity();
+declare organization uuid:=app.simulation_runtime_organization(true);
 begin
  perform 1 from public.planning_runs where id=p_run_id and organization_id=organization and kind='simulation' for update;
  if not found then return false; end if;
@@ -134,7 +144,7 @@ begin
 end; $$;
 create function app.scoped_simulation_finish(p_run_id uuid,p_token uuid,p_output jsonb) returns boolean
 language plpgsql security definer set search_path='' as $$
-declare organization uuid:=app.scoped_simulation_identity();
+declare organization uuid:=app.simulation_runtime_organization(true);
 begin
  perform 1 from public.planning_runs where id=p_run_id and organization_id=organization and kind='simulation' for update;
  if not found then return false; end if;

@@ -24,7 +24,11 @@ def main():
         ssl.create_default_context(cafile=ca_file)
         os.environ['MAQDAR_WORKER_DSN'] = make_conninfo(dsn, sslrootcert=ca_file)
         os.environ['MAQDAR_WORKER_HEALTH_PORT'] = '8080'
-        os.execv(sys.executable, [sys.executable, '-m', 'maqdar_engine.scoped_worker'])
+        mode = os.environ.get('MAQDAR_WORKER_MODE', 'probe')
+        if mode not in {'probe', 'consume'}:
+            raise ValueError('Unsupported runtime mode')
+        args = ['--probe'] if mode == 'probe' else []
+        os.execv(sys.executable, [sys.executable, '-m', 'maqdar_engine.scoped_worker', *args])
     except (ValueError, OSError, psycopg.Error):
         print('Simulation bootstrap failed: check verified connection and CA.', file=sys.stderr)
         return 1

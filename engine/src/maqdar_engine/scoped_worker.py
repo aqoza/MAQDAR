@@ -29,6 +29,8 @@ def process_one(connection: psycopg.Connection) -> bool:
             from maqdar_engine.policy_simulation import calculate
         elif task.get('method') == 'periodic-sensitivity-v1':
             from maqdar_engine.policy_sensitivity import calculate
+        elif task.get('method') == 'periodic-configurations-v1':
+            from maqdar_engine.policy_configurations import calculate
         else:
             raise ValueError('Unsupported method')
         result = calculate(task)
@@ -45,6 +47,7 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument('--once', action='store_true')
     mode.add_argument('--check', action='store_true', help='Verify identity/connection without claiming')
+    mode.add_argument('--probe', action='store_true', help='Supervise connection/health without claiming')
     args = parser.parse_args()
     stopped = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -64,10 +67,18 @@ def main() -> int:
             if args.check:
                 print('Simulation runtime identity verified; no message claimed.')
                 return 0
+            if args.probe:
+                print('Simulation connection-only probe ready; consumption disabled.')
             with health_server(os.environ.get('MAQDAR_WORKER_HEALTH_PORT', '')) as health:
                 while not stopped.is_set():
                     health.touch()
-                    worked = process_one(connection)
+                    if args.probe:
+                        actual = connection.execute('select app.scoped_simulation_identity()').fetchone()[0]
+                        if UUID(str(actual)) != expected:
+                            raise ValueError('Unexpected scope')
+                        worked = False
+                    else:
+                        worked = process_one(connection)
                     health.touch()
                     if args.once:
                         return 0

@@ -39,6 +39,8 @@ Use the web form to enqueue a check first. `--once` processes at most one availa
 
 ## Owner-run rollout and rollback
 
+For an organization-bound simulation service, use the separate [scoped runtime rollout](acme-simulation-worker-deployment.md). Its login has five simulation-only RPCs and no global capability. The shared claim filters out bound organizations' simulation messages before visibility/read-count changes, including while a binding is paused. Existing lease/retry/fencing rules remain; the schema migration alone installs no organization binding or runtime credentials. The ordinary shared worker instructions below retain application-wide scope and must not be used for an ACME-only deployment.
+
 1. Review the migration and run `pnpm exec supabase db push` yourself. The agent does not apply hosted migrations. Enablement requires the hosted project's pgmq extension to be available.
 2. Deploy the web build using the existing process. Provision a dedicated database LOGIN with only membership in `maqdar_worker` and database CONNECT. The migration creates the NOLOGIN capability role, never a password. Keep the LOGIN password and `MAQDAR_WORKER_DSN` in your worker host's secret store; do not use a browser or API service key. The worker explicitly runs `SET ROLE maqdar_worker` on connection.
 3. Install the locked engine dependencies (`uv sync --locked`), configure a verified TLS database DSN for that login, and supervise `uv run maqdar-worker`. No hosted worker is started by this PR. Queue a small check and verify its completed result and attempt count in Forecasts.

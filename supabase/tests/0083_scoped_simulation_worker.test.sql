@@ -16,6 +16,7 @@ select ok(not has_function_privilege('maqdar_simulation_worker','app.planning_ta
 select ok(not has_function_privilege('maqdar_simulation_worker','app.planning_fail(uuid,uuid)','EXECUTE'),'global failure denied');
 select ok(not has_function_privilege('maqdar_simulation_worker','app.simulation_finish(uuid,uuid,jsonb)','EXECUTE'),'global publication denied');
 select ok(not has_function_privilege('maqdar_simulation_worker','app.planning_claim_scoped(uuid)','EXECUTE'),'internal arbitrary scope denied');
+select ok(not has_function_privilege('maqdar_simulation_worker','app.simulation_runtime_organization(boolean)','EXECUTE'),'runtime cannot bypass the enabled gate');
 select ok(has_function_privilege('maqdar_simulation_worker','app.scoped_simulation_claim()','EXECUTE'),'scoped claim granted');
 select ok(has_function_privilege('maqdar_simulation_worker','app.scoped_simulation_task(uuid,uuid)','EXECUTE'),'scoped task granted');
 select ok(has_function_privilege('maqdar_simulation_worker','app.scoped_simulation_finish(uuid,uuid,jsonb)','EXECUTE'),'scoped publication granted');

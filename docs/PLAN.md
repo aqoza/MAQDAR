@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## ACME-only simulation runtime — implementation requested 2026-10-20
+
+The owner requested implementation and Cloudflare Containers deployment preparation for review, with no hosted changes. Bind a dedicated runtime LOGIN to one organization through private database-owned OID/name metadata; authorize simulation claim before transport mutation and retain paused routing ownership away from global consumers. Grant only scoped identity/task/claim/failure/publication, preserving tenant isolation, immutable captured inputs and token fencing for replay, sensitivity and configuration comparisons. Prepare a separate paused/probe service, pinned native image, private health/watchdog and exact owner-run migration/provision/probe/activate/recovery instructions. Prove foreign transport/business isolation with real local logins and a container smoke test. No hosted credential, migration, binding, paid resource or canary is authorized by this preparation. See [rollout](acme-simulation-worker-deployment.md) and [verification](acme-simulation-worker-verification.md).
+
 ## Compact shared typography — approved 2026-10-19
 
 The owner selected 16px/24px page titles and 14px/20px record values after highlighting the disposition-batch title and location code. Update the shared tokens and current design rules across every consumer, retain body/sidebar typography and documented Dashboard/login exceptions, and enforce the approved roles in browser checks. Verify actual laptop, mobile and Arabic RTL screenshots, including current disposition integrations, then open a PR without merging or deployment. See [compact-shared-typography.md](compact-shared-typography.md).
