@@ -1,0 +1,55 @@
+{
+  "contract": "design.MD: Items typography reference; authenticated titles 20px/28px/600, navigation/body/actions 14px/20px, evidence values 16px/24px/600. Global tagline-to-title gap at most 12px. Align the Forecasts title to the start of its existing row without altering shared typography, method controls or tabs.",
+  "targetViewports": ["1366x768", "375x900", "1920x900"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Forecasts keyboard tab switching preserves focus and form values at 375px and 1440px. Existing controls retain labels and targets; the baseline audit checked all 60 excess-header actions for typography, bounds, target size and keyboard order. Reduced-motion loading was exercised. Manual screenshot review checked readability and existing palette consistency; no automated contrast or screen-reader audit is claimed."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "The rebuilt local production section-header matrix passed 35 English/Arabic observations across desktop, laptop and mobile. All tagline-to-title gaps are now at most 12px; the Items banner remains 141px at 1366px in both locales. Long identifiers wrap, mobile tabs/tables scroll locally and page overflow is not hidden."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "Post-fix throttled Imports list/create checks retain artwork, reduced-motion behavior and existing loading boundaries. Baseline Settings and standalone policy streaming checks also passed."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Actual empty Items and Forecasts workspaces retain shared headings, explanatory feedback and existing create/check controls."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "Post-fix malformed local policy evidence exercises illustrated Arabic error/retry/back controls; invalid item identifiers preserve HTTP 404 and section artwork."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "Post-fix Dashboard fixtures render scoped demand/stock with truthful unavailable forecast-risk content and currency-specific valuation."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Post-fix transfer/purchase detail and preview workflows retain 16px/24px evidence values; all six Forecasts tabs switch in place with retained form drafts."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "The baseline 33-test audit passed Settings viewer restrictions and scoped handoff/batch access. This correction changes only the Forecasts h1 alignment; permissions and data access are unchanged."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1366x768",
+      "artifact": "before-after.png",
+      "observation": "Actual English/Arabic laptop captures show the Forecasts gap changing from 20px to 12px while title size, method controls and tabs remain consistent."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "after-ar-375.png",
+      "observation": "Arabic-direction mobile header uses the shared 20px/28px title at inline start, with local tab scrolling and readable 16px form controls."
+    },
+    {
+      "viewport": "1920x900",
+      "artifact": "after-en-1920.png",
+      "observation": "Desktop Forecasts title starts 12px below the tagline and retains the existing single-row tabs and independently aligned method control."
+    }
+  ]
+}

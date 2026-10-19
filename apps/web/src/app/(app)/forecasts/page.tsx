@@ -184,7 +184,7 @@ export default async function ForecastsPage() {
           <>
             <PageHeaderArt pattern="forecasts" />
             <header className={styles.heading}>
-              <h1 className="text-page-title">{t('title')}</h1>
+              <h1 className="self-start text-page-title">{t('title')}</h1>
               <div className={styles.method}>
                 <HelpDisclosure>
                   <p>{t('scope')}</p>

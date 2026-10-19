@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Merged header audit and Forecasts alignment — requested 2026-10-19
+
+Verify merged main at 13-inch laptop and mobile viewports in English and Arabic RTL. The fresh audit found correct shared typography but a 20px tagline-to-title gap in the Forecasts workspace, exceeding the 12px design rule. Align that title to the start of its existing row and enforce the gap across all section headers. Preserve the type scale, method controls, tabs and planning behavior; retain screenshots and open a focused PR without deployment. See [forecast-header-alignment.md](forecast-header-alignment.md).
+
 ## Post-PR #92 main CI — requested 2026-10-19
 
 Fix the header regression's obsolete two-action assumption after PR #91 added disposition handoffs. Require the current handoff/review/history-or-new destinations and check every rendered action's shared typography, viewport bounds, mobile target size and keyboard order. Preserve application behavior and existing visual standards; verify against merged main and open a focused fix PR.
