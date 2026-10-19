@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 import { test, expect } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { expectPageTitle } from './helpers/typography'
 
 test.use({ actionTimeout: 30_000 })
 
@@ -85,7 +86,7 @@ print(json.dumps(dict(run=str(run),location=str(location))))`)
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
       ).toBe(true)
-      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+      await expectPageTitle(page.getByRole('heading', { level: 1 }))
       await expect(page.locator('textarea[name=maxima]')).toHaveCSS(
         'font-size',
         width < 768 ? '16px' : '14px',
@@ -159,7 +160,7 @@ with psycopg.connect(sys.argv[1]) as db:
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
       ).toBe(true)
-      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+      await expectPageTitle(page.getByRole('heading', { level: 1 }))
       const ledger = page.getByRole('region').last()
       await ledger.focus()
       await expect(ledger).toBeFocused()
