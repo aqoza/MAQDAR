@@ -14,6 +14,7 @@ import {
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import type { MouseEvent } from 'react'
 import { OrganizationSwitcher } from '@/components/organization-switcher'
 import { RoleBadge } from '@/components/role-badge'
 import { Button } from '@/components/ui/button'
@@ -29,6 +30,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import { signOut } from '@/lib/auth/actions'
 import { isEditorRole, type Role } from '@/lib/auth/roles'
@@ -65,8 +67,23 @@ export function AppSidebar({
   const tCommon = useTranslations('Common')
   const pathname = usePathname()
   const dir = useDirection()
+  const { isMobile, setOpenMobile } = useSidebar()
   const canEdit = isEditorRole(role)
   const navItems = NAV_ITEMS.filter((item) => canEdit || !item.editorsOnly)
+
+  function closeMobileNavigation(event: MouseEvent<HTMLAnchorElement>) {
+    if (
+      isMobile &&
+      !event.defaultPrevented &&
+      event.button === 0 &&
+      !event.metaKey &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      !event.altKey
+    ) {
+      setOpenMobile(false)
+    }
+  }
 
   return (
     // The sidebar's `side` is physical by design; it follows the text direction.
@@ -74,6 +91,7 @@ export function AppSidebar({
       <SidebarHeader className="gap-2 app-sidebar-header">
         <Link
           href="/dashboard"
+          onClick={closeMobileNavigation}
           className="app-brand px-2 pt-1 font-semibold tracking-tight group-data-[collapsible=icon]:hidden"
         >
           {tCommon('appName')}
@@ -94,7 +112,7 @@ export function AppSidebar({
                 return (
                   <SidebarMenuItem key={key}>
                     <SidebarMenuButton
-                      render={<Link href={href} />}
+                      render={<Link href={href} onClick={closeMobileNavigation} />}
                       isActive={isActive}
                       tooltip={t(key)}
                     >
