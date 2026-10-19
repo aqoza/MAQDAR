@@ -1240,6 +1240,26 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"policy_simulations": {
+                  Row: {
+                    "evidence": NonNullable<Json>,"id": string,"item_code": string,"item_id": string,"location_id": string,"organization_id": string,"policy_id": string,"run_id": string,"unit": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "evidence": NonNullable<Json>,"id"?: string,"item_code": string,"item_id": string,"location_id": string,"organization_id": string,"policy_id": string,"run_id": string,"unit": string
+                  }
+                  Update: {
+                    "evidence"?: NonNullable<Json>,"id"?: string,"item_code"?: string,"item_id"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string,"run_id"?: string,"unit"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "policy_simulations_organization_id_run_id_location_id_fkey"
+      columns: ["organization_id","run_id","location_id"]
+isOneToOne: false
+      referencedRelation: "planning_runs"
+      referencedColumns: ["organization_id","id","location_id"]
+    }
+                  ]
                 },"public_holidays": {
                   Row: {
                     "country_code": string,"holiday_date": string,"id": number,"kind": string,"name_en": string,"note": string | null,"sector": string,"shifted_from": string | null,"source": string
@@ -3148,6 +3168,9 @@ isOneToOne: false
                            },
 "set_member_role":
 { Args: { "p_organization_id": string,"p_role": string,"p_user_id": string }; Returns: undefined
+                           },
+"simulation_enqueue":
+{ Args: { "p_alternative_maximum": string,"p_empty_start_confirmed": boolean,"p_history_confirmed": boolean,"p_opening_stock": string,"p_organization_id": string,"p_policy_id": string,"p_request_id": string,"p_to": string }; Returns: string
                            },
 "stock_locator":
 { Args: { "p_day": string,"p_filters"?: Json,"p_item_code": string,"p_organization_id": string,"p_page"?: number,"p_receiving_code": string,"p_size"?: number,"p_unit": string }; Returns: Json

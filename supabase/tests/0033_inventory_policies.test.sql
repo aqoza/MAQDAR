@@ -3,8 +3,8 @@ select no_plan();
 select set_eq(
  $$select p.proname::text collate "default" from pg_proc p join pg_namespace n on n.oid=p.pronamespace
    where n.nspname='app' and p.prorettype<>'trigger'::regtype and has_function_privilege('maqdar_worker',p.oid,'EXECUTE')$$,
- $$values ('planning_claim'),('planning_task'),('planning_execute'),('classification_finish'),('forecast_finish'),('preparation_finish'),('policy_finish'),('planning_fail')$$,
- 'worker has exactly eight reviewed capabilities');
+ $$values ('planning_claim'),('planning_task'),('planning_execute'),('classification_finish'),('forecast_finish'),('preparation_finish'),('policy_finish'),('simulation_finish'),('planning_fail')$$,
+ 'worker has exactly nine reviewed capabilities');
 create function pg_temp.id(n integer) returns uuid language sql immutable as $$select ('92000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid$$;
 create function pg_temp.login(n integer,org integer) returns void language sql as $$
  select set_config('request.jwt.claims',jsonb_build_object('sub',pg_temp.id(n),'role','authenticated','org_id',pg_temp.id(org))::text,true)::void;
