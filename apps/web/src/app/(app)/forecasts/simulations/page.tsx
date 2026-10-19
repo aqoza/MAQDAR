@@ -16,14 +16,15 @@ export default async function Simulations({
   if (!context?.active) redirect('/organizations')
   const raw = firstParam((await searchParams).page) ?? '1'
   const page = /^\d{1,6}$/.test(raw) ? Math.max(1, Math.min(Number(raw), 100000)) : 1
-  const [db, t, planning] = await Promise.all([
+  const [db, t, planning, sensitivity] = await Promise.all([
     createClient(),
     getTranslations('PolicySimulation'),
     getTranslations('Planning'),
+    getTranslations('PolicySensitivity'),
   ])
   const result = await db
     .from('planning_runs')
-    .select('id,status,from_date,to_date,created_at,locations(code)', { count: 'exact' })
+    .select('id,status,from_date,to_date,created_at,options,locations(code)', { count: 'exact' })
     .eq('organization_id', context.active.id)
     .eq('kind', 'simulation')
     .order('created_at', { ascending: false })
@@ -69,6 +70,10 @@ export default async function Simulations({
                   <th className="p-3 text-start font-medium">{run.locations?.code}</th>
                   <td className="p-3">
                     {run.from_date} – {run.to_date}
+                    {(run.options as { method?: string } | null)?.method ===
+                      'periodic-sensitivity-v1' && (
+                      <p className="text-xs text-muted-foreground">{sensitivity('title')}</p>
+                    )}
                   </td>
                   <td className="p-3">
                     {planning(

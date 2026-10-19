@@ -6,6 +6,30 @@ import { fieldValues, type ActionState } from '@/lib/forms'
 import { requireEditor, invalidState, rpcErrorState } from '@/lib/organizations/guard'
 import { createClient } from '@/lib/supabase/server'
 import { simulationRequestSchema } from '@/lib/policy-simulation'
+import { sensitivityRequestSchema } from '@/lib/policy-sensitivity'
+
+export async function enqueueSensitivity(
+  _state: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const guard = await requireEditor(form)
+  if (!guard.ok) return guard.state
+  const values = fieldValues(form, ['source_run_id', 'request_id', 'maxima', 'reuse_confirmed'])
+  const parsed = sensitivityRequestSchema.safeParse(values)
+  if (!parsed.success) return { ...(await invalidState('validation')), values }
+  const db = await createClient()
+  const { data, error } = await db.rpc('simulation_sensitivity_enqueue', {
+    p_organization_id: guard.organizationId,
+    p_source_run_id: parsed.data.source_run_id,
+    p_request_id: parsed.data.request_id,
+    p_alternative_maxima: parsed.data.maxima,
+    p_reuse_confirmed: true,
+  })
+  if (error) return { ...(await rpcErrorState(error)), values }
+  revalidatePath('/forecasts')
+  revalidatePath('/forecasts/simulations')
+  redirect(`/forecasts/simulations/${data}`)
+}
 
 export async function enqueueSimulation(_state: ActionState, form: FormData): Promise<ActionState> {
   const guard = await requireEditor(form)

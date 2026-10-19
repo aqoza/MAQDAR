@@ -4433,5 +4433,26 @@
       "closing_backlog": "Closing backlog",
       "closing_on_order": "Closing on-order"
     }
+  },
+  "PolicySensitivity": {
+    "title": "Policy sensitivity comparison",
+    "startingState": "All variants start with {stock} {unit} available, no incoming orders and no backlog.",
+    "create": "Compare policy maxima",
+    "source": "Source simulation",
+    "fixedEvidence": "Saved comparison inputs",
+    "alternatives": "Alternative maxima",
+    "maxima": "Periodic maxima to compare",
+    "inputHelp": "Enter one to ten distinct nonnegative quantities, separated by commas or new lines. Use up to three decimal places. A maximum equal to the saved baseline is allowed.",
+    "reuse": "I confirm that this comparison intentionally reuses the saved demand, unit, dates, opening stock, fixed lead/review times, empty initial pipeline and zero backlog. Only the maximum changes.",
+    "pending": "Queuing comparison…",
+    "submit": "Queue comparison",
+    "ineligible": "Choose a completed original policy simulation at an active location.",
+    "interpretation": "All variants reuse the source simulation’s captured recorded sales and controlled starting assumptions. Lost sales remain separate. Exploring maxima on this history is not independent validation of future performance. No winner is selected and no policy or operational order is changed.",
+    "alternative": "Alternative {number}",
+    "comparison": "Maximum sensitivity comparison",
+    "variant": "Variant",
+    "sharedDemand": "Shared recorded sales: {sold} {unit} · Recorded lost sales, separate: {lost} {unit}",
+    "inspectLedger": "Inspect a daily ledger",
+    "showLedger": "Show ledger"
   }
 }
