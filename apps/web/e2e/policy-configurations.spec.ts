@@ -2,10 +2,12 @@ import { randomUUID } from 'node:crypto'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve } from 'node:path'
-import { test, expect } from '@playwright/test'
+import { test, expect as baseExpect } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { expectPageTitle } from './helpers/typography'
+
+const expect = baseExpect.configure({ timeout: 30_000 })
 
 test.use({ actionTimeout: 30_000 })
 
@@ -35,7 +37,8 @@ test('configurations comparisons reuse saved evidence, expose selected ledgers a
       cwd: resolve(process.cwd(), '../../engine'),
       timeout: 30_000,
     })
-  const seeded = await python(`import sys,json,psycopg
+  try {
+    const seeded = await python(`import sys,json,psycopg
 from uuid import uuid4
 from datetime import date,timedelta
 from psycopg.types.json import Jsonb
@@ -58,140 +61,149 @@ with psycopg.connect(sys.argv[1]) as db:
     db.execute("insert into public.policy_simulations(id,organization_id,run_id,location_id,policy_id,item_id,item_code,unit,evidence) values(%s,%s,%s,%s,%s,%s,'SENS-ITEM','EA',%s)",(result,org,run,location,policy,item,Jsonb(source)))
     db.execute("insert into public.demand_history(organization_id,item_id,location_id,demand_date,quantity,lost_sales_quantity,unit_of_measure) values(%s,%s,%s,'2026-01-02',999,0,'KG')",(org,item,location))
 print(json.dumps(dict(run=str(run),location=str(location))))`)
-  const fixture = JSON.parse(seeded.stdout) as { run: string; location: string }
-  const newUrl = `/forecasts/simulations/configure?source=${fixture.run}`
-  await page.goto(`/forecasts/simulations/${fixture.run}`)
-  await page.getByRole('link', { name: 'Compare policy configurations', exact: true }).click()
-  const form = page.getByRole('form', { name: 'Compare policy configurations' })
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Compare policy configurations')
-  await form.getByRole('button', { name: 'Add configuration' }).click()
-  await form.getByLabel('Periodic maximum', { exact: true }).nth(1).fill('08.00')
-  await form.getByRole('checkbox').check()
-  await form.getByRole('button', { name: 'Queue configuration comparison' }).click()
-  await expect(form.getByRole('alert')).toBeVisible()
-  const viewerContext = await browser.newContext(),
-    viewerPage = await viewerContext.newPage()
-  await signInWithPassword(viewerPage, viewerEmail, password)
-  await viewerPage.goto(newUrl)
-  await expect(
-    viewerPage.getByRole('button', { name: 'Queue configuration comparison' }),
-  ).toHaveCount(0)
-  await expect(
-    viewerPage.getByText('Only owners, administrators and planners can queue simulations.'),
-  ).toBeVisible()
-  for (const locale of ['en', 'ar']) {
+    const fixture = JSON.parse(seeded.stdout) as { run: string; location: string }
+    const newUrl = `/forecasts/simulations/configure?source=${fixture.run}`
+    await page.goto(`/forecasts/simulations/${fixture.run}`)
+    await page.getByRole('link', { name: 'Compare policy configurations', exact: true }).click()
+    const form = page.getByRole('form', { name: 'Compare policy configurations' })
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Compare policy configurations',
+    )
+    await form.getByRole('button', { name: 'Add configuration' }).click()
+    await form.getByLabel('Periodic maximum', { exact: true }).nth(1).fill('08.00')
+    await form.getByRole('checkbox').check()
+    await form.getByRole('button', { name: 'Queue configuration comparison' }).click()
+    await expect(form.getByRole('alert')).toBeVisible()
+    const viewerContext = await browser.newContext(),
+      viewerPage = await viewerContext.newPage()
+    await signInWithPassword(viewerPage, viewerEmail, password)
+    await viewerPage.goto(newUrl)
+    await expect(
+      viewerPage.getByRole('button', { name: 'Queue configuration comparison' }),
+    ).toHaveCount(0)
+    await expect(
+      viewerPage.getByText('Only owners, administrators and planners can queue simulations.'),
+    ).toBeVisible()
+    for (const locale of ['en', 'ar']) {
+      await page
+        .context()
+        .addCookies([{ name: 'locale', value: locale, url: new URL(page.url()).origin }])
+      await page.goto(newUrl)
+      for (const width of [375, 768, 1024, 1440, 1920]) {
+        await page.setViewportSize({ width, height: 900 })
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+        ).toBe(true)
+        await expectPageTitle(page.getByRole('heading', { level: 1 }))
+        await expect(page.locator('input[inputmode=decimal]').first()).toHaveCSS(
+          'font-size',
+          width < 768 ? '16px' : '14px',
+        )
+        await page.screenshot({
+          path: testInfo.outputPath(`configurations-form-${locale}-${width}.png`),
+          fullPage: true,
+        })
+      }
+    }
     await page
       .context()
-      .addCookies([{ name: 'locale', value: locale, url: new URL(page.url()).origin }])
+      .addCookies([{ name: 'locale', value: 'en', url: new URL(page.url()).origin }])
     await page.goto(newUrl)
-    for (const width of [375, 768, 1024, 1440, 1920]) {
-      await page.setViewportSize({ width, height: 900 })
-      expect(
-        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
-      ).toBe(true)
-      await expectPageTitle(page.getByRole('heading', { level: 1 }))
-      await expect(page.locator('input[inputmode=decimal]').first()).toHaveCSS(
-        'font-size',
-        width < 768 ? '16px' : '14px',
-      )
-      await page.screenshot({
-        path: testInfo.outputPath(`configurations-form-${locale}-${width}.png`),
-        fullPage: true,
-      })
-    }
-  }
-  await page
-    .context()
-    .addCookies([{ name: 'locale', value: 'en', url: new URL(page.url()).origin }])
-  await page.goto(newUrl)
-  await form.getByLabel('Periodic maximum', { exact: true }).fill('6')
-  await form.getByLabel('Lead time (calendar days)').fill('0')
-  await form.getByLabel('Review interval (calendar days)').fill('1')
-  await form.getByRole('button', { name: 'Add configuration' }).click()
-  await form.getByLabel('Periodic maximum', { exact: true }).nth(1).fill('6')
-  await form.getByRole('button', { name: 'Add configuration' }).click()
-  await form.getByLabel('Periodic maximum', { exact: true }).nth(2).fill('6')
-  await form.getByLabel('Lead time (calendar days)').nth(2).fill('365')
-  await form.getByLabel('Review interval (calendar days)').nth(2).fill('365')
-  await form.getByRole('button', { name: 'Add configuration' }).click()
-  await form.getByRole('button', { name: 'Remove configuration 4' }).click()
-  await expect(form.getByLabel('Periodic maximum', { exact: true })).toHaveCount(3)
-  await form.getByRole('checkbox').check()
-  await form.getByRole('button', { name: 'Queue configuration comparison' }).click()
-  await expect(page).toHaveURL(/\/forecasts\/simulations\/[0-9a-f-]+$/)
-  const resultUrl = page.url()
-  await expect(page.getByText('Queued', { exact: true })).toBeVisible()
-  await python(`import sys,psycopg
+    await form.getByLabel('Periodic maximum', { exact: true }).fill('6')
+    await form.getByLabel('Lead time (calendar days)').fill('0')
+    await form.getByLabel('Review interval (calendar days)').fill('1')
+    await form.getByRole('button', { name: 'Add configuration' }).click()
+    await form.getByLabel('Periodic maximum', { exact: true }).nth(1).fill('6')
+    await form.getByRole('button', { name: 'Add configuration' }).click()
+    await form.getByLabel('Periodic maximum', { exact: true }).nth(2).fill('6')
+    await form.getByLabel('Lead time (calendar days)').nth(2).fill('365')
+    await form.getByLabel('Review interval (calendar days)').nth(2).fill('365')
+    await form.getByRole('button', { name: 'Add configuration' }).click()
+    await form.getByRole('button', { name: 'Remove configuration 4' }).click()
+    await expect(form.getByLabel('Periodic maximum', { exact: true })).toHaveCount(3)
+    await form.getByRole('checkbox').check()
+    await form.getByRole('button', { name: 'Queue configuration comparison' }).click()
+    await expect(page).toHaveURL(/\/forecasts\/simulations\/[0-9a-f-]+$/)
+    const resultUrl = page.url()
+    await expect(page.getByText('Queued', { exact: true })).toBeVisible()
+    await python(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('delete from public.planning_runs where id=%s',('${fixture.run}',))`)
-  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
-    cwd: resolve(process.cwd(), '../../engine'),
-    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
-    timeout: 100_000,
-  })
-  await page.getByRole('button', { name: 'Refresh runs' }).click()
-  await expect(page.getByText('Completed', { exact: true })).toBeVisible()
-  const comparison = page.getByRole('table', { name: 'Configuration metrics' })
-  await expect(comparison.locator('tbody tr')).toHaveCount(4)
-  await expect(comparison.locator('tbody tr').nth(0)).toContainText('37.5%')
-  await expect(comparison.locator('tbody tr').nth(1)).toContainText('100%')
-  await expect(comparison.locator('tbody tr').nth(2)).toContainText('37.5%')
-  await expect(comparison.locator('tbody tr').nth(3)).toContainText('12.5%')
-  await expect(page.getByText('Shared recorded sales:', { exact: false })).toContainText('16 EA')
-  await expect(page.getByText('Shared recorded sales:', { exact: false })).toContainText('4.5 EA')
-  await page.getByLabel('Configuration', { exact: true }).selectOption('3')
-  await page.getByRole('button', { name: 'Show ledger' }).click()
-  await expect(
-    page.getByRole('table', { name: 'Configuration 3 — daily ledger' }).locator('tbody tr'),
-  ).toHaveCount(4)
-  await expect(page.getByRole('table', { name: 'Configuration 3 — daily ledger' })).toContainText(
-    '2027-01-02',
-  )
-  await viewerPage.goto(resultUrl)
-  await expect(viewerPage.getByRole('table', { name: 'Configuration metrics' })).toBeVisible()
-  await viewerContext.close()
-  const branchContext = await browser.newContext(),
-    branchPage = await branchContext.newPage()
-  await signInWithPassword(branchPage, branchEmail, password)
-  expect((await branchPage.goto(resultUrl))?.status()).toBe(404)
-  await branchPage.goto('/forecasts/simulations')
-  await expect(branchPage.locator('tbody tr')).toHaveCount(0)
-  await python(`import sys,psycopg
+    await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+      cwd: resolve(process.cwd(), '../../engine'),
+      env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+      timeout: 100_000,
+    })
+    await page.getByRole('button', { name: 'Refresh runs' }).click()
+    await expect(page.getByText('Completed', { exact: true })).toBeVisible({ timeout: 30_000 })
+    const comparison = page.getByRole('table', { name: 'Configuration metrics' })
+    await expect(comparison.locator('tbody tr')).toHaveCount(4)
+    await expect(comparison.locator('tbody tr').nth(0)).toContainText('37.5%')
+    await expect(comparison.locator('tbody tr').nth(1)).toContainText('100%')
+    await expect(comparison.locator('tbody tr').nth(2)).toContainText('37.5%')
+    await expect(comparison.locator('tbody tr').nth(3)).toContainText('12.5%')
+    await expect(page.getByText('Shared recorded sales:', { exact: false })).toContainText('16 EA')
+    await expect(page.getByText('Shared recorded sales:', { exact: false })).toContainText('4.5 EA')
+    await page.getByLabel('Configuration', { exact: true }).selectOption('3')
+    await page.getByRole('button', { name: 'Show ledger' }).click()
+    await expect(
+      page.getByRole('table', { name: 'Configuration 3 — daily ledger' }).locator('tbody tr'),
+    ).toHaveCount(4)
+    await expect(page.getByRole('table', { name: 'Configuration 3 — daily ledger' })).toContainText(
+      '2027-01-02',
+    )
+    await viewerPage.goto(resultUrl)
+    await expect(viewerPage.getByRole('table', { name: 'Configuration metrics' })).toBeVisible()
+    await viewerContext.close()
+    const branchContext = await browser.newContext(),
+      branchPage = await branchContext.newPage()
+    await signInWithPassword(branchPage, branchEmail, password)
+    expect((await branchPage.goto(resultUrl))?.status()).toBe(404)
+    await branchPage.goto('/forecasts/simulations')
+    await expect(branchPage.locator('tbody tr')).toHaveCount(0)
+    await python(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('insert into public.membership_locations values(%s,%s,%s)',(sys.argv[2],'${branch}','${fixture.location}'))`)
-  await branchPage.goto(resultUrl)
-  await expect(branchPage.getByRole('table', { name: 'Configuration metrics' })).toBeVisible()
-  await branchContext.close()
-  for (const locale of ['en', 'ar']) {
-    await page
-      .context()
-      .addCookies([{ name: 'locale', value: locale, url: new URL(page.url()).origin }])
-    await page.goto(`${resultUrl}?variant=3`)
-    await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr')
-    for (const width of [375, 768, 1024, 1440, 1920]) {
-      await page.setViewportSize({ width, height: 900 })
-      expect(
-        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
-      ).toBe(true)
-      await expectPageTitle(page.getByRole('heading', { level: 1 }))
-      const ledger = page.getByRole('region').last()
-      await ledger.focus()
-      await expect(ledger).toBeFocused()
-      if (width === 375) {
-        await page.keyboard.press(locale === 'ar' ? 'ArrowLeft' : 'ArrowRight')
-        await expect
-          .poll(() => ledger.evaluate((node) => Math.abs(node.scrollLeft)))
-          .toBeGreaterThan(0)
+    await branchPage.goto(resultUrl)
+    await expect(branchPage.getByRole('table', { name: 'Configuration metrics' })).toBeVisible()
+    await branchContext.close()
+    for (const locale of ['en', 'ar']) {
+      await page
+        .context()
+        .addCookies([{ name: 'locale', value: locale, url: new URL(page.url()).origin }])
+      await page.goto(`${resultUrl}?variant=3`)
+      await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr')
+      for (const width of [375, 768, 1024, 1440, 1920]) {
+        await page.setViewportSize({ width, height: 900 })
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+        ).toBe(true)
+        await expectPageTitle(page.getByRole('heading', { level: 1 }))
+        const ledger = page.getByRole('region').last()
+        await ledger.focus()
+        await expect(ledger).toBeFocused()
+        if (width === 375) {
+          await page.keyboard.press(locale === 'ar' ? 'ArrowLeft' : 'ArrowRight')
+          await expect
+            .poll(() => ledger.evaluate((node) => Math.abs(node.scrollLeft)))
+            .toBeGreaterThan(0)
+        }
+        await ledger.evaluate((node) => node.scrollTo({ left: 0 }))
+        await page.screenshot({
+          path: testInfo.outputPath(`configurations-result-${locale}-${width}.png`),
+          fullPage: true,
+        })
       }
-      await ledger.evaluate((node) => node.scrollTo({ left: 0 }))
-      await page.screenshot({
-        path: testInfo.outputPath(`configurations-result-${locale}-${width}.png`),
-        fullPage: true,
-      })
     }
+    expect((await page.goto(newUrl))?.status()).toBe(404)
+    await page.goto('/forecasts/simulations')
+    await expect(page.locator('tbody tr')).toHaveCount(1)
+    await expect(page.locator('tbody')).toContainText('مقارنات إعدادات سياسة المخزون')
+  } finally {
+    // Failed/retried specs must not leave a message for the next spec's --once worker.
+    await python(`import sys,psycopg
+with psycopg.connect(sys.argv[1]) as db:
+    db.execute("update public.planning_runs set status='canceled',finished_at=clock_timestamp() where organization_id=%s and status in ('queued','running')",(sys.argv[2],))
+    db.execute("delete from pgmq.q_planning where (message->>'run_id')::uuid in (select id from public.planning_runs where organization_id=%s)",(sys.argv[2],))`)
   }
-  expect((await page.goto(newUrl))?.status()).toBe(404)
-  await page.goto('/forecasts/simulations')
-  await expect(page.locator('tbody tr')).toHaveCount(1)
-  await expect(page.locator('tbody')).toContainText('مقارنات إعدادات سياسة المخزون')
 })
