@@ -1,7 +1,14 @@
 -- No tenant binding, LOGIN, password, queue purge or existing-row update.
 -- Routing is activated separately by the reviewed owner-run binding script.
 set lock_timeout='5s';
-create role maqdar_simulation_worker nologin nosuperuser nocreatedb nocreaterole noinherit nobypassrls;
+do $$ begin
+ if not exists(select 1 from pg_roles where rolname='maqdar_simulation_worker') then
+  create role maqdar_simulation_worker nologin nosuperuser nocreatedb nocreaterole noinherit nobypassrls;
+ elsif exists(select 1 from pg_roles where rolname='maqdar_simulation_worker'
+  and (rolcanlogin or rolsuper or rolcreatedb or rolcreaterole or rolinherit or rolbypassrls)) then
+  raise exception 'unexpected simulation capability role';
+ end if;
+end; $$;
 grant maqdar_simulation_worker to postgres;
 grant usage on schema app to maqdar_simulation_worker;
 

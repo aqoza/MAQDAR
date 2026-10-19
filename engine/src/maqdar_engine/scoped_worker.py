@@ -12,6 +12,7 @@ import psycopg
 from psycopg.types.json import Jsonb
 
 from maqdar_engine.worker import validate_dsn
+from maqdar_engine.worker_health import health_server
 
 
 def process_one(connection: psycopg.Connection) -> bool:
@@ -63,12 +64,15 @@ def main() -> int:
             if args.check:
                 print('Simulation runtime identity verified; no message claimed.')
                 return 0
-            while not stopped.is_set():
-                worked = process_one(connection)
-                if args.once:
-                    return 0
-                if not worked:
-                    stopped.wait(5)
+            with health_server(os.environ.get('MAQDAR_WORKER_HEALTH_PORT', '')) as health:
+                while not stopped.is_set():
+                    health.touch()
+                    worked = process_one(connection)
+                    health.touch()
+                    if args.once:
+                        return 0
+                    if not worked:
+                        stopped.wait(5)
         return 0
     except (ValueError, psycopg.Error):
         print('Simulation worker stopped: check connection, scope and migrations.', file=sys.stderr)

@@ -11,6 +11,7 @@ from psycopg.types.json import Jsonb
 import pytest
 
 from maqdar_engine.policy_simulation import calculate
+from maqdar_engine.scoped_worker import process_one
 from test_policy_simulation import task
 
 pytestmark = pytest.mark.db
@@ -166,3 +167,95 @@ def test_disabled_scope_never_falls_back_to_global(scoped):
         db.execute('set role maqdar_worker')
         assert db.execute('select * from app.planning_claim()').fetchone() is None
     assert transport(scoped, scoped['org']) == before
+
+
+def test_real_scoped_python_worker_publishes_one_immutable_result(scoped):
+    target = queued(scoped)
+    with runtime(scoped) as db:
+        assert process_one(db) is True
+        assert process_one(db) is False
+    with psycopg.connect(scoped['dsn']) as db:
+        assert db.execute('select status,attempts from public.planning_runs where id=%s', (target,)).fetchone() == ('succeeded', 1)
+        assert db.execute('select count(*) from public.policy_simulations where run_id=%s', (target,)).fetchone()[0] == 1
+        assert db.execute('select count(*) from planning.simulation_inputs where run_id=%s', (target,)).fetchone()[0] == 0
+        assert db.execute('select count(*) from planning.leases where run_id=%s', (target,)).fetchone()[0] == 0
+
+
+def test_scoped_sensitivity_uses_same_identity_and_publication(scoped):
+    from test_policy_sensitivity import task as sensitivity_task
+    target = queued(scoped)
+    with psycopg.connect(scoped['dsn']) as db:
+        replay = db.execute('select payload from planning.simulation_inputs where run_id=%s', (target,)).fetchone()[0]
+        payload = sensitivity_task()
+        payload['policy'] = replay['policy']
+        payload['source_simulation']['evidence']['policy'] = replay['policy']
+        db.execute('update planning.simulation_inputs set payload=%s where run_id=%s', (Jsonb(payload), target))
+    with runtime(scoped) as db:
+        assert process_one(db) is True
+    with psycopg.connect(scoped['dsn']) as db:
+        assert db.execute('select result->>\'method\' from public.planning_runs where id=%s', (target,)).fetchone()[0] == 'periodic-sensitivity-v1'
+
+
+def test_cancellation_and_invalid_output_cannot_publish(scoped):
+    target = queued(scoped)
+    with runtime(scoped) as db:
+        lease = db.execute('select * from app.scoped_simulation_claim()').fetchone()
+        payload = db.execute('select app.scoped_simulation_task(%s,%s)', lease).fetchone()[0]
+        with pytest.raises(psycopg.Error) as error:
+            db.execute('select app.scoped_simulation_finish(%s,%s,%s)', (*lease, Jsonb({})))
+        assert error.value.sqlstate == 'MQ422'
+    with psycopg.connect(scoped['dsn']) as db:
+        db.execute("update public.planning_runs set status='canceled',finished_at=now() where id=%s", (target,))
+    with runtime(scoped) as db:
+        assert db.execute('select app.scoped_simulation_task(%s,%s)', lease).fetchone()[0] is None
+        assert db.execute('select app.scoped_simulation_finish(%s,%s,%s)', (*lease, Jsonb(calculate(payload)))).fetchone()[0] is False
+        assert db.execute('select app.scoped_simulation_fail(%s,%s)', lease).fetchone()[0] is False
+
+
+def test_only_scoped_exhaustion_is_drained(scoped):
+    queued(scoped, foreign=True, attempts=3)
+    target = queued(scoped, attempts=3)
+    before = transport(scoped, scoped['foreign'])
+    with runtime(scoped) as db:
+        assert db.execute('select * from app.scoped_simulation_claim()').fetchone() is None
+    assert transport(scoped, scoped['foreign']) == before
+    with psycopg.connect(scoped['dsn']) as db:
+        assert db.execute('select status,error_code from public.planning_runs where id=%s', (target,)).fetchone() == ('failed', 'attempts_exhausted')
+
+
+def test_scope_revocation_during_compute_blocks_publication(scoped):
+    target = queued(scoped)
+    with runtime(scoped) as db:
+        lease = db.execute('select * from app.scoped_simulation_claim()').fetchone()
+        payload = db.execute('select app.scoped_simulation_task(%s,%s)', lease).fetchone()[0]
+    with psycopg.connect(scoped['dsn']) as db:
+        db.execute('update planning.simulation_worker_scopes set enabled=false where organization_id=%s', (scoped['org'],))
+    before = transport(scoped, scoped['org'])
+    with runtime(scoped) as db:
+        for statement, args in (
+            ('select app.scoped_simulation_task(%s,%s)', lease),
+            ('select app.scoped_simulation_fail(%s,%s)', lease),
+            ('select app.scoped_simulation_finish(%s,%s,%s)', (*lease, Jsonb(calculate(payload)))),
+        ):
+            with pytest.raises(psycopg.Error) as error:
+                db.execute(statement, args)
+            assert error.value.sqlstate == '42501'
+    assert transport(scoped, scoped['org']) == before
+
+
+def test_routing_cutover_refuses_active_simulation(scoped):
+    queued(scoped)
+    with psycopg.connect(scoped['dsn'], autocommit=True) as db:
+        with pytest.raises(psycopg.Error) as error:
+            db.execute('delete from planning.simulation_worker_scopes where organization_id=%s', (scoped['org'],))
+        assert error.value.sqlstate == 'MQ409'
+
+
+def test_capability_membership_revocation_fails_closed(scoped):
+    queued(scoped)
+    with runtime(scoped) as db:
+        with psycopg.connect(scoped['dsn'], autocommit=True) as admin:
+            admin.execute(sql.SQL('revoke maqdar_simulation_worker from {}').format(sql.Identifier(scoped['role'])))
+        with pytest.raises(psycopg.Error) as error:
+            db.execute('select * from app.scoped_simulation_claim()')
+        assert error.value.sqlstate == '42501'
