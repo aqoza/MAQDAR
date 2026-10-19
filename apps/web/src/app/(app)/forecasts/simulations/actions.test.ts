@@ -1,7 +1,14 @@
 import { beforeEach, expect, it, vi } from 'vitest'
 vi.mock('@/lib/forms', () => import('../../../../lib/forms'))
 vi.mock('@/lib/policy-simulation', () => import('../../../../lib/policy-simulation'))
-const mocks = vi.hoisted(() => ({ guard: vi.fn(), rpc: vi.fn(), redirect: vi.fn() }))
+const mocks = vi.hoisted(() => ({
+  guard: vi.fn(),
+  rpc: vi.fn(),
+  redirect: vi.fn(),
+  translations: vi.fn(),
+  t: vi.fn(),
+}))
+vi.mock('next-intl/server', () => ({ getTranslations: mocks.translations }))
 vi.mock('@/lib/organizations/guard', () => ({
   requireEditor: mocks.guard,
   invalidState: async () => ({ status: 'error', code: 'validation' }),
@@ -31,6 +38,8 @@ beforeEach(() => {
   vi.clearAllMocks()
   mocks.guard.mockResolvedValue({ ok: true, organizationId: 'session-org' })
   mocks.rpc.mockResolvedValue({ data: 'saved-run', error: null })
+  mocks.translations.mockResolvedValue(mocks.t)
+  mocks.t.mockReturnValue('Check simulation history before trying again.')
   mocks.redirect.mockImplementation(() => {
     throw new Error('REDIRECT')
   })
@@ -64,3 +73,24 @@ it('does not expose raw database details or redirect a failed submission', async
   expect((await enqueueSimulation(idleState, form())).code).toBe('rejected')
   expect(mocks.redirect).not.toHaveBeenCalled()
 })
+it.each(['a planning run is already active', 'request id already used with different parameters'])(
+  'returns simulation guidance and preserves inputs for conflict: %s',
+  async (message) => {
+    mocks.rpc.mockResolvedValue({ error: { code: 'MQ409', message } })
+    const state = await enqueueSimulation(idleState, form())
+    expect(state).toMatchObject({
+      status: 'error',
+      code: 'MQ409',
+      message: 'Check simulation history before trying again.',
+      values: {
+        request_id: values.request_id,
+        opening_stock: values.opening_stock,
+        alternative_maximum: values.alternative_maximum,
+      },
+    })
+    expect(mocks.translations).toHaveBeenCalledWith('PolicySimulation')
+    expect(mocks.t).toHaveBeenCalledWith('conflict')
+    expect(state.message).not.toContain(message)
+    expect(mocks.redirect).not.toHaveBeenCalled()
+  },
+)

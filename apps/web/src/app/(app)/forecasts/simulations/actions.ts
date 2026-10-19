@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { getTranslations } from 'next-intl/server'
 import { fieldValues, type ActionState } from '@/lib/forms'
 import { requireEditor, invalidState, rpcErrorState } from '@/lib/organizations/guard'
 import { createClient } from '@/lib/supabase/server'
@@ -33,7 +34,13 @@ export async function enqueueSimulation(_state: ActionState, form: FormData): Pr
     p_history_confirmed: true,
     p_empty_start_confirmed: true,
   })
-  if (error) return { ...(await rpcErrorState(error)), values }
+  if (error) {
+    if (error.code === 'MQ409') {
+      const t = await getTranslations('PolicySimulation')
+      return { status: 'error', code: error.code, message: t('conflict'), values }
+    }
+    return { ...(await rpcErrorState(error)), values }
+  }
   revalidatePath('/forecasts')
   revalidatePath('/forecasts/simulations')
   redirect(`/forecasts/simulations/${data}`)
