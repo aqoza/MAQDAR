@@ -4377,6 +4377,7 @@
     "empty_start_confirmed": "I confirm both scenarios start with the entered available stock, no incoming orders and no backlog. This is a simulated starting state.",
     "pending": "Queuing…",
     "submit": "Queue simulation",
+    "conflict": "A planning run is already active, or this request was reused with different inputs. Check the simulation history before trying again.",
     "readOnly": "Only owners, administrators and planners can queue simulations.",
     "ineligible": "Choose an available individual-item policy with consistent saved demand units.",
     "noCompletedDates": "No completed post-cutoff dates are available within this policy’s forecast horizon.",
