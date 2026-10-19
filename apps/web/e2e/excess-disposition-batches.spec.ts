@@ -136,6 +136,12 @@ with psycopg.connect(sys.argv[1]) as db:
   await expect(page.getByRole('heading', { name: '1 line selected', exact: true })).toBeVisible()
   await page.getByLabel('Search', { exact: true }).fill('EXCESS-2')
   await page.getByRole('button', { name: 'Filter', exact: true }).click()
+  await expect(page).toHaveURL((url) => url.searchParams.get('q') === 'EXCESS-2')
+  // The selected count is unchanged by filtering. Wait for the new candidate
+  // form before checking a row that was also present in the previous results.
+  await expect(
+    page.getByRole('region', { name: 'Available handoffs', exact: true }).getByRole('checkbox'),
+  ).toHaveCount(1)
   await expect(page.getByRole('heading', { name: '1 line selected', exact: true })).toBeVisible()
   await page.getByRole('checkbox', { name: 'Select EXCESS-2', exact: true }).check()
   await page.getByRole('button', { name: 'Add selected lines', exact: true }).click()
