@@ -11,10 +11,17 @@ export const EVENT_HANDOFF_RESOURCES = [
 ] as const
 export type EventHandoffResource = (typeof EVENT_HANDOFF_RESOURCES)[number]
 export const EVENT_HANDOFF_SCOPE = 'event_purchase_handoffs:read' as const
+export const DISPOSITION_HANDOFF_RESOURCES = [
+  'excess-disposition-handoffs',
+  'excess-disposition-handoff-batches',
+] as const
+export type DispositionHandoffResource = (typeof DISPOSITION_HANDOFF_RESOURCES)[number]
+export const DISPOSITION_HANDOFF_SCOPE = 'excess_disposition_handoffs:read' as const
 export const READ_HANDOFF_RESOURCES = [
   ...HANDOFF_RESOURCES,
   ...TRANSFER_HANDOFF_RESOURCES,
   ...EVENT_HANDOFF_RESOURCES,
+  ...DISPOSITION_HANDOFF_RESOURCES,
 ] as const
 export type ReadHandoffResource = (typeof READ_HANDOFF_RESOURCES)[number]
 export const TRANSFER_HANDOFF_SCOPE = 'transfer_handoffs:read' as const
@@ -33,12 +40,19 @@ export function isTransferHandoffResource(value: string): value is TransferHando
 export function isEventHandoffResource(value: string): value is EventHandoffResource {
   return (EVENT_HANDOFF_RESOURCES as readonly string[]).includes(value)
 }
+export function isDispositionHandoffResource(value: string): value is DispositionHandoffResource {
+  return (DISPOSITION_HANDOFF_RESOURCES as readonly string[]).includes(value)
+}
 export function isReadHandoffResource(value: string): value is ReadHandoffResource {
   return (
-    isHandoffResource(value) || isTransferHandoffResource(value) || isEventHandoffResource(value)
+    isHandoffResource(value) ||
+    isTransferHandoffResource(value) ||
+    isEventHandoffResource(value) ||
+    isDispositionHandoffResource(value)
   )
 }
 export function handoffReadScope(resource: ReadHandoffResource) {
+  if (isDispositionHandoffResource(resource)) return DISPOSITION_HANDOFF_SCOPE
   return isEventHandoffResource(resource)
     ? EVENT_HANDOFF_SCOPE
     : isTransferHandoffResource(resource)
@@ -47,6 +61,8 @@ export function handoffReadScope(resource: ReadHandoffResource) {
 }
 export function handoffOperationId(resource: ReadHandoffResource, detail: boolean): string {
   const names = {
+    'excess-disposition-handoffs': 'ExcessDispositionHandoffs',
+    'excess-disposition-handoff-batches': 'ExcessDispositionHandoffBatches',
     'event-purchase-handoffs': 'EventPurchaseHandoffs',
     'event-purchase-handoff-batches': 'EventPurchaseHandoffBatches',
     'purchase-handoffs': 'PurchaseHandoffs',

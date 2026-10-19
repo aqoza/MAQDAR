@@ -40,10 +40,14 @@ describe('buildRpcRequest (J9)', () => {
   it('declares the arguments the generated function types have (checked by tsc)', () => {
     expectTypeOf<UndeclaredRpcArgs>().toBeNever()
     expectTypeOf<MissingApiRpcs>().toBeNever()
+    // Declared operations must also be admitted by the runtime fetch allowlist.
+    expectTypeOf<Exclude<ApiRpcName, (typeof API_RPC_NAMES)[number]>>().toBeNever()
   })
 
   it('admits api_* RPCs only', () => {
     expect(API_RPC_NAMES).toEqual([
+      'api_excess_disposition_handoff_list',
+      'api_excess_disposition_handoff_get',
       'api_event_purchase_handoff_acknowledge',
       'api_event_purchase_handoff_acknowledgements',
       'api_event_purchase_handoff_list',

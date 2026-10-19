@@ -39,6 +39,7 @@ const BASE = 'https://maqdar.test/api/v1'
 const LEAK = 'permission denied for function api_upsert (secret detail)'
 
 const ALL_SCOPES = [
+  'excess_disposition_handoffs:read',
   'event_purchase_handoffs:read',
   'event_purchase_handoffs:acknowledge',
   'transfer_handoffs:read',
@@ -1718,6 +1719,107 @@ describe('event purchase readers retain an explicit read-only capability', () =>
         rpc: {
           api_organization: ok(
             organizationText(ALL_SCOPES.filter((s) => s !== 'event_purchase_handoffs:read')),
+          ),
+        },
+      })
+      const response = await handleResource(
+        new Request(`${BASE}/${resource}?limit=101`, {
+          headers: { authorization: `Bearer ${TOKEN}` },
+        }),
+        'GET',
+        resource,
+        state.deps,
+      )
+      expect(response.status).toBe(403)
+      expect(state.rpcCalls.map((c) => c.name)).toEqual(['api_organization'])
+    })
+  }
+})
+
+describe('disposition readers retain an explicit read-only capability', () => {
+  for (const resource of ['excess-disposition-handoffs', 'excess-disposition-handoff-batches']) {
+    it(`dispatches ${resource} without modifying original decimal evidence`, async () => {
+      const text =
+        '{"data":{"payload":{"quantity":"123456789012345.123","reference_value":"7.499250"}}}'
+      const state = fake({
+        rpc: {
+          api_excess_disposition_handoff_list: ok(text),
+          api_excess_disposition_handoff_get: ok(text),
+        },
+      })
+      const headers = { authorization: `Bearer ${TOKEN}` }
+      const list = await handleResource(
+        new Request(`${BASE}/${resource}?limit=1`, { headers }),
+        'GET',
+        resource,
+        state.deps,
+      )
+      expect(await list.text()).toBe(text)
+      const detail = await handleResourceDetail(
+        new Request(`${BASE}/${resource}/${REQUEST_ID}`, { headers }),
+        'GET',
+        resource,
+        [REQUEST_ID],
+        state.deps,
+      )
+      expect(await detail.text()).toBe(text)
+      expect(state.rpcCalls.map((c) => c.name)).toEqual([
+        'api_excess_disposition_handoff_list',
+        'api_excess_disposition_handoff_get',
+      ])
+      expect(state.rpcCalls[0].args).toEqual({
+        p_key_hash: HASH,
+        p_resource: resource,
+        p_limit: 1,
+        p_after: null,
+        p_created_since: null,
+      })
+      expect(detail.headers.get('cache-control')).toContain('no-store')
+      expect(detail.headers.get('set-cookie')).toBeNull()
+      const head = await handleResourceDetail(
+        request(`/${resource}/${REQUEST_ID}`, { headers: AUTH }),
+        'HEAD',
+        resource,
+        [REQUEST_ID],
+        state.deps,
+      )
+      expect(head.status).toBe(200)
+      expect(await head.text()).toBe('')
+      const options = await handleResource(request(`/${resource}`), 'OPTIONS', resource, state.deps)
+      expect(options.headers.get('allow')).toBe('GET, HEAD, OPTIONS')
+      expect(options.headers.get('access-control-allow-origin')).toBeNull()
+    })
+    it(`never exposes unknown ${resource} subroutes or package mutations`, async () => {
+      const state = fake()
+      const req = new Request(`${BASE}/${resource}/${REQUEST_ID}/unknown`, {
+        headers: { authorization: `Bearer ${TOKEN}` },
+      })
+      for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] as const) {
+        expect(
+          (
+            await handleResourceDetail(
+              req,
+              method,
+              resource,
+              [REQUEST_ID, 'acknowledgements'],
+              state.deps,
+            )
+          ).status,
+        ).toBe(404)
+      }
+      for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'] as const) {
+        expect((await handleResource(req, method, resource, state.deps)).status).toBe(405)
+        expect(
+          (await handleResourceDetail(req, method, resource, [REQUEST_ID], state.deps)).status,
+        ).toBe(405)
+      }
+      expect(state.rpcCalls).toEqual([])
+    })
+    it(`requires disposition scope before exposing a malformed ${resource} request`, async () => {
+      const state = fake({
+        rpc: {
+          api_organization: ok(
+            organizationText(ALL_SCOPES.filter((s) => s !== 'excess_disposition_handoffs:read')),
           ),
         },
       })
