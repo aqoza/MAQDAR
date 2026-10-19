@@ -9,7 +9,9 @@ export default function ImportHistoryLoading() {
       <div aria-hidden="true">
         <PageHeader
           pattern="imports"
-          title={<span className="bg-muted block h-7 w-48 max-w-full animate-pulse rounded-md" />}
+          title={
+            <span className="bg-muted block h-[var(--text-page-title--line-height)] w-48 max-w-full animate-pulse rounded-md" />
+          }
           description={
             <span className="bg-muted block h-5 w-80 max-w-full animate-pulse rounded-md" />
           }

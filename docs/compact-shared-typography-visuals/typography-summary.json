@@ -1,0 +1,63 @@
+{
+  "baseline": "d9a80c9",
+  "approvedScale": "Page titles 16px/24px/600; record values 14px/20px/600; other shared roles and documented exceptions retained.",
+  "typeCaptureFiles": 70,
+  "typeSamples": 623,
+  "roles": {
+    "page-title": {
+      "samples": 70,
+      "styles": [["16px", "24px", "600"]],
+      "families": [
+        "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif",
+        "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      ]
+    },
+    "evidence-value": {
+      "samples": 227,
+      "styles": [["14px", "20px", "600"]],
+      "families": [
+        "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif",
+        "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      ]
+    },
+    "subtitle": {
+      "samples": 30,
+      "styles": [["14px", "20px", "400"]],
+      "families": [
+        "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif",
+        "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      ]
+    },
+    "navigation": {
+      "samples": 216,
+      "styles": [
+        ["14px", "20px", "400"],
+        ["14px", "20px", "500"]
+      ],
+      "families": [
+        "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif",
+        "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      ]
+    },
+    "method-caption": {
+      "samples": 65,
+      "styles": [["12px", "16px", "500"]],
+      "families": [
+        "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif",
+        "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      ]
+    },
+    "button": {
+      "samples": 15,
+      "styles": [["14px", "20px", "500"]],
+      "families": [
+        "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif",
+        "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+      ]
+    }
+  },
+  "headerObservations": 35,
+  "maxTaglineToTitleGap": 12,
+  "headerActionLinks": 80,
+  "violations": []
+}

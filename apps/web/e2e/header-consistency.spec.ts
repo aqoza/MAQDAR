@@ -12,6 +12,7 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle, expectEvidenceValue } from './helpers/typography'
 
 type Route = { name: string; path: string; pattern: string }
 type Chain = {
@@ -84,9 +85,7 @@ async function header(page: Page, route: Route) {
   )
   const banner = page.locator(`[data-page-banner="${route.pattern}"]`)
   await expect(banner).toHaveCount(1)
-  await expect(heading).toHaveCSS('font-size', '20px')
-  await expect(heading).toHaveCSS('line-height', '28px')
-  await expect(heading).toHaveCSS('font-weight', '600')
+  await expectPageTitle(heading)
   const family = await page.locator('html').evaluate((node) => getComputedStyle(node).fontFamily)
   await expect(heading).toHaveCSS('font-family', family)
   for (const subtitle of await banner.locator('.page-heading-copy > p').all()) {
@@ -117,9 +116,7 @@ async function header(page: Page, route: Route) {
   for (const metric of await page
     .locator('main .text-evidence-value:visible, main dl[class*="metrics"] dd:visible')
     .all()) {
-    await expect(metric).toHaveCSS('font-size', '16px')
-    await expect(metric).toHaveCSS('line-height', '24px')
-    await expect(metric).toHaveCSS('font-weight', '600')
+    await expectEvidenceValue(metric)
     await expect(metric).toHaveCSS('font-family', family)
   }
   const bounds = (await heading.boundingBox())!
@@ -164,7 +161,7 @@ async function matrix(page: Page, routes: Route[], testInfo: TestInfo) {
           await expect(values).toHaveCount(3)
           // Saved freight rate and units must fit a single line at the laptop viewport.
           for (const value of await values.all()) {
-            expect((await value.boundingBox())!.height).toBe(24)
+            expect((await value.boundingBox())!.height).toBe(20)
           }
         }
         await page.screenshot({ path: testInfo.outputPath(`${route.name}-${locale}-${width}.png`) })

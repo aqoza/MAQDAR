@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test'
 import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle } from './helpers/typography'
 
 const sections = [
   'items',
@@ -45,8 +46,7 @@ test('illustrated headers stay compact, cover the tabs and preserve English/Arab
         }
         await expect(page.locator('[data-page-banner]')).toHaveCount(1)
         await expect(banner).toBeVisible()
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
-        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
+        await expectPageTitle(page.getByRole('heading', { level: 1 }))
         await expect(banner.locator('.page-banner-backdrop')).toHaveAttribute('aria-hidden', 'true')
         await expect(banner.locator('svg').first()).toHaveCSS('pointer-events', 'none')
         await page.evaluate(() => document.fonts.ready)

@@ -10,6 +10,7 @@ import {
   signedInClient,
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { expectPageTitle } from './helpers/typography'
 import { generateApiKey } from '../src/lib/api/keys'
 
 test.use({ actionTimeout: 30_000 })
@@ -182,8 +183,7 @@ with psycopg.connect(sys.argv[1]) as db:
       await page.keyboard.press('ArrowLeft')
       await expect.poll(() => tableRegion.evaluate((element) => element.scrollLeft)).toBe(0)
     }
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('line-height', '28px')
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     await expect(page.locator('thead th').first()).toHaveCSS('font-size', '12px')
     await expect(rows.first()).toHaveCSS('font-size', '14px')
     await page.screenshot({

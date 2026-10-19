@@ -4,19 +4,21 @@
 
 **The Items page is the application typography reference.** Dashboard, planning pages and future features must use the same shared font scale. A screenshot or a compact layout does not authorize a separate font scale. Read this file before every UI change.
 
-| Role                                                     | Size / line height | Weight                      | Implementation                                                 |
-| -------------------------------------------------------- | ------------------ | --------------------------- | -------------------------------------------------------------- |
-| Page title                                               | 20px / 28px        | 600                         | `text-page-title`; shared `PageHeader`                         |
-| Section title                                            | 16px / 24px        | 600                         | `text-section-title`                                           |
-| Subsection or compact widget title                       | 14px / 20px        | 600                         | `text-subsection-title`                                        |
-| Body, subtitle, navigation and buttons                   | 14px / 20px        | 400; 500 for labels/actions | `text-sm`                                                      |
-| Caption, table heading, helper text and chart annotation | 12px / 16px        | 400; 500 for table headings | `text-xs`                                                      |
-| Desktop input                                            | 14px / 20px        | 400                         | Shared input styles                                            |
-| Mobile input below 768px                                 | 16px / 24px        | 400                         | Shared mobile input styles; 44px minimum control height        |
-| Dashboard numeric KPI                                    | 24px / 28px        | 600                         | `--text-kpi`                                                   |
-| Numeric KPI at compact laptop widths, 1100–1536px        | 20px / 24px        | 600                         | `--text-kpi-compact`                                           |
-| Compact planning/evidence card value                     | 16px / 24px        | 600                         | `text-evidence-value`; quantities, prices, subtotals and dates |
-| Dashboard unavailable KPI status                         | 16px / 24px        | 600                         | Section-size status, identical for inventory and availability  |
+The owner approved the smaller shared standard on 2026-10-19: page titles are 16px/24px and compact record values are 14px/20px, including location codes, disposition labels, quantities, dates and money. This replaces the earlier 20px/28px title and 16px/24px record-value sizes shown in historical visual reports. Apply these shared roles across lists, detail pages, create/edit forms, previews, error and loading states; do not preserve a larger size on a particular page.
+
+| Role                                                     | Size / line height | Weight                      | Implementation                                                            |
+| -------------------------------------------------------- | ------------------ | --------------------------- | ------------------------------------------------------------------------- |
+| Page title                                               | 16px / 24px        | 600                         | `text-page-title`; shared `PageHeader`                                    |
+| Section title                                            | 16px / 24px        | 600                         | `text-section-title`                                                      |
+| Subsection or compact widget title                       | 14px / 20px        | 600                         | `text-subsection-title`                                                   |
+| Body, subtitle, navigation and buttons                   | 14px / 20px        | 400; 500 for labels/actions | `text-sm`                                                                 |
+| Caption, table heading, helper text and chart annotation | 12px / 16px        | 400; 500 for table headings | `text-xs`                                                                 |
+| Desktop input                                            | 14px / 20px        | 400                         | Shared input styles                                                       |
+| Mobile input below 768px                                 | 16px / 24px        | 400                         | Shared mobile input styles; 44px minimum control height                   |
+| Dashboard numeric KPI                                    | 24px / 28px        | 600                         | `--text-kpi`                                                              |
+| Numeric KPI at compact laptop widths, 1100–1536px        | 20px / 24px        | 600                         | `--text-kpi-compact`                                                      |
+| Compact planning/evidence card value                     | 14px / 20px        | 600                         | `text-evidence-value`; record codes, labels, quantities, prices and dates |
+| Dashboard unavailable KPI status                         | 16px / 24px        | 600                         | Section-size status, identical for inventory and availability             |
 
 Sizes are expressed in rem in the implementation so browser text scaling is respected. Page-title tracking is `-0.025em`; body and navigation keep normal tracking. Font stacks come from `--font-sans`: Inter first for English and the configured Arabic font first for RTL. Never set a different page-specific font family.
 
@@ -33,7 +35,7 @@ The floating help side-panel style approved on 2026-10-18 is capped at 420px (26
 - Breakpoints change layout, gaps, wrapping and density. They must not shrink or enlarge page titles, navigation, body text or captions. The explicit mobile-input and numeric-KPI roles above are the only responsive size exceptions.
 - Keep prose at 12px or larger. Use natural wrapping or local table scrolling when content is constrained; do not hide text, clip the page, or shrink text to force a fit.
 - Keep numeric metrics separate from headings and status text. Currency formatting and precision follow existing business rules; font changes must not alter values.
-- Compact planning and evidence cards use `text-evidence-value` (16px/24px, weight 600) for quantities, prices, subtotals and dates, including unavailable values and currency-specific assessment totals. Use the value token even when a section-title token currently resolves to the same size, so future heading changes cannot enlarge record values. These record values must remain smaller than the page title and must not use the Dashboard KPI scale. Keep the same size at every breakpoint; let longer values wrap naturally. Tables and inline evidence retain body/caption roles. Do not reuse `text-page-title` for record values or introduce `text-xl`/`text-2xl`/`text-3xl` substitutes. Forecast run identifiers and other metadata use the caption role at 12px/16px, never smaller prose.
+- Compact planning and evidence cards use `text-evidence-value` (14px/20px, weight 600) for record codes, labels, quantities, prices, subtotals and dates, including unavailable values and currency-specific assessment totals. Use the value token rather than a section-title token so heading changes cannot enlarge record values. These record values must remain smaller than the page title and must not use the Dashboard KPI scale. Keep the same size at every breakpoint; let longer values wrap naturally. Tables and inline evidence retain body/caption roles. Do not reuse `text-page-title` for record values or introduce `text-xl`/`text-2xl`/`text-3xl` substitutes. Forecast run identifiers and other metadata use the caption role at 12px/16px, never smaller prose.
 
 ## Illustrated section headers
 

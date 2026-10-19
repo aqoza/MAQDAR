@@ -6,6 +6,7 @@ import { expect, test } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle } from './helpers/typography'
 
 test.use({ actionTimeout: 30_000 })
 
@@ -84,7 +85,7 @@ test('direct substitutes preserve direction, separate stock and both-location ac
     await page.setViewportSize({ width, height: 900 })
     await page.evaluate(() => document.fonts.ready)
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
     await expect(rows.first()).toHaveCSS('font-size', '14px')
     for (const control of await page
       .locator('main input:not([type=hidden]):visible, main select:visible')

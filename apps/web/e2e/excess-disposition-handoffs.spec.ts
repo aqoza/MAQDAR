@@ -11,6 +11,7 @@ import {
 } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle, expectEvidenceValue } from './helpers/typography'
 
 test.use({ actionTimeout: 30_000 })
 test('disposition handoffs preserve original downloads, selected history and location access', async ({
@@ -144,11 +145,8 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.setViewportSize({ width, height: 900 })
     await page.evaluate(() => document.fonts.ready)
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
-    await expect(page.getByText('3.749625 KWD', { exact: true }).locator('..')).toHaveCSS(
-      'font-size',
-      '16px',
-    )
+    await expectPageTitle(page.getByRole('heading', { level: 1 }))
+    await expectEvidenceValue(page.getByText('3.749625 KWD', { exact: true }).locator('..'))
     await page.screenshot({ path: testInfo.outputPath(`handoff-${width}.png`), fullPage: true })
   }
   const newer = await approve('4', 'Replacement selection')

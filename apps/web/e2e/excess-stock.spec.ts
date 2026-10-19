@@ -6,21 +6,18 @@ import { test, expect, type Page } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle, expectEvidenceValue } from './helpers/typography'
 
 test.use({ actionTimeout: 30_000 })
 
 async function expectEvidenceTypography(page: Page) {
   const heading = page.getByRole('heading', { level: 1 })
-  await expect(heading).toHaveCSS('font-size', '20px')
-  await expect(heading).toHaveCSS('line-height', '28px')
-  await expect(heading).toHaveCSS('font-weight', '600')
+  await expectPageTitle(heading)
   const family = await page.locator('html').evaluate((node) => getComputedStyle(node).fontFamily)
   const values = page.locator('main .text-evidence-value:visible')
   expect(await values.count()).toBeGreaterThan(0)
   for (const value of await values.all()) {
-    await expect(value).toHaveCSS('font-size', '16px')
-    await expect(value).toHaveCSS('line-height', '24px')
-    await expect(value).toHaveCSS('font-weight', '600')
+    await expectEvidenceValue(value)
     await expect(value).toHaveCSS('font-family', family)
   }
 }

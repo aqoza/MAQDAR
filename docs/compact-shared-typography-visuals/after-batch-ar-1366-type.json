@@ -1,0 +1,42 @@
+[
+  {
+    "role": "page-title",
+    "text": "Disposition batch · EXCESS-DC",
+    "size": "16px",
+    "lineHeight": "24px",
+    "weight": "600",
+    "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+  },
+  {
+    "role": "evidence-value",
+    "text": "EXCESS-DC",
+    "size": "14px",
+    "lineHeight": "20px",
+    "weight": "600",
+    "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+  },
+  {
+    "role": "evidence-value",
+    "text": "Supplier return",
+    "size": "14px",
+    "lineHeight": "20px",
+    "weight": "600",
+    "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+  },
+  {
+    "role": "evidence-value",
+    "text": "10 أكتوبر 2026",
+    "size": "14px",
+    "lineHeight": "20px",
+    "weight": "600",
+    "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+  },
+  {
+    "role": "evidence-value",
+    "text": "7.49925 KWD",
+    "size": "14px",
+    "lineHeight": "20px",
+    "weight": "600",
+    "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+  }
+]
