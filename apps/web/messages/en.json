@@ -2957,7 +2957,22 @@
     "eventBatches": "Event handoff batches",
     "eventSearch": "Search items, events or latest references",
     "receiver": "Receiving location code",
-    "loading": "Loading integration reports…"
+    "loading": "Loading integration reports…",
+    "dispositionStatusMeaning": "Received and rejected reflect external system reports; they do not verify a return, write-off or stock movement.",
+    "dispositionTitle": "Disposition integration workbench",
+    "dispositionContext": "Saved disposition packages and latest external reports.",
+    "dispositionLink": "Disposition integrations",
+    "dispositionSearch": "Item, package or report reference",
+    "dispositionHandoffs": "Disposition handoffs",
+    "dispositionBatches": "Disposition batches",
+    "intent": "Disposition intent",
+    "supplier_return": "Supplier return",
+    "scrap": "Scrap",
+    "unavailable": "Unavailable",
+    "liveContext": "Live planning context",
+    "intentLocation": "Intent / location",
+    "dispositionMeaning": "Reports record an external system’s statement about this exact package. They do not confirm supplier return eligibility, recovery proceeds, a write-off or a stock movement. Original quantities, units and reference inventory values remain in the saved evidence.",
+    "dispositionSelectionMeaning": "Current means the original proposals remain selected; historical means a later proposal was selected. Unavailable means source context can no longer be resolved. Copied batches remain searchable with their original evidence and report history after source deletion. This live context is independent of reported status."
   },
   "HandoffAcknowledgements": {
     "title": "Integration acknowledgements",

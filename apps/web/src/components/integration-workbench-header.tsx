@@ -26,7 +26,10 @@ export async function IntegrationWorkbenchHeader({
             <p>{t('independence')}</p>
           </HelpDisclosure>
         ) : (
-          <IntegrationResultsHelp event={family === 'event'} />
+          <IntegrationResultsHelp
+            event={family === 'event'}
+            disposition={family === 'disposition'}
+          />
         )
       }
     />
