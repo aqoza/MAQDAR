@@ -1,6 +1,6 @@
 # REST API v1
 
-Use `/api/v1` on your MAQDAR application's origin for server-to-server integrations. It lists master data, demand history, stock snapshots, open orders and receipts and accepts atomic bulk upserts using the same validation and merge rules as the import wizard. The [import contract](import-format.md) defines field names, natural keys, required fields, defaults and validation rules.
+Use `/api/v1` on your ZeeSpare application's origin for server-to-server integrations. It lists master data, demand history, stock snapshots, open orders and receipts and accepts atomic bulk upserts using the same validation and merge rules as the import wizard. The [import contract](import-format.md) defines field names, natural keys, required fields, defaults and validation rules.
 
 The machine-readable OpenAPI 3.1.1 description is available at `/api/v1/openapi.json` without authentication. Its [committed copy](../apps/web/src/lib/api/openapi.json) includes request examples for every resource. `/api/v1` returns the documentation and OpenAPI links.
 
@@ -43,19 +43,19 @@ For transfer receipt/rejection reporting, see [transfer acknowledgements](transf
 
 For external receipt/rejection reporting and event history, see [handoff acknowledgements](handoff-acknowledgements.md). Writes require `purchase_handoffs:acknowledge`; history reads require `purchase_handoffs:read`. Reports have no order or inventory side effects. Existing keys gain no new permission.
 
-These shell examples assume `MAQDAR_ORIGIN` contains the application's origin and `MAQDAR_API_KEY` is supplied by your secret store. For local development, use `http://localhost:3000`.
+These shell examples assume `ZeeSpare_ORIGIN` contains the application's origin and `ZeeSpare_API_KEY` is supplied by your secret store. For local development, use `http://localhost:3000`.
 
 ```sh
-curl --fail-with-body "$MAQDAR_ORIGIN/api/v1/organization" \
-  -H "Authorization: Bearer $MAQDAR_API_KEY"
+curl --fail-with-body "$ZeeSpare_ORIGIN/api/v1/organization" \
+  -H "Authorization: Bearer $ZeeSpare_API_KEY"
 
-curl --fail-with-body "$MAQDAR_ORIGIN/api/v1/brands:upsert" \
-  -H "Authorization: Bearer $MAQDAR_API_KEY" \
+curl --fail-with-body "$ZeeSpare_ORIGIN/api/v1/brands:upsert" \
+  -H "Authorization: Bearer $ZeeSpare_API_KEY" \
   -H 'Content-Type: application/json' \
   --data '{"records":[{"brand_code":"FALCON","name_en":"Falcon Genuine Parts","brand_type":"oem"}]}'
 
-curl --fail-with-body "$MAQDAR_ORIGIN/api/v1/brands?limit=100" \
-  -H "Authorization: Bearer $MAQDAR_API_KEY"
+curl --fail-with-body "$ZeeSpare_ORIGIN/api/v1/brands?limit=100" \
+  -H "Authorization: Bearer $ZeeSpare_API_KEY"
 ```
 
 ## Resources
@@ -84,8 +84,8 @@ There are no single-record or general delete endpoints. References use natural c
 Master-data lists accept `limit` (default 100, maximum 1,000), `cursor`, and `updated_since` (an RFC 3339 timestamp with an offset). Demand lists require inclusive `from` and `to` dates, spanning at most 366 days, and accept `item_code`, `location_code`, `limit` (default 1,000, maximum 5,000), and `cursor`.
 
 ```sh
-curl --fail-with-body --get "$MAQDAR_ORIGIN/api/v1/demand-history" \
-  -H "Authorization: Bearer $MAQDAR_API_KEY" \
+curl --fail-with-body --get "$ZeeSpare_ORIGIN/api/v1/demand-history" \
+  -H "Authorization: Bearer $ZeeSpare_API_KEY" \
   --data-urlencode 'from=2026-09-01' \
   --data-urlencode 'to=2026-09-30' \
   --data-urlencode 'location_code=JED-BR1'

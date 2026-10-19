@@ -1,6 +1,7 @@
 import { LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
+import { ZeeSpareMark } from '@/components/zeespare-mark'
 import { Button } from '@/components/ui/button'
 import { signOut } from '@/lib/auth/actions'
 import { requireClaims } from '@/lib/auth/session'
@@ -17,8 +18,12 @@ export default async function OnboardingLayout({ children }: { children: React.R
   return (
     <div className="bg-canvas flex min-h-svh flex-col">
       <header className="bg-background flex min-h-11 shrink-0 items-center justify-between gap-4 border-b px-4">
-        <Link href="/organizations" className="font-semibold tracking-tight">
-          {t('appName')}
+        <Link
+          href="/organizations"
+          className="flex items-center gap-2 font-semibold tracking-tight"
+        >
+          <ZeeSpareMark className="text-primary size-6 shrink-0" />
+          <span dir="ltr">{t('appName')}</span>
         </Link>
         <div className="flex min-w-0 items-center gap-3">
           {email ? (

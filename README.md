@@ -1,4 +1,6 @@
-# MAQDAR
+# ZeeSpare
+
+Service parts planning at [zeespare.com](https://zeespare.com). See the [ZeeSpare brand kit](docs/brand/zeespare/README.md) for the logo masters, colors and brand guide.
 
 Multi-tenant cloud SaaS for service parts planning, built for OEMs, distributors and multi-brand dealer groups in the Middle East (KSA, UAE, Qatar, Kuwait, Oman, Bahrain, Egypt, Jordan).
 

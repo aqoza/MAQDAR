@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  /><title>ZeeSpare - Brand identity</title
+  ><style>
+    @font-face {
+      font-family: Inter;
+      src: url(Inter-400.ttf);
+    }
+    @font-face {
+      font-family: Inter;
+      src: url(Inter-650.ttf);
+      font-weight: 650;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #f7f8f2;
+      color: #103e31;
+      font:
+        16px/1.55 Inter,
+        Arial,
+        sans-serif;
+    }
+    header,
+    section,
+    footer {
+      padding: 56px max(6vw, 24px);
+    }
+    header {
+      background: #103e31;
+      color: #f7f8f2;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    header img {
+      width: min(440px, 80vw);
+    }
+    h1 {
+      font-size: clamp(40px, 6vw, 80px);
+      line-height: 1.06;
+      letter-spacing: -0.05em;
+      font-weight: 650;
+      margin: 64px 0 32px;
+    }
+    h1 span {
+      color: #c2f970;
+    }
+    h2 {
+      font-size: 32px;
+      letter-spacing: -0.035em;
+      font-weight: 650;
+    }
+    p {
+      max-width: 680px;
+      color: #60736a;
+    }
+    header p {
+      color: #b8cdbd;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .logo {
+      padding: 54px 24px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 190px;
+    }
+    .logo img {
+      width: 80%;
+      max-width: 320px;
+    }
+    .reverse {
+      background: #103e31;
+    }
+    .swatch {
+      height: 130px;
+      padding: 20px;
+      font-weight: 650;
+    }
+    .small {
+      font-size: 13px;
+    }
+    .rule {
+      border-top: 1px solid #cfd9cf;
+    }
+    a {
+      color: inherit;
+      text-underline-offset: 4px;
+    }
+    a:focus-visible {
+      outline: 3px solid #155c46;
+      outline-offset: 5px;
+    }
+    header a:focus-visible {
+      outline-color: #c2f970;
+    }
+    .downloads {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    footer {
+      background: #103e31;
+      color: #f7f8f2;
+    }
+    @media print {
+      header {
+        min-height: 0;
+      }
+      header,
+      section,
+      footer {
+        padding: 32px;
+      }
+      section {
+        break-inside: avoid;
+      }
+    }
+  </style>
+  <header>
+    <img src="zeespare-logo-reversed.svg" alt="ZeeSpare" />
+    <h1>Service parts.<br /><span>Smarter plans.</span></h1>
+    <p>Clarity across demand, inventory and replenishment.</p>
+    <div>BRAND IDENTITY / OCTOBER 2026 &nbsp; · &nbsp; zeespare.com</div>
+  </header>
+  <main>
+    <section>
+      <h2>A mark built to move.</h2>
+      <p>One deliberate diagonal. Two connected positions. A signal for what comes next.</p>
+      <div class="grid">
+        <div class="logo"><img src="zeespare-logo.svg" alt="Primary ZeeSpare logo" /></div>
+        <div class="logo reverse">
+          <img src="zeespare-logo-reversed.svg" alt="Reversed ZeeSpare logo" />
+        </div>
+        <div class="logo"><img src="zeespare-logo-mono.svg" alt="Monochrome ZeeSpare logo" /></div>
+      </div>
+    </section>
+    <section class="rule">
+      <h2>Quiet confidence. A sharp signal.</h2>
+      <div class="grid">
+        <div>
+          <div class="swatch" style="background: #103e31; color: #f7f8f2">Forest<br />#103E31</div>
+        </div>
+        <div>
+          <div class="swatch" style="background: #155c46; color: #f7f8f2">Emerald<br />#155C46</div>
+        </div>
+        <div>
+          <div class="swatch" style="background: #c2f970; color: #103e31">
+            Signal lime<br />#C2F970
+          </div>
+        </div>
+        <div>
+          <div class="swatch" style="background: #f7f8f2; color: #103e31">
+            Warm paper<br />#F7F8F2
+          </div>
+        </div>
+        <div>
+          <div class="swatch" style="background: #172f27; color: #f7f8f2">Ink<br />#172F27</div>
+        </div>
+      </div>
+      <h2>Inter. Clear at every scale.</h2>
+      <p>
+        Inter for English. Noto Sans Arabic for Arabic. Keep the Latin wordmark left-to-right within
+        RTL layouts. Preserve the application's shared type scale.
+      </p>
+    </section>
+    <section class="rule">
+      <h2>Keep it intact.</h2>
+      <div class="grid">
+        <div>
+          <h3>Space to breathe</h3>
+          <p>
+            Allow at least one quarter of the mark height on each side. Minimum symbol: 20px on
+            screen or 6mm in print.
+          </p>
+        </div>
+        <div>
+          <h3>Precise, useful, honest</h3>
+          <p>
+            Write ZeeSpare. Describe the planner's next decision. Avoid guarantees, vague
+            superlatives and invented performance claims.
+          </p>
+        </div>
+        <div>
+          <h3>Consistent by design</h3>
+          <p>
+            Never stretch, rotate, mirror or add effects. Lime is an accent, never small text on
+            white. Preserve semantic status colors.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="rule">
+      <h2>Master files</h2>
+      <div class="downloads">
+        <a href="ZeeSpare-brand-guide.pdf" download>Download brand guide PDF</a
+        ><a href="zeespare-logo.svg" download>Primary logo SVG</a
+        ><a href="zeespare-logo-reversed.svg" download>Reversed logo SVG</a
+        ><a href="zeespare-mark.svg" download>Symbol SVG</a
+        ><a href="zeespare-app-icon.svg" download>App icon SVG</a
+        ><a href="brand-tokens.json" download>Brand tokens JSON</a>
+      </div>
+      <p class="small">
+        SVG wordmarks are outlined for portability. PNG exports are transparent. Inter is
+        distributed under the SIL Open Font License; see OFL-Inter.txt.
+      </p>
+    </section>
+  </main>
+  <footer>ZeeSpare &nbsp; / &nbsp; Service parts planning &nbsp; / &nbsp; zeespare.com</footer>
+</html>

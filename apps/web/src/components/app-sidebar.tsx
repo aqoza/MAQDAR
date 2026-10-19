@@ -15,6 +15,7 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { MouseEvent } from 'react'
+import { ZeeSpareMark } from '@/components/zeespare-mark'
 import { OrganizationSwitcher } from '@/components/organization-switcher'
 import { RoleBadge } from '@/components/role-badge'
 import { Button } from '@/components/ui/button'
@@ -92,9 +93,10 @@ export function AppSidebar({
         <Link
           href="/dashboard"
           onClick={closeMobileNavigation}
-          className="app-brand px-2 pt-1 font-semibold tracking-tight group-data-[collapsible=icon]:hidden"
+          className="app-brand flex items-center gap-2 px-2 pt-1 font-semibold tracking-tight group-data-[collapsible=icon]:hidden"
         >
-          {tCommon('appName')}
+          <ZeeSpareMark className="text-primary size-6 shrink-0" />
+          <span dir="ltr">{tCommon('appName')}</span>
         </Link>
         <OrganizationSwitcher
           organizations={organizations}

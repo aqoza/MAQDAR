@@ -1,4 +1,4 @@
-# MAQDAR
+# ZeeSpare
 
 Multi-tenant cloud SaaS for service parts planning (OEMs, distributors, multi-brand dealer groups in KSA, UAE, Qatar, Kuwait, Oman, Bahrain, Egypt, Jordan). Goal: match Syncron Service Parts Planning and go beyond it. The roadmap and build steps live in `docs/PLAN.md`.
 
