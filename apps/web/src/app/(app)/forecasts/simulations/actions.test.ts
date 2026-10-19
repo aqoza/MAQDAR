@@ -1,6 +1,7 @@
 import { beforeEach, expect, it, vi } from 'vitest'
 vi.mock('@/lib/forms', () => import('../../../../lib/forms'))
 vi.mock('@/lib/policy-simulation', () => import('../../../../lib/policy-simulation'))
+vi.mock('@/lib/policy-configurations', () => import('../../../../lib/policy-configurations'))
 vi.mock('@/lib/policy-sensitivity', () => import('../../../../lib/policy-sensitivity'))
 const mocks = vi.hoisted(() => ({
   guard: vi.fn(),
@@ -18,7 +19,7 @@ vi.mock('@/lib/organizations/guard', () => ({
 vi.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ rpc: mocks.rpc }) }))
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 vi.mock('next/navigation', () => ({ redirect: mocks.redirect }))
-import { enqueueSimulation, enqueueSensitivity } from './actions'
+import { enqueueSimulation, enqueueSensitivity, enqueueConfigurations } from './actions'
 import { idleState } from '../../../../lib/forms'
 const values = {
   organization_id: 'untrusted',
@@ -136,5 +137,67 @@ it('preserves comparison fields and hides database errors on rejected requests',
   const result = await enqueueSensitivity(idleState, comparisonForm())
   expect(result.code).toBe('rejected')
   expect(result.values?.maxima).toBe('08.000,0.001,999999999999999.999')
+  expect(mocks.redirect).not.toHaveBeenCalled()
+})
+
+function configurationsForm() {
+  const data = comparisonForm()
+  data.set(
+    'configurations',
+    JSON.stringify([
+      { maximum: '08.000', lead_time: 365, review_interval: 365 },
+      { maximum: '0.001', lead_time: 0, review_interval: 1 },
+    ]),
+  )
+  return data
+}
+it('queues canonical configurations using current organization and exact quantities', async () => {
+  await expect(enqueueConfigurations(idleState, configurationsForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith('simulation_configurations_enqueue', {
+    p_organization_id: 'session-org',
+    p_source_run_id: values.policy_id,
+    p_request_id: values.request_id,
+    p_reuse_confirmed: true,
+    p_configurations: [
+      { maximum: '0.001', lead_time: 0, review_interval: 1 },
+      { maximum: '8', lead_time: 365, review_interval: 365 },
+    ],
+  })
+})
+it('rejects malformed configurations, missing confirmation and stale authority before RPC', async () => {
+  const input = configurationsForm()
+  input.set('configurations', '{')
+  expect((await enqueueConfigurations(idleState, input)).code).toBe('validation')
+  const unconfirmed = configurationsForm()
+  unconfirmed.delete('reuse_confirmed')
+  expect((await enqueueConfigurations(idleState, unconfirmed)).code).toBe('validation')
+  mocks.guard.mockResolvedValue({
+    ok: false,
+    state: { status: 'error', code: 'stale_organization' },
+  })
+  expect((await enqueueConfigurations(idleState, configurationsForm())).code).toBe(
+    'stale_organization',
+  )
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('retains configuration inputs and hides database errors after rejection', async () => {
+  mocks.rpc.mockResolvedValue({ error: { message: 'private database detail' } })
+  const input = configurationsForm()
+  const result = await enqueueConfigurations(idleState, input)
+  expect(result.code).toBe('rejected')
+  expect(result.values?.configurations).toBe(input.get('configurations'))
+  expect(mocks.redirect).not.toHaveBeenCalled()
+})
+it('uses simulation-specific guidance for configuration queue and retry conflicts', async () => {
+  mocks.rpc.mockResolvedValue({ error: { code: 'MQ409', message: 'private conflict detail' } })
+  const input = configurationsForm()
+  const result = await enqueueConfigurations(idleState, input)
+  expect(result).toMatchObject({
+    status: 'error',
+    code: 'MQ409',
+    message: 'Check simulation history before trying again.',
+  })
+  expect(result.values?.configurations).toBe(input.get('configurations'))
+  expect(mocks.t).toHaveBeenCalledWith('conflict')
   expect(mocks.redirect).not.toHaveBeenCalled()
 })
