@@ -59,6 +59,10 @@ test('illustrated headers stay compact, cover the tabs and preserve English/Arab
           .boundingBox())!
         const heading = (await page.getByRole('heading', { level: 1 }).boundingBox())!
         const taglineToHeadingGap = heading.y - tagline.y - tagline.height
+        expect(
+          taglineToHeadingGap,
+          `${section} ${locale} ${width}px tagline-to-title gap`,
+        ).toBeLessThanOrEqual(12)
         expect(background.y).toBeLessThanOrEqual(1)
         const navigation = banner.locator(':scope > nav, :scope > [role="tablist"]')
         if (await navigation.count()) {
@@ -68,7 +72,6 @@ test('illustrated headers stay compact, cover the tabs and preserve English/Arab
         if (section === 'items' && locale === 'en' && width >= 768) {
           const subtitle = (await banner.locator('.page-heading-copy p').boundingBox())!
           const tabs = (await navigation.boundingBox())!
-          expect(taglineToHeadingGap).toBeLessThanOrEqual(12)
           expect(tabs.y - subtitle.y - subtitle.height).toBeLessThanOrEqual(8)
           expect(background.height).toBeLessThanOrEqual(144)
           await banner.getByRole('link', { name: 'Import', exact: true }).focus()

@@ -1,0 +1,632 @@
+[
+  {
+    "locale": "en",
+    "width": 1920,
+    "section": "items",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1664,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1632,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1920,
+    "section": "locations",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1664,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1632,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1920,
+    "section": "suppliers",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1664,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1632,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1920,
+    "section": "imports",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1664,
+      "height": 100
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1632,
+      "height": 56
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1920,
+    "section": "forecasts",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1664,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1632,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1920,
+    "section": "replenishment",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1664,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1632,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1920,
+    "section": "settings",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1664,
+      "height": 100
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1632,
+      "height": 56
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "section": "items",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "section": "locations",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "section": "suppliers",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "section": "imports",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 100
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1078,
+      "height": 56
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "section": "forecasts",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "section": "replenishment",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "section": "settings",
+    "background": {
+      "x": 256,
+      "y": 0,
+      "width": 1110,
+      "height": 100
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 272,
+      "y": 44,
+      "width": 1078,
+      "height": 56
+    }
+  },
+  {
+    "locale": "en",
+    "width": 375,
+    "section": "items",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 201
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 157
+    }
+  },
+  {
+    "locale": "en",
+    "width": 375,
+    "section": "locations",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 221
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 177
+    }
+  },
+  {
+    "locale": "en",
+    "width": 375,
+    "section": "suppliers",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 221
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 177
+    }
+  },
+  {
+    "locale": "en",
+    "width": 375,
+    "section": "imports",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 152
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 108
+    }
+  },
+  {
+    "locale": "en",
+    "width": 375,
+    "section": "forecasts",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 177
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 133
+    }
+  },
+  {
+    "locale": "en",
+    "width": 375,
+    "section": "replenishment",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 257
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 213
+    }
+  },
+  {
+    "locale": "en",
+    "width": 375,
+    "section": "settings",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 100
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 56
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "section": "items",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "section": "locations",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "section": "suppliers",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "section": "imports",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 1110,
+      "height": 100
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 1078,
+      "height": 56
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "section": "forecasts",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "section": "replenishment",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 1110,
+      "height": 141
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 1078,
+      "height": 97
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "section": "settings",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 1110,
+      "height": 100
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 1078,
+      "height": 56
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 375,
+    "section": "items",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 201
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 157
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 375,
+    "section": "locations",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 201
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 157
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 375,
+    "section": "suppliers",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 221
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 177
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 375,
+    "section": "imports",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 152
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 108
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 375,
+    "section": "forecasts",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 177
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 133
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 375,
+    "section": "replenishment",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 257
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 213
+    }
+  },
+  {
+    "locale": "ar",
+    "width": 375,
+    "section": "settings",
+    "background": {
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 100
+    },
+    "taglineToHeadingGap": 12,
+    "banner": {
+      "x": 16,
+      "y": 44,
+      "width": 343,
+      "height": 56
+    }
+  }
+]
