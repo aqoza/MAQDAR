@@ -139,6 +139,6 @@ select throws_ok($$select pg_temp.handoff()$$,'42501',null,'no integration write
 select throws_ok($$select * from public.excess_disposition_handoffs$$,'42501',null,'no implicit integration read capability');
 reset role;
 delete from public.excess_stock_assessments where id=(select assessment from fixture);
-select is((select count(*)::int from public.excess_disposition_handoffs),0,'assessment deletion follows parent cascade');
+select is((select count(*)::int from public.excess_disposition_handoffs where organization_id=pg_temp.id(1)),0,'assessment deletion follows parent cascade');
 select * from finish();
 rollback;

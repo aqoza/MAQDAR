@@ -1,0 +1,422 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`freezes original v1 files, including full line evidence and independent units 1`] = `
+"{
+  "schema_version": "excess-disposition-handoff-batch-v1",
+  "purpose": "planning_only",
+  "notice": "Planning package only",
+  "batch_id": "92000000-0000-4000-8000-000000000100",
+  "organization_id": "a2000000-0000-4000-8000-000000000002",
+  "created_by": "a2000000-0000-4000-8000-000000000003",
+  "created_at": "2026-10-19T00:00:00.123456Z",
+  "summary": {
+    "location_id": "a2000000-0000-4000-8000-000000000008",
+    "location_code": "DXB",
+    "kind": "supplier_return",
+    "currency": "KWD",
+    "cutoff": "2026-10-10",
+    "line_count": 2,
+    "reference_value": "7.499250"
+  },
+  "lines": [
+    {
+      "assessment": {
+        "as_of_confirmed": true,
+        "created_at": "2026-10-18T11:00:00Z",
+        "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "id": "a2000000-0000-4000-8000-000000000006",
+        "reason": "As-of stock review",
+        "submitted_by": "a2000000-0000-4000-8000-000000000003"
+      },
+      "created_at": "2026-10-19T03:00:00.000001Z",
+      "created_by": "a2000000-0000-4000-8000-000000000003",
+      "disposition": {
+        "currency": "KWD",
+        "cutoff": "2026-10-10",
+        "item_code": "ITEM-1",
+        "item_id": "a2000000-0000-4000-8000-000000000007",
+        "kind": "supplier_return",
+        "location_code": "DXB",
+        "location_id": "a2000000-0000-4000-8000-000000000008",
+        "quantity": "3.333",
+        "reference_value": "3.749625",
+        "unit": "EA"
+      },
+      "handoff_id": "a2000000-0000-4000-8000-000000000001",
+      "line": {
+        "comparison": {
+          "basis": "calculated",
+          "cutoff": "2026-10-10",
+          "day": "2026-10-10",
+          "forecast_id": "a2000000-0000-4000-8000-000000000011",
+          "item_code": "ITEM-1",
+          "location_code": "DXB",
+          "maximum": "10.001",
+          "override_id": null,
+          "policy_id": "a2000000-0000-4000-8000-000000000009",
+          "quantity_above": "18.000",
+          "revision": null,
+          "run_id": "a2000000-0000-4000-8000-000000000010",
+          "snapshot": {
+            "age": 0,
+            "allocated": "2.000",
+            "available": "28.001",
+            "currency": "KWD",
+            "date": "2026-10-10",
+            "id": "a2000000-0000-4000-8000-000000000012",
+            "quantity": "30.001",
+            "unit": "EA",
+            "unit_cost": "1.125",
+            "updated_at": "2026-10-10T12:00:00Z"
+          },
+          "status": "available",
+          "unit": "EA",
+          "unit_provenance": {
+            "method": "source-units-v1",
+            "rows": 1,
+            "status": "consistent",
+            "unit": "EA",
+            "units": [
+              "EA"
+            ],
+            "unknown_rows": 0
+          },
+          "value_above": "20.250000"
+        },
+        "item_id": "a2000000-0000-4000-8000-000000000007",
+        "override": null,
+        "policy": {
+          "evidence": {
+            "original_model": {
+              "decimals": [
+                "0.0001"
+              ],
+              "method": "baseline-v1"
+            }
+          },
+          "status": "available",
+          "summary": {
+            "protection": {
+              "target": "10.001"
+            }
+          }
+        }
+      },
+      "notice": "As-of disposition planning evidence only. Not a supplier return, scrap execution, stock reservation or accounting write-off. Reference value is not recovery proceeds.",
+      "organization_id": "a2000000-0000-4000-8000-000000000002",
+      "proposal": {
+        "approval_reason": "Independent review",
+        "approved_at": "2026-10-18T13:00:00Z",
+        "approved_by": "a2000000-0000-4000-8000-000000000005",
+        "id": "a2000000-0000-4000-8000-000000000004",
+        "reason": "Planned return",
+        "revision": 1,
+        "submitted_at": "2026-10-18T12:00:00Z",
+        "submitted_by": "a2000000-0000-4000-8000-000000000003"
+      },
+      "purpose": "planning_only",
+      "schema_version": "excess-disposition-handoff-v1"
+    },
+    {
+      "assessment": {
+        "as_of_confirmed": true,
+        "created_at": "2026-10-18T11:00:00Z",
+        "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "id": "a2000000-0000-4000-8000-000000000006",
+        "reason": "As-of stock review",
+        "submitted_by": "a2000000-0000-4000-8000-000000000003"
+      },
+      "created_at": "2026-10-19T03:00:00.000001Z",
+      "created_by": "a2000000-0000-4000-8000-000000000003",
+      "disposition": {
+        "currency": "KWD",
+        "cutoff": "2026-10-10",
+        "item_code": "SECOND",
+        "item_id": "92000000-0000-4000-8000-000000000098",
+        "kind": "supplier_return",
+        "location_code": "DXB",
+        "location_id": "a2000000-0000-4000-8000-000000000008",
+        "quantity": "3.333",
+        "reference_value": "3.749625",
+        "unit": "KG"
+      },
+      "handoff_id": "a2000000-0000-4000-8000-000000000099",
+      "line": {
+        "comparison": {
+          "basis": "calculated",
+          "cutoff": "2026-10-10",
+          "day": "2026-10-10",
+          "forecast_id": "a2000000-0000-4000-8000-000000000011",
+          "item_code": "SECOND",
+          "location_code": "DXB",
+          "maximum": "10.001",
+          "override_id": null,
+          "policy_id": "a2000000-0000-4000-8000-000000000009",
+          "quantity_above": "18.000",
+          "revision": null,
+          "run_id": "a2000000-0000-4000-8000-000000000010",
+          "snapshot": {
+            "age": 0,
+            "allocated": "2.000",
+            "available": "28.001",
+            "currency": "KWD",
+            "date": "2026-10-10",
+            "id": "a2000000-0000-4000-8000-000000000012",
+            "quantity": "30.001",
+            "unit": "KG",
+            "unit_cost": "1.125",
+            "updated_at": "2026-10-10T12:00:00Z"
+          },
+          "status": "available",
+          "unit": "KG",
+          "unit_provenance": {
+            "method": "source-units-v1",
+            "rows": 1,
+            "status": "consistent",
+            "unit": "KG",
+            "units": [
+              "KG"
+            ],
+            "unknown_rows": 0
+          },
+          "value_above": "20.250000"
+        },
+        "item_id": "92000000-0000-4000-8000-000000000098",
+        "override": null,
+        "policy": {
+          "evidence": {
+            "original_model": {
+              "decimals": [
+                "0.0001"
+              ],
+              "method": "baseline-v1"
+            }
+          },
+          "status": "available",
+          "summary": {
+            "protection": {
+              "target": "10.001"
+            }
+          }
+        }
+      },
+      "notice": "As-of disposition planning evidence only. Not a supplier return, scrap execution, stock reservation or accounting write-off. Reference value is not recovery proceeds.",
+      "organization_id": "a2000000-0000-4000-8000-000000000002",
+      "proposal": {
+        "approval_reason": "Independent review",
+        "approved_at": "2026-10-18T13:00:00Z",
+        "approved_by": "a2000000-0000-4000-8000-000000000005",
+        "id": "92000000-0000-4000-8000-000000000097",
+        "reason": "Planned return",
+        "revision": 1,
+        "submitted_at": "2026-10-18T12:00:00Z",
+        "submitted_by": "a2000000-0000-4000-8000-000000000003"
+      },
+      "purpose": "planning_only",
+      "schema_version": "excess-disposition-handoff-v1"
+    }
+  ]
+}
+"
+`;
+
+exports[`freezes original v1 files, including full line evidence and independent units 2`] = `
+"﻿"schema_version","purpose","notice","batch_id","organization_id","created_at","created_by","batch_reference_inventory_value","batch_line_count","line_number","handoff_id","proposal_id","proposal_revision","assessment_id","disposition_kind","item_id","item_code","location_id","location_code","cutoff","quantity","unit","line_reference_inventory_value","currency","proposal_reason","approval_reason","assessment_reason","original_handoff_json"
+"excess-disposition-handoff-batch-v1","planning_only","Planning package only","92000000-0000-4000-8000-000000000100","a2000000-0000-4000-8000-000000000002","2026-10-19T00:00:00.123456Z","a2000000-0000-4000-8000-000000000003","7.499250","2","1","a2000000-0000-4000-8000-000000000001","a2000000-0000-4000-8000-000000000004","1","a2000000-0000-4000-8000-000000000006","supplier_return","a2000000-0000-4000-8000-000000000007","ITEM-1","a2000000-0000-4000-8000-000000000008","DXB","2026-10-10","3.333","EA","3.749625","KWD","Planned return","Independent review","As-of stock review","{
+  ""assessment"": {
+    ""as_of_confirmed"": true,
+    ""created_at"": ""2026-10-18T11:00:00Z"",
+    ""fingerprint"": ""aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"",
+    ""id"": ""a2000000-0000-4000-8000-000000000006"",
+    ""reason"": ""As-of stock review"",
+    ""submitted_by"": ""a2000000-0000-4000-8000-000000000003""
+  },
+  ""created_at"": ""2026-10-19T03:00:00.000001Z"",
+  ""created_by"": ""a2000000-0000-4000-8000-000000000003"",
+  ""disposition"": {
+    ""currency"": ""KWD"",
+    ""cutoff"": ""2026-10-10"",
+    ""item_code"": ""ITEM-1"",
+    ""item_id"": ""a2000000-0000-4000-8000-000000000007"",
+    ""kind"": ""supplier_return"",
+    ""location_code"": ""DXB"",
+    ""location_id"": ""a2000000-0000-4000-8000-000000000008"",
+    ""quantity"": ""3.333"",
+    ""reference_value"": ""3.749625"",
+    ""unit"": ""EA""
+  },
+  ""handoff_id"": ""a2000000-0000-4000-8000-000000000001"",
+  ""line"": {
+    ""comparison"": {
+      ""basis"": ""calculated"",
+      ""cutoff"": ""2026-10-10"",
+      ""day"": ""2026-10-10"",
+      ""forecast_id"": ""a2000000-0000-4000-8000-000000000011"",
+      ""item_code"": ""ITEM-1"",
+      ""location_code"": ""DXB"",
+      ""maximum"": ""10.001"",
+      ""override_id"": null,
+      ""policy_id"": ""a2000000-0000-4000-8000-000000000009"",
+      ""quantity_above"": ""18.000"",
+      ""revision"": null,
+      ""run_id"": ""a2000000-0000-4000-8000-000000000010"",
+      ""snapshot"": {
+        ""age"": 0,
+        ""allocated"": ""2.000"",
+        ""available"": ""28.001"",
+        ""currency"": ""KWD"",
+        ""date"": ""2026-10-10"",
+        ""id"": ""a2000000-0000-4000-8000-000000000012"",
+        ""quantity"": ""30.001"",
+        ""unit"": ""EA"",
+        ""unit_cost"": ""1.125"",
+        ""updated_at"": ""2026-10-10T12:00:00Z""
+      },
+      ""status"": ""available"",
+      ""unit"": ""EA"",
+      ""unit_provenance"": {
+        ""method"": ""source-units-v1"",
+        ""rows"": 1,
+        ""status"": ""consistent"",
+        ""unit"": ""EA"",
+        ""units"": [
+          ""EA""
+        ],
+        ""unknown_rows"": 0
+      },
+      ""value_above"": ""20.250000""
+    },
+    ""item_id"": ""a2000000-0000-4000-8000-000000000007"",
+    ""override"": null,
+    ""policy"": {
+      ""evidence"": {
+        ""original_model"": {
+          ""decimals"": [
+            ""0.0001""
+          ],
+          ""method"": ""baseline-v1""
+        }
+      },
+      ""status"": ""available"",
+      ""summary"": {
+        ""protection"": {
+          ""target"": ""10.001""
+        }
+      }
+    }
+  },
+  ""notice"": ""As-of disposition planning evidence only. Not a supplier return, scrap execution, stock reservation or accounting write-off. Reference value is not recovery proceeds."",
+  ""organization_id"": ""a2000000-0000-4000-8000-000000000002"",
+  ""proposal"": {
+    ""approval_reason"": ""Independent review"",
+    ""approved_at"": ""2026-10-18T13:00:00Z"",
+    ""approved_by"": ""a2000000-0000-4000-8000-000000000005"",
+    ""id"": ""a2000000-0000-4000-8000-000000000004"",
+    ""reason"": ""Planned return"",
+    ""revision"": 1,
+    ""submitted_at"": ""2026-10-18T12:00:00Z"",
+    ""submitted_by"": ""a2000000-0000-4000-8000-000000000003""
+  },
+  ""purpose"": ""planning_only"",
+  ""schema_version"": ""excess-disposition-handoff-v1""
+}"
+"excess-disposition-handoff-batch-v1","planning_only","Planning package only","92000000-0000-4000-8000-000000000100","a2000000-0000-4000-8000-000000000002","2026-10-19T00:00:00.123456Z","a2000000-0000-4000-8000-000000000003","7.499250","2","2","a2000000-0000-4000-8000-000000000099","92000000-0000-4000-8000-000000000097","1","a2000000-0000-4000-8000-000000000006","supplier_return","92000000-0000-4000-8000-000000000098","SECOND","a2000000-0000-4000-8000-000000000008","DXB","2026-10-10","3.333","KG","3.749625","KWD","Planned return","Independent review","As-of stock review","{
+  ""assessment"": {
+    ""as_of_confirmed"": true,
+    ""created_at"": ""2026-10-18T11:00:00Z"",
+    ""fingerprint"": ""aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"",
+    ""id"": ""a2000000-0000-4000-8000-000000000006"",
+    ""reason"": ""As-of stock review"",
+    ""submitted_by"": ""a2000000-0000-4000-8000-000000000003""
+  },
+  ""created_at"": ""2026-10-19T03:00:00.000001Z"",
+  ""created_by"": ""a2000000-0000-4000-8000-000000000003"",
+  ""disposition"": {
+    ""currency"": ""KWD"",
+    ""cutoff"": ""2026-10-10"",
+    ""item_code"": ""SECOND"",
+    ""item_id"": ""92000000-0000-4000-8000-000000000098"",
+    ""kind"": ""supplier_return"",
+    ""location_code"": ""DXB"",
+    ""location_id"": ""a2000000-0000-4000-8000-000000000008"",
+    ""quantity"": ""3.333"",
+    ""reference_value"": ""3.749625"",
+    ""unit"": ""KG""
+  },
+  ""handoff_id"": ""a2000000-0000-4000-8000-000000000099"",
+  ""line"": {
+    ""comparison"": {
+      ""basis"": ""calculated"",
+      ""cutoff"": ""2026-10-10"",
+      ""day"": ""2026-10-10"",
+      ""forecast_id"": ""a2000000-0000-4000-8000-000000000011"",
+      ""item_code"": ""SECOND"",
+      ""location_code"": ""DXB"",
+      ""maximum"": ""10.001"",
+      ""override_id"": null,
+      ""policy_id"": ""a2000000-0000-4000-8000-000000000009"",
+      ""quantity_above"": ""18.000"",
+      ""revision"": null,
+      ""run_id"": ""a2000000-0000-4000-8000-000000000010"",
+      ""snapshot"": {
+        ""age"": 0,
+        ""allocated"": ""2.000"",
+        ""available"": ""28.001"",
+        ""currency"": ""KWD"",
+        ""date"": ""2026-10-10"",
+        ""id"": ""a2000000-0000-4000-8000-000000000012"",
+        ""quantity"": ""30.001"",
+        ""unit"": ""KG"",
+        ""unit_cost"": ""1.125"",
+        ""updated_at"": ""2026-10-10T12:00:00Z""
+      },
+      ""status"": ""available"",
+      ""unit"": ""KG"",
+      ""unit_provenance"": {
+        ""method"": ""source-units-v1"",
+        ""rows"": 1,
+        ""status"": ""consistent"",
+        ""unit"": ""KG"",
+        ""units"": [
+          ""KG""
+        ],
+        ""unknown_rows"": 0
+      },
+      ""value_above"": ""20.250000""
+    },
+    ""item_id"": ""92000000-0000-4000-8000-000000000098"",
+    ""override"": null,
+    ""policy"": {
+      ""evidence"": {
+        ""original_model"": {
+          ""decimals"": [
+            ""0.0001""
+          ],
+          ""method"": ""baseline-v1""
+        }
+      },
+      ""status"": ""available"",
+      ""summary"": {
+        ""protection"": {
+          ""target"": ""10.001""
+        }
+      }
+    }
+  },
+  ""notice"": ""As-of disposition planning evidence only. Not a supplier return, scrap execution, stock reservation or accounting write-off. Reference value is not recovery proceeds."",
+  ""organization_id"": ""a2000000-0000-4000-8000-000000000002"",
+  ""proposal"": {
+    ""approval_reason"": ""Independent review"",
+    ""approved_at"": ""2026-10-18T13:00:00Z"",
+    ""approved_by"": ""a2000000-0000-4000-8000-000000000005"",
+    ""id"": ""92000000-0000-4000-8000-000000000097"",
+    ""reason"": ""Planned return"",
+    ""revision"": 1,
+    ""submitted_at"": ""2026-10-18T12:00:00Z"",
+    ""submitted_by"": ""a2000000-0000-4000-8000-000000000003""
+  },
+  ""purpose"": ""planning_only"",
+  ""schema_version"": ""excess-disposition-handoff-v1""
+}"
+"
+`;
