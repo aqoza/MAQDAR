@@ -12,6 +12,7 @@ export async function ExcessStockHeader({
   create?: boolean
 }) {
   const t = await getTranslations('ExcessStock')
+  const ht = await getTranslations('ExcessDispositionHandoffs')
   return (
     <PageHeader
       pattern="replenishment"
@@ -39,6 +40,12 @@ export async function ExcessStockHeader({
       }
       actions={
         <div className="flex flex-wrap gap-3">
+          <Link
+            className="rounded-md border bg-background px-3 py-2"
+            href="/replenishment/excess/handoffs"
+          >
+            {ht('title')}
+          </Link>
           <Link
             className="rounded-md border bg-background px-3 py-2"
             href="/replenishment/excess/review"

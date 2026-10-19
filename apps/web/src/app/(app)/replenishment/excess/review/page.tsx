@@ -35,6 +35,7 @@ export default async function Dispositions({
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
+  const ht = await getTranslations('ExcessDispositionHandoffs')
   const params = dispositionListParams(await searchParams)
   const [db, t, locale, format] = await Promise.all([
     createClient(),
@@ -83,6 +84,14 @@ export default async function Dispositions({
         description={t('context')}
         navigation={<ReplenishmentNav current="excess" />}
         help={<ExcessDispositionHelp />}
+        actions={
+          <Link
+            className="rounded-md border bg-background px-3 py-2"
+            href="/replenishment/excess/handoffs"
+          >
+            {ht('title')}
+          </Link>
+        }
         back={
           <Link href="/replenishment/excess" className="underline">
             {t('assessments')}
