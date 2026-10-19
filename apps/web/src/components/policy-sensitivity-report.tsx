@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { TableScrollRegion } from '@/components/table-scroll-region'
 import { PolicySimulationLedger } from '@/components/policy-simulation-ledger'
+import type { ConstraintsEvidence } from '@/lib/policy-constraints'
 import type { ConfigurationsEvidence } from '@/lib/policy-configurations'
 import type { SensitivityEvidence } from '@/lib/policy-sensitivity'
 
@@ -9,14 +10,16 @@ export async function PolicySensitivityReport({
   evidence,
   selected,
 }: {
-  evidence: SensitivityEvidence | ConfigurationsEvidence
+  evidence: SensitivityEvidence | ConfigurationsEvidence | ConstraintsEvidence
   selected: string | undefined
 }) {
   const [t, simulation, locale] = await Promise.all([
     getTranslations(
-      evidence.method === 'periodic-configurations-v1'
-        ? 'PolicyConfigurations'
-        : 'PolicySensitivity',
+      evidence.method === 'periodic-constraints-v1'
+        ? 'PolicyConstraints'
+        : evidence.method === 'periodic-configurations-v1'
+          ? 'PolicyConfigurations'
+          : 'PolicySensitivity',
     ),
     getTranslations('PolicySimulation'),
     getLocale(),
@@ -35,7 +38,9 @@ export async function PolicySensitivityReport({
   const variant = variants[chosen]
   const common = variants[0].metrics
   const configuration =
-    evidence.method === 'periodic-configurations-v1' ? evidence.output.variants[chosen] : null
+    evidence.method !== 'periodic-sensitivity-v1' ? evidence.output.variants[chosen] : null
+  const constraint =
+    evidence.method === 'periodic-constraints-v1' ? evidence.output.variants[chosen] : null
   return (
     <div className="min-w-0 space-y-4">
       <p>
@@ -46,6 +51,7 @@ export async function PolicySensitivityReport({
       </p>
       <HelpDisclosure>
         <p>{t('interpretation')}</p>
+        {evidence.method === 'periodic-constraints-v1' && <p>{t('roundingHelp')}</p>}
         <p>{simulation('method')}</p>
         <p>{simulation('ratios')}</p>
         <p>
@@ -70,10 +76,17 @@ export async function PolicySensitivityReport({
             <tr>
               <th className="p-3 text-start">{t('variant')}</th>
               <th className="p-3 text-start">{simulation('maximum')}</th>
-              {evidence.method === 'periodic-configurations-v1' && (
+              {evidence.method !== 'periodic-sensitivity-v1' && (
                 <>
                   <th className="p-3 text-start">{t('lead')}</th>
                   <th className="p-3 text-start">{t('review')}</th>
+                </>
+              )}
+              {evidence.method === 'periodic-constraints-v1' && (
+                <>
+                  <th className="p-3 text-start">{t('moq')}</th>
+                  <th className="p-3 text-start">{t('pack')}</th>
+                  <th className="p-3 text-start">{t('roundingTotal')}</th>
                 </>
               )}
               {(
@@ -103,6 +116,19 @@ export async function PolicySensitivityReport({
                   <>
                     <td className="p-3 tabular-nums">{amount(row.lead_time)}</td>
                     <td className="p-3 tabular-nums">{amount(row.review_interval)}</td>
+                  </>
+                )}
+                {'moq' in row && (
+                  <>
+                    <td className="p-3 tabular-nums">{row.moq === null ? '—' : amount(row.moq)}</td>
+                    <td className="p-3 tabular-nums">
+                      {row.pack === null ? '—' : amount(row.pack)}
+                    </td>
+                    <td className="p-3 tabular-nums">
+                      {row.metrics.rounding_extra_quantity === undefined
+                        ? '—'
+                        : amount(row.metrics.rounding_extra_quantity)}
+                    </td>
                   </>
                 )}
                 {(
@@ -161,12 +187,24 @@ export async function PolicySensitivityReport({
             })}
           </p>
         )}
+        {constraint && (
+          <p>
+            {constraint.moq === null
+              ? t('unconstrained')
+              : t('constraints', {
+                  moq: amount(constraint.moq),
+                  pack: amount(constraint.pack),
+                  unit: evidence.policy.unit,
+                })}
+          </p>
+        )}
         <p>
           {simulation('metrics.received_quantity')}: {amount(variant.metrics.received_quantity)} ·{' '}
           {simulation('metrics.immediate_fulfilled')}: {amount(variant.metrics.immediate_fulfilled)}
         </p>
         <PolicySimulationLedger
           variant={variant}
+          rounding={evidence.method === 'periodic-constraints-v1' && chosen > 0}
           label={simulation('ledger', { variant: label(chosen) })}
         />
       </section>
