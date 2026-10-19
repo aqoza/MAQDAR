@@ -1,0 +1,30 @@
+// Separate service. Initial deployment stays paused; no web routes or public controls.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "maqdar-acme-simulation",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-19",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  "vars": {
+    "ENABLED": "false",
+    "MAQDAR_EXPECTED_ORGANIZATION": "REPLACE_WITH_REVIEWED_ACME_UUID"
+  },
+  "triggers": { "crons": ["* * * * *"] },
+  "containers": [
+    {
+      "class_name": "AcmeSimulationContainer",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "base": { "dockerfile": "../../engine/Dockerfile.simulation", "build_context": "../.." }
+      }
+    }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "ACME_SIMULATION", "class_name": "AcmeSimulationContainer" }]
+  },
+  "exports": {
+    "AcmeSimulationContainer": { "type": "durable-object", "storage": "sqlite" }
+  }
+}
