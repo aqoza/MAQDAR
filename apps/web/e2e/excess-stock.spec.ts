@@ -2,12 +2,29 @@ import { randomUUID } from 'node:crypto'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve } from 'node:path'
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
 
 test.use({ actionTimeout: 30_000 })
+
+async function expectEvidenceTypography(page: Page) {
+  const heading = page.getByRole('heading', { level: 1 })
+  await expect(heading).toHaveCSS('font-size', '20px')
+  await expect(heading).toHaveCSS('line-height', '28px')
+  await expect(heading).toHaveCSS('font-weight', '600')
+  const family = await page.locator('html').evaluate((node) => getComputedStyle(node).fontFamily)
+  const values = page.locator('main .text-evidence-value:visible')
+  expect(await values.count()).toBeGreaterThan(0)
+  for (const value of await values.all()) {
+    await expect(value).toHaveCSS('font-size', '16px')
+    await expect(value).toHaveCSS('line-height', '24px')
+    await expect(value).toHaveCSS('font-weight', '600')
+    await expect(value).toHaveCSS('font-family', family)
+  }
+}
+
 test('excess assessments keep explicit maxima, exact history and scoped responsive evidence', async ({
   page,
   browser,
@@ -58,8 +75,8 @@ test('excess assessments keep explicit maxima, exact history and scoped responsi
   await page.goto('/replenishment/excess')
   await page.getByRole('link', { name: 'New assessment', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Selected items (0/50)' })).toBeVisible()
-  for (const width of [375, 768, 1024, 1440, 1920]) {
-    await page.setViewportSize({ width, height: 900 })
+  for (const width of [375, 768, 1024, 1366, 1440, 1920]) {
+    await page.setViewportSize({ width, height: width === 1366 ? 768 : 900 })
     await page.evaluate(() => document.fonts.ready)
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
     if (width === 375 || width === 1440)
@@ -102,11 +119,11 @@ with psycopg.connect(sys.argv[1]) as db:
   await page.keyboard.press('Enter')
   await expect(page.getByText('Override reasons: Seasonal maximum · Reviewed')).toBeVisible()
   await page.keyboard.press('Enter')
-  for (const width of [375, 768, 1024, 1440, 1920]) {
-    await page.setViewportSize({ width, height: 900 })
+  for (const width of [375, 768, 1024, 1366, 1440, 1920]) {
+    await page.setViewportSize({ width, height: width === 1366 ? 768 : 900 })
     await page.evaluate(() => document.fonts.ready)
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '20px')
+    await expectEvidenceTypography(page)
     await expect(page.locator('tbody tr').first()).toHaveCSS('font-size', '14px')
     const region = page.getByRole('region', { name: 'Assessment line comparisons' })
     await region.focus()
@@ -184,10 +201,11 @@ with psycopg.connect(sys.argv[1]) as db:
   await page.getByRole('radio', { name: 'العربية' }).click()
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await page.goto(savedUrl)
-  for (const width of [375, 1440]) {
-    await page.setViewportSize({ width, height: 900 })
+  for (const width of [375, 1366, 1440]) {
+    await page.setViewportSize({ width, height: width === 1366 ? 768 : 900 })
     await page.evaluate(() => document.fonts.ready)
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
+    await expectEvidenceTypography(page)
     await page.screenshot({ path: testInfo.outputPath(`excess-ar-${width}.png`), fullPage: true })
   }
   expect(errors).toEqual([])

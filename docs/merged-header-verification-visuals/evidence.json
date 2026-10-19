@@ -1,0 +1,75 @@
+{
+  "contract": "Main 030a196 plus the excess-stock evidence-value token correction. design.MD: Items reference; page titles 20/28/600, navigation/body 14/20, evidence values 16/24/600, captions 12/16, mobile inputs 16/24 with 44px targets. Continuous compact illustrated headers, natural wrapping and local table/tab scrolling; preserve Arabic RTL and existing business semantics.",
+  "targetViewports": ["1366x768", "375x900", "1920x900"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Browser assertions verify heading hierarchy, keyboard back/action/tab navigation, focus restoration after mobile drawer navigation, local keyboard table scrolling, mobile 44px controls and reduced-motion loading. Rendered screenshots were inspected for text fit and readable foreground contrast; no new palette or typography was introduced."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "Existing header matrices exercise 1920px, 1366px and 375px in English and Arabic RTL; responsive planning additionally checks 768px, 1024px and 1440px, and Dashboard checks 1280px through 1536px. Asserted actual control bounds and scroll width without masking overflow."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "Real throttled Imports history/creation and Settings loading checks preserve illustrated banners; reduced-motion loading is static."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Items empty list and Dashboard no-stock state retain their typography and truthful unavailable values."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "Malformed local policy evidence exercises the existing localized error/retry/back state; invalid item UUID preserves HTTP 404 and the Items banner."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "Populated Dashboard retains unavailable forecast risk alongside real scoped inventory and demand; no business values are fabricated in production."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Real local RPC fixture chains render approved transfer/purchase details, quantities, prices and subtotals. Laptop transfer values fit one 24px line at 16px type."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Existing Settings viewer test verifies read-only organization/preferences, absent member/invitation/API-key tools and safe deep-link fallback."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1366x768",
+      "artifact": "transfer-proposal-en-1366.png",
+      "observation": "Inspected compact illustrated detail header, 14px shared sidebar and 16px freight evidence values."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "items-en-1366.png",
+      "observation": "Inspected Items typography reference and continuous banner through local section navigation."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "items-en-375.png",
+      "observation": "Inspected natural title/action wrapping, mobile form controls and local tab scrolling."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "transfer-proposal-ar-375.png",
+      "observation": "Inspected RTL alignment, wrapped metadata and unchanged evidence-value role."
+    },
+    {
+      "viewport": "1920x900",
+      "artifact": "transfer-proposal-en-1920.png",
+      "observation": "Desktop matrix verifies same title/sidebar/evidence scale and header bounds."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "excess-1366.png",
+      "observation": "Preview totals use the evidence-value role; actual 16px/24px/600 and root font-family assertions run at laptop size."
+    },
+    {
+      "viewport": "375x900",
+      "artifact": "excess-ar-375.png",
+      "observation": "Saved Arabic RTL evidence retains the 20px title, 16px totals and local table scrolling."
+    }
+  ]
+}
