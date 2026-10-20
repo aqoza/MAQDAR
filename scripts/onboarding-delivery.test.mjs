@@ -29,7 +29,7 @@ test('sends a claimed invitation to its trusted tenant return URL, then acknowle
   const h = harness([{ body: job }, { body: {} }, { body: true }])
   assert.equal(await deliverInvitations({ ...config, ...h }), 1)
   assert.equal(new URL(h.calls[1].url).pathname, '/auth/v1/invite')
-  assert.equal(new URL(h.calls[1].url).searchParams.get('redirect_to'), `https://ote.example.com/invitations/${job.invitation_id}`)
+  assert.equal(new URL(h.calls[1].url).searchParams.get('redirect_to'), `https://ote.example.com/auth/email/invitations/${job.invitation_id}`)
   assert.equal(h.calls[2].body.p_outcome, 'sent')
   assert.equal(h.calls[2].body.p_lease, job.lease)
 })
@@ -52,7 +52,7 @@ test('ambiguous transport failures are held for review rather than automatically
   assert.equal(h.calls[2].body.p_outcome, 'uncertain')
 })
 test('does not send for an unknown tenant or accept a redirect origin from a queue row', async () => {
-  const h = harness([{ body: { ...job, organization_id: 'unknown', redirect_to: 'https://evil.example' } }, { body: true }])
+  const h = harness([{ body: { ...job, organization_id: '00000000-0000-4000-8000-000000000099', redirect_to: 'https://evil.example' } }, { body: true }])
   await deliverInvitations({ ...config, ...h })
   assert.equal(h.calls.length, 2)
   assert.equal(h.calls[1].body.p_outcome, 'failed')
