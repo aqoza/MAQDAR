@@ -958,6 +958,11 @@
         "label": "Read network handoffs",
         "description": "Read saved network handoffs and batches across the whole organization, including every branch and retained evidence after source deletion. Does not reserve stock or execute transfers.",
         "badge": "Network handoffs: read"
+      },
+      "networkHandoffsAcknowledge": {
+        "label": "Report network package receipt or rejection",
+        "description": "Organization-wide reports for whole network handoffs and batches. No reservations or transfer execution.",
+        "badge": "Network handoffs: acknowledge"
       }
     },
     "secret": {
@@ -3003,7 +3008,8 @@
     "page": "Page {page}",
     "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when ZeeSpare saved the report.",
     "eventMeaning": "Reports are supplied by an integration key holder. They do not verify external acceptance or create orders. Full adjusted selections, baseline comparisons and event evidence remain unchanged.",
-    "dispositionMeaning": "Reports are supplied by an integration key holder. They do not verify supplier acceptance, create returns, authorize scrap, write off inventory or move stock. Saved quantities and reference inventory values remain unchanged. Reports on copied batches remain available after source handoffs are deleted."
+    "dispositionMeaning": "Reports are supplied by an integration key holder. They do not verify supplier acceptance, create returns, authorize scrap, write off inventory or move stock. Saved quantities and reference inventory values remain unchanged. Reports on copied batches remain available after source handoffs are deleted.",
+    "networkMeaning": "These are external reports about the whole saved network package, not verified branch acceptance or transfer execution. They do not reserve stock, create transfers or change inbound. History remains separate for member handoffs and overlapping batches; retained copied batches keep their reports after source deletion."
   },
   "TransferDates": {
     "title": "Transfer date scenarios",

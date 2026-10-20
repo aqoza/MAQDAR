@@ -245,7 +245,7 @@ describe('structure', () => {
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
         : path.startsWith('/network-handoff')
-          ? ['network_handoffs:read']
+          ? [method === 'post' ? 'network_handoffs:acknowledge' : 'network_handoffs:read']
           : path.startsWith('/excess-disposition-handoff')
             ? [
                 method === 'post'
@@ -476,7 +476,7 @@ it('documents exact disposition files, unavailable live context and read-only sc
   }
 })
 
-it('documents complete network evidence, separate currency totals and no acknowledgement routes', () => {
+it('documents complete network evidence, separate currency totals and explicit acknowledgement scopes', () => {
   expect(valid(schema('NetworkHandoffPayload'), networkFixture)).toBe(true)
   expect(valid(schema('NetworkHandoffBatchPayload'), networkBatchFixture)).toBe(true)
   expect(
@@ -495,7 +495,12 @@ it('documents complete network evidence, separate currency totals and no acknowl
   for (const resource of ['network-handoffs', 'network-handoff-batches']) {
     expect(doc.paths[`/${resource}`].get['x-maqdar-scopes']).toEqual(['network_handoffs:read'])
     expect(doc.paths[`/${resource}/{id}`].get['x-maqdar-scopes']).toEqual(['network_handoffs:read'])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]).toBeUndefined()
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].post['x-maqdar-scopes']).toEqual([
+      'network_handoffs:acknowledge',
+    ])
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].get['x-maqdar-scopes']).toEqual([
+      'network_handoffs:read',
+    ])
     expect(doc.paths[`/${resource}`].post).toBeUndefined()
   }
 })

@@ -1,3 +1,4 @@
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
@@ -10,7 +11,13 @@ import { batchPayloadSchema } from '@/lib/network-batches'
 import { NetworkBatchEvidence } from '@/components/network-batch-evidence'
 import { NetworkBatchOverlap } from '@/components/network-batch-overlap'
 
-export default async function BatchDetail({ params }: { params: Promise<{ batchId: string }> }) {
+export default async function BatchDetail({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ batchId: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
+}) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { batchId } = await params
@@ -85,6 +92,13 @@ export default async function BatchDetail({ params }: { params: Promise<{ batchI
         organizationId={context.active.id}
         handoffIds={saved.data.handoff_ids}
         excludeId={batchId}
+      />
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={batchId}
+        kind="network"
+        batch
+        pageValue={(await searchParams).ack_page}
       />
     </div>
   )

@@ -105,7 +105,7 @@ describe('paths, methods and operation ids', () => {
     expect(operationId('demand_history', 'upsert')).toBe('upsertDemandHistory')
     expect(operationId('items', 'list')).toBe('listItems')
     const ids = allOperationIds()
-    expect(ids).toHaveLength(75)
+    expect(ids).toHaveLength(81)
     expect(new Set(ids).size).toBe(ids.length)
     expect(ids[0]).toBe('getOrganization')
   })

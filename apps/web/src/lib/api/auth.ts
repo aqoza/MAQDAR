@@ -25,6 +25,7 @@ export const API_SCOPES = [
   'excess_disposition_handoffs:read',
   'excess_disposition_handoffs:acknowledge',
   'network_handoffs:read',
+  'network_handoffs:acknowledge',
 ] as const
 
 export type ApiScope = (typeof API_SCOPES)[number]
@@ -53,6 +54,8 @@ export const SCOPE_DESCRIPTIONS: Readonly<Record<ApiScope, string>> = {
     'Append external receipt or rejection reports for saved disposition handoffs and batches across the organization; no returns, write-offs or stock movements.',
   'network_handoffs:read':
     'Read saved whole-network handoffs and copied batches across the organization, including every branch and retained evidence after source deletion; no reservations or transfer execution.',
+  'network_handoffs:acknowledge':
+    'Append whole-package receipt or rejection reports for saved network handoffs and batches across the organization; no reservations or transfer execution.',
 }
 
 export function isApiScope(value: unknown): value is ApiScope {

@@ -1,3 +1,4 @@
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -12,8 +13,10 @@ import { networkFreightReportSchema } from '@/lib/network-freight'
 
 export default async function NetworkHandoffDetail({
   params,
+  searchParams,
 }: {
   params: Promise<{ handoffId: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
@@ -113,6 +116,12 @@ export default async function NetworkHandoffDetail({
         </section>
       </div>
       <NetworkFreightReport report={payload.estimate} locale={locale} />
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={handoffId}
+        kind="network"
+        pageValue={(await searchParams).ack_page}
+      />
     </div>
   )
 }

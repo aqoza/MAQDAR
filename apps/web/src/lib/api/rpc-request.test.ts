@@ -48,6 +48,8 @@ describe('buildRpcRequest (J9)', () => {
     expect(API_RPC_NAMES).toEqual([
       'api_excess_disposition_handoff_acknowledge',
       'api_excess_disposition_handoff_acknowledgements',
+      'api_network_handoff_acknowledge',
+      'api_network_handoff_acknowledgements',
       'api_network_handoff_list',
       'api_network_handoff_get',
       'api_excess_disposition_handoff_list',

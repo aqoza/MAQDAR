@@ -1124,6 +1124,50 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"network_handoff_acknowledgements": {
+                  Row: {
+                    "api_key_id": string,"batch_id": string | null,"client_event_id": string,"external_reference": string,"external_system": string,"handoff_id": string | null,"id": string,"organization_id": string,"reason": string | null,"recorded_at": string,"required_location_ids": (string)[],"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "api_key_id": string,"batch_id"?: string | null,"client_event_id": string,"external_reference": string,"external_system": string,"handoff_id"?: string | null,"id"?: string,"organization_id": string,"reason"?: string | null,"recorded_at"?: string,"required_location_ids": (string)[],"status": string
+                  }
+                  Update: {
+                    "api_key_id"?: string,"batch_id"?: string | null,"client_event_id"?: string,"external_reference"?: string,"external_system"?: string,"handoff_id"?: string | null,"id"?: string,"organization_id"?: string,"reason"?: string | null,"recorded_at"?: string,"required_location_ids"?: (string)[],"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "network_handoff_acknowledgement_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "network_handoff_batch_candidates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "network_handoff_acknowledgement_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "network_handoff_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "network_handoff_acknowledgement_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: false
+      referencedRelation: "network_transfer_handoffs"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "network_handoff_acknowledgements_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "network_handoff_batch_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "network_handoff_acknowledgements_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: false
+      referencedRelation: "network_handoff_batches"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"network_handoff_batches": {
                   Row: {
                     "created_at": string,"created_by": string,"handoff_ids": (string)[],"id": string,"organization_id": string,"payload": NonNullable<Json>,"required_location_ids": (string)[],"source_location_id": string
@@ -3422,6 +3466,12 @@ isOneToOne: false
                            },
 "api_list_demand":
 { Args: { "p_after"?: string,"p_from": string,"p_item_code"?: string,"p_key_hash": string,"p_limit"?: number,"p_location_code"?: string,"p_to": string }; Returns: Json
+                           },
+"api_network_handoff_acknowledge":
+{ Args: { "p_body": Json,"p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
+                           },
+"api_network_handoff_acknowledgements":
+{ Args: { "p_after"?: string,"p_event_id"?: string,"p_id": string,"p_key_hash": string,"p_limit"?: number,"p_resource": string }; Returns: Json
                            },
 "api_network_handoff_get":
 { Args: { "p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
