@@ -29,10 +29,11 @@ export default async function NetworkHistory({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const params = redistributionListParams(await searchParams)
-  const [db, t, locale] = await Promise.all([
+  const [db, t, locale, dates] = await Promise.all([
     createClient(),
     getTranslations('NetworkAllocation'),
     getLocale(),
+    getTranslations('NetworkDates'),
   ])
   const query = (head: boolean) => {
     let q = db
@@ -66,12 +67,17 @@ export default async function NetworkHistory({
         description={t('context')}
         navigation={<ReplenishmentNav current="network" />}
         actions={
-          <Link
-            className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
-            href="/replenishment/network/new"
-          >
-            {t('create')}
-          </Link>
+          <>
+            <Link
+              className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+              href="/replenishment/network/new"
+            >
+              {t('create')}
+            </Link>
+            <Link className="underline" href="/replenishment/network/dates">
+              {dates('dateHistory')}
+            </Link>
+          </>
         }
         help={
           <HelpDisclosure>

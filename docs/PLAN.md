@@ -184,13 +184,16 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 21c  | **Policy configuration comparisons:** captured original simulation versus up to ten explicit maximum/lead/review tuples, exact metrics and daily ledgers without extending history.                                         | Merged — PR #105                                    |
 | 21d  | **MOQ/pack simulations:** captured original baseline versus explicit maximum/lead/review/MOQ/pack assumptions, exact order rounding and inspectable scoped results.                                                         | Merged — PR #108                                    |
 | 21e  | **Calendar-aware simulations:** preserved MOQ/pack comparison plus adjusted reviews/receipts from captured ordering and receiving calendars, explicit unavailable diagnoses and immutable scoped history.                   | Merged — PR #109                                    |
-| 22   | **Bounded network allocation:** one warehouse policy and up to twenty branch drafts, exact proportional rationing, all-location access and immutable evidence/history.                                                      | Implemented; verification and review                |
+| 22   | **Bounded network allocation:** one warehouse policy and up to twenty branch drafts, exact proportional rationing, all-location access and immutable evidence/history.                                                      | Merged in PR #111                                   |
+| 22b  | **Network transfer dates:** fixed saved allocations, one warehouse dispatch and separate branch p50/p90 calendar-adjusted receipts, with timing references and immutable all-location history.                              | Implemented; verification and review                |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
 See [policy-sensitivity.md](policy-sensitivity.md) for the approved multiple-maximum comparison contract.
 
 See [network-allocation.md](network-allocation.md) for Step 22. The immutable required-location array uses an approved restrictive RLS subset predicate against a single scoped-location InitPlan, reviewed in `0005_tenant_invariants.test.sql`.
+
+See [network-transfer-dates.md](network-transfer-dates.md) for the approved fixed-quantity scheduling rules and evidence lifecycle.
 
 ## Decision log
 
@@ -572,6 +575,12 @@ The owner merged PR #109 as `0414d18` and approved a bounded network allocation 
 ## ZeeSpare public site and OTEGROUP pilot — approved 2026-10-20
 
 Separate the public apex homepage from the explicitly bound OTE tenant hostname. Preserve shared deployment, RLS and existing login design. Oman/OMR; production email through Amazon SES is deferred by the owner. See [ote-workspace.md](ote-workspace.md) for acceptance and rollout.
+
+### Step 22b — approved 2026-10-20
+
+PR #111 was reviewed at `8e63fda` without blocking findings and merged as `8fee288` after all three CI jobs passed. Its merge with the latest main preserved both the network-allocation documentation and the ZeeSpare/OTE workspace changes; focused unit, production-build and allocation-browser checks also passed.
+
+The owner approved saved network transfer dates from one allocation, keeping every branch quantity and original stock commitment fixed. Resolve one warehouse dispatch at or after the requested date/cutoff, then each lane's saved p50/p90 calendar-day leads and next known branch working days. Zero quantities need no transfer; unknown required dates or an exhausted 90-day search prevent a complete save. Require active locations, the same active directed lanes with unchanged leads, calendar applicability and refreshed previews. Preserve inbound concerns and flag each receipt beyond the branch cutoff plus original policy lead. Keep all-location access, editor saves, immutable copies and stable retries at five widths plus Arabic RTL. No freight, reservations, policy recalculation or execution. See [network-transfer-dates.md](network-transfer-dates.md).
 
 ## ACME test workspace hostname — approved 2026-10-20
 

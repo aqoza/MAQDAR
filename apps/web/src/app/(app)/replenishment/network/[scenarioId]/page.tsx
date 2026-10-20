@@ -17,10 +17,11 @@ export default async function SavedNetworkAllocation({
   if (!context?.active) redirect('/organizations')
   const { scenarioId } = await params
   if (!z.guid().safeParse(scenarioId).success) notFound()
-  const [db, t, locale] = await Promise.all([
+  const [db, t, locale, dates] = await Promise.all([
     createClient(),
     getTranslations('NetworkAllocation'),
     getLocale(),
+    getTranslations('NetworkDates'),
   ])
   const result = await db
     .from('network_allocation_scenarios')
@@ -43,9 +44,23 @@ export default async function SavedNetworkAllocation({
           </Link>
         }
         actions={
-          <Link className="underline" href="/replenishment/network/new">
-            {t('create')}
-          </Link>
+          <>
+            <Link className="underline" href="/replenishment/network/new">
+              {t('create')}
+            </Link>
+            <Link
+              className="underline"
+              href={`/replenishment/network/dates/new?allocation=${scenarioId}`}
+            >
+              {dates('new')}
+            </Link>
+            <Link
+              className="underline"
+              href={`/replenishment/network/dates?allocation=${scenarioId}`}
+            >
+              {dates('dateHistory')}
+            </Link>
+          </>
         }
       />
       <p className="text-sm text-muted-foreground">{t('planningOnly')}</p>
