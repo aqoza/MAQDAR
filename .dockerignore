@@ -1,0 +1,16 @@
+# Allowlist the reviewed engine build inputs; exclude all local credentials/artifacts.
+**
+!engine/
+!engine/pyproject.toml
+!engine/uv.lock
+!engine/README.md
+!engine/container-entrypoint.py
+!engine/src/
+!engine/src/**
+engine/src/**/__pycache__/
+engine/src/**/*.pyc
+**/.env
+**/.env.*
+**/.dev.vars*
+**/*.pem
+**/.tmp/**
