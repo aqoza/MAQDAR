@@ -13,6 +13,13 @@ import {
   type OrganizationSummary as Organization,
 } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
+import {
+  directoryQuery,
+  memberPageSchema,
+  invitationPageSchema,
+  onboardingStatusSchema,
+  type OnboardingStatus,
+} from '@/lib/organizations/onboarding'
 import { ApiKeysCard } from './api-keys-card'
 import {
   API_KEY_COLUMNS,
@@ -45,7 +52,15 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t('title') }
 }
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const params = await searchParams
+  let memberDirectory = { ...directoryQuery(params, 'members'), total: 0 }
+  let invitationDirectory = { ...directoryQuery(params, 'invitations'), total: 0 }
+  let onboarding: OnboardingStatus | undefined
   const context = await getActiveContext()
   if (!context) redirect('/login')
   if (!context.active) redirect('/organizations')
@@ -78,48 +93,81 @@ export default async function SettingsPage() {
   let activeApiKeys = 0
   if (admin) {
     const now = new Date()
-    const [membersResult, locationsResult, invitationsResult, apiKeysResult, activeKeysResult] =
-      await Promise.all([
-        supabase.rpc('organization_members', { p_organization_id: organization.id }),
-        supabase
-          .from('locations')
-          .select('id, code, name_en')
-          .eq('organization_id', organization.id)
-          .order('code'),
-        supabase
-          .from('organization_invitations')
-          .select('id, email, role, created_at, last_sent_at, expires_at, send_count')
-          .eq('organization_id', organization.id)
-          .is('accepted_at', null)
-          .is('revoked_at', null)
-          .order('created_at', { ascending: false }),
-        // Explicit columns: key_hash is not granted, so `*` would fail with 42501.
-        supabase
-          .from('api_keys')
-          .select(API_KEY_COLUMNS)
-          .eq('organization_id', organization.id)
-          .order('created_at', { ascending: false })
-          .limit(API_KEYS_LISTED),
-        // Every active key, however old, so the count is exact and each one can be revoked.
-        supabase
-          .from('api_keys')
-          .select(API_KEY_COLUMNS)
-          .eq('organization_id', organization.id)
-          .is('revoked_at', null)
-          .gt('expires_at', now.toISOString())
-          .order('created_at', { ascending: false })
-          .limit(API_KEYS_LISTED),
-      ])
-    members = membersResult.data ?? []
+    const [
+      membersResult,
+      locationsResult,
+      invitationsResult,
+      apiKeysResult,
+      activeKeysResult,
+      onboardingResult,
+    ] = await Promise.all([
+      supabase.rpc('organization_members_page', {
+        p_organization_id: organization.id,
+        p_page: memberDirectory.page,
+        p_search: memberDirectory.search,
+      }),
+      supabase
+        .from('locations')
+        .select('id, code, name_en')
+        .eq('organization_id', organization.id)
+        .order('code'),
+      supabase.rpc('organization_invitations_page', {
+        p_organization_id: organization.id,
+        p_page: invitationDirectory.page,
+        p_search: invitationDirectory.search,
+      }),
+      // Explicit columns: key_hash is not granted, so `*` would fail with 42501.
+      supabase
+        .from('api_keys')
+        .select(API_KEY_COLUMNS)
+        .eq('organization_id', organization.id)
+        .order('created_at', { ascending: false })
+        .limit(API_KEYS_LISTED),
+      // Every active key, however old, so the count is exact and each one can be revoked.
+      supabase
+        .from('api_keys')
+        .select(API_KEY_COLUMNS)
+        .eq('organization_id', organization.id)
+        .is('revoked_at', null)
+        .gt('expires_at', now.toISOString())
+        .order('created_at', { ascending: false })
+        .limit(API_KEYS_LISTED),
+      supabase.rpc('onboarding_status', { p_organization_id: organization.id }),
+    ])
+    if (membersResult.error || invitationsResult.error || onboardingResult.error)
+      throw new Error('Unable to load workspace access management')
+    const memberPage = memberPageSchema.parse(membersResult.data)
+    const invitationPage = invitationPageSchema.parse(invitationsResult.data)
+    onboarding = onboardingStatusSchema.parse(onboardingResult.data)
+    members = memberPage.rows
+    memberDirectory = { ...memberDirectory, total: memberPage.total, page: memberPage.page }
+    invitationDirectory = {
+      ...invitationDirectory,
+      total: invitationPage.total,
+      page: invitationPage.page,
+    }
     locations = locationsResult.data ?? []
-    invitations = invitationsResult.data ?? []
+    invitations = invitationPage.rows
     const keyRecords: ApiKeyRecord[] = listedApiKeys(
       activeKeysResult.data ?? [],
       apiKeysResult.data ?? [],
     )
     // Creators are matched against the members just loaded: a creator who left or is no longer
     // an owner or admin marks the key as stopped (the API answers 401 creator_inactive).
-    apiKeys = toApiKeyRows(keyRecords, members, now.getTime())
+    // Creator status must not depend on which Members page/search is currently displayed.
+    const creatorIds = [
+      ...new Set(keyRecords.map((key) => key.created_by).filter((id): id is string => id !== null)),
+    ]
+    const creators: MemberRow[] = []
+    for (let offset = 0; offset < creatorIds.length; offset += 100) {
+      const result = await supabase.rpc('organization_members_page', {
+        p_organization_id: organization.id,
+        p_user_ids: creatorIds.slice(offset, offset + 100),
+      })
+      if (result.error) throw new Error('Unable to load integration key creators')
+      creators.push(...memberPageSchema.parse(result.data).rows)
+    }
+    apiKeys = toApiKeyRows(keyRecords, creators, now.getTime())
     activeApiKeys = keyRecords.filter((key) => isActiveApiKey(key, now.getTime())).length
   }
 
@@ -193,6 +241,7 @@ export default async function SettingsPage() {
             searchText: `${tMembers('email')} ${tMembers('role')} ${tMembers('locations')}`,
             panel: (
               <MembersCard
+                directory={memberDirectory}
                 members={members}
                 locations={locations}
                 actorRole={context.role}
@@ -211,7 +260,12 @@ export default async function SettingsPage() {
               tInvitations('role'),
             ].join(' '),
             panel: (
-              <InvitationsCard invitations={invitations} roles={assignableRoles(context.role)} />
+              <InvitationsCard
+                invitations={invitations}
+                roles={assignableRoles(context.role)}
+                directory={invitationDirectory}
+                onboarding={onboarding}
+              />
             ),
           },
           {

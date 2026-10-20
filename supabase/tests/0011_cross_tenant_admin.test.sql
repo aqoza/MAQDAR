@@ -176,6 +176,10 @@ reset role;
 insert into public.organization_invitations (organization_id, email, role, invited_by, last_sent_at, revoked_at)
 select '00000000-0000-4000-8000-00000000aaaa', 'bulk-' || g || '@test.local', 'viewer', '00000000-0000-4000-8000-0000000000a2', now() - interval '1 hour', now()
 from generate_series(1, 50) as g;
+-- Direct fixture inserts stand in for actual sends; record their attempts in the private ledger.
+insert into onboarding.attempts(organization_id,actor_id,invitation_id,attempted_at)
+select organization_id,invited_by,id,last_sent_at from public.organization_invitations
+where organization_id='00000000-0000-4000-8000-00000000aaaa' and email like 'bulk-%@test.local';
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "00000000-0000-4000-8000-0000000000a2", "role": "authenticated", "email": "admin-a@test.local"}';
 set local request.jwt.claim.sub = '00000000-0000-4000-8000-0000000000a2';
@@ -189,6 +193,9 @@ reset role;
 insert into public.organization_invitations (organization_id, email, role, invited_by, last_sent_at, revoked_at)
 select '00000000-0000-4000-8000-00000000bbbb', 'org-bulk-' || g || '@test.local', 'viewer', null, now() - interval '1 hour', now()
 from generate_series(1, 100) as g;
+insert into onboarding.attempts(organization_id,actor_id,invitation_id,attempted_at)
+select organization_id,invited_by,id,last_sent_at from public.organization_invitations
+where organization_id='00000000-0000-4000-8000-00000000bbbb' and email like 'org-bulk-%@test.local';
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "00000000-0000-4000-8000-0000000000b1", "role": "authenticated", "email": "owner-b@test.local"}';
 set local request.jwt.claim.sub = '00000000-0000-4000-8000-0000000000b1';

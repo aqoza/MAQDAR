@@ -30,12 +30,14 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm check:logical
       - run: pnpm test
+      - name: Onboarding delivery safety tests
+        run: node --test scripts/onboarding-delivery.test.mjs
 
   supabase:
     name: Supabase (pgTAP, build, Playwright)
     runs-on: ubuntu-latest
-    # The previous full run took 29m32s; retain all suites as calendar coverage grows.
-    timeout-minutes: 40
+    # The full sequential database/build/browser run exceeded 40m; retain every suite and packaging.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6

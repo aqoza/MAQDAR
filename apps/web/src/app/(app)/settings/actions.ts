@@ -25,6 +25,7 @@ import {
 import { isRpcCode, type RpcErrorLike } from '@/lib/rpc-errors'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
+import { parseInvitationEmails } from '@/lib/organizations/onboarding'
 import { fieldErrorsFrom } from '@/lib/validation'
 import {
   API_KEY_FIELDS,
@@ -244,6 +245,61 @@ export async function setMemberLocations(
 /* ------------------------------------------------------------------------------------------ */
 
 type InviteResult = { id: string; email: string; resend: boolean }
+
+export async function enqueueInvitations(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const guard = await requireActiveOrganization(formData)
+  if (!guard.ok) return guard.state
+  const t = await getTranslations('Onboarding')
+  if (!isAdminRole(guard.context.role)) return rpcErrorState({ code: 'MQ403' })
+  const batch = z.uuid().safeParse(formData.get('batch_id'))
+  const role = roleSchema.safeParse(formData.get('role'))
+  const input = formData.get('recipients')
+  if (
+    !batch.success ||
+    !role.success ||
+    role.data === 'owner' ||
+    formData.get('confirmed') !== 'on' ||
+    typeof input !== 'string'
+  )
+    return { status: 'error', message: t('invalidRecipients') }
+  let emails: string[]
+  try {
+    emails = parseInvitationEmails(input)
+  } catch {
+    return { status: 'error', message: t('invalidRecipients') }
+  }
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('onboarding_enqueue', {
+    p_organization_id: guard.organizationId,
+    p_batch_id: batch.data,
+    p_emails: emails,
+    p_role: role.data,
+  })
+  if (error) return rpcErrorState(error)
+  revalidatePath('/settings')
+  return { status: 'success', message: t('queued', { count: emails.length }) }
+}
+
+export async function cancelOnboarding(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const guard = await requireActiveOrganization(formData)
+  if (!guard.ok) return guard.state
+  const id = z.uuid().safeParse(formData.get('batch_id'))
+  if (!id.success) return invalidState('invalid_batch')
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('onboarding_cancel', {
+    p_organization_id: guard.organizationId,
+    p_batch_id: id.data,
+  })
+  if (error) return rpcErrorState(error)
+  revalidatePath('/settings')
+  return { status: 'success', message: (await getTranslations('Onboarding'))('cancelled') }
+}
 
 /** Translates invite_member's SQLSTATEs into the InviteMembers messages where they are specific. */
 async function inviteErrorState(error: RpcErrorLike, email: string): Promise<ActionState> {
