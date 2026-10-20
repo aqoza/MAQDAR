@@ -12,6 +12,7 @@ import { createClient } from '@/lib/supabase/server'
 import { isActiveRun } from '@/lib/planning'
 import { simulationEvidenceSchema } from '@/lib/policy-simulation'
 import { sensitivityEvidenceSchema } from '@/lib/policy-sensitivity'
+import { constraintsEvidenceSchema } from '@/lib/policy-constraints'
 import { configurationsEvidenceSchema } from '@/lib/policy-configurations'
 import { firstParam, type RawSearchParams } from '@/lib/master-data/list-params'
 
@@ -26,12 +27,13 @@ export default async function SimulationResult({
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
   if (!z.guid().safeParse(runId).success) notFound()
-  const [db, t, planning, sensitivity, configurations] = await Promise.all([
+  const [db, t, planning, sensitivity, configurations, constraints] = await Promise.all([
     createClient(),
     getTranslations('PolicySimulation'),
     getTranslations('Planning'),
     getTranslations('PolicySensitivity'),
     getTranslations('PolicyConfigurations'),
+    getTranslations('PolicyConstraints'),
   ])
   const { data: run, error } = await db
     .from('planning_runs')
@@ -55,11 +57,13 @@ export default async function SimulationResult({
     throw new Error('Simulation result unavailable')
   const method = (run.options as { method?: string } | null)?.method
   const comparison =
-    response?.data && method === 'periodic-sensitivity-v1'
-      ? sensitivityEvidenceSchema.parse(response.data.evidence)
-      : response?.data && method === 'periodic-configurations-v1'
-        ? configurationsEvidenceSchema.parse(response.data.evidence)
-        : null
+    response?.data && method === 'periodic-constraints-v1'
+      ? constraintsEvidenceSchema.parse(response.data.evidence)
+      : response?.data && method === 'periodic-sensitivity-v1'
+        ? sensitivityEvidenceSchema.parse(response.data.evidence)
+        : response?.data && method === 'periodic-configurations-v1'
+          ? configurationsEvidenceSchema.parse(response.data.evidence)
+          : null
   const original =
     response?.data && !comparison ? simulationEvidenceSchema.parse(response.data.evidence) : null
   const evidence = comparison ?? original
@@ -68,11 +72,13 @@ export default async function SimulationResult({
       <PageHeader
         pattern="forecasts"
         title={
-          method === 'periodic-configurations-v1'
-            ? configurations('title')
-            : method === 'periodic-sensitivity-v1'
-              ? sensitivity('title')
-              : t('title')
+          method === 'periodic-constraints-v1'
+            ? constraints('title')
+            : method === 'periodic-configurations-v1'
+              ? configurations('title')
+              : method === 'periodic-sensitivity-v1'
+                ? sensitivity('title')
+                : t('title')
         }
         description={`${run.locations?.code ?? ''} · ${run.from_date} – ${run.to_date}`}
         back={
@@ -106,6 +112,12 @@ export default async function SimulationResult({
                     className="underline"
                   >
                     {configurations('create')}
+                  </Link>
+                  <Link
+                    href={`/forecasts/simulations/constraints?source=${runId}`}
+                    className="underline"
+                  >
+                    {constraints('create')}
                   </Link>
                 </>
               )}
