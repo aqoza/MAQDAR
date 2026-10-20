@@ -194,7 +194,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 22d  | **Network transfer review:** independent whole-network proposals, current freight evidence and all-positive-branch timing gates, latest selection per allocation and all-location history.                                  | Merged in PR #118                                   |
 | 22e  | **Network handoff exports:** one immutable selected proposal, complete branch CSV/JSON evidence, separate freight currencies and all-location history.                                                                      | Merged in PR #119                                   |
 | 22f  | **Network handoff batches:** complete approvals grouped by warehouse/dispatch, separate freight currencies, copied CSV/JSON, visible overlap and all-location history.                                                      | Merged in PR #120                                   |
-| 22g  | **Network handoff read API:** explicit organization-wide readers, original whole-network JSON, bounded pagination and separate live context for retained copied batches.                                                    | Implemented; PR validation                          |
+| 22g  | **Network handoff read API:** explicit organization-wide readers, original whole-network JSON, bounded pagination and separate live context for retained copied batches.                                                    | Merged in PR #121                                   |
+| 22h  | **Network acknowledgements:** explicit whole-package received/rejected reports, independent history, safe retries and warehouse/all-branch access.                                                                          | Implemented; PR validation                          |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -619,3 +620,7 @@ PR #119 was reviewed at `4e580cb` without blocking findings and merged as `2ace2
 ### Step 22g — approved 2026-10-20
 
 The owner approved paginated network handoff/batch reads and original JSON with explicit organization-wide `network_handoffs:read`, owner/admin issuance, unchanged legacy scopes and current creator-role checks. Preserve every branch, exact currencies and copied evidence after source deletion; browser access still requires all locations. See [network-handoff-read-api.md](network-handoff-read-api.md) for acceptance criteria and rollout.
+
+### Step 22h — approved 2026-10-21
+
+PR #121 was reviewed at `69f1f2f` with no blocking findings and merged as `bfe3af8` after all four CI jobs passed. The owner approved whole-package network handoff/batch acknowledgements with explicit organization-wide `network_handoffs:acknowledge`, independent read permission, current key/creator checks including retries, append-only client UUID identity across keys and package kinds, and independent batch/member/overlap histories. Historical packages and copied batches with deleted source context remain eligible. Reports follow their actual parent deletion/audit lifecycle; browser history requires the warehouse and every included branch. Preserve compact green design at all five widths plus Arabic RTL. No transmission, reservations, transfers or inbound updates. See [network-handoff-acknowledgements.md](network-handoff-acknowledgements.md).

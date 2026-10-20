@@ -41,6 +41,8 @@ const LEAK = 'permission denied for function api_upsert (secret detail)'
 const ALL_SCOPES = [
   'excess_disposition_handoffs:read',
   'excess_disposition_handoffs:acknowledge',
+  'network_handoffs:read',
+  'network_handoffs:acknowledge',
   'event_purchase_handoffs:read',
   'event_purchase_handoffs:acknowledge',
   'transfer_handoffs:read',
@@ -192,21 +194,27 @@ describe.each([
   'event-purchase-handoff-batches',
   'excess-disposition-handoffs',
   'excess-disposition-handoff-batches',
+  'network-handoffs',
+  'network-handoff-batches',
 ] as const)('%s acknowledgements', (resource) => {
-  const writeRpc = resource.startsWith('excess-')
-    ? 'api_excess_disposition_handoff_acknowledge'
-    : resource.startsWith('event-')
-      ? 'api_event_purchase_handoff_acknowledge'
-      : resource.startsWith('transfer')
-        ? 'api_transfer_handoff_acknowledge'
-        : 'api_handoff_acknowledge'
-  const readRpc = resource.startsWith('excess-')
-    ? 'api_excess_disposition_handoff_acknowledgements'
-    : resource.startsWith('event-')
-      ? 'api_event_purchase_handoff_acknowledgements'
-      : resource.startsWith('transfer')
-        ? 'api_transfer_handoff_acknowledgements'
-        : 'api_handoff_acknowledgements'
+  const writeRpc = resource.startsWith('network-')
+    ? 'api_network_handoff_acknowledge'
+    : resource.startsWith('excess-')
+      ? 'api_excess_disposition_handoff_acknowledge'
+      : resource.startsWith('event-')
+        ? 'api_event_purchase_handoff_acknowledge'
+        : resource.startsWith('transfer')
+          ? 'api_transfer_handoff_acknowledge'
+          : 'api_handoff_acknowledge'
+  const readRpc = resource.startsWith('network-')
+    ? 'api_network_handoff_acknowledgements'
+    : resource.startsWith('excess-')
+      ? 'api_excess_disposition_handoff_acknowledgements'
+      : resource.startsWith('event-')
+        ? 'api_event_purchase_handoff_acknowledgements'
+        : resource.startsWith('transfer')
+          ? 'api_transfer_handoff_acknowledgements'
+          : 'api_handoff_acknowledgements'
   const id = '98000000-0000-4000-8000-000000000001'
   const event = '98000000-0000-4000-8000-000000000002'
   const value = {
@@ -1897,15 +1905,8 @@ describe('network readers retain an explicit read-only capability', () => {
       })
       for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] as const) {
         expect(
-          (
-            await handleResourceDetail(
-              req,
-              method,
-              resource,
-              [REQUEST_ID, 'acknowledgements'],
-              state.deps,
-            )
-          ).status,
+          (await handleResourceDetail(req, method, resource, [REQUEST_ID, 'unknown'], state.deps))
+            .status,
         ).toBe(404)
       }
       for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'] as const) {

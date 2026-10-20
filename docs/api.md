@@ -23,6 +23,7 @@ An organization owner or administrator opens **Settings → API keys**, gives th
 | `excess_disposition_handoffs:read`        | List and retrieve saved disposition handoffs and copied batches across the whole organization                   |
 | `excess_disposition_handoffs:acknowledge` | Record receipt/rejection reports for saved disposition handoffs and copied batches across the organization      |
 | `network_handoffs:read`                   | List and retrieve complete network handoffs and copied batches across the whole organization                    |
+| `network_handoffs:acknowledge`            | Append whole-package receipt/rejection reports for network handoffs and copied batches across the organization  |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -33,6 +34,8 @@ Send the key only in the `Authorization` header over HTTPS. Browser session cook
 ## Quick start
 
 For complete network approvals and copied batches, see [the network handoff read API](network-handoff-read-api.md). Explicit `network_handoffs:read` permits organization-wide access to every saved branch, including zero-transfer context and retained batches after source deletion. Existing keys and other scopes gain no network access. Live selection stays separate from immutable quantities, dates and currency-separated freight; browser users still require access to every participating location.
+
+For whole-package network reports, see [network acknowledgements](network-handoff-acknowledgements.md). The explicit `network_handoffs:acknowledge` permission appends received/rejected events; reading their history requires `network_handoffs:read`. Reports have independent histories and do not reserve stock, create transfers or update inbound. Copied-batch reports survive source deletion.
 
 For full adjusted selections and baseline comparisons, see [the event purchase handoff read API](event-handoff-read-api.md). It requires explicit `event_purchase_handoffs:read`; prior purchase/transfer scopes do not grant event access. Saved evidence is unchanged and live selection is separate.
 
