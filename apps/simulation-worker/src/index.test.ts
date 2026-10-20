@@ -7,7 +7,10 @@ import { test } from 'node:test'
 const hooks = registerHooks({
   resolve(specifier, context, nextResolve) {
     if (specifier === 'cloudflare:workers') {
-      return { shortCircuit: true, url: 'data:text/javascript,export class DurableObject { constructor(ctx,env) { this.ctx=ctx; this.env=env } }' }
+      return {
+        shortCircuit: true,
+        url: 'data:text/javascript,export class DurableObject { constructor(ctx,env) { this.ctx=ctx; this.env=env } }',
+      }
     }
     if (specifier === './controller') return nextResolve('./controller.ts', context)
     return nextResolve(specifier, context)
@@ -21,7 +24,9 @@ test('current paused cron stops a resident DO with its prior enabled environment
   const oldEnvironment = { ENABLED: 'true', MODE: 'probe' }
   const container = {
     running: true,
-    signal(signal: number) { calls.push(`signal ${signal}`) },
+    signal(signal: number) {
+      calls.push(`signal ${signal}`)
+    },
   }
   const resident = new AcmeSimulationContainer({ container } as never, oldEnvironment as never)
   const currentEnvironment = {

@@ -22,6 +22,7 @@ Journeys were derived from the deployment failure: an operator can distinguish H
 - `4c4be77` / `c454543`: RED/GREEN for a private health listener that remains usable when hostname DNS raises a Unicode error. Nineteen focused Python tests pass.
 - Original Linux image: `docker run --rm --network none --hostname <64-character-runtime-id> ...` fails in Python's `HTTPServer.server_bind()` with the IDNA label error. Repaired image under the identical conditions returns `200 {"status":"ready"}`.
 - Full local engine verification with a new workspace-owned pytest base directory: 459 passed, 496 deselected. An initial run using the restricted default temporary directory encountered fixture permission errors; rerunning with the explicit writable base directory passed.
+- `3929fe5`: RED for a current paused cron calling a resident Durable Object with its previous enabled environment. Forwarding the current fixed runtime configuration over the private RPC makes all thirteen controller/cron tests pass. No public configuration endpoint is introduced. Hosted rollout verification must confirm the old process stops before switching mode.
 
 The pure controller suite covers lifecycle decisions. Durable Object integration and real Cloudflare startup are separate hosted checks; unit coverage alone does not certify deployment health. CI and hosted outcomes must be checked before declaring the rollout complete.
 
