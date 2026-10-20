@@ -182,12 +182,17 @@ def test_real_scoped_python_worker_publishes_one_immutable_result(scoped):
         assert db.execute('select count(*) from planning.leases where run_id=%s', (target,)).fetchone()[0] == 0
 
 
-@pytest.mark.parametrize('method', ['periodic-sensitivity-v1', 'periodic-configurations-v1'])
+@pytest.mark.parametrize('method', ['periodic-sensitivity-v1', 'periodic-configurations-v1',
+                                    'periodic-constraints-v1', 'periodic-calendars-v1'])
 def test_scoped_comparisons_use_same_identity_and_publication(scoped, method):
     if method == 'periodic-sensitivity-v1':
         from test_policy_sensitivity import task as comparison_task
-    else:
+    elif method == 'periodic-configurations-v1':
         from test_policy_configurations import task as comparison_task
+    elif method == 'periodic-constraints-v1':
+        from test_policy_constraints import task as comparison_task
+    else:
+        from test_policy_calendars import task as comparison_task
     target = queued(scoped)
     with psycopg.connect(scoped['dsn']) as db:
         replay = db.execute('select payload from planning.simulation_inputs where run_id=%s', (target,)).fetchone()[0]

@@ -4,6 +4,8 @@
 
 ## Journeys and guarantees
 
+Publication follow-up: current main through PR #112 was integrated before CI. Two new regression cases reproduced missing scoped dispatch for `periodic-constraints-v1` and `periodic-calendars-v1` (two failures, eight passes). Both now use the scoped publication path; the focused unit/calculation/health run passed **87 tests**. Real scoped publication coverage includes both new methods in the full CI database suite. These source integrations do not add their later migrations to the three-file hosted rollout.
+
 | Guarantee                                                                                                   | Verification                                                                | Result |
 | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------ |
 | Runtime identity is database-owned; JWT/GUC changes cannot select another tenant                            | Real restricted LOGIN tests in `engine/tests/test_scoped_worker_db.py`      | PASS   |

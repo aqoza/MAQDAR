@@ -31,6 +31,10 @@ def process_one(connection: psycopg.Connection) -> bool:
             from maqdar_engine.policy_sensitivity import calculate
         elif task.get('method') == 'periodic-configurations-v1':
             from maqdar_engine.policy_configurations import calculate
+        elif task.get('method') == 'periodic-constraints-v1':
+            from maqdar_engine.policy_constraints import calculate
+        elif task.get('method') == 'periodic-calendars-v1':
+            from maqdar_engine.policy_calendars import calculate
         else:
             raise ValueError('Unsupported method')
         result = calculate(task)
