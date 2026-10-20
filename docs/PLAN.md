@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Industrial Studio login and password recovery — approved 2026-10-21
+
+Implement the selected Precision-logo parts-photography mockup with a 24px sign-in heading. Replace login magic-link controls with password recovery and remove the invitation notice. Preserve invitation callbacks, workspace boundaries and optional Arabic behavior. Verify desktop/mobile screenshots and recovery; open a PR without deployment. See [industrial-studio-login.md](industrial-studio-login.md).
+
 ## ACME-only simulation runtime — implementation requested 2026-10-20
 
 The owner requested implementation and Cloudflare Containers deployment preparation for review, with no hosted changes. Bind a dedicated runtime LOGIN to one organization through private database-owned OID/name metadata; authorize simulation claim before transport mutation and retain paused routing ownership away from global consumers. Grant only scoped identity/task/claim/failure/publication, preserving tenant isolation, immutable captured inputs and token fencing for replay, sensitivity and configuration comparisons. Prepare a separate paused/probe service, pinned native image, private health/watchdog and exact owner-run migration/provision/probe/activate/recovery instructions. Prove foreign transport/business isolation with real local logins and a container smoke test. No hosted credential, migration, binding, paid resource or canary is authorized by this preparation. See [rollout](acme-simulation-worker-deployment.md) and [verification](acme-simulation-worker-verification.md).
