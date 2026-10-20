@@ -143,14 +143,20 @@ export async function deleteOrganizationRows(table: string, organizationId: stri
 }
 
 /** Explicitly identified local workspace fixture; production URLs are refused by adminClient. */
-export async function seedWorkspaceMembership(userId: string): Promise<void> {
+export async function seedWorkspaceMembership(
+  userId: string,
+  workspace: 'ote' | 'acme' = 'ote',
+): Promise<void> {
   const admin = adminClient()
-  const organizationId = '00000000-0000-4000-8000-000000000095'
+  const organizationId =
+    workspace === 'ote'
+      ? '00000000-0000-4000-8000-000000000095'
+      : '00000000-0000-4000-8000-000000000096'
   const organization = await admin.from('organizations').upsert(
     {
       id: organizationId,
-      slug: 'ote-host-fixture',
-      name: 'OTE workspace fixture',
+      slug: `${workspace}-host-fixture`,
+      name: `${workspace.toUpperCase()} workspace fixture`,
       home_country: 'OM',
       base_currency: 'OMR',
     },

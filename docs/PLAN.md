@@ -565,3 +565,14 @@ PR #108 was reviewed at `e0429c8` with no blocking findings and merged as `88cc1
 ## ZeeSpare public site and OTEGROUP pilot — approved 2026-10-20
 
 Separate the public apex homepage from the explicitly bound OTE tenant hostname. Preserve shared deployment, RLS and existing login design. Oman/OMR; production email through Amazon SES is deferred by the owner. See [ote-workspace.md](ote-workspace.md) for acceptance and rollout.
+
+## ACME test workspace hostname — approved 2026-10-20
+
+Bind `acme.zeespare.com` to the existing ACME organization
+`2cd8944d-52a1-45e2-9230-6f4fd0a2c6d4`, alongside OTE's independent host binding.
+Keep `acme@maqdar.org`, its password, memberships and all existing demo records.
+Add ACME to the public workspace finder, Worker custom domains and exact Supabase
+email callback allowlist. No database migration, account reset or data loader is needed.
+Verify fail-closed binding, cross-tenant membership/claim filtering, host-only cookies,
+same-origin mutations, email callback routing, and compact mobile login; run the full CI
+before deploying. SES setup remains deferred.
