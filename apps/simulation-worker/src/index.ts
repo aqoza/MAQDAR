@@ -18,7 +18,19 @@ export class AcmeSimulationContainer extends DurableObject<Env> {
 
   private async run(): Promise<void> {
     if (!this.ctx.container) throw new Error('Simulation container binding is missing')
-    await tick(this.ctx.container, this.env)
+    try {
+      await tick(this.ctx.container, this.env)
+    } catch (error) {
+      // Only tick's fixed diagnostic categories may be logged, never provider text.
+      if (
+        error instanceof Error &&
+        /^Simulation container health failed \((?:HTTP [1-5][0-9]{2}|transport TypeError|transport unavailable|unavailable)\)$/.test(
+          error.message,
+        )
+      )
+        console.error(error.message)
+      throw new Error('Simulation supervisor check failed')
+    }
   }
 }
 

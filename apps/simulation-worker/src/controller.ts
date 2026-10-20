@@ -54,6 +54,7 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
   await container.setInactivityTimeout(180_000)
   const port = container.getTcpPort(8080)
   const attempts = starting ? 20 : 1
+  let failure = 'unavailable'
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
       const response = await port.fetch('http://container/health', {
@@ -61,11 +62,13 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
       })
       await response.body?.cancel()
       if (response.ok) return
-    } catch {
+      failure = `HTTP ${response.status}`
+    } catch (error) {
       // Startup can precede the health listener. Never log provider errors/secrets.
+      failure = error instanceof TypeError ? 'transport TypeError' : 'transport unavailable'
     }
     if (attempt + 1 < attempts) await new Promise((resolve) => setTimeout(resolve, 500))
   }
   if (container.running) container.signal(15)
-  throw new Error('Simulation container health failed')
+  throw new Error(`Simulation container health failed (${failure})`)
 }
