@@ -60,6 +60,7 @@ export default async function NetworkHistory({
   if (result.error?.code === 'PGRST103') redirect(href(1))
   if (result.error) throw new Error('Allocation history unavailable')
   const rows = range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])
+  const th = await getTranslations('NetworkHandoffs')
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
@@ -69,6 +70,9 @@ export default async function NetworkHistory({
         navigation={<ReplenishmentNav current="network" />}
         actions={
           <>
+            <Link href="/replenishment/network/handoffs" className="inline-block underline">
+              {th('title')}
+            </Link>
             <Link
               className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
               href="/replenishment/network/new"

@@ -68,6 +68,7 @@ export default async function NetworkReview({
   const rows = (range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])).map(
     (row) => workbenchRowSchema.parse(row),
   )
+  const th = await getTranslations('NetworkHandoffs')
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
@@ -75,9 +76,14 @@ export default async function NetworkReview({
         navigation={<ReplenishmentNav current="network" />}
         title={t('title')}
         actions={
-          <Link href="/replenishment/network/freight" className="underline">
-            {t('chooseEstimate')}
-          </Link>
+          <>
+            <Link href="/replenishment/network/freight" className="underline">
+              {t('chooseEstimate')}
+            </Link>
+            <Link href="/replenishment/network/handoffs" className="underline">
+              {th('title')}
+            </Link>
+          </>
         }
         description={t('context')}
         help={

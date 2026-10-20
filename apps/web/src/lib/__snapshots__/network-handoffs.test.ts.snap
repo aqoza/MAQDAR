@@ -1,0 +1,735 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`exports a spreadsheet-safe CSV with exact numeric text, source references and a planning label > network-handoff-v1 CSV contract 1`] = `
+"﻿"schema_version","purpose","notice","handoff_id","organization_id","created_at","created_by","proposal_id","proposal_revision","submitted_by","submitted_at","proposal_reason","approved_by","approved_at","approval_reason","estimate_id","allocation_id","date_scenario_id","destination_draft_id","source_policy_id","destination_policy_id","item_id","item_code","source_location_id","source_location_code","destination_location_id","destination_location_code","transfer_status","quantity","unit","cutoff","requested_dispatch_date","package_dispatch_date","dispatch_date","typical_lead_time_days","typical_receipt_date","slow_lead_time_days","slow_receipt_date","timing_reference_date","typical_timing_review_required","slow_timing_review_required","source_maximum_basis","source_override_id","source_maximum","source_unallocated_backorders","source_surplus","source_remaining_surplus","source_retained_available","destination_gap","destination_remaining_gap","lane_id","freight_basis","freight_rate","freight_unit","freight_valid_from","freight_updated_at","shipment_count","currency","currency_minor_units","subtotal","exact_product","rounding","package_totals_json","estimate_fingerprint","dates_fingerprint","allocation_fingerprint","destination_draft_fingerprint"
+"network-transfer-handoff-v1","planning_only","As-of planning evidence only. Not a stock reservation, transfer order, inbound quantity or arrival guarantee.","5f11ab81-dfaf-4f4d-8438-ddae002bff37","a8200000-0000-4000-8000-000000000001","2026-10-17T14:17:11.403829Z","a8200000-0000-4000-8000-000000000010","1cd91e2e-be06-4fcd-b7c3-36f3fc7fd667","1","a8200000-0000-4000-8000-000000000010","2026-10-17T14:17:11.33999+00:00","'=""quoted"",
+قطعة","a8200000-0000-4000-8000-000000000016","2026-10-17T14:17:11.364068+00:00","Independent review","8d269005-96f0-4d07-b93a-d0db1bd8efd1","a8200000-0000-4000-8000-000000000098","ce9c665d-38e4-4878-aeaa-875a475f9adf","9e124fe8-1a4b-4f34-adec-23f0fe345151","a8200000-0000-4000-8000-000000000051","a8200000-0000-4000-8000-000000000050","a8200000-0000-4000-8000-000000000100","000123","a8200000-0000-4000-8000-000000000021","L1","a8200000-0000-4000-8000-000000000020","L0","available","999999999999999.999","EA","2026-10-10","2026-10-10","2026-10-11","2026-10-11","2","2026-10-14","4","2026-10-18","2026-10-20","false","false","calculated","","20.000","4.125","999999999999999.999","0.000","20.000","999999999999999.999","0.000","a8200000-0000-4000-8000-000000000090","per_unit","1.234","EA","2026-10-11","2026-10-17T14:17:10.836529+00:00","","KWD","3","999999999999999.999","10.797500","half-up-currency-minor-units","[{""currency"":""KWD"",""minor_units"":3,""subtotal"":""999999999999999.999""}]","9e4c0533f501a07571ee7dfe248016d94e2177ac36821141dcbeb19876cb86d3","b8c41c812e30b118b12b9deb773064b91acd3985824573d193f7f52cfe799e19","4f7d2c08b2fdfa6ce5f9ec8206017ebfa6afc5274add7c66dc53682fd781035f","e5452739bc9c1c381a67f663be1ce14bf971ebbc30c6ec4443446392c0a46901"
+"network-transfer-handoff-v1","planning_only","As-of planning evidence only. Not a stock reservation, transfer order, inbound quantity or arrival guarantee.","5f11ab81-dfaf-4f4d-8438-ddae002bff37","a8200000-0000-4000-8000-000000000001","2026-10-17T14:17:11.403829Z","a8200000-0000-4000-8000-000000000010","1cd91e2e-be06-4fcd-b7c3-36f3fc7fd667","1","a8200000-0000-4000-8000-000000000010","2026-10-17T14:17:11.33999+00:00","'=""quoted"",
+قطعة","a8200000-0000-4000-8000-000000000016","2026-10-17T14:17:11.364068+00:00","Independent review","8d269005-96f0-4d07-b93a-d0db1bd8efd1","a8200000-0000-4000-8000-000000000098","ce9c665d-38e4-4878-aeaa-875a475f9adf","a8200000-0000-4000-8000-000000000099","a8200000-0000-4000-8000-000000000051","","a8200000-0000-4000-8000-000000000100","000123","a8200000-0000-4000-8000-000000000021","L1","a8200000-0000-4000-8000-000000000099","ZERO","no_transfer_needed","0.000","EA","2026-10-10","2026-10-10","2026-10-11","","","","","","","","","calculated","","20.000","4.125","999999999999999.999","0.000","20.000","0.000","0.000","a8200000-0000-4000-8000-000000000090","","","","","","","","","","","half-up-currency-minor-units","[{""currency"":""KWD"",""minor_units"":3,""subtotal"":""999999999999999.999""}]","9e4c0533f501a07571ee7dfe248016d94e2177ac36821141dcbeb19876cb86d3","b8c41c812e30b118b12b9deb773064b91acd3985824573d193f7f52cfe799e19","4f7d2c08b2fdfa6ce5f9ec8206017ebfa6afc5274add7c66dc53682fd781035f","e5452739bc9c1c381a67f663be1ce14bf971ebbc30c6ec4443446392c0a46901"
+"
+`;
+
+exports[`exports lossless JSON with stable order independent of database key ordering > network-handoff-v1 JSON contract 1`] = `
+"{
+  "schema_version": "network-transfer-handoff-v1",
+  "purpose": "planning_only",
+  "notice": "As-of planning evidence only. Not a stock reservation, transfer order, inbound quantity or arrival guarantee.",
+  "handoff_id": "5f11ab81-dfaf-4f4d-8438-ddae002bff37",
+  "organization_id": "a8200000-0000-4000-8000-000000000001",
+  "created_by": "a8200000-0000-4000-8000-000000000010",
+  "created_at": "2026-10-17T14:17:11.403829Z",
+  "proposal": {
+    "id": "1cd91e2e-be06-4fcd-b7c3-36f3fc7fd667",
+    "revision": 1,
+    "estimate_id": "8d269005-96f0-4d07-b93a-d0db1bd8efd1",
+    "submitted_by": "a8200000-0000-4000-8000-000000000010",
+    "submitted_at": "2026-10-17T14:17:11.33999+00:00",
+    "reason": "=\\"quoted\\",\\nقطعة",
+    "approved_by": "a8200000-0000-4000-8000-000000000016",
+    "approved_at": "2026-10-17T14:17:11.364068+00:00",
+    "approval_reason": "Independent review",
+    "allocation_id": "a8200000-0000-4000-8000-000000000098"
+  },
+  "estimate": {
+    "scenario_id": "ce9c665d-38e4-4878-aeaa-875a475f9adf",
+    "source_location_id": "a8200000-0000-4000-8000-000000000021",
+    "terms_confirmed": true,
+    "sender": {
+      "id": "a8200000-0000-4000-8000-000000000021",
+      "code": "L1",
+      "name": "Location",
+      "active": true,
+      "updated_at": "2026-10-17T14:17:10.836529+00:00"
+    },
+    "rounding": "half-up-currency-minor-units",
+    "fingerprint": "9e4c0533f501a07571ee7dfe248016d94e2177ac36821141dcbeb19876cb86d3",
+    "method": "network-freight-v1",
+    "status": "available",
+    "source": {
+      "requested_date": "2026-10-10",
+      "calendars_confirmed": true,
+      "sender": {
+        "id": "a8200000-0000-4000-8000-000000000021",
+        "code": "L1",
+        "name": "Location",
+        "active": true,
+        "updated_at": "2026-10-17T14:17:10.836529+00:00"
+      },
+      "source_calendar": {
+        "country": "SA",
+        "calendar_id": "a8200000-0000-4000-8000-000000000500",
+        "calendar_code": "SOURCE",
+        "calendar_updated_at": "2026-10-17T14:17:10.836529+00:00",
+        "active": true,
+        "weekend_days": [
+          5,
+          6
+        ],
+        "observe_public_holidays": false,
+        "coverage_from": "2023-10-01",
+        "coverage_to": "2026-09-30",
+        "holidays": [],
+        "overrides": []
+      },
+      "dispatch": {
+        "status": "resolved",
+        "date": "2026-10-11",
+        "days": [
+          {
+            "date": "2026-10-10",
+            "working": false,
+            "reason": "weekend",
+            "weekend": true,
+            "holiday": null,
+            "verified": false,
+            "override_id": null
+          },
+          {
+            "date": "2026-10-11",
+            "working": true,
+            "reason": "weekly_pattern",
+            "weekend": false,
+            "holiday": null,
+            "verified": false,
+            "override_id": null
+          }
+        ]
+      },
+      "fingerprint": "b8c41c812e30b118b12b9deb773064b91acd3985824573d193f7f52cfe799e19",
+      "source_location_id": "a8200000-0000-4000-8000-000000000021",
+      "method": "network-dates-v1",
+      "status": "available",
+      "allocation_id": "a8200000-0000-4000-8000-000000000098",
+      "source": {
+        "method": "network-allocation-v1",
+        "status": "available",
+        "source_policy_id": "a8200000-0000-4000-8000-000000000051",
+        "source_location_id": "a8200000-0000-4000-8000-000000000021",
+        "source_location_code": "L1",
+        "source_location_type": "central",
+        "source_active": true,
+        "item_id": "a8200000-0000-4000-8000-000000000100",
+        "source_policy": {
+          "status": "available",
+          "policy_id": "a8200000-0000-4000-8000-000000000051",
+          "run_id": "a8200000-0000-4000-8000-000000000031",
+          "forecast_id": "a8200000-0000-4000-8000-000000000201",
+          "item_code": "000123",
+          "location_code": "L1",
+          "day": "2026-10-10",
+          "cutoff": "2026-10-10",
+          "unit": "EA",
+          "unit_provenance": {
+            "method": "source-units-v1",
+            "status": "consistent",
+            "unit": "EA",
+            "rows": 1,
+            "unknown_rows": 0,
+            "units": [
+              "EA"
+            ]
+          },
+          "basis": "calculated",
+          "override_id": null,
+          "revision": null,
+          "maximum": "20.000",
+          "quantity_above": "12.875",
+          "value_above": "12.875000",
+          "snapshot": {
+            "id": "9ef424d7-5ead-4ba5-8e6a-b174b8abc89b",
+            "date": "2026-10-10",
+            "updated_at": "2026-10-17T14:17:10.836529+00:00",
+            "age": 0,
+            "unit": "EA",
+            "quantity": "35.125",
+            "allocated": "2.250",
+            "available": "32.875",
+            "unit_cost": "1.000",
+            "currency": "SAR"
+          }
+        },
+        "basis": "calculated",
+        "override_id": null,
+        "backorders": "4.125",
+        "commitments_confirmed": true,
+        "lanes_confirmed": true,
+        "source_surplus": "999999999999999.999",
+        "total_gap": "999999999999999.999",
+        "allocated": "999999999999999.999",
+        "remaining_surplus": "0.000",
+        "retained_available": "20.000",
+        "fingerprint": "4f7d2c08b2fdfa6ce5f9ec8206017ebfa6afc5274add7c66dc53682fd781035f",
+        "lines": [
+          {
+            "draft_id": "9e124fe8-1a4b-4f34-adec-23f0fe345151",
+            "location_id": "a8200000-0000-4000-8000-000000000020",
+            "location_code": "L0",
+            "location_type": "branch",
+            "active": true,
+            "gap": "999999999999999.999",
+            "quantity": "999999999999999.999",
+            "remaining_gap": "0.000",
+            "evidence": {
+              "method": "redistribution-quantity-v1",
+              "status": "available",
+              "draft_id": "9e124fe8-1a4b-4f34-adec-23f0fe345151",
+              "location_id": "a8200000-0000-4000-8000-000000000020",
+              "source_location_id": "a8200000-0000-4000-8000-000000000021",
+              "source_policy_id": "a8200000-0000-4000-8000-000000000051",
+              "source_item_id": "a8200000-0000-4000-8000-000000000100",
+              "source_location_code": "L1",
+              "source_policy": {
+                "status": "available",
+                "policy_id": "a8200000-0000-4000-8000-000000000051",
+                "run_id": "a8200000-0000-4000-8000-000000000031",
+                "forecast_id": "a8200000-0000-4000-8000-000000000201",
+                "item_code": "SAVED",
+                "location_code": "L1",
+                "day": "2026-10-10",
+                "cutoff": "2026-10-10",
+                "unit": "EA",
+                "unit_provenance": {
+                  "method": "source-units-v1",
+                  "status": "consistent",
+                  "unit": "EA",
+                  "rows": 1,
+                  "unknown_rows": 0,
+                  "units": [
+                    "EA"
+                  ]
+                },
+                "basis": "calculated",
+                "override_id": null,
+                "revision": null,
+                "maximum": "20.000",
+                "quantity_above": "12.875",
+                "value_above": "12.875000",
+                "snapshot": {
+                  "id": "9ef424d7-5ead-4ba5-8e6a-b174b8abc89b",
+                  "date": "2026-10-10",
+                  "updated_at": "2026-10-17T14:17:10.836529+00:00",
+                  "age": 0,
+                  "unit": "EA",
+                  "quantity": "35.125",
+                  "allocated": "2.250",
+                  "available": "32.875",
+                  "unit_cost": "1.000",
+                  "currency": "SAR"
+                }
+              },
+              "destination": {
+                "method": "replenishment-gap-v1",
+                "status": "available",
+                "policy": {
+                  "status": "available",
+                  "policy_id": "a8200000-0000-4000-8000-000000000050",
+                  "run_id": "a8200000-0000-4000-8000-000000000030",
+                  "forecast_id": "a8200000-0000-4000-8000-000000000200",
+                  "item_code": "000123",
+                  "location_code": "L0",
+                  "day": "2026-10-10",
+                  "cutoff": "2026-10-10",
+                  "unit": "EA",
+                  "unit_provenance": {
+                    "method": "source-units-v1",
+                    "status": "consistent",
+                    "unit": "EA",
+                    "rows": 1,
+                    "unknown_rows": 0,
+                    "units": [
+                      "EA"
+                    ]
+                  },
+                  "basis": "calculated",
+                  "override_id": null,
+                  "revision": null,
+                  "maximum": "20.000",
+                  "quantity_above": "0",
+                  "value_above": "0.000",
+                  "snapshot": {
+                    "id": "26da55dc-884b-4355-878b-7caee64968df",
+                    "date": "2026-10-10",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00",
+                    "age": 0,
+                    "unit": "EA",
+                    "quantity": "12.000",
+                    "allocated": "2.000",
+                    "available": "10.000",
+                    "unit_cost": "1.000",
+                    "currency": "SAR"
+                  }
+                },
+                "location_id": "a8200000-0000-4000-8000-000000000020",
+                "protection_end": "2026-10-24",
+                "backorders": "4.000",
+                "orders_confirmed": true,
+                "orders_truncated": false,
+                "inbound_quantity": "2.000",
+                "inventory_position": "8.000",
+                "gap": "12.000",
+                "fingerprint": "e5452739bc9c1c381a67f663be1ce14bf971ebbc30c6ec4443446392c0a46901",
+                "orders": [
+                  {
+                    "id": "f9dfbbd7-e754-4e7b-b890-b027d1c0d8f5",
+                    "order_code": "OVERDUE",
+                    "line_code": "1",
+                    "supplier_id": "a8200000-0000-4000-8000-000000000110",
+                    "supplier_code": "SUP",
+                    "expected_date": "2026-10-09",
+                    "quantity": "1.250",
+                    "unit": "EA",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00",
+                    "overdue": true,
+                    "late": false
+                  },
+                  {
+                    "id": "80f0673b-d49d-4269-bbb9-dee20a0c0d47",
+                    "order_code": "LATE",
+                    "line_code": "1",
+                    "supplier_id": "a8200000-0000-4000-8000-000000000110",
+                    "supplier_code": "SUP",
+                    "expected_date": "2026-10-18",
+                    "quantity": "0.750",
+                    "unit": "EA",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00",
+                    "overdue": false,
+                    "late": false
+                  }
+                ]
+              },
+              "backorders": "4.125",
+              "commitments_confirmed": true,
+              "lane_confirmed": true,
+              "basis": "calculated",
+              "override_id": null,
+              "source_surplus": "8.750",
+              "quantity": "999999999999999.999",
+              "fingerprint": "4f7d2c08b2fdfa6ce5f9ec8206017ebfa6afc5274add7c66dc53682fd781035f",
+              "lane": {
+                "id": "a8200000-0000-4000-8000-000000000090",
+                "active": true,
+                "from_location_id": "a8200000-0000-4000-8000-000000000021",
+                "to_location_id": "a8200000-0000-4000-8000-000000000020",
+                "lead_time_days_p50": 2,
+                "lead_time_days_p90": 4,
+                "freight_basis": "none",
+                "freight_cost": null,
+                "currency": null,
+                "updated_at": "2026-10-17T14:17:10.836529+00:00"
+              }
+            }
+          },
+          {
+            "draft_id": "a8200000-0000-4000-8000-000000000099",
+            "location_id": "a8200000-0000-4000-8000-000000000099",
+            "location_code": "ZERO",
+            "location_type": "branch",
+            "active": true,
+            "gap": "0.000",
+            "quantity": "0.000",
+            "remaining_gap": "0.000",
+            "evidence": {
+              "method": "redistribution-quantity-v1",
+              "status": "available",
+              "draft_id": "9e124fe8-1a4b-4f34-adec-23f0fe345151",
+              "location_id": "a8200000-0000-4000-8000-000000000020",
+              "source_location_id": "a8200000-0000-4000-8000-000000000021",
+              "source_policy_id": "a8200000-0000-4000-8000-000000000051",
+              "source_item_id": "a8200000-0000-4000-8000-000000000100",
+              "source_location_code": "L1",
+              "source_policy": {
+                "status": "available",
+                "policy_id": "a8200000-0000-4000-8000-000000000051",
+                "run_id": "a8200000-0000-4000-8000-000000000031",
+                "forecast_id": "a8200000-0000-4000-8000-000000000201",
+                "item_code": "SAVED",
+                "location_code": "L1",
+                "day": "2026-10-10",
+                "cutoff": "2026-10-10",
+                "unit": "EA",
+                "unit_provenance": {
+                  "method": "source-units-v1",
+                  "status": "consistent",
+                  "unit": "EA",
+                  "rows": 1,
+                  "unknown_rows": 0,
+                  "units": [
+                    "EA"
+                  ]
+                },
+                "basis": "calculated",
+                "override_id": null,
+                "revision": null,
+                "maximum": "20.000",
+                "quantity_above": "12.875",
+                "value_above": "12.875000",
+                "snapshot": {
+                  "id": "9ef424d7-5ead-4ba5-8e6a-b174b8abc89b",
+                  "date": "2026-10-10",
+                  "updated_at": "2026-10-17T14:17:10.836529+00:00",
+                  "age": 0,
+                  "unit": "EA",
+                  "quantity": "35.125",
+                  "allocated": "2.250",
+                  "available": "32.875",
+                  "unit_cost": "1.000",
+                  "currency": "SAR"
+                }
+              },
+              "destination": {
+                "method": "replenishment-gap-v1",
+                "status": "available",
+                "policy": {
+                  "status": "available",
+                  "policy_id": "a8200000-0000-4000-8000-000000000050",
+                  "run_id": "a8200000-0000-4000-8000-000000000030",
+                  "forecast_id": "a8200000-0000-4000-8000-000000000200",
+                  "item_code": "000123",
+                  "location_code": "L0",
+                  "day": "2026-10-10",
+                  "cutoff": "2026-10-10",
+                  "unit": "EA",
+                  "unit_provenance": {
+                    "method": "source-units-v1",
+                    "status": "consistent",
+                    "unit": "EA",
+                    "rows": 1,
+                    "unknown_rows": 0,
+                    "units": [
+                      "EA"
+                    ]
+                  },
+                  "basis": "calculated",
+                  "override_id": null,
+                  "revision": null,
+                  "maximum": "20.000",
+                  "quantity_above": "0",
+                  "value_above": "0.000",
+                  "snapshot": {
+                    "id": "26da55dc-884b-4355-878b-7caee64968df",
+                    "date": "2026-10-10",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00",
+                    "age": 0,
+                    "unit": "EA",
+                    "quantity": "12.000",
+                    "allocated": "2.000",
+                    "available": "10.000",
+                    "unit_cost": "1.000",
+                    "currency": "SAR"
+                  }
+                },
+                "location_id": "a8200000-0000-4000-8000-000000000020",
+                "protection_end": "2026-10-24",
+                "backorders": "4.000",
+                "orders_confirmed": true,
+                "orders_truncated": false,
+                "inbound_quantity": "2.000",
+                "inventory_position": "8.000",
+                "gap": "12.000",
+                "fingerprint": "e5452739bc9c1c381a67f663be1ce14bf971ebbc30c6ec4443446392c0a46901",
+                "orders": [
+                  {
+                    "id": "f9dfbbd7-e754-4e7b-b890-b027d1c0d8f5",
+                    "order_code": "OVERDUE",
+                    "line_code": "1",
+                    "supplier_id": "a8200000-0000-4000-8000-000000000110",
+                    "supplier_code": "SUP",
+                    "expected_date": "2026-10-09",
+                    "quantity": "1.250",
+                    "unit": "EA",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00",
+                    "overdue": true,
+                    "late": false
+                  },
+                  {
+                    "id": "80f0673b-d49d-4269-bbb9-dee20a0c0d47",
+                    "order_code": "LATE",
+                    "line_code": "1",
+                    "supplier_id": "a8200000-0000-4000-8000-000000000110",
+                    "supplier_code": "SUP",
+                    "expected_date": "2026-10-18",
+                    "quantity": "0.750",
+                    "unit": "EA",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00",
+                    "overdue": false,
+                    "late": false
+                  }
+                ]
+              },
+              "backorders": "4.125",
+              "commitments_confirmed": true,
+              "lane_confirmed": true,
+              "basis": "calculated",
+              "override_id": null,
+              "source_surplus": "8.750",
+              "quantity": "999999999999999.999",
+              "fingerprint": "4f7d2c08b2fdfa6ce5f9ec8206017ebfa6afc5274add7c66dc53682fd781035f",
+              "lane": {
+                "id": "a8200000-0000-4000-8000-000000000090",
+                "active": true,
+                "from_location_id": "a8200000-0000-4000-8000-000000000021",
+                "to_location_id": "a8200000-0000-4000-8000-000000000020",
+                "lead_time_days_p50": 2,
+                "lead_time_days_p90": 4,
+                "freight_basis": "none",
+                "freight_cost": null,
+                "currency": null,
+                "updated_at": "2026-10-17T14:17:10.836529+00:00"
+              }
+            }
+          }
+        ]
+      },
+      "lines": [
+        {
+          "location_id": "a8200000-0000-4000-8000-000000000020",
+          "location_code": "L0",
+          "quantity": "999999999999999.999",
+          "status": "available",
+          "policy_reference": {
+            "id": "a8200000-0000-4000-8000-000000000050",
+            "cutoff": "2026-10-10",
+            "unit": "EA",
+            "lead_time": 10,
+            "review_interval": 4
+          },
+          "timing_reference_date": "2026-10-20",
+          "receiver": {
+            "id": "a8200000-0000-4000-8000-000000000020",
+            "code": "L0",
+            "name": "Location",
+            "active": true,
+            "updated_at": "2026-10-17T14:17:10.836529+00:00"
+          },
+          "lane": {
+            "id": "a8200000-0000-4000-8000-000000000090",
+            "active": true,
+            "from_location_id": "a8200000-0000-4000-8000-000000000021",
+            "to_location_id": "a8200000-0000-4000-8000-000000000020",
+            "lead_time_days_p50": 2,
+            "lead_time_days_p90": 4,
+            "updated_at": "2026-10-17T14:17:10.836529+00:00"
+          },
+          "receipts": {
+            "p50": {
+              "lead_time": 2,
+              "nominal_date": "2026-10-13",
+              "calendar": {
+                "country": "SA",
+                "calendar_id": "a8200000-0000-4000-8000-000000000501",
+                "calendar_code": "RECEIVER",
+                "calendar_updated_at": "2026-10-17T14:17:10.836529+00:00",
+                "active": true,
+                "weekend_days": [
+                  5,
+                  6
+                ],
+                "observe_public_holidays": false,
+                "coverage_from": "2023-10-01",
+                "coverage_to": "2026-09-30",
+                "holidays": [],
+                "overrides": [
+                  {
+                    "id": "a8200000-0000-4000-8000-000000000510",
+                    "calendar_id": "a8200000-0000-4000-8000-000000000501",
+                    "starts_on": "2026-10-13",
+                    "ends_on": "2026-10-13",
+                    "kind": "closure",
+                    "name": "Receiving closure",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00"
+                  },
+                  {
+                    "id": "a8200000-0000-4000-8000-000000000511",
+                    "calendar_id": "a8200000-0000-4000-8000-000000000501",
+                    "starts_on": "2026-10-15",
+                    "ends_on": "2026-10-15",
+                    "kind": "closure",
+                    "name": "Receiving closure",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00"
+                  }
+                ]
+              },
+              "search": {
+                "status": "resolved",
+                "date": "2026-10-14",
+                "days": [
+                  {
+                    "date": "2026-10-13",
+                    "working": false,
+                    "reason": "calendar_override",
+                    "weekend": false,
+                    "holiday": null,
+                    "verified": false,
+                    "override_id": "a8200000-0000-4000-8000-000000000510"
+                  },
+                  {
+                    "date": "2026-10-14",
+                    "working": true,
+                    "reason": "weekly_pattern",
+                    "weekend": false,
+                    "holiday": null,
+                    "verified": false,
+                    "override_id": null
+                  }
+                ]
+              },
+              "timing_review_required": false
+            },
+            "p90": {
+              "lead_time": 4,
+              "nominal_date": "2026-10-15",
+              "calendar": {
+                "country": "SA",
+                "calendar_id": "a8200000-0000-4000-8000-000000000501",
+                "calendar_code": "RECEIVER",
+                "calendar_updated_at": "2026-10-17T14:17:10.836529+00:00",
+                "active": true,
+                "weekend_days": [
+                  5,
+                  6
+                ],
+                "observe_public_holidays": false,
+                "coverage_from": "2023-10-01",
+                "coverage_to": "2026-09-30",
+                "holidays": [],
+                "overrides": [
+                  {
+                    "id": "a8200000-0000-4000-8000-000000000511",
+                    "calendar_id": "a8200000-0000-4000-8000-000000000501",
+                    "starts_on": "2026-10-15",
+                    "ends_on": "2026-10-15",
+                    "kind": "closure",
+                    "name": "Receiving closure",
+                    "updated_at": "2026-10-17T14:17:10.836529+00:00"
+                  }
+                ]
+              },
+              "search": {
+                "status": "resolved",
+                "date": "2026-10-18",
+                "days": [
+                  {
+                    "date": "2026-10-15",
+                    "working": false,
+                    "reason": "calendar_override",
+                    "weekend": false,
+                    "holiday": null,
+                    "verified": false,
+                    "override_id": "a8200000-0000-4000-8000-000000000511"
+                  },
+                  {
+                    "date": "2026-10-16",
+                    "working": false,
+                    "reason": "weekend",
+                    "weekend": true,
+                    "holiday": null,
+                    "verified": false,
+                    "override_id": null
+                  },
+                  {
+                    "date": "2026-10-17",
+                    "working": false,
+                    "reason": "weekend",
+                    "weekend": true,
+                    "holiday": null,
+                    "verified": false,
+                    "override_id": null
+                  },
+                  {
+                    "date": "2026-10-18",
+                    "working": true,
+                    "reason": "weekly_pattern",
+                    "weekend": false,
+                    "holiday": null,
+                    "verified": false,
+                    "override_id": null
+                  }
+                ]
+              },
+              "timing_review_required": false
+            }
+          }
+        },
+        {
+          "location_id": "a8200000-0000-4000-8000-000000000099",
+          "location_code": "ZERO",
+          "quantity": "0.000",
+          "status": "no_transfer_needed",
+          "policy_reference": null,
+          "timing_reference_date": null,
+          "receiver": {
+            "id": "a8200000-0000-4000-8000-000000000020",
+            "code": "L0",
+            "name": "Location",
+            "active": true,
+            "updated_at": "2026-10-17T14:17:10.836529+00:00"
+          },
+          "lane": {
+            "id": "a8200000-0000-4000-8000-000000000090",
+            "active": true,
+            "from_location_id": "a8200000-0000-4000-8000-000000000021",
+            "to_location_id": "a8200000-0000-4000-8000-000000000020",
+            "lead_time_days_p50": 2,
+            "lead_time_days_p90": 4,
+            "updated_at": "2026-10-17T14:17:10.836529+00:00"
+          },
+          "receipts": {}
+        }
+      ]
+    },
+    "lines": [
+      {
+        "status": "available",
+        "receiver": {
+          "id": "a8200000-0000-4000-8000-000000000020",
+          "code": "L0",
+          "name": "Location",
+          "active": true,
+          "updated_at": "2026-10-17T14:17:10.836529+00:00"
+        },
+        "terms": {
+          "id": "a8200000-0000-4000-8000-000000000090",
+          "active": true,
+          "from_location_id": "a8200000-0000-4000-8000-000000000021",
+          "to_location_id": "a8200000-0000-4000-8000-000000000020",
+          "lead_time_days_p50": 2,
+          "lead_time_days_p90": 4,
+          "basis": "per_unit",
+          "rate": "1.234",
+          "raw_rate": "1.234",
+          "currency": "KWD",
+          "minor_units": 3,
+          "unit": "EA",
+          "valid_from": "2026-10-11",
+          "updated_at": "2026-10-17T14:17:10.836529+00:00"
+        },
+        "shipment_count": null,
+        "exact_product": "10.797500",
+        "subtotal": "999999999999999.999",
+        "location_id": "a8200000-0000-4000-8000-000000000020",
+        "location_code": "L0",
+        "quantity": "999999999999999.999"
+      },
+      {
+        "status": "no_transfer_needed",
+        "receiver": null,
+        "terms": null,
+        "shipment_count": null,
+        "exact_product": null,
+        "subtotal": null,
+        "location_id": "a8200000-0000-4000-8000-000000000099",
+        "location_code": "ZERO",
+        "quantity": "0.000"
+      }
+    ],
+    "totals": [
+      {
+        "currency": "KWD",
+        "minor_units": 3,
+        "subtotal": "999999999999999.999"
+      }
+    ]
+  }
+}
+"
+`;

@@ -30,6 +30,12 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('network_transfer_handoffs', 'anon', 'r', ''),
+    ('network_transfer_handoffs', 'authenticated', 'r', 'SELECT'),
+    ('network_transfer_handoffs', 'service_role', 'r', ''),
+    ('network_handoff_list', 'anon', 'v', ''),
+    ('network_handoff_list', 'authenticated', 'v', 'SELECT'),
+    ('network_handoff_list', 'service_role', 'v', ''),
     ('network_allocation_scenarios', 'anon', 'r', ''),
     ('network_transfer_proposals', 'anon', 'r', ''),
     ('network_transfer_proposals', 'authenticated', 'r', 'SELECT'),
@@ -535,6 +541,7 @@ select set_eq(
     ('public.transfer_date_save(uuid, uuid, date, boolean, uuid, text)', 'authenticated'),
     ('public.network_allocation_preview(uuid, uuid[], uuid, text, uuid, text, boolean, boolean)', 'authenticated'),
     ('app.network_review_timing_clear(jsonb)', 'authenticated'),
+    ('public.network_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.network_transfer_submit(uuid, uuid, uuid, text)', 'authenticated'),
     ('public.network_transfer_decide(uuid, uuid, uuid, text, text)', 'authenticated'),
     ('public.network_freight_preview(uuid, uuid, boolean)', 'authenticated'),

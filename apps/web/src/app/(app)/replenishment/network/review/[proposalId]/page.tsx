@@ -1,3 +1,4 @@
+import { NetworkHandoffForm } from '@/components/network-handoff-form'
 import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import Link from 'next/link'
@@ -66,6 +67,15 @@ export default async function NetworkReviewDetail({
     const parsed = networkFreightReportSchema.parse(current.data)
     freightMatches = parsed.status === 'available' && parsed.fingerprint === report.fingerprint
   }
+  const th = await getTranslations('NetworkHandoffs')
+  const handoff = await db
+    .from('network_transfer_handoffs')
+    .select('id')
+    .eq('organization_id', context.active.id)
+    .eq('proposal_id', proposalId)
+    .maybeSingle()
+  if (handoff.error) throw new Error('Network handoff unavailable')
+  const editor = ['owner', 'admin', 'planner'].includes(context.role ?? '')
   const actor = (id: string | null) =>
     id === context.userId ? t('you') : t('member', { id: id ?? '—' })
   const withdrawal = proposal.submitted_by === context.userId
@@ -128,6 +138,18 @@ export default async function NetworkReviewDetail({
           {t('sourceAllocation')}
         </Link>
       </div>
+      {handoff.data ? (
+        <Link
+          href={`/replenishment/network/handoffs/${handoff.data.id}`}
+          className="inline-block underline"
+        >
+          {th('open')}
+        </Link>
+      ) : row.selected && editor ? (
+        <NextIntlClientProvider messages={{ NetworkHandoffs: messages.NetworkHandoffs }}>
+          <NetworkHandoffForm organizationId={context.active.id} proposalId={proposal.id} />
+        </NextIntlClientProvider>
+      ) : null}
       <NetworkFreightReport report={report} locale={locale} />
       {proposal.status === 'pending' && (
         <>
