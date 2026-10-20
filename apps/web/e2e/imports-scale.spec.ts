@@ -215,7 +215,9 @@ test.afterAll(async () => {
     'brands',
     'locations',
   ]) {
-    await deleteRowsInSlices(table, organizationId)
+    // Item deletion rechecks incoming FKs and writes an audit row per item. A 10,000-row
+    // cleanup can exceed PostgREST's statement budget even after the import itself passed.
+    await deleteRowsInSlices(table, organizationId, 'id', table === 'items' ? 100 : 10_000)
   }
   await removeOriginals(organizationId)
 })
