@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test'
 import { selectSettingsSection } from './settings'
 
-export const INVITATION_URL = /\/invitations\/[^/?#]+(?:[?#].*)?$/
+export const INVITATION_URL = /^https?:\/\/[^/]+\/invitations\/[^/?#]+(?:[?#].*)?$/
 
 /** Role labels as rendered from Roles.* in en.json. */
 export type RoleLabel =

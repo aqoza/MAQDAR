@@ -72,7 +72,11 @@ export async function inviteAndAccept(
   organizationName: string,
 ): Promise<void> {
   await inviteMember(page, email, role)
-  const link = await waitForEmailLink(request, email, /\/auth\/(?:confirm|callback)\?/)
+  const link = await waitForEmailLink(
+    request,
+    email,
+    /\/auth\/(?:(?:confirm|callback)\?|email\/invitations\/)/,
+  )
   const context = await browser.newContext()
   const memberPage = await context.newPage()
   await memberPage.goto(link)

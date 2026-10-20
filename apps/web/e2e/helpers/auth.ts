@@ -141,3 +141,39 @@ export async function deleteOrganizationRows(table: string, organizationId: stri
     if (result.error) throw new Error(`Could not delete ${table} rows: ${result.error.message}`)
   }
 }
+
+/** Explicitly identified local workspace fixture; production URLs are refused by adminClient. */
+export async function seedWorkspaceMembership(
+  userId: string,
+  workspace: 'ote' | 'acme' = 'ote',
+): Promise<void> {
+  const admin = adminClient()
+  const organizationId =
+    workspace === 'ote'
+      ? '00000000-0000-4000-8000-000000000095'
+      : '00000000-0000-4000-8000-000000000096'
+  const organization = await admin.from('organizations').upsert(
+    {
+      id: organizationId,
+      slug: `${workspace}-host-fixture`,
+      name: `${workspace.toUpperCase()} workspace fixture`,
+      home_country: 'OM',
+      base_currency: 'OMR',
+    },
+    { onConflict: 'id' },
+  )
+  if (organization.error) throw organization.error
+  const membership = await admin.from('memberships').insert({
+    organization_id: organizationId,
+    user_id: userId,
+    role: 'owner',
+  })
+  if (membership.error) throw membership.error
+}
+
+/** Generates an OTP on the guarded local Auth service without sending an email. */
+export async function localEmailToken(email: string, type: 'invite' | 'magiclink') {
+  const { data, error } = await adminClient().auth.admin.generateLink({ type, email })
+  if (error) throw error
+  return data.properties.hashed_token
+}

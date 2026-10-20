@@ -4,6 +4,10 @@
 
 The owner requested implementation and Cloudflare Containers deployment preparation for review, with no hosted changes. Bind a dedicated runtime LOGIN to one organization through private database-owned OID/name metadata; authorize simulation claim before transport mutation and retain paused routing ownership away from global consumers. Grant only scoped identity/task/claim/failure/publication, preserving tenant isolation, immutable captured inputs and token fencing for replay, sensitivity and configuration comparisons. Prepare a separate paused/probe service, pinned native image, private health/watchdog and exact owner-run migration/provision/probe/activate/recovery instructions. Prove foreign transport/business isolation with real local logins and a container smoke test. No hosted credential, migration, binding, paid resource or canary is authorized by this preparation. See [rollout](acme-simulation-worker-deployment.md) and [verification](acme-simulation-worker-verification.md).
 
+## Merged header verification and mobile sidebar targets — requested 2026-10-20
+
+Verify the merged compact type scale on laptop, mobile and Arabic RTL. The fresh production-browser audit found no font-role mismatch, but the open mobile drawer retained 32px navigation rows and a 24px brand link rather than the required 44px targets. Increase only those app-owned hit areas below 768px, retain the 14px labels/16px icons and 32px desktop rows, and enforce both densities in the existing navigation workflow. Preserve the generated primitive, routing, permissions and collapse/dismiss behavior. Retain screenshots and open a focused PR without deployment. See [merged-header-mobile-targets.md](merged-header-mobile-targets.md).
+
 ## Compact shared typography — approved 2026-10-19
 
 The owner selected 16px/24px page titles and 14px/20px record values after highlighting the disposition-batch title and location code. Update the shared tokens and current design rules across every consumer, retain body/sidebar typography and documented Dashboard/login exceptions, and enforce the approved roles in browser checks. Verify actual laptop, mobile and Arabic RTL screenshots, including current disposition integrations, then open a PR without merging or deployment. See [compact-shared-typography.md](compact-shared-typography.md).
@@ -177,15 +181,20 @@ Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-sce
 
 Step 21 begins the simulation center. Deferred Phase 3 work, including automatic approval, operational allocation/reservations and outbound transmission, remains on the roadmap.
 
-| Step | Scope                                                                                                                                                                                                                       | Status                                                                           |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| 21   | **Individual-item policy simulation:** captured recorded-sales replay, calculated versus alternative periodic maximum, controlled opening stock, fixed lead/review times, exact daily ledgers and scoped immutable history. | Merged — PR #101                                                                 |
-| 21b  | **Policy sensitivity comparisons:** one captured simulation, calculated maximum versus up to ten explicit alternatives, compact metrics and selected daily ledgers with immutable scoped evidence.                          | [PR #103](https://github.com/aqoza/MAQDAR/pull/103)                              |
-| 21c  | **Policy configuration comparisons:** captured original simulation versus up to ten explicit maximum/lead/review tuples, exact metrics and daily ledgers without extending history.                                         | Implemented — [PR #105](https://github.com/aqoza/MAQDAR/pull/105) review pending |
+| Step | Scope                                                                                                                                                                                                                       | Status                                              |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| 21   | **Individual-item policy simulation:** captured recorded-sales replay, calculated versus alternative periodic maximum, controlled opening stock, fixed lead/review times, exact daily ledgers and scoped immutable history. | Merged — PR #101                                    |
+| 21b  | **Policy sensitivity comparisons:** one captured simulation, calculated maximum versus up to ten explicit alternatives, compact metrics and selected daily ledgers with immutable scoped evidence.                          | [PR #103](https://github.com/aqoza/MAQDAR/pull/103) |
+| 21c  | **Policy configuration comparisons:** captured original simulation versus up to ten explicit maximum/lead/review tuples, exact metrics and daily ledgers without extending history.                                         | Merged — PR #105                                    |
+| 21d  | **MOQ/pack simulations:** captured original baseline versus explicit maximum/lead/review/MOQ/pack assumptions, exact order rounding and inspectable scoped results.                                                         | Merged — PR #108                                    |
+| 21e  | **Calendar-aware simulations:** preserved MOQ/pack comparison plus adjusted reviews/receipts from captured ordering and receiving calendars, explicit unavailable diagnoses and immutable scoped history.                   | Merged — PR #109                                    |
+| 22   | **Bounded network allocation:** one warehouse policy and up to twenty branch drafts, exact proportional rationing, all-location access and immutable evidence/history.                                                      | Implemented; verification and review                |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
 See [policy-sensitivity.md](policy-sensitivity.md) for the approved multiple-maximum comparison contract.
+
+See [network-allocation.md](network-allocation.md) for Step 22. The immutable required-location array uses an approved restrictive RLS subset predicate against a single scoped-location InitPlan, reviewed in `0005_tenant_invariants.test.sql`.
 
 ## Decision log
 
@@ -551,3 +560,30 @@ PR #101 was reviewed at `3ec4974` without blocking findings and merged as `bb125
 ### Step 21c approved decisions (2026-10-20)
 
 The owner approved saved configuration comparisons from one completed original simulation: calculated baseline versus 1–10 explicit maximum, fixed lead-time and review-interval tuples. Maxima retain existing quantity precision; leads are 0–365 whole calendar days and reviews 1–365. Reuse captured demand, unit, dates and opening state. Review first day and each configured interval, without extending history or recalculating a service-level policy; later receipts remain in ending pipeline. Require what-if/reuse confirmation and preserve original baseline, separate lost sales, canonical retries, immutable results, editor/location access and no operational writes. Keep the compact green design at all five widths plus Arabic RTL. See [policy-configurations.md](policy-configurations.md).
+
+### Step 21d approved decisions (2026-10-20)
+
+PR #105 was reviewed at `a524a1e` without blocking findings and merged as `5eb9719` after all CI checks and focused tests passed. The owner approved saved MOQ/pack simulations from one completed original simulation, retaining its calculated baseline and comparing up to ten explicit maximum, fixed lead, review, MOQ and pack tuples. On review, a zero gap orders zero; otherwise round the greater of the inventory-position gap and MOQ up to a pack multiple. MOQ is nonnegative and pack positive in the captured unit, with existing quantity precision and timing bounds. Reuse captured evidence and opening state, preserve the original window and later pipeline, and require explicit what-if confirmation rather than claiming current supplier terms. Keep canonical retries, immutable results, editor/location access, lost sales separate and no automatic winner or operational writes. Retain shared green design at all five widths plus Arabic RTL. See [policy-constraints.md](policy-constraints.md).
+
+### Step 21e — approved 2026-10-20
+
+PR #108 was reviewed at `e0429c8` with no blocking findings and merged as `88cc17e` after all three CI jobs and 211 focused regression tests passed. The owner approved calendar-aware replays from one completed MOQ/pack comparison. Preserve its baseline and original alternatives; select one active ordering work calendar and use the source location's receiving calendar. Shift closed-day reviews, combine reviews on the same actual day, recompute the gap and round one order before daily demand. Add the saved calendar-day lead and shift receipts to known receiving days. Reviews beyond the window do not create orders; later receipts stay in the pipeline. Capture current calendars, holidays and overrides with applicability confirmation and reject stale previews. Unknown required dates or 90-day search exhaustion make the whole adjusted comparison unavailable. Preserve source evidence, exact quantities, immutable results, stable retries and editor/location access, with shared compact green UI at five widths plus Arabic RTL. No winner, policy update or operational order. See [policy-calendars.md](policy-calendars.md).
+
+### Step 22 — approved 2026-10-20
+
+The owner merged PR #109 as `0414d18` and approved a bounded network allocation increment: one item, one source warehouse and 1–20 receiving branches using explicitly selected saved replenishment drafts and a source policy maximum. Protect the warehouse maximum and commitments, exclude source inbound, and ration available surplus proportionally in exact 0.001-unit increments using largest remainder and a stable location-UUID tie-break. Reuse matching item/unit/cutoff, exact-cutoff stock, active directed-lane and applicability-confirmation rules. Require access to all locations, editor-only saves, refreshed changed previews and immutable scoped history. Show remaining branch gaps and retained warehouse stock; scenarios remain independent, reserve nothing and promise no arrival. Whole-network policy optimization and execution remain deferred. See [network-allocation.md](network-allocation.md).
+
+## ZeeSpare public site and OTEGROUP pilot — approved 2026-10-20
+
+Separate the public apex homepage from the explicitly bound OTE tenant hostname. Preserve shared deployment, RLS and existing login design. Oman/OMR; production email through Amazon SES is deferred by the owner. See [ote-workspace.md](ote-workspace.md) for acceptance and rollout.
+
+## ACME test workspace hostname — approved 2026-10-20
+
+Bind `acme.zeespare.com` to the existing ACME organization
+`2cd8944d-52a1-45e2-9230-6f4fd0a2c6d4`, alongside OTE's independent host binding.
+Keep `acme@maqdar.org`, its password, memberships and all existing demo records.
+Add ACME to the public workspace finder, Worker custom domains and exact Supabase
+email callback allowlist. No database migration, account reset or data loader is needed.
+Verify fail-closed binding, cross-tenant membership/claim filtering, host-only cookies,
+same-origin mutations, email callback routing, and compact mobile login; run the full CI
+before deploying. SES setup remains deferred.

@@ -3,7 +3,10 @@
 import { useActionState, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { idleState } from '@/lib/forms'
-import { enqueueConfigurations } from '@/app/(app)/forecasts/simulations/actions'
+import {
+  enqueueConfigurations,
+  enqueueConstraints,
+} from '@/app/(app)/forecasts/simulations/actions'
 
 export function PolicyConfigurationsForm({
   organizationId,
@@ -12,6 +15,7 @@ export function PolicyConfigurationsForm({
   alternative,
   lead,
   review,
+  constraints = false,
 }: {
   organizationId: string
   sourceRunId: string
@@ -19,15 +23,29 @@ export function PolicyConfigurationsForm({
   alternative: string
   lead: number
   review: number
+  constraints?: boolean
 }) {
-  const t = useTranslations('PolicyConfigurations')
-  const [state, action, pending] = useActionState(enqueueConfigurations, idleState)
+  const t = useTranslations(constraints ? 'PolicyConstraints' : 'PolicyConfigurations')
+  const [state, action, pending] = useActionState(
+    constraints ? enqueueConstraints : enqueueConfigurations,
+    idleState,
+  )
   const nextId = useRef(1)
   const [rows, setRows] = useState([
-    { id: 0, maximum: alternative, lead_time: String(lead), review_interval: String(review) },
+    {
+      id: 0,
+      maximum: alternative,
+      lead_time: String(lead),
+      review_interval: String(review),
+      moq: '0',
+      pack: '1',
+    },
   ])
-  const update = (id: number, key: 'maximum' | 'lead_time' | 'review_interval', value: string) =>
-    setRows((current) => current.map((row) => (row.id === id ? { ...row, [key]: value } : row)))
+  const update = (
+    id: number,
+    key: 'maximum' | 'lead_time' | 'review_interval' | 'moq' | 'pack',
+    value: string,
+  ) => setRows((current) => current.map((row) => (row.id === id ? { ...row, [key]: value } : row)))
   return (
     <form action={action} aria-label={t('create')} className="workspace-panel space-y-4">
       <h2 className="text-section-title">{t('alternatives')}</h2>
@@ -40,6 +58,7 @@ export function PolicyConfigurationsForm({
         value={JSON.stringify(
           rows.map((row) => ({
             maximum: row.maximum,
+            ...(constraints ? { moq: row.moq, pack: row.pack } : {}),
             lead_time: row.lead_time === '' ? null : Number(row.lead_time),
             review_interval: row.review_interval === '' ? null : Number(row.review_interval),
           })),
@@ -51,7 +70,7 @@ export function PolicyConfigurationsForm({
         {rows.map((row, index) => (
           <fieldset
             key={row.id}
-            className="grid min-w-0 gap-3 rounded-md border p-3 sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1fr_auto]"
+            className={`grid min-w-0 gap-3 rounded-md border p-3 sm:grid-cols-3 ${constraints ? 'xl:grid-cols-[repeat(5,minmax(0,1fr))_auto]' : 'xl:grid-cols-[1fr_1fr_1fr_auto]'}`}
           >
             <legend className="px-1 font-medium">{t('alternative', { number: index + 1 })}</legend>
             <label className="grid min-w-0 gap-1">
@@ -93,6 +112,22 @@ export function PolicyConfigurationsForm({
                 className="min-h-11 w-full min-w-0 rounded-md border bg-background p-2"
               />
             </label>
+            {constraints &&
+              (['moq', 'pack'] as const).map((key) => (
+                <label key={key} className="grid min-w-0 gap-1">
+                  {t(key)}
+                  <input
+                    required
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]{1,15}(\.[0-9]{1,3})?"
+                    maxLength={19}
+                    value={row[key]}
+                    onChange={(event) => update(row.id, key, event.target.value)}
+                    className="min-h-11 w-full min-w-0 rounded-md border bg-background p-2"
+                  />
+                </label>
+              ))}
             <button
               type="button"
               disabled={rows.length === 1}
@@ -111,7 +146,14 @@ export function PolicyConfigurationsForm({
             const id = nextId.current++
             setRows((current) => [
               ...current,
-              { id, maximum: '', lead_time: String(lead), review_interval: String(review) },
+              {
+                id,
+                maximum: '',
+                lead_time: String(lead),
+                review_interval: String(review),
+                moq: '0',
+                pack: '1',
+              },
             ])
           }}
           className="min-h-11 rounded-md border px-3 py-2 disabled:opacity-50"

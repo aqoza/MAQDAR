@@ -1,3 +1,4 @@
+import { requestSite } from '@/lib/workspaces/request'
 import type { Metadata } from 'next'
 import {
   ArrowUpRight,
@@ -8,6 +9,7 @@ import {
   PackageCheck,
 } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
+import { ZeeSpareMark } from '@/components/zeespare-mark'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { LoginForm } from './login-form'
 import { PlanningIllustration } from './planning-illustration'
@@ -33,6 +35,8 @@ export default async function LoginPage({
 }) {
   const t = await getTranslations('Auth')
   const common = await getTranslations('Common')
+  const { workspace } = await requestSite()
+  const tWorkspace = await getTranslations('Workspace')
   const { error } = await searchParams
   const errorKey = error && isErrorQuery(error) ? ERROR_KEYS[error] : null
 
@@ -41,9 +45,11 @@ export default async function LoginPage({
       <section className={styles.story} aria-label={t('design.storyLabel')}>
         <div className={styles.brand}>
           <span className={styles.brandMark} aria-hidden="true">
-            <Layers3 />
+            <ZeeSpareMark />
           </span>
-          <span className="text-page-title">{common('appName')}</span>
+          <span className={styles.brandWordmark} dir="ltr">
+            {common('appName')}
+          </span>
           <span className={styles.brandDescriptor}>{t('design.brandDescriptor')}</span>
         </div>
         <div className={styles.storyContent}>
@@ -88,7 +94,7 @@ export default async function LoginPage({
       <section className={styles.signIn} aria-labelledby="login-title">
         <div className={styles.workspaceLabel}>
           <LockKeyhole aria-hidden="true" />
-          {t('design.workspace')}
+          {workspace ? tWorkspace('label', { name: workspace.name }) : t('design.workspace')}
         </div>
         <div className={styles.formContainer}>
           <div className={styles.formIntro}>

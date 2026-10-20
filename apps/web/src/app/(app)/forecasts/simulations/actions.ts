@@ -9,6 +9,29 @@ import { createClient } from '@/lib/supabase/server'
 import { simulationRequestSchema } from '@/lib/policy-simulation'
 import { sensitivityRequestSchema } from '@/lib/policy-sensitivity'
 import { configurationsRequestSchema } from '@/lib/policy-configurations'
+import { constraintsRequestSchema } from '@/lib/policy-constraints'
+import { calendarEnqueueInput } from '@/lib/policy-calendars'
+
+export async function enqueueCalendars(_state: ActionState, form: FormData): Promise<ActionState> {
+  const guard = await requireEditor(form)
+  if (!guard.ok) return guard.state
+  const values = fieldValues(form, ['source', 'calendar', 'request_id', 'fingerprint', 'confirmed'])
+  const parsed = calendarEnqueueInput.safeParse(values)
+  if (!parsed.success) return { ...(await invalidState('validation')), values }
+  const db = await createClient()
+  const { data, error } = await db.rpc('simulation_calendars_enqueue', {
+    p_organization_id: guard.organizationId,
+    p_source_run_id: parsed.data.source,
+    p_calendar_id: parsed.data.calendar,
+    p_request_id: parsed.data.request_id,
+    p_fingerprint: parsed.data.fingerprint,
+    p_calendars_confirmed: true,
+  })
+  if (error) return { ...(await rpcErrorState(error)), values }
+  revalidatePath('/forecasts')
+  revalidatePath('/forecasts/simulations')
+  redirect(`/forecasts/simulations/${data}`)
+}
 
 export async function enqueueSensitivity(
   _state: ActionState,
@@ -87,6 +110,40 @@ export async function enqueueConfigurations(
   if (!parsed.success) return { ...(await invalidState('validation')), values }
   const db = await createClient()
   const { data, error } = await db.rpc('simulation_configurations_enqueue', {
+    p_organization_id: guard.organizationId,
+    p_source_run_id: parsed.data.source_run_id,
+    p_request_id: parsed.data.request_id,
+    p_configurations: parsed.data.configurations,
+    p_reuse_confirmed: true,
+  })
+  if (error) {
+    if (error.code === 'MQ409') {
+      const t = await getTranslations('PolicySimulation')
+      return { status: 'error', code: error.code, message: t('conflict'), values }
+    }
+    return { ...(await rpcErrorState(error)), values }
+  }
+  revalidatePath('/forecasts')
+  revalidatePath('/forecasts/simulations')
+  redirect(`/forecasts/simulations/${data}`)
+}
+
+export async function enqueueConstraints(
+  _state: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const guard = await requireEditor(form)
+  if (!guard.ok) return guard.state
+  const values = fieldValues(form, [
+    'source_run_id',
+    'request_id',
+    'configurations',
+    'reuse_confirmed',
+  ])
+  const parsed = constraintsRequestSchema.safeParse(values)
+  if (!parsed.success) return { ...(await invalidState('validation')), values }
+  const db = await createClient()
+  const { data, error } = await db.rpc('simulation_constraints_enqueue', {
     p_organization_id: guard.organizationId,
     p_source_run_id: parsed.data.source_run_id,
     p_request_id: parsed.data.request_id,

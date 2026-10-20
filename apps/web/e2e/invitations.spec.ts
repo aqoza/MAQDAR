@@ -39,7 +39,7 @@ test('a new user is invited as planner, accepts and can sign in with a password'
 
   await signInWithPassword(page, owner.email, owner.password)
   await inviteMember(page, invitee, 'Planner')
-  const link = await waitForEmailLink(request, invitee, /\/auth\/invite\?/)
+  const link = await waitForEmailLink(request, invitee, /\/auth\/(?:invite\?|email\/invitations\/)/)
 
   // The invitee has no session yet: a fresh browser context stands in for their browser.
   const context = await browser.newContext()
@@ -68,7 +68,7 @@ test('a magic-link request for an unknown address gets the neutral confirmation'
   await page.goto('/login')
   await page.getByLabel('Email', { exact: true }).fill(unknown)
   await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
-  await expect(page.getByRole('status')).toContainText(`If ${unknown} has a MAQDAR account`)
+  await expect(page.getByRole('status')).toContainText(`If ${unknown} has a ZeeSpare account`)
 })
 
 test('a revoked invitation is refused when its invitee opens the link', async ({
@@ -80,7 +80,7 @@ test('a revoked invitation is refused when its invitee opens the link', async ({
 
   await signInWithPassword(page, owner.email, owner.password)
   await inviteMember(page, invitee, 'Viewer')
-  const link = await waitForEmailLink(request, invitee, /\/auth\/invite\?/)
+  const link = await waitForEmailLink(request, invitee, /\/auth\/(?:invite\?|email\/invitations\/)/)
   await revokeInvitation(page, invitee)
 
   // The e-mail token still verifies the mailbox, but the invitation itself is gone.

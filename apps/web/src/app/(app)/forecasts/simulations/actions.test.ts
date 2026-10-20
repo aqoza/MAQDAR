@@ -2,6 +2,8 @@ import { beforeEach, expect, it, vi } from 'vitest'
 vi.mock('@/lib/forms', () => import('../../../../lib/forms'))
 vi.mock('@/lib/policy-simulation', () => import('../../../../lib/policy-simulation'))
 vi.mock('@/lib/policy-configurations', () => import('../../../../lib/policy-configurations'))
+vi.mock('@/lib/policy-constraints', () => import('../../../../lib/policy-constraints'))
+vi.mock('@/lib/policy-calendars', () => import('../../../../lib/policy-calendars'))
 vi.mock('@/lib/policy-sensitivity', () => import('../../../../lib/policy-sensitivity'))
 const mocks = vi.hoisted(() => ({
   guard: vi.fn(),
@@ -19,7 +21,51 @@ vi.mock('@/lib/organizations/guard', () => ({
 vi.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ rpc: mocks.rpc }) }))
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 vi.mock('next/navigation', () => ({ redirect: mocks.redirect }))
-import { enqueueSimulation, enqueueSensitivity, enqueueConfigurations } from './actions'
+import {
+  enqueueSimulation,
+  enqueueSensitivity,
+  enqueueConfigurations,
+  enqueueConstraints,
+  enqueueCalendars,
+} from './actions'
+
+function calendarForm() {
+  const data = new FormData()
+  for (const [key, value] of Object.entries({
+    organization_id: 'untrusted',
+    source: '11111111-1111-4111-8111-111111111111',
+    calendar: '22222222-2222-4222-8222-222222222222',
+    request_id: '33333333-3333-4333-8333-333333333333',
+    fingerprint: 'a'.repeat(64),
+    confirmed: 'on',
+  }))
+    data.set(key, value)
+  return data
+}
+it('queues captured calendars with the active organization and preview fingerprint', async () => {
+  await expect(enqueueCalendars(idleState, calendarForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith('simulation_calendars_enqueue', {
+    p_organization_id: 'session-org',
+    p_source_run_id: '11111111-1111-4111-8111-111111111111',
+    p_calendar_id: '22222222-2222-4222-8222-222222222222',
+    p_request_id: '33333333-3333-4333-8333-333333333333',
+    p_fingerprint: 'a'.repeat(64),
+    p_calendars_confirmed: true,
+  })
+})
+it('rejects an unconfirmed calendar request without calling the database', async () => {
+  const form = calendarForm()
+  form.delete('confirmed')
+  expect((await enqueueCalendars(idleState, form)).code).toBe('validation')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('preserves calendar inputs on changed evidence without exposing database details', async () => {
+  mocks.rpc.mockResolvedValue({ error: { code: 'MQ409', message: 'private database detail' } })
+  const result = await enqueueCalendars(idleState, calendarForm())
+  expect(result.values?.fingerprint).toBe('a'.repeat(64))
+  expect(JSON.stringify(result)).not.toContain('private database detail')
+  expect(mocks.redirect).not.toHaveBeenCalled()
+})
 import { idleState } from '../../../../lib/forms'
 const values = {
   organization_id: 'untrusted',
@@ -192,6 +238,66 @@ it('uses simulation-specific guidance for configuration queue and retry conflict
   mocks.rpc.mockResolvedValue({ error: { code: 'MQ409', message: 'private conflict detail' } })
   const input = configurationsForm()
   const result = await enqueueConfigurations(idleState, input)
+  expect(result).toMatchObject({
+    status: 'error',
+    code: 'MQ409',
+    message: 'Check simulation history before trying again.',
+  })
+  expect(result.values?.configurations).toBe(input.get('configurations'))
+  expect(mocks.t).toHaveBeenCalledWith('conflict')
+  expect(mocks.redirect).not.toHaveBeenCalled()
+})
+
+function constraintsForm() {
+  const data = comparisonForm()
+  data.set(
+    'configurations',
+    JSON.stringify([
+      { moq: '0', pack: '1', maximum: '08.000', lead_time: 365, review_interval: 365 },
+      { moq: '0', pack: '1', maximum: '0.001', lead_time: 0, review_interval: 1 },
+    ]),
+  )
+  return data
+}
+it('queues canonical configurations using current organization and exact quantities', async () => {
+  await expect(enqueueConstraints(idleState, constraintsForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith('simulation_constraints_enqueue', {
+    p_organization_id: 'session-org',
+    p_source_run_id: values.policy_id,
+    p_request_id: values.request_id,
+    p_reuse_confirmed: true,
+    p_configurations: [
+      { moq: '0', pack: '1', maximum: '0.001', lead_time: 0, review_interval: 1 },
+      { moq: '0', pack: '1', maximum: '8', lead_time: 365, review_interval: 365 },
+    ],
+  })
+})
+it('rejects malformed configurations, missing confirmation and stale authority before RPC', async () => {
+  const input = constraintsForm()
+  input.set('configurations', '{')
+  expect((await enqueueConstraints(idleState, input)).code).toBe('validation')
+  const unconfirmed = constraintsForm()
+  unconfirmed.delete('reuse_confirmed')
+  expect((await enqueueConstraints(idleState, unconfirmed)).code).toBe('validation')
+  mocks.guard.mockResolvedValue({
+    ok: false,
+    state: { status: 'error', code: 'stale_organization' },
+  })
+  expect((await enqueueConstraints(idleState, constraintsForm())).code).toBe('stale_organization')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('retains configuration inputs and hides database errors after rejection', async () => {
+  mocks.rpc.mockResolvedValue({ error: { message: 'private database detail' } })
+  const input = constraintsForm()
+  const result = await enqueueConstraints(idleState, input)
+  expect(result.code).toBe('rejected')
+  expect(result.values?.configurations).toBe(input.get('configurations'))
+  expect(mocks.redirect).not.toHaveBeenCalled()
+})
+it('uses simulation-specific guidance for configuration queue and retry conflicts', async () => {
+  mocks.rpc.mockResolvedValue({ error: { code: 'MQ409', message: 'private conflict detail' } })
+  const input = constraintsForm()
+  const result = await enqueueConstraints(idleState, input)
   expect(result).toMatchObject({
     status: 'error',
     code: 'MQ409',

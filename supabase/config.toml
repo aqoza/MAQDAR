@@ -161,7 +161,7 @@ site_url = "http://localhost:3000"
 # The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
 # external_url = ""
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["http://localhost:3000/**", "http://127.0.0.1:3000/**"]
+additional_redirect_urls = ["http://localhost:3000/**", "http://127.0.0.1:3000/**", "http://ote.localhost:3000/auth/email/dashboard", "http://ote.localhost:3000/auth/email/invitations/*", "http://acme.localhost:3000/auth/email/dashboard", "http://acme.localhost:3000/auth/email/invitations/*"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # JWT issuer URL. If not set, defaults to auth.external_url.
@@ -254,7 +254,7 @@ otp_expiry = 3600
 # a POST so link-scanning mail gateways cannot consume the one-time token. Mirror into the hosted
 # Dashboard by hand (the default hosted template is an implicit-flow link the app cannot complete).
 [auth.email.template.invite]
-subject = "You are invited to MAQDAR"
+subject = "You are invited to ZeeSpare"
 content_path = "./supabase/templates/invite.html"
 
 # Uncomment to customize notification email template
@@ -266,11 +266,11 @@ content_path = "./supabase/templates/invite.html"
 # Local sign-in emails link to /auth/confirm with a token hash (works for magic links and
 # first-time sign-ups). Mirror these templates into the hosted Dashboard by hand.
 [auth.email.template.magic_link]
-subject = "Sign in to MAQDAR"
+subject = "Sign in to ZeeSpare"
 content_path = "./supabase/templates/sign-in-link.html"
 
 [auth.email.template.confirmation]
-subject = "Sign in to MAQDAR"
+subject = "Sign in to ZeeSpare"
 content_path = "./supabase/templates/sign-in-link.html"
 
 [auth.sms]

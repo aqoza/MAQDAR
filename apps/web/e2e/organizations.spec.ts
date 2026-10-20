@@ -59,7 +59,11 @@ test('an existing user invited as viewer joins by magic link and sees read-only 
   await inviteMember(page, viewer.email, 'Viewer')
 
   // Existing accounts get a sign-in link rather than an invite token.
-  const link = await waitForEmailLink(request, viewer.email, /\/auth\/(?:confirm|callback)\?/)
+  const link = await waitForEmailLink(
+    request,
+    viewer.email,
+    /\/auth\/(?:(?:confirm|callback)\?|email\/invitations\/)/,
+  )
   const context = await browser.newContext()
   const viewerPage = await context.newPage()
   await viewerPage.goto(link)

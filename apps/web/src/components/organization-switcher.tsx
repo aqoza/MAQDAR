@@ -26,6 +26,7 @@ export type OrganizationSwitcherProps = {
   organizations: OrganizationSummary[]
   active: OrganizationSummary
   role: Role | null
+  workspaceLocked?: boolean
   pendingInvitationCount: number
 }
 
@@ -39,6 +40,7 @@ export function OrganizationSwitcher({
   active,
   role,
   pendingInvitationCount,
+  workspaceLocked = false,
 }: OrganizationSwitcherProps) {
   const t = useTranslations('Organizations.switcher')
   const tRoles = useTranslations('Roles')
@@ -107,10 +109,12 @@ export function OrganizationSwitcher({
               </DropdownMenuRadioGroup>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem render={<Link href="/organizations/new" />}>
-              <Plus />
-              {t('create')}
-            </DropdownMenuItem>
+            {!workspaceLocked ? (
+              <DropdownMenuItem render={<Link href="/organizations/new" />}>
+                <Plus />
+                {t('create')}
+              </DropdownMenuItem>
+            ) : null}
             {pendingInvitationCount > 0 ? (
               <DropdownMenuItem render={<Link href="/organizations" />}>
                 <Mail />

@@ -1,13 +1,9 @@
-<h2>Sign in to MAQDAR</h2>
+<h2>Sign in to ZeeSpare</h2>
 <p>
   Use this link to sign in. It works once and expires in one hour. If someone invited you to an
   organization, the invitation opens after you sign in.
 </p>
 <p>
-  <a
-    href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next={{ .RedirectTo }}"
-  >
-    Sign in to MAQDAR
-  </a>
+  <a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&amp;type=email"> Sign in to ZeeSpare </a>
 </p>
 <p>If you did not expect this email, you can ignore it.</p>

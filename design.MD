@@ -1,4 +1,4 @@
-# MAQDAR design rules
+# ZeeSpare design rules
 
 ## Typography — required on every page
 
@@ -31,6 +31,7 @@ Below 768px, the login brand panel becomes a compact logo-and-tagline bar so bot
 The floating help side-panel style approved on 2026-10-18 is capped at 420px (26.25rem), with 20px (1.25rem) viewport insets on desktop and 8px (0.5rem) insets below 768px. Use a white card with 24px (1.5rem) rounded corners, a thin grey-green border, and a light neutral shadow. The card fits its content up to the available viewport height; longer guidance scrolls between the fixed header and footer. The approved smaller-text mockup is a local typography exception: 16px / 22px titles, 13px / 19px section headings and body copy, and 12px / 18px subtitles. Titles and section headings keep weight 600; footer buttons retain 14px / 20px text and all close controls retain 44px minimum targets. Keep the pale green callout. All main Replenishment tab guidance uses `HelpSidePanel`, preserving each tab's existing method copy. These styles live only in `help-side-panel.module.css`; page, navigation and sidebar typography retain the shared scale above.
 
 - Use `AppSidebar` on every authenticated route, including Dashboard. Navigation labels are always 14px / 20px with 16px icons and the same active-label weight. The desktop navigation row is 32px. Brand, organization switcher, account footer, sidebar width and spacing do not change when navigating between Dashboard and Items.
+- Below 768px, mobile drawer navigation rows and the brand link have a minimum 44px tap height. Keep navigation labels at 14px / 20px and icons at 16px; increase the hit area rather than the font. Apply this in the app-owned sidebar so the portalled drawer receives it; desktop rows remain 32px.
 - Dashboard CSS may style its own panels and decorative surfaces. It must not override the shared sidebar or the shared header's text size.
 - Breakpoints change layout, gaps, wrapping and density. They must not shrink or enlarge page titles, navigation, body text or captions. The explicit mobile-input and numeric-KPI roles above are the only responsive size exceptions.
 - Keep prose at 12px or larger. Use natural wrapping or local table scrolling when content is constrained; do not hide text, clip the page, or shrink text to force a fit.
@@ -66,3 +67,13 @@ Render only authorized sections on the server. Keep allowed form panels mounted 
 For typography changes, compare Dashboard and Items at the same viewport and browser zoom. Check actual computed font sizes, line heights and font families, including sidebar labels and controls. Verify client navigation in both directions, mobile, laptop, desktop and Arabic RTL. Run the existing responsive and dashboard reference browser tests and inspect their screenshots.
 
 The header contract test rejects omitted section patterns, bare authenticated page titles and plain loading boundaries. Follow the executable [UI regression ledger](docs/REGRESSION.md), preserve hidden-record HTTP 404 assertions, and retain desktop, mobile and Arabic RTL screenshots when changing shared headers.
+
+## ZeeSpare identity
+
+The public name is **ZeeSpare**, with this capitalization in both locales. The precision-Z mark lives in `src/components/zeespare-mark.tsx`; master SVG/PNG assets and the printable brand guide live in `docs/brand/zeespare`. Use the same mark in login, onboarding, sidebar and favicon. The wordmark is an identity exception: login uses 22px/24px, weight 650 and -0.045em tracking. Application text roles remain unchanged. Keep the Latin wordmark LTR inside RTL layouts; never mirror the Z.
+
+Forest #103E31, emerald #155C46, signal lime #C2F970 and warm paper #F7F8F2 form the brand palette. Lime is decorative and must not be used for small text on white. Do not change shared semantic status colors to brand colors.
+
+## Public website exception
+
+The public product homepage and workspace finder use an editorial display scale scoped to `public.module.css`: responsive 44–77px hero, 28–40px section titles and 36px finder title. Use the existing ZeeSpare palette, mark and planning illustration, logical CSS, visible focus and 44px targets. This does not change authenticated application typography or the approved login design.
