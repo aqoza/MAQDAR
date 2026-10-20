@@ -69,7 +69,9 @@ print(json.dumps(dict(run=str(run),calendar=str(calendar),location=str(location)
     const newUrl = `/forecasts/simulations/calendars?source=${fixture.run}`
     await page.goto(`/forecasts/simulations/${fixture.run}`)
     await page.getByRole('link', { name: 'Compare working calendars' }).click()
-    await page.getByLabel('Ordering calendar', { exact: true }).selectOption(fixture.calendar)
+    await page
+      .getByRole('combobox', { name: 'Ordering calendar', exact: true })
+      .selectOption(fixture.calendar)
     await page.getByRole('button', { name: 'Refresh calendar preview' }).click()
     const previewUrl = page.url()
     const form = page.getByRole('form', { name: 'Queue calendar comparison' })
@@ -122,7 +124,7 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(comparison.locator('tbody tr')).toHaveCount(3)
     await expect(comparison.locator('tbody tr').nth(1)).toContainText('100%')
     await expect(comparison.locator('tbody tr').nth(2)).toContainText('62.5%')
-    await page.getByLabel('Daily ledger', { exact: true }).selectOption('2')
+    await page.getByRole('combobox', { name: 'Daily ledger', exact: true }).selectOption('2')
     await page.getByRole('button', { name: 'Show ledger' }).click()
     await expect(
       page.getByRole('table', { name: 'Review date shifts' }).locator('tbody tr'),
