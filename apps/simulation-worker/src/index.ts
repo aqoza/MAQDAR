@@ -41,7 +41,7 @@ export default {
   },
   async scheduled(_event: ScheduledController, env: Env): Promise<void> {
     try {
-      await env.ACME_SIMULATION.getByName('acme-simulations-v2').check()
+      await env.ACME_SIMULATION.getByName('acme-simulations-v1').check()
       console.log('Simulation supervisor check completed')
     } catch {
       console.error('Simulation supervisor check failed')
