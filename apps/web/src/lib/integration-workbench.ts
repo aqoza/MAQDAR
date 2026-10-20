@@ -66,15 +66,35 @@ export const dispositionIntegrationListSpec: ListSpec = {
   ],
 }
 
-export type IntegrationFamily = 'purchase' | 'transfer' | 'event' | 'disposition'
+export const networkIntegrationListSpec: ListSpec = {
+  ...transferIntegrationListSpec,
+  filters: transferIntegrationListSpec.filters!.map((filter) =>
+    filter.param === 'location'
+      ? { ...filter, param: 'branch', column: 'branch_codes' }
+      : filter.param === 'selection'
+        ? { ...filter, values: ['current', 'historical', 'unavailable'] }
+        : filter,
+  ),
+}
+
+export type IntegrationFamily = 'purchase' | 'transfer' | 'event' | 'disposition' | 'network'
 
 function integrationSpec(family: IntegrationFamily) {
+  if (family === 'network') return networkIntegrationListSpec
   if (family === 'disposition') return dispositionIntegrationListSpec
   if (family === 'transfer') return transferIntegrationListSpec
   return integrationListSpec
 }
 
 export const integrationFamilies = {
+  network: {
+    prefix: 'network/',
+    rpc: 'network_integration_workbench',
+    title: 'networkTitle',
+    context: 'networkContext',
+    navigation: 'network',
+    link: 'networkLink',
+  },
   disposition: {
     prefix: 'excess/',
     rpc: 'excess_disposition_integration_workbench',
@@ -195,6 +215,22 @@ export const dispositionIntegrationResultSchema = integrationResultSchema.extend
         .omit({ supplier_code: true, selected: true })
         .extend({
           disposition_kind: z.enum(['supplier_return', 'scrap']),
+          selection: z.enum(['current', 'historical', 'unavailable']),
+        }),
+    )
+    .max(100),
+})
+
+export const networkIntegrationResultSchema = integrationResultSchema.extend({
+  rows: z
+    .array(
+      integrationResultSchema.shape.rows.element
+        .omit({ supplier_code: true, location_code: true, selected: true })
+        .extend({
+          source_code: z.string(),
+          branch_codes: z.array(z.string()).min(1).max(1000),
+          branch_row_count: z.number().int().min(1).max(1000),
+          dispatch_date: z.iso.date(),
           selection: z.enum(['current', 'historical', 'unavailable']),
         }),
     )

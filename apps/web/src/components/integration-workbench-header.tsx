@@ -13,6 +13,7 @@ export async function IntegrationWorkbenchHeader({
   const t = await getTranslations('IntegrationWorkbench')
   const configuration = integrationFamilies[family]
   const transfer = family === 'transfer'
+  const network = family === 'network'
   return (
     <PageHeader
       pattern="replenishment"
@@ -20,9 +21,10 @@ export async function IntegrationWorkbenchHeader({
       title={t(configuration.title)}
       description={t(configuration.context)}
       help={
-        transfer ? (
+        transfer || network ? (
           <HelpDisclosure>
-            <p>{t('transferMeaning')}</p>
+            <p>{t(network ? 'networkMeaning' : 'transferMeaning')}</p>
+            {network && <p>{t('networkAccess')}</p>}
             <p>{t('independence')}</p>
           </HelpDisclosure>
         ) : (
