@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('network_handoff_acknowledgements', 'anon', 'r', ''),
+    ('network_handoff_acknowledgements', 'authenticated', 'r', 'SELECT'),
+    ('network_handoff_acknowledgements', 'service_role', 'r', ''),
     ('network_handoff_batches', 'anon', 'r', ''),
     ('network_handoff_batches', 'authenticated', 'r', 'SELECT'),
     ('network_handoff_batches', 'service_role', 'r', ''),
@@ -550,6 +553,10 @@ select set_eq(
     ('public.transfer_date_save(uuid, uuid, date, boolean, uuid, text)', 'authenticated'),
     ('public.network_allocation_preview(uuid, uuid[], uuid, text, uuid, text, boolean, boolean)', 'authenticated'),
     ('app.network_review_timing_clear(jsonb)', 'authenticated'),
+    ('app.network_handoff_ack_json(network_handoff_acknowledgements)', ''),
+    ('app.network_handoff_ack_locations(uuid, text, uuid)', ''),
+    ('public.api_network_handoff_acknowledge(bytea, text, uuid, jsonb)', 'service_role'),
+    ('public.api_network_handoff_acknowledgements(bytea, text, uuid, uuid, text, integer)', 'service_role'),
     ('public.network_handoff_create(uuid, uuid)', 'authenticated'),
     ('public.network_handoff_batch_preview(uuid, uuid[])', 'authenticated'),
     ('public.network_handoff_batch_create(uuid, uuid[])', 'authenticated'),

@@ -5,6 +5,11 @@ import { HelpDisclosure } from '@/components/help-disclosure'
 
 const PAGE_SIZE = 20
 const FAMILIES = {
+  network: {
+    table: 'network_handoff_acknowledgements',
+    prefix: 'network/',
+    meaning: 'networkMeaning',
+  },
   purchase: { table: 'purchase_handoff_acknowledgements', prefix: '', meaning: 'meaning' },
   transfer: {
     table: 'transfer_handoff_acknowledgements',
