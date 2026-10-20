@@ -6,6 +6,14 @@ export type Site = {
   workspace: Workspace | null
 }
 
+const WORKSPACE_NAMES = { ote: 'OTEGROUP', acme: 'ACME' } as const
+export type WorkspaceSlug = keyof typeof WORKSPACE_NAMES
+
+/** Only provisioned slugs may form workspace URLs. */
+export function isWorkspaceSlug(value: string): value is WorkspaceSlug {
+  return Object.hasOwn(WORKSPACE_NAMES, value)
+}
+
 const PUBLIC_HOSTS = new Set(['zeespare.com', 'www.zeespare.com'])
 const SHARED_HOSTS = new Set([
   'maqdar.org',
@@ -29,17 +37,23 @@ export function resolveSite(
   host: string | null,
   configuredSite = process.env.NEXT_PUBLIC_SITE_URL,
   oteId = process.env.OTE_ORGANIZATION_ID,
+  acmeId = process.env.ACME_ORGANIZATION_ID,
 ): Site {
   const authority = parseHost(host)
   const unknown: Site = { kind: 'unknown', origin: 'https://zeespare.com', workspace: null }
   if (!authority) return unknown
-  const workspace: Workspace = {
-    slug: 'ote',
-    name: 'OTEGROUP',
-    // A missing deployment binding must deny access, never select an arbitrary organization.
-    organizationId: oteId && UUID.test(oteId) ? oteId : null,
-  }
-  if (authority === 'ote.zeespare.com') {
+  const bindings: Record<WorkspaceSlug, string | undefined> = { ote: oteId, acme: acmeId }
+  const workspaces = Object.entries(WORKSPACE_NAMES).map(([slug, name]): Workspace => {
+    const id = bindings[slug as WorkspaceSlug]
+    return {
+      slug,
+      name,
+      // A missing deployment binding must deny access, never select another organization.
+      organizationId: id && UUID.test(id) ? id : null,
+    }
+  })
+  const workspace = workspaces.find((value) => authority === `${value.slug}.zeespare.com`)
+  if (workspace) {
     return { kind: 'workspace', origin: `https://${authority}`, workspace }
   }
   if (PUBLIC_HOSTS.has(authority)) {
@@ -53,8 +67,15 @@ export function resolveSite(
     const configured = new URL(configuredSite ?? '')
     if (['localhost', '127.0.0.1', '[::1]'].includes(configured.hostname)) {
       const port = configured.port ? `:${configured.port}` : ''
-      if (authority === `ote.localhost${port}`) {
-        return { kind: 'workspace', origin: `${configured.protocol}//${authority}`, workspace }
+      const localWorkspace = workspaces.find(
+        (value) => authority === `${value.slug}.localhost${port}`,
+      )
+      if (localWorkspace) {
+        return {
+          kind: 'workspace',
+          origin: `${configured.protocol}//${authority}`,
+          workspace: localWorkspace,
+        }
       }
       if (authority === configured.host) {
         return { kind: 'public', origin: configured.origin, workspace: null }

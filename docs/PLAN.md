@@ -581,3 +581,14 @@ Separate the public apex homepage from the explicitly bound OTE tenant hostname.
 PR #111 was reviewed at `8e63fda` without blocking findings and merged as `8fee288` after all three CI jobs passed. Its merge with the latest main preserved both the network-allocation documentation and the ZeeSpare/OTE workspace changes; focused unit, production-build and allocation-browser checks also passed.
 
 The owner approved saved network transfer dates from one allocation, keeping every branch quantity and original stock commitment fixed. Resolve one warehouse dispatch at or after the requested date/cutoff, then each lane's saved p50/p90 calendar-day leads and next known branch working days. Zero quantities need no transfer; unknown required dates or an exhausted 90-day search prevent a complete save. Require active locations, the same active directed lanes with unchanged leads, calendar applicability and refreshed previews. Preserve inbound concerns and flag each receipt beyond the branch cutoff plus original policy lead. Keep all-location access, editor saves, immutable copies and stable retries at five widths plus Arabic RTL. No freight, reservations, policy recalculation or execution. See [network-transfer-dates.md](network-transfer-dates.md).
+
+## ACME test workspace hostname — approved 2026-10-20
+
+Bind `acme.zeespare.com` to the existing ACME organization
+`2cd8944d-52a1-45e2-9230-6f4fd0a2c6d4`, alongside OTE's independent host binding.
+Keep `acme@maqdar.org`, its password, memberships and all existing demo records.
+Add ACME to the public workspace finder, Worker custom domains and exact Supabase
+email callback allowlist. No database migration, account reset or data loader is needed.
+Verify fail-closed binding, cross-tenant membership/claim filtering, host-only cookies,
+same-origin mutations, email callback routing, and compact mobile login; run the full CI
+before deploying. SES setup remains deferred.
