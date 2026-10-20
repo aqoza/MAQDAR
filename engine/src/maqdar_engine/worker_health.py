@@ -2,6 +2,7 @@
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import threading
+from socketserver import TCPServer
 from time import monotonic
 
 
@@ -15,6 +16,15 @@ class Heartbeat:
 
     def status(self):
         return 200 if monotonic() - self.last_poll < 100 else 503
+
+
+class PrivateHealthServer(ThreadingHTTPServer):
+    def server_bind(self):
+        # HTTPServer's reverse-DNS lookup is unused by this private listener and
+        # can fail on runtime-generated hostnames that are not valid DNS labels.
+        TCPServer.server_bind(self)
+        self.server_name = 'simulation-health'
+        self.server_port = self.server_address[1]
 
 
 @contextmanager
@@ -38,7 +48,7 @@ def health_server(port: str):
         def log_message(self, *_):
             pass
 
-    server = ThreadingHTTPServer(('0.0.0.0', int(port)), Handler)
+    server = PrivateHealthServer(('0.0.0.0', int(port)), Handler)
     heartbeat.port = server.server_port
     thread = threading.Thread(target=server.serve_forever, daemon=True, name='simulation-health')
     thread.start()

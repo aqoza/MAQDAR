@@ -93,6 +93,7 @@ def main() -> int:
                 return 0
             if args.probe:
                 print('Simulation connection-only probe ready; consumption disabled.')
+            stage = 'health listener'
             with health_server(os.environ.get('MAQDAR_WORKER_HEALTH_PORT', '')) as health:
                 stage = 'probe' if args.probe else 'consume'
                 while not stopped.is_set():
