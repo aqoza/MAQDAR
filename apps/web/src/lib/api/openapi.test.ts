@@ -1,3 +1,5 @@
+import { handoffFixture as networkFixture } from '../network-handoffs.fixture'
+import { batchFixture as networkBatchFixture } from '../network-batches.fixture'
 import { handoffFixture as dispositionFixture } from '../excess-disposition-handoffs.fixture'
 import { batchFixture as dispositionBatchFixture } from '../excess-disposition-batches.fixture'
 import { ACKNOWLEDGEMENT_RESOURCES } from './acknowledgements'
@@ -242,23 +244,25 @@ describe('structure', () => {
       )
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
-        : path.startsWith('/excess-disposition-handoff')
-          ? [
-              method === 'post'
-                ? 'excess_disposition_handoffs:acknowledge'
-                : 'excess_disposition_handoffs:read',
-            ]
-          : path.startsWith('/event-purchase-handoff')
+        : path.startsWith('/network-handoff')
+          ? ['network_handoffs:read']
+          : path.startsWith('/excess-disposition-handoff')
             ? [
                 method === 'post'
-                  ? 'event_purchase_handoffs:acknowledge'
-                  : 'event_purchase_handoffs:read',
+                  ? 'excess_disposition_handoffs:acknowledge'
+                  : 'excess_disposition_handoffs:read',
               ]
-            : path.startsWith('/transfer-handoff')
-              ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
-              : path.startsWith('/purchase-handoff')
-                ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
-                : []
+            : path.startsWith('/event-purchase-handoff')
+              ? [
+                  method === 'post'
+                    ? 'event_purchase_handoffs:acknowledge'
+                    : 'event_purchase_handoffs:read',
+                ]
+              : path.startsWith('/transfer-handoff')
+                ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
+                : path.startsWith('/purchase-handoff')
+                  ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
+                  : []
       expect(operation['x-maqdar-scopes'], operation.operationId).toEqual(scopes)
       expect(operation.deprecated === true).toBe(deprecationFor(operation.operationId) !== null)
     }
@@ -469,5 +473,29 @@ it('documents exact disposition files, unavailable live context and read-only sc
     expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.get?.['x-maqdar-scopes']).toEqual([
       'excess_disposition_handoffs:read',
     ])
+  }
+})
+
+it('documents complete network evidence, separate currency totals and no acknowledgement routes', () => {
+  expect(valid(schema('NetworkHandoffPayload'), networkFixture)).toBe(true)
+  expect(valid(schema('NetworkHandoffBatchPayload'), networkBatchFixture)).toBe(true)
+  expect(
+    valid(schema('NetworkHandoffPayload'), {
+      ...networkFixture,
+      estimate: {
+        ...networkFixture.estimate,
+        totals: [{ currency: 'KWD', minor_units: 3, subtotal: 17.53 }],
+      },
+    }),
+  ).toBe(false)
+  for (const selection of ['current', 'historical', 'unavailable'])
+    expect(
+      valid(schema('NetworkHandoffSelection'), { selection, checked_at: '2026-10-20T00:00:00Z' }),
+    ).toBe(true)
+  for (const resource of ['network-handoffs', 'network-handoff-batches']) {
+    expect(doc.paths[`/${resource}`].get['x-maqdar-scopes']).toEqual(['network_handoffs:read'])
+    expect(doc.paths[`/${resource}/{id}`].get['x-maqdar-scopes']).toEqual(['network_handoffs:read'])
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]).toBeUndefined()
+    expect(doc.paths[`/${resource}`].post).toBeUndefined()
   }
 })

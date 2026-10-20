@@ -953,6 +953,11 @@
         "label": "Acknowledge disposition handoffs",
         "description": "Record external receipt or rejection reports for saved disposition handoffs and batches across the whole organization, including retained batches after source deletion. Does not create returns, write-offs or stock movements.",
         "badge": "Disposition: acknowledge"
+      },
+      "networkHandoffsRead": {
+        "label": "Read network handoffs",
+        "description": "Read saved network handoffs and batches across the whole organization, including every branch and retained evidence after source deletion. Does not reserve stock or execute transfers.",
+        "badge": "Network handoffs: read"
       }
     },
     "secret": {

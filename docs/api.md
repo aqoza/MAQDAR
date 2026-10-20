@@ -22,6 +22,7 @@ An organization owner or administrator opens **Settings → API keys**, gives th
 | `event_purchase_handoffs:acknowledge`     | Append external received/rejected reports for saved event purchase handoffs and batches across the organization |
 | `excess_disposition_handoffs:read`        | List and retrieve saved disposition handoffs and copied batches across the whole organization                   |
 | `excess_disposition_handoffs:acknowledge` | Record receipt/rejection reports for saved disposition handoffs and copied batches across the organization      |
+| `network_handoffs:read`                   | List and retrieve complete network handoffs and copied batches across the whole organization                    |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -30,6 +31,8 @@ Keys belong to one organization. The API never takes the organization from a coo
 Send the key only in the `Authorization` header over HTTPS. Browser session cookies and Supabase JWTs cannot authenticate this API. Authenticated endpoints do not enable cross-origin browser access; keep keys in your integration's backend.
 
 ## Quick start
+
+For complete network approvals and copied batches, see [the network handoff read API](network-handoff-read-api.md). Explicit `network_handoffs:read` permits organization-wide access to every saved branch, including zero-transfer context and retained batches after source deletion. Existing keys and other scopes gain no network access. Live selection stays separate from immutable quantities, dates and currency-separated freight; browser users still require access to every participating location.
 
 For full adjusted selections and baseline comparisons, see [the event purchase handoff read API](event-handoff-read-api.md). It requires explicit `event_purchase_handoffs:read`; prior purchase/transfer scopes do not grant event access. Saved evidence is unchanged and live selection is separate.
 

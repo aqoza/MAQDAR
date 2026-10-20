@@ -3423,6 +3423,12 @@ isOneToOne: false
 "api_list_demand":
 { Args: { "p_after"?: string,"p_from": string,"p_item_code"?: string,"p_key_hash": string,"p_limit"?: number,"p_location_code"?: string,"p_to": string }; Returns: Json
                            },
+"api_network_handoff_get":
+{ Args: { "p_id": string,"p_key_hash": string,"p_resource": string }; Returns: Json
+                           },
+"api_network_handoff_list":
+{ Args: { "p_after"?: string,"p_created_since"?: string,"p_key_hash": string,"p_limit"?: number,"p_resource": string }; Returns: Json
+                           },
 "api_organization":
 { Args: { "p_key_hash": string }; Returns: Json
                            },
