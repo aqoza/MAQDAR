@@ -1,0 +1,91 @@
+import { PageHeader } from '@/components/page-header'
+import { HelpDisclosure } from '@/components/help-disclosure'
+import Link from 'next/link'
+import { notFound, redirect } from 'next/navigation'
+import { getFormatter, getTranslations } from 'next-intl/server'
+import { z } from 'zod'
+import { getActiveContext } from '@/lib/organizations/context'
+import { createClient } from '@/lib/supabase/server'
+import { batchPayloadSchema } from '@/lib/network-batches'
+import { NetworkBatchEvidence } from '@/components/network-batch-evidence'
+import { NetworkBatchOverlap } from '@/components/network-batch-overlap'
+
+export default async function BatchDetail({ params }: { params: Promise<{ batchId: string }> }) {
+  const context = await getActiveContext()
+  if (!context?.active) redirect('/organizations')
+  const { batchId } = await params
+  if (!z.guid().safeParse(batchId).success) notFound()
+  const [db, t, format] = await Promise.all([
+    createClient(),
+    getTranslations('NetworkBatches'),
+    getFormatter(),
+  ])
+  const [saved, current] = await Promise.all([
+    db
+      .from('network_handoff_batches')
+      .select('payload,handoff_ids')
+      .eq('organization_id', context.active.id)
+      .eq('id', batchId)
+      .maybeSingle(),
+    db
+      .from('network_handoff_batch_list')
+      .select('selection')
+      .eq('organization_id', context.active.id)
+      .eq('id', batchId)
+      .maybeSingle(),
+  ])
+  if (saved.error || current.error) throw new Error('Batch unavailable')
+  if (!saved.data || !current.data) notFound()
+  const payload = batchPayloadSchema.parse(saved.data.payload)
+  return (
+    <div className="min-w-0 space-y-4 wrap-anywhere">
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href="/replenishment/network/batches">
+            {t('back')}
+          </Link>
+        }
+        title={t('detailTitle', { source: payload.summary.source_code })}
+        help={
+          <HelpDisclosure>
+            <p>{t('description')}</p>
+            <p>{t('immutableNote')}</p>
+            <p>{t('csvNote')}</p>
+          </HelpDisclosure>
+        }
+      />
+
+      <div className="flex flex-wrap justify-between gap-2 text-sm text-muted-foreground">
+        <p className="break-all">{t('batchIdentity', { id: batchId })}</p>
+        <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
+      </div>
+      <section
+        className="workspace-toolbar flex flex-wrap items-center justify-between gap-3"
+        aria-label={t('currentContext')}
+      >
+        <p role="status">
+          {t(
+            current.data.selection === 'unavailable'
+              ? 'unavailableContext'
+              : (current.data.selection as 'current' | 'historical'),
+          )}
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <a download className="underline" href={`/api/network-batches/${batchId}/json`}>
+            {t('json')}
+          </a>
+          <a download className="underline" href={`/api/network-batches/${batchId}/csv`}>
+            {t('csv')}
+          </a>
+        </div>
+      </section>
+      <NetworkBatchEvidence report={payload} />
+      <NetworkBatchOverlap
+        organizationId={context.active.id}
+        handoffIds={saved.data.handoff_ids}
+        excludeId={batchId}
+      />
+    </div>
+  )
+}

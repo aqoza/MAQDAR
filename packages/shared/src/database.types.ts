@@ -1124,6 +1124,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"network_handoff_batches": {
+                  Row: {
+                    "created_at": string,"created_by": string,"handoff_ids": (string)[],"id": string,"organization_id": string,"payload": NonNullable<Json>,"required_location_ids": (string)[],"source_location_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"handoff_ids": (string)[],"id"?: string,"organization_id": string,"payload": NonNullable<Json>,"required_location_ids": (string)[],"source_location_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"handoff_ids"?: (string)[],"id"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"required_location_ids"?: (string)[],"source_location_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "network_handoff_batches_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "network_handoff_batches_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"network_links": {
                   Row: {
                     "created_at": string,"currency": string | null,"freight_basis": string,"freight_cost": number | null,"freight_unit": string | null,"freight_valid_from": string | null,"from_location_id": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at": string
@@ -2659,6 +2685,58 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"network_handoff_batch_candidates": {
+                  Row: {
+                    "batch_count": number | null,"branch_count": number | null,"created_at": string | null,"dispatch_date": string | null,"id": string | null,"item_code": string | null,"organization_id": string | null,"proposal_id": string | null,"quantity": string | null,"search_text": string | null,"selected": boolean | null,"source_code": string | null,"source_location_id": string | null,"totals": Json | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "network_transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "network_review_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "network_transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "network_transfer_proposals"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "network_transfer_handoffs_organization_id_source_location__fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"network_handoff_batch_list": {
+                  Row: {
+                    "branch_row_count": number | null,"created_at": string | null,"dispatch_date": string | null,"handoff_count": number | null,"handoff_ids": (string)[] | null,"id": string | null,"organization_id": string | null,"overlap_count": number | null,"required_location_ids": (string)[] | null,"search_text": string | null,"selection": string | null,"source_code": string | null,"source_location_id": string | null,"totals": Json | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "branch_row_count"?: never,"created_at"?: string | null,"dispatch_date"?: never,"handoff_count"?: never,"handoff_ids"?: (string)[] | null,"id"?: string | null,"organization_id"?: string | null,"overlap_count"?: never,"required_location_ids"?: (string)[] | null,"search_text"?: never,"selection"?: never,"source_code"?: never,"source_location_id"?: string | null,"totals"?: never
+                         }
+                        Update: {
+                           "branch_row_count"?: never,"created_at"?: string | null,"dispatch_date"?: never,"handoff_count"?: never,"handoff_ids"?: (string)[] | null,"id"?: string | null,"organization_id"?: string | null,"overlap_count"?: never,"required_location_ids"?: (string)[] | null,"search_text"?: never,"selection"?: never,"source_code"?: never,"source_location_id"?: string | null,"totals"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "network_handoff_batches_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "network_handoff_batches_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"network_handoff_list": {
                   Row: {
                     "branch_count": number | null,"created_at": string | null,"dispatch_date": string | null,"id": string | null,"item_code": string | null,"organization_id": string | null,"proposal_id": string | null,"quantity": string | null,"search_text": string | null,"selected": boolean | null,"source_code": string | null,"source_location_id": string | null,"totals": Json | null,"unit": string | null
@@ -3538,6 +3616,12 @@ isOneToOne: false
                            },
 "network_freight_save":
 { Args: { "p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_scenario_id": string,"p_terms_confirmed": boolean }; Returns: string
+                           },
+"network_handoff_batch_create":
+{ Args: { "p_handoff_ids": (string)[],"p_organization_id": string }; Returns: string
+                           },
+"network_handoff_batch_preview":
+{ Args: { "p_handoff_ids": (string)[],"p_organization_id": string }; Returns: Json
                            },
 "network_handoff_create":
 { Args: { "p_organization_id": string,"p_proposal_id": string }; Returns: string

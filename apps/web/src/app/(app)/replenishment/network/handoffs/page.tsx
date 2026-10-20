@@ -70,9 +70,14 @@ export default async function NetworkHandoffs({
         title={t('title')}
         description={t('context')}
         actions={
-          <Link href="/replenishment/network/review" className="underline">
-            {t('review')}
-          </Link>
+          <>
+            <Link href="/replenishment/network/review" className="underline">
+              {t('review')}
+            </Link>
+            <Link href="/replenishment/network/batches" className="underline">
+              {t('batches')}
+            </Link>
+          </>
         }
         help={
           <HelpDisclosure>
