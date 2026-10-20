@@ -30,7 +30,7 @@ Anonymous sign-in remains English under the existing locale policy; Arabic recov
 Validation against the local production build:
 
 - Workspace lint, typecheck and logical-utility checks passed. The production Next.js build passed.
-- All 1,881 web unit tests passed, including 19 recovery-action tests; all 13 simulation-worker tests passed. Two source-scanning tests initially timed out during a concurrent build; the complete web suite passed with two workers afterward.
+- The initial complete web suite passed all 1,881 tests, including 19 recovery-action tests; all 13 simulation-worker tests passed. After rebasing onto current main, typecheck passed and the expanded web suite passed 1,882 of 1,884 tests; the two remaining filesystem scans exceeded their five-second limit on this Windows machine. Both then passed with `--maxWorkers=1 --testTimeout=30000` (all four tests in those files passed). Repository test timeouts and CI configuration were not changed.
 - 12 login layout/interaction tests passed across 320×568 through 1672×941, including 1366×768 laptops, keyboard navigation, password visibility and 200% text enlargement.
 - All 25 recovery, invitation, smoke and workspace-boundary browser checks passed using actual local Supabase and Mailpit. The reset test opens the real email in a fresh browser, verifies ACME host-only cookies, rejects password mismatch and token reuse, and checks both old-password rejection and new-password login.
 - No database migration, planning engine, permission or RLS changes are included. The full database and engine suites remain covered by PR CI rather than being claimed as local checks.
