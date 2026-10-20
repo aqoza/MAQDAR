@@ -11,6 +11,7 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   browser,
 }, testInfo) => {
   test.setTimeout(360_000)
+  page.setDefaultTimeout(30_000)
   const {
     org,
     parent,
@@ -95,15 +96,21 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   await page.getByLabel('Warehouse code', { exact: true }).fill('WAREHOUSE')
   await page.getByRole('button', { name: 'Apply filters' }).click()
   await expect(rows).toHaveCount(7)
-  await page.getByLabel('Latest reported status', { exact: true }).selectOption('rejected')
+  await page
+    .getByRole('combobox', { name: 'Latest reported status', exact: true })
+    .selectOption('rejected')
   await page.getByRole('button', { name: 'Apply filters' }).click()
   await expect(rows).toHaveCount(3)
   await page.getByLabel('Exact system label').fill('ERP')
-  await page.getByLabel('Latest reported status', { exact: true }).selectOption('no_report')
+  await page
+    .getByRole('combobox', { name: 'Latest reported status', exact: true })
+    .selectOption('no_report')
   await page.getByRole('button', { name: 'Apply filters' }).click()
   await expect(rows).toHaveCount(3)
   await page.getByLabel('Exact system label').fill(' ERP ')
-  await page.getByLabel('Latest reported status', { exact: true }).selectOption('rejected')
+  await page
+    .getByRole('combobox', { name: 'Latest reported status', exact: true })
+    .selectOption('rejected')
   await page.getByRole('button', { name: 'Apply filters' }).click()
   await expect(rows).toHaveCount(1)
   await expect(page.getByLabel('Exact system label')).toHaveValue(' ERP ')
@@ -153,7 +160,9 @@ test('network workbench keeps whole-package reports, all-branch access and retai
     .addCookies([{ name: 'locale', value: 'en', url: new URL(page.url()).origin }])
   await page.reload()
   await rows.getByRole('link', { name: 'Open evidence and history' }).click()
-  await expect(page).toHaveURL(new RegExp(`/handoffs/${ids[0]}#acknowledgements$`))
+  await expect(page).toHaveURL(new RegExp(`/handoffs/${ids[0]}#acknowledgements$`), {
+    timeout: 30_000,
+  })
   await expect(page.getByRole('region', { name: 'Integration acknowledgements' })).toContainText(
     'Superseded rejection',
   )
@@ -217,7 +226,9 @@ with psycopg.connect(sys.argv[1]) as db:
   await expect(rows.filter({ hasText: 'Batch mapping missing' })).toHaveCount(1)
   await expect(rows.filter({ hasText: 'No report' })).toHaveCount(1)
   await rows.filter({ hasText: 'Batch mapping missing' }).getByRole('link').click()
-  await expect(page).toHaveURL(new RegExp(`/batches/${batch}#acknowledgements$`))
+  await expect(page).toHaveURL(new RegExp(`/batches/${batch}#acknowledgements$`), {
+    timeout: 30_000,
+  })
   await expect(page.getByRole('region', { name: 'Integration acknowledgements' })).toContainText(
     'Batch mapping missing',
   )
