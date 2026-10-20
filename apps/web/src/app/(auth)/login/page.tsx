@@ -8,6 +8,7 @@ import {
   PackageCheck,
 } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
+import { ZeeSpareMark } from '@/components/zeespare-mark'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { LoginForm } from './login-form'
 import { PlanningIllustration } from './planning-illustration'
@@ -41,9 +42,11 @@ export default async function LoginPage({
       <section className={styles.story} aria-label={t('design.storyLabel')}>
         <div className={styles.brand}>
           <span className={styles.brandMark} aria-hidden="true">
-            <Layers3 />
+            <ZeeSpareMark />
           </span>
-          <span className="text-page-title">{common('appName')}</span>
+          <span className={styles.brandWordmark} dir="ltr">
+            {common('appName')}
+          </span>
           <span className={styles.brandDescriptor}>{t('design.brandDescriptor')}</span>
         </div>
         <div className={styles.storyContent}>

@@ -8,13 +8,13 @@ The final open-drawer check found a separate design-rule inconsistency: navigati
 
 ## Focused correction
 
-`AppSidebar` now supplies a 44px minimum height to navigation links and the brand link below 768px. Only the mobile brand hit area uses flex centering. Navigation text remains 14px/20px, icons remain 16px, and desktop navigation remains 32px high. The app-owned classes also work inside the portalled drawer; the generated sidebar primitive is untouched.
+`AppSidebar` now supplies a 44px minimum height to navigation links and the brand link below 768px. The brand link retains the shared flex alignment for its mark and wordmark. Navigation text remains 14px/20px, icons remain 16px, and desktop navigation remains 32px high. The app-owned classes also work inside the portalled drawer; the generated sidebar primitive is untouched.
 
 Routing, modified-click behavior, current-page dismissal, keyboard navigation, Escape focus return, desktop collapse state, tenant/role permissions and data queries are preserved. `design.MD` now makes the mobile/desktop target distinction explicit without changing the font scale.
 
 ## Actual screenshots
 
-These post-fix captures use synthetic local fixtures. The fully open drawer images use a 375×812 CSS viewport with opening animations disabled for the capture. Laptop captures use 1366×768. The saved measurements retain the actual pre-fix and post-fix target sizes.
+These post-fix captures use synthetic local fixtures and record the original correction before the subsequent ZeeSpare rebrand. The fully open drawer images use a 375×812 CSS viewport with opening animations disabled for the capture. Laptop captures use 1366×768. The saved measurements retain the actual pre-fix and post-fix target sizes. The integration with main preserves the new ZeeSpare mark, LTR wordmark and shared alignment alongside the mobile target correction.
 
 English mobile after:
 
@@ -42,3 +42,7 @@ Arabic RTL laptop after:
 - Representative laptop/mobile/RTL images were inspected directly. The ECC local evidence record includes these captures and the baseline header/state matrix; its validator passed. Coverage instrumentation was not collected for this presentation change.
 
 These are Chromium CSS viewport, DPR and touch-emulation checks, not physical laptop or iOS Safari tests. Existing Arabic planning-string fallbacks remain outside this typography/target-size correction. No deployment is included.
+
+## Rebrand merge verification
+
+The PR #106 conflict with main `d52b634` was resolved by keeping the ZeeSpare mark, LTR wordmark and flex alignment together with the 44px mobile brand target. The navigation target correction remains unchanged. The integrated production build, strict types, lint, format and logical-utility checks passed, along with all 1,687 web unit tests in 144 files and all 11 downstream browser cases listed above, without retries or skips. Fresh English/Arabic drawer and 1366×768 laptop captures were inspected; all nine measured mobile targets in each locale were at least 44px, and the desktop rows retained 32px. The earlier screenshots and measurements above remain the original audit evidence.

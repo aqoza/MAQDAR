@@ -3169,8 +3169,14 @@ isOneToOne: false
 "set_member_role":
 { Args: { "p_organization_id": string,"p_role": string,"p_user_id": string }; Returns: undefined
                            },
+"simulation_configurations_enqueue":
+{ Args: { "p_configurations": Json,"p_organization_id": string,"p_request_id": string,"p_reuse_confirmed": boolean,"p_source_run_id": string }; Returns: string
+                           },
 "simulation_enqueue":
 { Args: { "p_alternative_maximum": string,"p_empty_start_confirmed": boolean,"p_history_confirmed": boolean,"p_opening_stock": string,"p_organization_id": string,"p_policy_id": string,"p_request_id": string,"p_to": string }; Returns: string
+                           },
+"simulation_sensitivity_enqueue":
+{ Args: { "p_alternative_maxima": Json,"p_organization_id": string,"p_request_id": string,"p_reuse_confirmed": boolean,"p_source_run_id": string }; Returns: string
                            },
 "stock_locator":
 { Args: { "p_day": string,"p_filters"?: Json,"p_item_code": string,"p_organization_id": string,"p_page"?: number,"p_receiving_code": string,"p_size"?: number,"p_unit": string }; Returns: Json

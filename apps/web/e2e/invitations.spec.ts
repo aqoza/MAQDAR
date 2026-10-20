@@ -68,7 +68,7 @@ test('a magic-link request for an unknown address gets the neutral confirmation'
   await page.goto('/login')
   await page.getByLabel('Email', { exact: true }).fill(unknown)
   await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
-  await expect(page.getByRole('status')).toContainText(`If ${unknown} has a MAQDAR account`)
+  await expect(page.getByRole('status')).toContainText(`If ${unknown} has a ZeeSpare account`)
 })
 
 test('a revoked invitation is refused when its invitee opens the link', async ({

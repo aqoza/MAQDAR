@@ -1,6 +1,6 @@
 {
   "Common": {
-    "appName": "MAQDAR",
+    "appName": "ZeeSpare",
     "tagline": "Service parts planning",
     "signOut": "Sign out",
     "toggleSidebar": "Toggle sidebar",
@@ -25,7 +25,7 @@
   },
   "Auth": {
     "design": {
-      "storyLabel": "MAQDAR service parts planning",
+      "storyLabel": "ZeeSpare service parts planning",
       "brandDescriptor": "Service parts. Smarter plans.",
       "eyebrow": "A clearer view of what comes next",
       "headline": "Every part has a purpose.",
@@ -47,10 +47,10 @@
       "checkInbox": "Check your inbox",
       "checkSpam": "Can’t find it? Check your spam folder, or return to sign in to try another email address.",
       "backToSignIn": "Back to sign in",
-      "footerBrand": "MAQDAR · Service parts planning",
+      "footerBrand": "ZeeSpare · Service parts planning",
       "footerDescription": "Plan with confidence."
     },
-    "title": "Sign in to MAQDAR",
+    "title": "Sign in to ZeeSpare",
     "subtitle": "Service parts planning for OEMs, distributors and dealer groups.",
     "email": "Email",
     "emailPlaceholder": "you@company.com",
@@ -58,8 +58,8 @@
     "signIn": "Sign in",
     "sendMagicLink": "Email me a sign-in link",
     "orDivider": "or",
-    "magicLinkSent": "If {email} has a MAQDAR account, we sent it a sign-in link. Check your inbox.",
-    "invitationOnly": "MAQDAR is invitation-only. Ask an administrator of your organization to invite you.",
+    "magicLinkSent": "If {email} has a ZeeSpare account, we sent it a sign-in link. Check your inbox.",
+    "invitationOnly": "ZeeSpare is invitation-only. Ask an administrator of your organization to invite you.",
     "errors": {
       "invalidEmail": "Enter a valid email address.",
       "passwordRequired": "Enter your password.",
@@ -72,7 +72,7 @@
     },
     "invite": {
       "title": "Accept your invitation",
-      "description": "Click the button to verify your email address and continue to MAQDAR.",
+      "description": "Click the button to verify your email address and continue to ZeeSpare.",
       "accept": "Accept invitation",
       "missingToken": "This link is incomplete. Open the link from your invitation email again."
     },
@@ -706,7 +706,7 @@
     "backorders": "Additional unallocated backorders",
     "backordersNote": "Enter the quantity in the saved policy unit, including zero if none. Exclude commitments already included in stock allocations to avoid counting them twice.",
     "confirmation": "I confirm that all remaining inbound orders for this item and location are recorded and synchronized with the stock position at {date}.",
-    "asOfNote": "Open orders are a mutable feed. This confirmation describes the recorded scenario; MAQDAR cannot reconstruct a historical order book or verify completeness from missing rows.",
+    "asOfNote": "Open orders are a mutable feed. This confirmation describes the recorded scenario; ZeeSpare cannot reconstruct a historical order book or verify completeness from missing rows.",
     "preview": "Refresh preview",
     "invalid": "Enter a nonnegative backorder quantity with at most 15 integer and three fractional digits.",
     "result": "Draft result",
@@ -1414,9 +1414,9 @@
     },
     "map": {
       "title": "Map columns",
-      "description": "Match the columns of each file to MAQDAR’s columns. Matches are suggested from the names and from your last import; change any of them.",
+      "description": "Match the columns of each file to ZeeSpare’s columns. Matches are suggested from the names and from your last import; change any of them.",
       "file": "File",
-      "column": "MAQDAR column",
+      "column": "ZeeSpare column",
       "source": "Column in the file",
       "notMapped": "Not imported",
       "blankHeader": "Column {index, number} (no name)",
@@ -1621,7 +1621,7 @@
   },
   "ImportErrors": {
     "required": "A value is required.",
-    "required_for_new": "New rows need this column; map it or add the row in MAQDAR first.",
+    "required_for_new": "New rows need this column; map it or add the row in ZeeSpare first.",
     "too_long": "The value is too long.",
     "invalid_code": "Not a valid code: letters, digits and . _ - only, up to 64 characters.",
     "invalid_item_code": "Not a valid part code: letters, digits and . _ - / only, up to 64 characters.",
@@ -1650,7 +1650,7 @@
     "supersession_cycle": "The supersessions would form a cycle.",
     "location_cycle": "The location parents would form a cycle.",
     "preferred_conflict": "Only one row per part may name the preferred supplier.",
-    "date_outside_history_window": "The date is outside the months MAQDAR keeps demand for, or after tomorrow.",
+    "date_outside_history_window": "The date is outside the months ZeeSpare keeps demand for, or after tomorrow.",
     "source_size_mismatch": "The stored original file does not match the file that was read.",
     "changed_during_commit": "Your data changed after the check.",
     "concurrent_change": "Someone changed the same data at the same time.",
@@ -2981,7 +2981,7 @@
   "HandoffAcknowledgements": {
     "title": "Integration acknowledgements",
     "count": "{count, plural, =0 {No reports} one {# report} other {# reports}}",
-    "meaning": "Reports are supplied by an API key holder. The system name is their label; receipt or rejection is not independently verified and does not mean an order was placed. Times show when MAQDAR recorded each report.",
+    "meaning": "Reports are supplied by an API key holder. The system name is their label; receipt or rejection is not independently verified and does not mean an order was placed. Times show when ZeeSpare recorded each report.",
     "batchNote": "These reports apply to this batch only. Individual handoffs and overlapping batches have separate histories.",
     "singleNote": "Batch reports do not update this handoff’s history. Saved exports and approval selection remain unchanged.",
     "empty": "No reports on this page.",
@@ -2995,7 +2995,7 @@
     "previous": "Newer reports",
     "next": "Older reports",
     "page": "Page {page}",
-    "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when MAQDAR saved the report.",
+    "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when ZeeSpare saved the report.",
     "eventMeaning": "Reports are supplied by an integration key holder. They do not verify external acceptance or create orders. Full adjusted selections, baseline comparisons and event evidence remain unchanged.",
     "dispositionMeaning": "Reports are supplied by an integration key holder. They do not verify supplier acceptance, create returns, authorize scrap, write off inventory or move stock. Saved quantities and reference inventory values remain unchanged. Reports on copied batches remain available after source handoffs are deleted."
   },
@@ -4434,5 +4434,53 @@
       "closing_backlog": "Closing backlog",
       "closing_on_order": "Closing on-order"
     }
+  },
+  "PolicySensitivity": {
+    "title": "Policy sensitivity comparison",
+    "startingState": "All variants start with {stock} {unit} available, no incoming orders and no backlog.",
+    "create": "Compare policy maxima",
+    "source": "Source simulation",
+    "fixedEvidence": "Saved comparison inputs",
+    "alternatives": "Alternative maxima",
+    "maxima": "Periodic maxima to compare",
+    "inputHelp": "Enter one to ten distinct nonnegative quantities, separated by commas or new lines. Use up to three decimal places. A maximum equal to the saved baseline is allowed.",
+    "reuse": "I confirm that this comparison intentionally reuses the saved demand, unit, dates, opening stock, fixed lead/review times, empty initial pipeline and zero backlog. Only the maximum changes.",
+    "pending": "Queuing comparison…",
+    "submit": "Queue comparison",
+    "ineligible": "Choose a completed original policy simulation at an active location.",
+    "interpretation": "All variants reuse the source simulation’s captured recorded sales and controlled starting assumptions. Lost sales remain separate. Exploring maxima on this history is not independent validation of future performance. No winner is selected and no policy or operational order is changed.",
+    "alternative": "Alternative {number}",
+    "comparison": "Maximum sensitivity comparison",
+    "variant": "Variant",
+    "sharedDemand": "Shared recorded sales: {sold} {unit} · Recorded lost sales, separate: {lost} {unit}",
+    "inspectLedger": "Inspect a daily ledger",
+    "showLedger": "Show ledger"
+  },
+  "PolicyConfigurations": {
+    "title": "Policy configuration comparisons",
+    "create": "Compare policy configurations",
+    "source": "Source simulation",
+    "alternatives": "What-if configurations",
+    "alternative": "Configuration {number}",
+    "maximum": "Periodic maximum",
+    "lead": "Lead time (calendar days)",
+    "review": "Review interval (calendar days)",
+    "settings": "Lead {lead} days · review every {review} days",
+    "add": "Add configuration",
+    "remove": "Remove configuration {number}",
+    "removeShort": "Remove",
+    "inputHelp": "Enter 1–10 distinct configurations. Maxima use up to 15 integer digits and 3 decimal places; lead time is 0–365 whole days and review interval is 1–365 whole days. Saved rows are ordered by maximum, lead time and review interval.",
+    "reuse": "I confirm these are what-if settings using the source simulation’s captured demand, unit, window and opening state. This comparison does not recalculate or change a saved policy.",
+    "pending": "Queuing…",
+    "submit": "Queue configuration comparison",
+    "fixedEvidence": "Calculated baseline and captured evidence",
+    "ineligible": "Choose a successful original policy simulation at an active location.",
+    "interpretation": "Only the entered maximum, fixed calendar-day lead time and review interval vary. The calculated baseline stays unchanged. Reviews start on the first replay day. History is not extended; orders due after the window remain in the ending pipeline. These assumptions do not represent supplier feasibility, working calendars or a recalculated service-level policy. No winner is selected and no live stock or operational order changes.",
+    "startingState": "Opening stock {stock} {unit}; empty initial order pipeline and zero opening backlog.",
+    "sharedDemand": "Shared recorded sales: {sold} {unit}. Lost sales reported separately: {lost} {unit}.",
+    "comparison": "Configuration metrics",
+    "variant": "Configuration",
+    "inspectLedger": "Inspect a daily ledger",
+    "showLedger": "Show ledger"
   }
 }

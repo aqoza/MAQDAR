@@ -1,4 +1,4 @@
-# MAQDAR design rules
+# ZeeSpare design rules
 
 ## Typography — required on every page
 
@@ -67,3 +67,9 @@ Render only authorized sections on the server. Keep allowed form panels mounted 
 For typography changes, compare Dashboard and Items at the same viewport and browser zoom. Check actual computed font sizes, line heights and font families, including sidebar labels and controls. Verify client navigation in both directions, mobile, laptop, desktop and Arabic RTL. Run the existing responsive and dashboard reference browser tests and inspect their screenshots.
 
 The header contract test rejects omitted section patterns, bare authenticated page titles and plain loading boundaries. Follow the executable [UI regression ledger](docs/REGRESSION.md), preserve hidden-record HTTP 404 assertions, and retain desktop, mobile and Arabic RTL screenshots when changing shared headers.
+
+## ZeeSpare identity
+
+The public name is **ZeeSpare**, with this capitalization in both locales. The precision-Z mark lives in `src/components/zeespare-mark.tsx`; master SVG/PNG assets and the printable brand guide live in `docs/brand/zeespare`. Use the same mark in login, onboarding, sidebar and favicon. The wordmark is an identity exception: login uses 22px/24px, weight 650 and -0.045em tracking. Application text roles remain unchanged. Keep the Latin wordmark LTR inside RTL layouts; never mirror the Z.
+
+Forest #103E31, emerald #155C46, signal lime #C2F970 and warm paper #F7F8F2 form the brand palette. Lime is decorative and must not be used for small text on white. Do not change shared semantic status colors to brand colors.

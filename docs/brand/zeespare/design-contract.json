@@ -1,0 +1,15 @@
+{
+  "surface": "Login, shared brand identity, favicon and portable brand guide",
+  "job": "Sign into the existing service-parts planning workspace",
+  "primaryAction": "Sign in with a password or email link",
+  "hierarchy": "Brand, purpose, credentials, primary and alternative actions",
+  "direction": "Quiet precision: geometric Z, forest, warm paper and signal lime",
+  "reference": "Approved split login and compact mobile form from PRs 90 and 95",
+  "constraints": [
+    "Both actions visible at 320x568 and larger",
+    "Preserve shared typography and desktop layout",
+    "Latin wordmark is not mirrored in RTL",
+    "No authentication or integration contract changes"
+  ],
+  "targetViewports": ["320x568", "390x844", "1440x900"]
+}

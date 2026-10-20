@@ -541,7 +541,7 @@ function sharedSchemas(): Record<string, Schema> {
         import_id: {
           type: ['string', 'null'],
           format: 'uuid',
-          description: 'The import in MAQDAR history; null when nothing changed (not recorded).',
+          description: 'The import in ZeeSpare history; null when nothing changed (not recorded).',
         },
         recorded: {
           type: 'boolean',
@@ -591,7 +591,7 @@ function sharedSchemas(): Record<string, Schema> {
         },
         demand_window: {
           type: 'object',
-          description: 'Demand dates MAQDAR accepts: from (inclusive) to until_exclusive.',
+          description: 'Demand dates ZeeSpare accepts: from (inclusive) to until_exclusive.',
           properties: {
             from: { type: 'string', format: 'date' },
             until_exclusive: { type: 'string', format: 'date' },
@@ -898,7 +898,7 @@ function organizationOperation(): Schema {
 /* ------------------------------------------------------------------------------------------ */
 
 const INFO_DESCRIPTION = [
-  'Bulk upserts and lists of MAQDAR master data and demand history, per organization.',
+  'Bulk upserts and lists of ZeeSpare master data and demand history, per organization.',
   'Read saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.',
   'Read saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.',
   '',
@@ -951,7 +951,7 @@ export function buildOpenApi(): OpenApiDocument {
   return {
     openapi: OPENAPI_VERSION,
     info: {
-      title: 'MAQDAR API',
+      title: 'ZeeSpare API',
       version: OPENAPI_DOCUMENT_VERSION,
       description: INFO_DESCRIPTION,
       'x-maqdar-import-format': CONTRACT.format_version,
@@ -993,7 +993,8 @@ export function buildOpenApi(): OpenApiDocument {
           type: 'http',
           scheme: 'bearer',
           bearerFormat: `${API_KEY_PREFIX}…`,
-          description: 'A MAQDAR API key. Operations list the scope they need in x-maqdar-scopes.',
+          description:
+            'A ZeeSpare API key. Operations list the scope they need in x-maqdar-scopes.',
         },
       },
       parameters: parameters(),

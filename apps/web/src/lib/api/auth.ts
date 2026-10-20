@@ -89,7 +89,7 @@ export function credentialProblem(
   return code === 'unauthorized'
     ? toProblem('unauthorized', requestId)
     : toProblem('invalid_token', requestId, {
-        detail: 'The bearer token is not a well-formed MAQDAR API key.',
+        detail: 'The bearer token is not a well-formed ZeeSpare API key.',
       })
 }
 
