@@ -93,7 +93,7 @@ begin
     'lines',lines,'totals',totals,'rounding','half-up-currency-minor-units');
   return result||jsonb_build_object('fingerprint',encode(sha256(convert_to(result::text,'UTF8')),'hex'));
 end; $$;
-revoke all on function public.network_freight_preview(uuid,uuid,boolean) from public,anon,authenticated,service_role,maqdar_worker;
+revoke all on function public.network_freight_preview(uuid,uuid,boolean) from public,anon,authenticated,service_role,maqdar_worker,maqdar_simulation_worker;
 grant execute on function public.network_freight_preview(uuid,uuid,boolean) to authenticated;
 
 create table public.network_freight_estimates(
@@ -111,7 +111,7 @@ comment on table public.network_freight_estimates is 'Immutable freight estimate
 create index network_freight_recent on public.network_freight_estimates(organization_id,created_at desc,id);
 create index network_freight_parent on public.network_freight_estimates(organization_id,scenario_id);
 alter table public.network_freight_estimates enable row level security;
-revoke all on public.network_freight_estimates from public,anon,authenticated,service_role,maqdar_worker;
+revoke all on public.network_freight_estimates from public,anon,authenticated,service_role,maqdar_worker,maqdar_simulation_worker;
 grant select on public.network_freight_estimates to authenticated;
 create policy "members read" on public.network_freight_estimates for select to authenticated
   using(organization_id=any(array(select app.member_organizations())));
@@ -159,7 +159,7 @@ begin
     values(p_organization_id,source.id,source.source_location_id,source.required_location_ids,p_request_id,auth.uid(),report) returning id into result;
   return result;
 end; $$;
-revoke all on function public.network_freight_save(uuid,uuid,boolean,uuid,text) from public,anon,authenticated,service_role,maqdar_worker;
+revoke all on function public.network_freight_save(uuid,uuid,boolean,uuid,text) from public,anon,authenticated,service_role,maqdar_worker,maqdar_simulation_worker;
 grant execute on function public.network_freight_save(uuid,uuid,boolean,uuid,text) to authenticated;
 
 create view public.network_freight_list with(security_invoker=true) as
@@ -171,6 +171,6 @@ select id,organization_id,scenario_id,source_location_id,created_at,report->>'st
     report->'source'->'source'->'source_policy'->>'item_code',
     (select string_agg(v->>'location_code',' ') from jsonb_array_elements(report->'lines') v))) search_text
 from public.network_freight_estimates;
-revoke all on public.network_freight_list from public,anon,authenticated,service_role,maqdar_worker;
+revoke all on public.network_freight_list from public,anon,authenticated,service_role,maqdar_worker,maqdar_simulation_worker;
 grant select on public.network_freight_list to authenticated;
 reset lock_timeout;

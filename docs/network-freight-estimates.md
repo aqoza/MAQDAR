@@ -36,4 +36,6 @@ The estimate belongs to its saved date scenario. Parent date/allocation, organiz
 
 ## Rollout
 
+Local verification passed 24 freight database cases, 493 targeted pgTAP assertions (including the scoped simulation worker's denial), 1,791 web unit tests and six merged worker-controller tests. Formatting, lint, logical CSS, TypeScript and the production web build passed. The network-date and network-freight browser journeys passed, including all five widths, Arabic RTL, stale-preview recovery, immutable history and restricted-location HTTP 404s. Desktop/laptop and Arabic mobile screenshots were inspected. Full clean CI is the final review gate.
+
 Apply additive migration `20261020170000_network_freight.sql` before deploying the web release. Hosted migration application remains owner-run (`pnpm exec supabase db push`). Local verification does not deploy production. Roll back the web release while retaining the additive schema and immutable evidence; no destructive rollback is needed.
