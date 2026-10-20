@@ -134,3 +134,18 @@ test('known native port errors use fixed categories without provider text', asyn
     })
   }
 })
+
+test('private health uses a fixed in-container command when native port routing is unavailable', async () => {
+  const { container } = fake(true)
+  container.getTcpPort = () => { throw new Error('native proxy unavailable') }
+  let executed = false
+  const native = {
+    ...container,
+    async exec(command: string[]) {
+      executed = command[0] === '/app/engine/.venv/bin/python' && command[2].includes('127.0.0.1:8080/health')
+      return { exitCode: Promise.resolve(0) }
+    },
+  }
+  await tick(native, configured)
+  assert.ok(executed)
+})
