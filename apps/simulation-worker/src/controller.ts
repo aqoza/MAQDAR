@@ -19,6 +19,15 @@ export interface ContainerHandle {
   signal(signal: number): void
   setInactivityTimeout(ms: number): Promise<void>
   getTcpPort(port: number): { fetch(url: string, init?: RequestInit): Promise<Response> }
+  exec?(
+    command: string[],
+    options: {
+      stdout: 'ignore'
+      stderr: 'ignore'
+      env: Record<string, string>
+      signal: AbortSignal
+    },
+  ): Promise<{ exitCode: Promise<number> }>
 }
 
 function transportFailure(error: unknown): string {
@@ -68,14 +77,14 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
   }
   // Cron refreshes the watchdog each minute; absent cron stops only this instance.
   await container.setInactivityTimeout(180_000)
-  const port = container.getTcpPort(8080)
   // Cold image/network startup needs a bounded grace period. Running instances
   // still fail their first unhealthy probe immediately.
   const attempts = starting ? 60 : 1
+  const deadline = Date.now() + 90_000
   let failure = 'unavailable'
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
-      const response = await port.fetch('http://container/health', {
+      const response = await container.getTcpPort(8080).fetch('http://container/health', {
         signal: AbortSignal.timeout(1000),
       })
       await response.body?.cancel()
@@ -84,7 +93,23 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
     } catch (error) {
       // Startup can precede the health listener. Never log provider errors/secrets.
       failure = transportFailure(error)
+      if (container.exec) {
+        try {
+          const process = await container.exec(
+            [
+              '/app/engine/.venv/bin/python',
+              '-c',
+              "import urllib.request; r=urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=1); raise SystemExit(0 if r.status==200 else 1)",
+            ],
+            { stdout: 'ignore', stderr: 'ignore', env: {}, signal: AbortSignal.timeout(3000) },
+          )
+          if ((await process.exitCode) === 0) return
+        } catch {
+          // A fixed local command receives no runtime secrets and emits no output.
+        }
+      }
     }
+    if (Date.now() >= deadline) break
     if (attempt + 1 < attempts) await new Promise((resolve) => setTimeout(resolve, 500))
   }
   if (container.running) container.signal(15)
