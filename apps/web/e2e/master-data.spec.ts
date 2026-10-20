@@ -311,7 +311,11 @@ test('a viewer sees master data read-only and cannot open a new form', async ({
   await inviteMember(page, viewer.email, 'Viewer')
 
   // An existing account gets a sign-in link that leads to the invitation (organizations.spec).
-  const link = await waitForEmailLink(request, viewer.email, /\/auth\/(?:confirm|callback)\?/)
+  const link = await waitForEmailLink(
+    request,
+    viewer.email,
+    /\/auth\/(?:(?:confirm|callback)\?|email\/invitations\/)/,
+  )
   const context = await browser.newContext()
   const viewerPage = await context.newPage()
   await viewerPage.goto(link)
