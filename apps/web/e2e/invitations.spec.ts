@@ -61,14 +61,14 @@ test('a new user is invited as planner, accepts and can sign in with a password'
   await context.close()
 })
 
-test('a magic-link request for an unknown address gets the neutral confirmation', async ({
+test('a password-reset request for an unknown address gets the neutral confirmation', async ({
   page,
 }) => {
   const unknown = `nobody-${run}@example.com`
-  await page.goto('/login')
-  await page.getByLabel('Email', { exact: true }).fill(unknown)
-  await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
-  await expect(page.getByRole('status')).toContainText(`If ${unknown} has a ZeeSpare account`)
+  await page.goto('/auth/forgot-password')
+  await page.getByLabel('Work email', { exact: true }).fill(unknown)
+  await page.getByRole('button', { name: 'Send reset link' }).click()
+  await expect(page.getByRole('status')).toContainText('If an account exists for this email')
 })
 
 test('a revoked invitation is refused when its invitee opens the link', async ({
