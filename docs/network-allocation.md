@@ -1,6 +1,6 @@
 # Network allocation — Step 22
 
-Status: implemented; review pending. Revision 1.
+Status: merged in PR #111 as `8fee288`. Revision 1.
 
 The owner approved one saved allocation scenario for one item, an active central warehouse or hub, and 1–20 active receiving branches. Planners explicitly select a warehouse policy maximum (calculated or a particular approved revision) and one saved ordinary replenishment draft per branch.
 
