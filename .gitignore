@@ -11,6 +11,7 @@ next-env.d.ts
 
 # Tests
 coverage/
+.coverage*
 .vitest/
 test-results/
 playwright-report/
@@ -57,3 +58,4 @@ engine/data/
 .open-next/
 .wrangler/
 .dev.vars*
+.tmp/
