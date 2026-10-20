@@ -5028,5 +5028,37 @@
     "proposalIdentity": "Proposal {id}",
     "approvalAt": "Approved {time}",
     "approvalReason": "Approval reason"
+  },
+  "Onboarding": {
+    "title": "Bulk invitations",
+    "file": "CSV file (optional)",
+    "cancelled": "Remaining invitations cancelled. Previously delivered invitations can be revoked below.",
+    "invalidRecipients": "Check the addresses, remove duplicates and extra columns, and keep the file under 256 KB and 2,000 recipients.",
+    "progress": "Recent invitation batches",
+    "reviewFailures": "Some deliveries need review. Do not resend uncertain deliveries until their status is checked; contact your platform administrator.",
+    "cancel": "Cancel remaining invitations",
+    "confirm": "I confirm these recipients should receive the selected role in this workspace.",
+    "format": "One email per line, or a single-column CSV with an optional email header. Maximum 2,000 unique addresses and 256 KB.",
+    "recipients": "Email addresses",
+    "queued": "{count, number} invitations queued. You can leave this page; delivery continues in the background.",
+    "queuing": "Queuing…",
+    "queue": "Queue invitations",
+    "description": "Upload up to 2,000 email addresses. Invitations are sent gradually, leaving capacity for sign-in and password resets.",
+    "preview": "{count, number} recipients ready for review",
+    "directory": {
+      "next": "Next",
+      "search": "Search",
+      "summary": "{total, number} results · Page {page, number} of {pages, number}",
+      "previous": "Previous",
+      "searchLabel": "Search by email",
+      "pagination": "Directory pages"
+    },
+    "role": "Workspace role",
+    "batch": "{total, number} recipients · {sent, number} sent · {pending, number} pending · {failed, number} need review · {skipped, number} skipped or cancelled",
+    "notEnabled": "Bulk onboarding requires an approved workspace onboarding allowance. Individual invitations remain available.",
+    "issuesTitle": "Recent deliveries needing review",
+    "uncertainDelivery": "Delivery is unconfirmed. Check the recipient mailbox or provider logs before resending.",
+    "failedDelivery": "Delivery was not completed. Check workspace permissions and email configuration before sending a new invitation.",
+    "batchLabel": "Created {date} · {role}"
   }
 }

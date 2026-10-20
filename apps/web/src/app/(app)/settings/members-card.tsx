@@ -33,6 +33,7 @@ import { assignableRoles, canManageMember, isRole, type Role } from '@/lib/auth/
 import { idleState, type ActionState } from '@/lib/forms'
 import { removeMember, setMemberLocations, setMemberRole } from './actions'
 import { ActiveOrganizationField } from '@/components/active-organization'
+import { DirectoryControls, type DirectoryPage } from './directory-controls'
 
 export type MemberRow = Database['public']['Functions']['organization_members']['Returns'][number]
 export type LocationOption = Pick<
@@ -41,6 +42,7 @@ export type LocationOption = Pick<
 >
 
 export type MembersCardProps = {
+  directory?: DirectoryPage
   members: MemberRow[]
   locations: LocationOption[]
   actorRole: Role
@@ -50,6 +52,7 @@ export type MembersCardProps = {
 
 /** Owner/admin view of the organization's members: role, branch scoping, removal and leaving. */
 export function MembersCard({
+  directory,
   members,
   locations,
   actorRole,
@@ -67,6 +70,7 @@ export function MembersCard({
         <CardDescription>{t('description')}</CardDescription>
       </CardHeader>
       <CardContent>
+        {directory ? <DirectoryControls section="members" directory={directory} /> : null}
         <TableScrollRegion label={t('title')}>
           <Table>
             <TableHeader>

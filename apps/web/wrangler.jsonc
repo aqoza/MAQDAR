@@ -6,13 +6,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "zeespare-web",
-  "main": ".open-next/worker.js",
+  "main": "worker.mjs",
+  "triggers": { "crons": ["* * * * *"] },
   // Public website domains belong to Cloudflare Pages; legacy maqdar.org is retired.
   "routes": [
     { "pattern": "ote.zeespare.com", "custom_domain": true },
     { "pattern": "acme.zeespare.com", "custom_domain": true },
   ],
   "vars": {
+    "AUTH_IP_FORWARDING": "disabled",
+    "ONBOARDING_EMAIL_DELIVERY": "enabled",
+    "ONBOARDING_SUPABASE_URL": "https://dydxmuhfaqlycymdcxee.supabase.co",
     "NEXT_PUBLIC_SITE_URL": "https://zeespare.com",
     "OTE_ORGANIZATION_ID": "49727e18-35a9-462f-998f-9f202f963dfc",
     "ACME_ORGANIZATION_ID": "2cd8944d-52a1-45e2-9230-6f4fd0a2c6d4",

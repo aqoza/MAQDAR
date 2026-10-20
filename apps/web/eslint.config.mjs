@@ -2,10 +2,11 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
 
-// The Supabase secret key reaches only two modules: src/lib/supabase/admin.ts (auth.admin calls
+// The Supabase secret key reaches three reviewed modules: src/lib/supabase/admin.ts (auth.admin calls
 // from the Settings actions) and src/lib/supabase/api.ts (the api_* RPCs of the /api/v1
 // handlers). The two restrictions use different rule names so their allow-lists do not override
-// each other; src/lib/api/isolation.test.ts scans the sources for the same rules as a backstop.
+// each other. auth-forwarding.ts adds the key only to pinned ordinary Auth endpoints;
+// src/lib/api/isolation.test.ts scans the sources as a backstop.
 const API_CLIENT = {
   group: ['@/lib/supabase/api', '**/lib/supabase/api', '**/supabase/api'],
   message:
@@ -17,7 +18,7 @@ const ADMIN_CLIENT = {
 }
 const SERVER_ENV = {
   group: ['@/lib/env.server', '**/lib/env.server'],
-  message: 'The secret key is read only by src/lib/supabase/admin.ts and src/lib/supabase/api.ts.',
+  message: 'The secret key is confined to the reviewed admin, API and Auth-forwarding modules.',
 }
 const TS_FILES = ['**/*.{ts,tsx,mts,cts}']
 
@@ -47,7 +48,11 @@ export default defineConfig([
   },
   {
     name: 'maqdar/secret-key/clients',
-    files: ['src/lib/supabase/admin.ts', 'src/lib/supabase/api.ts'],
+    files: [
+      'src/lib/supabase/admin.ts',
+      'src/lib/supabase/api.ts',
+      'src/lib/supabase/auth-forwarding.ts',
+    ],
     rules: { '@typescript-eslint/no-restricted-imports': ['error', { patterns: [ADMIN_CLIENT] }] },
   },
   globalIgnores([

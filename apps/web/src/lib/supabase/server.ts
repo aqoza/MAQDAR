@@ -1,7 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import type { Database } from '@maqdar/shared/database.types'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { env } from '@/lib/env'
+import { trustedAuthFetch } from './auth-forwarding'
 
 /** Supabase client for Server Components, Server Actions and Route Handlers. Create one per request. */
 export async function createClient() {
@@ -11,6 +12,7 @@ export async function createClient() {
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
+      global: { fetch: trustedAuthFetch(await headers()) },
       cookies: {
         getAll() {
           return cookieStore.getAll()

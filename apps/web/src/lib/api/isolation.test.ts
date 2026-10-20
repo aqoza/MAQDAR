@@ -61,6 +61,7 @@ describe('secret-key clients', () => {
     expect(importersOf('lib/env.server').sort()).toEqual([
       'lib/supabase/admin.ts',
       'lib/supabase/api.ts',
+      'lib/supabase/auth-forwarding.ts',
     ])
     expect(importersOf('lib/api/rpc-request')).toContain('lib/supabase/api.ts')
     expect(importersOf('lib/imports/contract')).toContain('lib/api/records.ts')
@@ -78,9 +79,12 @@ describe('secret-key clients', () => {
     expect(offenders).toEqual([])
   })
 
-  it('reads the server env only in the two secret-key clients', () => {
+  it('reads the server env only in the reviewed secret-key clients and Auth transport', () => {
     const offenders = importersOf('lib/env.server').filter(
-      (path) => path !== 'lib/supabase/admin.ts' && path !== 'lib/supabase/api.ts',
+      (path) =>
+        path !== 'lib/supabase/admin.ts' &&
+        path !== 'lib/supabase/api.ts' &&
+        path !== 'lib/supabase/auth-forwarding.ts',
     )
     expect(offenders).toEqual([])
   })

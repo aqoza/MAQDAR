@@ -3638,10 +3638,31 @@ isOneToOne: false
 "network_transfer_submit":
 { Args: { "p_estimate_id": string,"p_organization_id": string,"p_reason": string,"p_request_id": string }; Returns: string
                            },
+"onboarding_cancel":
+{ Args: { "p_batch_id": string,"p_organization_id": string }; Returns: boolean
+                           },
+"onboarding_claim":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"onboarding_enqueue":
+{ Args: { "p_batch_id": string,"p_emails": (string)[],"p_organization_id": string,"p_role": string }; Returns: string
+                           },
+"onboarding_finish":
+{ Args: { "p_job_id": string,"p_lease": string,"p_outcome": string }; Returns: boolean
+                           },
+"onboarding_status":
+{ Args: { "p_organization_id": string }; Returns: Json
+                           },
+"organization_invitations_page":
+{ Args: { "p_organization_id": string,"p_page"?: number,"p_search"?: string }; Returns: Json
+                           },
 "organization_members":
 { Args: { "p_organization_id": string }; Returns: {
               "created_at": string,"email": string,"location_ids": (string)[],"role": string,"user_id": string
             }[]
+                           },
+"organization_members_page":
+{ Args: { "p_organization_id": string,"p_page"?: number,"p_search"?: string,"p_user_ids"?: (string)[] }; Returns: Json
                            },
 "planned_event_preview":
 { Args: { "p_additions": Json,"p_confirmed": boolean,"p_forecast_id": string,"p_name": string,"p_organization_id": string,"p_reason": string,"p_type": string,"p_unit": string }; Returns: Json
