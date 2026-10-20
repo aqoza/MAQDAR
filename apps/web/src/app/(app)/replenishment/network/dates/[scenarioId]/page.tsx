@@ -37,6 +37,22 @@ export default async function SavedNetworkDates({
       <PageHeader
         pattern="replenishment"
         title={t('saved')}
+        actions={
+          <>
+            <Link
+              className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+              href={`/replenishment/network/freight/new?scenario=${scenarioId}`}
+            >
+              {t('freight')}
+            </Link>
+            <Link
+              className="rounded-md border px-3 py-2"
+              href={`/replenishment/network/freight?scenario=${scenarioId}`}
+            >
+              {t('freightHistory')}
+            </Link>
+          </>
+        }
         description={`${report.source.source_policy?.item_code} · ${report.source.source_location_code} · ${report.source.source_policy?.cutoff}`}
         back={
           <Link className="inline-block underline" href="/replenishment/network/dates">

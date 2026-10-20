@@ -185,7 +185,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 21d  | **MOQ/pack simulations:** captured original baseline versus explicit maximum/lead/review/MOQ/pack assumptions, exact order rounding and inspectable scoped results.                                                         | Merged — PR #108                                    |
 | 21e  | **Calendar-aware simulations:** preserved MOQ/pack comparison plus adjusted reviews/receipts from captured ordering and receiving calendars, explicit unavailable diagnoses and immutable scoped history.                   | Merged — PR #109                                    |
 | 22   | **Bounded network allocation:** one warehouse policy and up to twenty branch drafts, exact proportional rationing, all-location access and immutable evidence/history.                                                      | Merged in PR #111                                   |
-| 22b  | **Network transfer dates:** fixed saved allocations, one warehouse dispatch and separate branch p50/p90 calendar-adjusted receipts, with timing references and immutable all-location history.                              | Implemented; verification and review                |
+| 22b  | **Network transfer dates:** fixed saved allocations, one warehouse dispatch and separate branch p50/p90 calendar-adjusted receipts, with timing references and immutable all-location history.                              | Merged in PR #113                                   |
+| 22c  | **Network freight estimates:** fixed network schedules, separate branch fees, exact rounded costs and currency-separated totals with immutable all-location evidence/history.                                               | Implemented; verification and review                |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -592,3 +593,7 @@ email callback allowlist. No database migration, account reset or data loader is
 Verify fail-closed binding, cross-tenant membership/claim filtering, host-only cookies,
 same-origin mutations, email callback routing, and compact mobile login; run the full CI
 before deploying. SES setup remains deferred.
+
+### Step 22c — approved 2026-10-20
+
+PR #113 was reviewed at `4f845e6` without blocking findings and merged as `9ddd518` after all three CI jobs passed. The owner approved saved network freight estimates from one saved network transfer-date scenario. Keep branch quantities/dates and original stock/inbound evidence fixed. Price each positive branch by quantity times its per-unit rate or one per-shipment fee; round each line once half-up and sum rounded costs separately by currency. Zero allocations need no freight; explicit zero rates remain distinct from unknown terms. Require active participating locations, original active lanes with matching saved leads, known effective dates no later than dispatch, matching per-unit labels and applicability confirmation. Save only complete estimates after refreshed evidence, with immutable history, stable retries, post-wait authority checks and all-location member access. Keep timing warnings and shared compact green screens at five widths plus Arabic RTL. No taxes, FX, consolidation, approvals, reservations or execution. See [network-freight-estimates.md](network-freight-estimates.md).

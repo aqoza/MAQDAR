@@ -1,6 +1,6 @@
 # Network transfer dates — Step 22b
 
-Status: implemented; review pending. Revision 1.
+Status: merged in PR #113. Revision 1.
 
 The owner approved saved date scenarios from one saved network allocation on 2026-10-20. Preserve every allocated quantity, branch gap and original commitment. Choose one requested dispatch date at or after the allocation cutoff. Freight, approvals, reservations, policy recalculation and execution remain outside this increment.
 
