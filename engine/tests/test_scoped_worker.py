@@ -8,6 +8,21 @@ from maqdar_engine.scoped_worker import main, process_one
 from test_policy_simulation import task
 
 
+@pytest.mark.parametrize('method,module', [
+    ('periodic-constraints-v1', 'policy_constraints'),
+    ('periodic-calendars-v1', 'policy_calendars'),
+])
+def test_newly_merged_methods_keep_scoped_publication(monkeypatch, method, module):
+    calculator = MagicMock(return_value={'synthetic': True})
+    monkeypatch.setattr(f'maqdar_engine.{module}.calculate', calculator)
+    payload = {'kind': 'simulation', 'method': method}
+    db = MagicMock()
+    db.execute.return_value.fetchone.side_effect = [('run', 'token'), (payload,), (True,)]
+    assert process_one(db) is True
+    calculator.assert_called_once_with(payload)
+    assert db.execute.call_args.args[0] == 'select app.scoped_simulation_finish(%s,%s,%s)'
+
+
 def test_empty_scoped_queue():
     db = MagicMock()
     db.execute.return_value.fetchone.return_value = None
