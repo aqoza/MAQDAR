@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { tick, type RuntimeConfig, type ContainerHandle } from './controller.ts'
+import { tick, ContainerMonitor, type RuntimeConfig, type ContainerHandle } from './controller.ts'
 
 const configured: RuntimeConfig = {
   ENABLED: 'true',
@@ -20,6 +20,10 @@ function fake(running = false) {
     },
     signal() {
       calls.push('stop')
+    },
+    monitor() {
+      calls.push('monitor')
+      return new Promise<void>(() => {})
     },
     async setInactivityTimeout() {
       calls.push('timeout')
@@ -57,13 +61,13 @@ test('missing configuration does not start a process', async () => {
 test('healthy running process is probed without another start', async () => {
   const { container, calls } = fake(true)
   await tick(container, configured)
-  assert.deepEqual(calls, ['timeout', 'health'])
+  assert.deepEqual(calls, ['monitor', 'timeout', 'health'])
 })
 
 test('start config uses scoped entry point environment, followed by readiness', async () => {
   const { container, calls } = fake()
   await tick(container, configured)
-  assert.deepEqual(calls, ['start', 'timeout', 'health'])
+  assert.deepEqual(calls, ['start', 'monitor', 'timeout', 'health'])
 })
 
 test('unhealthy process is stopped without logging its response', async () => {
@@ -76,7 +80,49 @@ test('unhealthy process is stopped without logging its response', async () => {
   await assert.rejects(() => tick(container, configured), {
     message: 'Simulation container health failed (HTTP 503)',
   })
-  assert.deepEqual(calls, ['timeout', 'stop'])
+  assert.deepEqual(calls, ['monitor', 'timeout', 'stop'])
+})
+
+test('one background monitor survives repeated health ticks without blocking readiness', async () => {
+  const { container, calls } = fake(true)
+  const background: Promise<void>[] = []
+  const monitor = new ContainerMonitor((pending) => background.push(pending), () => {})
+  await tick(container, configured, monitor)
+  await tick(container, configured, monitor)
+  assert.equal(background.length, 1)
+  assert.deepEqual(calls, ['monitor', 'timeout', 'health', 'timeout', 'health'])
+})
+
+test('monitor reports only a bounded exit code and can reattach after an exit', async () => {
+  const { container } = fake(true)
+  const background: Promise<void>[] = []
+  const messages: string[] = []
+  const monitor = new ContainerMonitor((pending) => background.push(pending), (m) => messages.push(m))
+  for (const exitCode of [137, 'private credential', -1, 999]) {
+    container.monitor = () => Promise.reject(Object.assign(new Error('private credential'), { exitCode }))
+    await tick(container, configured, monitor)
+    await background.at(-1)
+  }
+  assert.deepEqual(messages, [
+    'Simulation container exited (code 137)',
+    'Simulation container lifecycle failed',
+    'Simulation container lifecycle failed',
+    'Simulation container lifecycle failed',
+  ])
+})
+
+test('monitor handles clean exits and synchronous native failure without provider text', async () => {
+  const { container } = fake(true)
+  const background: Promise<void>[] = []
+  const messages: string[] = []
+  const monitor = new ContainerMonitor((pending) => background.push(pending), (m) => messages.push(m))
+  container.monitor = async () => {}
+  await tick(container, configured, monitor)
+  await background.at(-1)
+  container.monitor = () => { throw new Error('private credential') }
+  await tick(container, configured, monitor)
+  await background.at(-1)
+  assert.deepEqual(messages, ['Simulation container exited cleanly', 'Simulation container lifecycle failed'])
 })
 
 test('health transport failures expose only a fixed diagnostic category', async () => {
