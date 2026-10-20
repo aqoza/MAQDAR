@@ -44,6 +44,7 @@ select unnest(array['organizations', 'memberships', 'membership_locations', 'org
 -- Columns no API role may read or write in any way (Step 5b: the SHA-256 of every API key).
 insert into rpc_only_tables values ('network_allocation_scenarios');
 insert into rpc_only_tables values ('network_date_scenarios');
+insert into rpc_only_tables values ('network_freight_estimates');
 create temporary table secret_columns on commit drop as
 select * from (values ('api_keys', 'key_hash')) as s (table_name, column_name);
 

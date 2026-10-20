@@ -70,12 +70,17 @@ export default async function NetworkDateHistory({
           </HelpDisclosure>
         }
         actions={
-          <Link
-            className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
-            href="/replenishment/network"
-          >
-            {t('chooseDraft')}
-          </Link>
+          <>
+            <Link
+              className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+              href="/replenishment/network"
+            >
+              {t('chooseDraft')}
+            </Link>
+            <Link className="rounded-md border px-3 py-2" href="/replenishment/network/freight">
+              {t('freightHistory')}
+            </Link>
+          </>
         }
       />
       <form
