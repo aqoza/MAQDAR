@@ -73,3 +73,7 @@ The header contract test rejects omitted section patterns, bare authenticated pa
 The public name is **ZeeSpare**, with this capitalization in both locales. The precision-Z mark lives in `src/components/zeespare-mark.tsx`; master SVG/PNG assets and the printable brand guide live in `docs/brand/zeespare`. Use the same mark in login, onboarding, sidebar and favicon. The wordmark is an identity exception: login uses 22px/24px, weight 650 and -0.045em tracking. Application text roles remain unchanged. Keep the Latin wordmark LTR inside RTL layouts; never mirror the Z.
 
 Forest #103E31, emerald #155C46, signal lime #C2F970 and warm paper #F7F8F2 form the brand palette. Lime is decorative and must not be used for small text on white. Do not change shared semantic status colors to brand colors.
+
+## Public website exception
+
+The public product homepage and workspace finder use an editorial display scale scoped to `public.module.css`: responsive 44–77px hero, 28–40px section titles and 36px finder title. Use the existing ZeeSpare palette, mark and planning illustration, logical CSS, visible focus and 44px targets. This does not change authenticated application typography or the approved login design.

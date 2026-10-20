@@ -20,6 +20,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <SidebarProvider className="app-shell">
       <AppSidebar
+        workspaceLocked={Boolean(context.workspace)}
         user={{ email: context.email ?? '' }}
         organizations={context.organizations}
         active={context.active}

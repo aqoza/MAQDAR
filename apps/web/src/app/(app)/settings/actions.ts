@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { API_SCOPES } from '@/lib/api/auth'
 import { generateApiKey } from '@/lib/api/keys'
 import { API_LIMITS } from '@/lib/api/limits'
+import { emailReturnPath } from '@/lib/auth/email-destination'
 import { siteOrigin } from '@/lib/auth/origin'
 import { isAdminRole } from '@/lib/auth/roles'
 import { requireClaims } from '@/lib/auth/session'
@@ -281,7 +282,7 @@ async function emailErrorState(error: AuthError): Promise<ActionState> {
  * /invitations/<id> once the link is verified.
  */
 async function sendInvitationEmail(invitation: InviteResult): Promise<ActionState | null> {
-  const redirectTo = `${await siteOrigin()}/invitations/${invitation.id}`
+  const redirectTo = `${await siteOrigin()}${emailReturnPath(`/invitations/${invitation.id}`)}`
 
   const admin = createAdminClient()
   const { error } = await admin.auth.admin.inviteUserByEmail(invitation.email, { redirectTo })

@@ -74,6 +74,19 @@ async function bodyOf(response: Response): Promise<Record<string, unknown>> {
 }
 
 describe('isSameOrigin', () => {
+  it('rejects the configured public origin on a tenant request', () => {
+    const url = 'https://ote.zeespare.com/api/imports'
+    expect(
+      isSameOrigin(request({ origin: 'https://zeespare.com' }, url), 'https://zeespare.com'),
+    ).toBe(false)
+    expect(
+      isSameOrigin(request({ origin: 'https://other.zeespare.com' }, url), 'https://zeespare.com'),
+    ).toBe(false)
+    expect(
+      isSameOrigin(request({ origin: 'https://ote.zeespare.com' }, url), 'https://zeespare.com'),
+    ).toBe(true)
+  })
+
   it('accepts the request URL origin', () => {
     expect(isSameOrigin(request(), undefined)).toBe(true)
   })

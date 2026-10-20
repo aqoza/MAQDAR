@@ -54,6 +54,7 @@ export type AppSidebarProps = {
   organizations: OrganizationSummary[]
   active: OrganizationSummary
   role: Role | null
+  workspaceLocked?: boolean
   pendingInvitationCount: number
 }
 
@@ -63,6 +64,7 @@ export function AppSidebar({
   active,
   role,
   pendingInvitationCount,
+  workspaceLocked = false,
 }: AppSidebarProps) {
   const t = useTranslations('Nav')
   const tCommon = useTranslations('Common')
@@ -99,6 +101,7 @@ export function AppSidebar({
           <span dir="ltr">{tCommon('appName')}</span>
         </Link>
         <OrganizationSwitcher
+          workspaceLocked={workspaceLocked}
           organizations={organizations}
           active={active}
           role={role}

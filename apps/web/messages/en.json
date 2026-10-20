@@ -4660,5 +4660,52 @@
       "branch_location_unavailable": "Unavailable: all receivers must be active branches.",
       "line_unavailable": "Unavailable: inspect each branch’s evidence and confirmations."
     }
+  },
+  "Workspace": {
+    "label": "{name} workspace",
+    "title": "Find your workspace",
+    "description": "Enter your organization’s workspace name to continue to its sign-in page.",
+    "slug": "Workspace name",
+    "continue": "Continue to workspace",
+    "opening": "Opening workspace…",
+    "unknown": "We couldn’t find that workspace. Check the name provided by your administrator.",
+    "hint": "ZeeSpare is invitation-only. Your administrator can help you find your workspace or arrange access.",
+    "accessTitle": "Access to {name} is required",
+    "accessDescription": "This account does not have access to this workspace. Ask your organization’s administrator for an invitation, or sign out and use your invited email address."
+  },
+  "Public": {
+    "title": "Service parts planning",
+    "skip": "Skip to content",
+    "navigation": "Main navigation",
+    "platform": "The platform",
+    "clientLogin": "Client sign in",
+    "eyebrow": "Service parts. Planned with purpose.",
+    "headline": "Keep the right parts.",
+    "headlineAccent": "Keep business moving.",
+    "description": "Bring demand, inventory and replenishment into focus. A connected planning workspace for the people who keep service running.",
+    "explore": "Explore the platform",
+    "audience": "Built for OEMs, distributors and dealer networks.",
+    "visualTitle": "From demand to decision",
+    "visualCaption": "One connected view of your parts network",
+    "platformEyebrow": "Clarity at every step",
+    "platformTitle": "Better decisions, from the first signal.",
+    "platformDescription": "Turn parts data into a repeatable planning workflow. Understand demand, review inventory and move from recommendations to approved actions.",
+    "forecast": {
+      "title": "Understand demand",
+      "description": "Classify demand patterns, compare forecasts and review exceptions with the context behind each recommendation."
+    },
+    "inventory": {
+      "title": "Put inventory in balance",
+      "description": "Review stock policies, locate available parts and identify shortages, excess and redistribution opportunities."
+    },
+    "replenish": {
+      "title": "Make the next move",
+      "description": "Review replenishment suggestions, capture approvals and prepare traceable handoffs to your operational systems."
+    },
+    "pilotEyebrow": "Start with a focused pilot",
+    "pilotTitle": "Your data. Your team. Measurable progress.",
+    "pilotDescription": "Begin with an agreed parts and location scope. Reconcile your data, establish a planning baseline and review outcomes with your team.",
+    "openWorkspace": "Open your workspace",
+    "footer": "Service parts planning, with a clearer view."
   }
 }

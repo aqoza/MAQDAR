@@ -30,6 +30,10 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
+    env: {
+      NEXT_PUBLIC_SITE_URL: baseURL,
+      OTE_ORGANIZATION_ID: '00000000-0000-4000-8000-000000000095',
+    },
     // CI builds first and serves the production bundle; locally the dev server is reused if running.
     command: isCI ? `pnpm exec next start -p ${port}` : `pnpm exec next dev -p ${port}`,
     url: baseURL,

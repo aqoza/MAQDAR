@@ -1,5 +1,7 @@
 import type { Database } from '@maqdar/shared/database.types'
 import { cache } from 'react'
+import { requestSite } from '@/lib/workspaces/request'
+import { workspaceAllows, type Workspace } from '@/lib/workspaces/hosts'
 import {
   type AppLocale,
   type NumberingSystem,
@@ -33,6 +35,7 @@ export type OrganizationSummary = Omit<
 export type PendingInvitation = Database['public']['Functions']['my_invitations']['Returns'][number]
 
 export type ActiveContext = {
+  workspace: Workspace | null
   userId: string
   email: string | null
   claims: MaqdarClaims
@@ -71,18 +74,25 @@ export const getActiveContext = cache(async (): Promise<ActiveContext | null> =>
     supabase.rpc('my_organizations'),
     supabase.rpc('my_invitations'),
   ])
-  const organizations = (organizationsResult.data ?? []).map(toSummary)
+
+  const { workspace } = await requestSite()
+  const organizations = (organizationsResult.data ?? [])
+    .filter((organization) => workspaceAllows(workspace, organization.id))
+    .map(toSummary)
   const active = claims.org_id
     ? (organizations.find((organization) => organization.id === claims.org_id) ?? null)
     : null
 
   return {
+    workspace,
     userId: claims.sub,
     email: claims.email ?? null,
     claims,
     organizations,
     active,
     role: active && isRole(active.role) ? active.role : null,
-    invitations: invitationsResult.data ?? [],
+    invitations: (invitationsResult.data ?? []).filter((invitation) =>
+      workspaceAllows(workspace, invitation.organization_id),
+    ),
   }
 })

@@ -568,3 +568,7 @@ PR #108 was reviewed at `e0429c8` with no blocking findings and merged as `88cc1
 ### Step 22 — approved 2026-10-20
 
 The owner merged PR #109 as `0414d18` and approved a bounded network allocation increment: one item, one source warehouse and 1–20 receiving branches using explicitly selected saved replenishment drafts and a source policy maximum. Protect the warehouse maximum and commitments, exclude source inbound, and ration available surplus proportionally in exact 0.001-unit increments using largest remainder and a stable location-UUID tie-break. Reuse matching item/unit/cutoff, exact-cutoff stock, active directed-lane and applicability-confirmation rules. Require access to all locations, editor-only saves, refreshed changed previews and immutable scoped history. Show remaining branch gaps and retained warehouse stock; scenarios remain independent, reserve nothing and promise no arrival. Whole-network policy optimization and execution remain deferred. See [network-allocation.md](network-allocation.md).
+
+## ZeeSpare public site and OTEGROUP pilot — approved 2026-10-20
+
+Separate the public apex homepage from the explicitly bound OTE tenant hostname. Preserve shared deployment, RLS and existing login design. Oman/OMR; production email through Amazon SES is deferred by the owner. See [ote-workspace.md](ote-workspace.md) for acceptance and rollout.
