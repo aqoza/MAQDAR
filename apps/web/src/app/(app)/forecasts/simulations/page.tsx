@@ -16,13 +16,14 @@ export default async function Simulations({
   if (!context?.active) redirect('/organizations')
   const raw = firstParam((await searchParams).page) ?? '1'
   const page = /^\d{1,6}$/.test(raw) ? Math.max(1, Math.min(Number(raw), 100000)) : 1
-  const [db, t, planning, sensitivity, configurations, constraints] = await Promise.all([
+  const [db, t, planning, sensitivity, configurations, constraints, calendars] = await Promise.all([
     createClient(),
     getTranslations('PolicySimulation'),
     getTranslations('Planning'),
     getTranslations('PolicySensitivity'),
     getTranslations('PolicyConfigurations'),
     getTranslations('PolicyConstraints'),
+    getTranslations('PolicyCalendars'),
   ])
   const result = await db
     .from('planning_runs')
@@ -83,6 +84,10 @@ export default async function Simulations({
                     {(run.options as { method?: string } | null)?.method ===
                       'periodic-constraints-v1' && (
                       <p className="text-xs text-muted-foreground">{constraints('title')}</p>
+                    )}
+                    {(run.options as { method?: string } | null)?.method ===
+                      'periodic-calendars-v1' && (
+                      <p className="text-xs text-muted-foreground">{calendars('title')}</p>
                     )}
                   </td>
                   <td className="p-3">
