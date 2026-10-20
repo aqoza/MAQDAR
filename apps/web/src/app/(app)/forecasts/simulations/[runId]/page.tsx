@@ -5,6 +5,8 @@ import { z } from 'zod'
 import { PageHeader } from '@/components/page-header'
 import { PolicySimulationReport } from '@/components/policy-simulation-report'
 import { PolicySensitivityReport } from '@/components/policy-sensitivity-report'
+import { PolicyCalendarsReport } from '@/components/policy-calendars-report'
+import { calendarEvidenceSchemaFull } from '@/lib/policy-calendars'
 import { PlanningRefresh, CancelPlanningRun } from '@/components/planning-controls'
 import { getActiveContext } from '@/lib/organizations/context'
 import { isEditorRole } from '@/lib/auth/roles'
@@ -27,13 +29,14 @@ export default async function SimulationResult({
   if (!context?.active) redirect('/organizations')
   const { runId } = await params
   if (!z.guid().safeParse(runId).success) notFound()
-  const [db, t, planning, sensitivity, configurations, constraints] = await Promise.all([
+  const [db, t, planning, sensitivity, configurations, constraints, calendars] = await Promise.all([
     createClient(),
     getTranslations('PolicySimulation'),
     getTranslations('Planning'),
     getTranslations('PolicySensitivity'),
     getTranslations('PolicyConfigurations'),
     getTranslations('PolicyConstraints'),
+    getTranslations('PolicyCalendars'),
   ])
   const { data: run, error } = await db
     .from('planning_runs')
@@ -56,6 +59,10 @@ export default async function SimulationResult({
   if (response?.error || (run.status === 'succeeded' && !response?.data))
     throw new Error('Simulation result unavailable')
   const method = (run.options as { method?: string } | null)?.method
+  const calendarResult =
+    response?.data && method === 'periodic-calendars-v1'
+      ? calendarEvidenceSchemaFull.parse(response.data.evidence)
+      : null
   const comparison =
     response?.data && method === 'periodic-constraints-v1'
       ? constraintsEvidenceSchema.parse(response.data.evidence)
@@ -65,20 +72,24 @@ export default async function SimulationResult({
           ? configurationsEvidenceSchema.parse(response.data.evidence)
           : null
   const original =
-    response?.data && !comparison ? simulationEvidenceSchema.parse(response.data.evidence) : null
-  const evidence = comparison ?? original
+    response?.data && !comparison && !calendarResult
+      ? simulationEvidenceSchema.parse(response.data.evidence)
+      : null
+  const evidence = calendarResult ?? comparison ?? original
   return (
     <div className="min-w-0 space-y-4">
       <PageHeader
         pattern="forecasts"
         title={
-          method === 'periodic-constraints-v1'
-            ? constraints('title')
-            : method === 'periodic-configurations-v1'
-              ? configurations('title')
-              : method === 'periodic-sensitivity-v1'
-                ? sensitivity('title')
-                : t('title')
+          method === 'periodic-calendars-v1'
+            ? calendars('title')
+            : method === 'periodic-constraints-v1'
+              ? constraints('title')
+              : method === 'periodic-configurations-v1'
+                ? configurations('title')
+                : method === 'periodic-sensitivity-v1'
+                  ? sensitivity('title')
+                  : t('title')
         }
         description={`${run.locations?.code ?? ''} · ${run.from_date} – ${run.to_date}`}
         back={
@@ -91,14 +102,28 @@ export default async function SimulationResult({
             <>
               <Link
                 href={
-                  comparison
-                    ? `/forecasts/simulations/${comparison.source_simulation.run_id}`
-                    : `/forecasts/workbench/${evidence.policy.id}`
+                  calendarResult
+                    ? `/forecasts/simulations/${calendarResult.source_comparison.run_id}`
+                    : comparison
+                      ? `/forecasts/simulations/${comparison.source_simulation.run_id}`
+                      : `/forecasts/workbench/${evidence.policy.id}`
                 }
                 className="underline"
               >
-                {comparison ? sensitivity('source') : t('sourcePolicy')}
+                {calendarResult
+                  ? calendars('source')
+                  : comparison
+                    ? sensitivity('source')
+                    : t('sourcePolicy')}
               </Link>
+              {comparison?.method === 'periodic-constraints-v1' && isEditorRole(context.role) && (
+                <Link
+                  href={`/forecasts/simulations/calendars?source=${runId}`}
+                  className="underline"
+                >
+                  {calendars('create')}
+                </Link>
+              )}
               {original && isEditorRole(context.role) && (
                 <>
                   <Link
@@ -153,7 +178,12 @@ export default async function SimulationResult({
             })}{' '}
             · {evidence.policy.item_code}
           </p>
-          {comparison ? (
+          {calendarResult ? (
+            <PolicyCalendarsReport
+              evidence={calendarResult}
+              selected={firstParam((await searchParams).variant)}
+            />
+          ) : comparison ? (
             <PolicySensitivityReport
               evidence={comparison}
               selected={firstParam((await searchParams).variant)}
