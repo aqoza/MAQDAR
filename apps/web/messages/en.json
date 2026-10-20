@@ -2987,7 +2987,19 @@
     "liveContext": "Live planning context",
     "intentLocation": "Intent / location",
     "dispositionMeaning": "Reports record an external system’s statement about this exact package. They do not confirm supplier return eligibility, recovery proceeds, a write-off or a stock movement. Original quantities, units and reference inventory values remain in the saved evidence.",
-    "dispositionSelectionMeaning": "Current means the original proposals remain selected; historical means a later proposal was selected. Unavailable means source context can no longer be resolved. Copied batches remain searchable with their original evidence and report history after source deletion. This live context is independent of reported status."
+    "dispositionSelectionMeaning": "Current means the original proposals remain selected; historical means a later proposal was selected. Unavailable means source context can no longer be resolved. Copied batches remain searchable with their original evidence and report history after source deletion. This live context is independent of reported status.",
+    "networkTitle": "Network integration workbench",
+    "networkContext": "Saved network packages and latest external reports",
+    "networkLink": "Network integrations",
+    "networkHandoffs": "Network handoffs",
+    "networkBatches": "Network handoff batches",
+    "networkSearch": "Item, package or latest report reference",
+    "warehouse": "Warehouse code",
+    "branch": "Included branch code",
+    "warehouseBranches": "Warehouse / included branches",
+    "includedBranches": "{count, plural, one {# included branch} other {# included branches}}",
+    "networkMeaning": "Reports apply to the whole network package. They do not confirm acceptance by a branch, transmit packages, reserve stock, create transfers or change inbound. No report means absent evidence, not failed delivery.",
+    "networkAccess": "Branch filters find complete packages and still require access to the warehouse and every included branch, including zero allocations. Copied batches retain their evidence after source deletion; unavailable live context is separate from report status."
   },
   "HandoffAcknowledgements": {
     "title": "Integration acknowledgements",

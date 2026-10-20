@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 22i adds the read-only network integration workbench. Keep whole-package reports separate from live selection, exact system labels, retained copied-batch evidence and warehouse/all-branch access (including zero branches). Branch filters never relax access or imply branch acceptance. See [network-integration-workbench.md](docs/network-integration-workbench.md).
+
 Step 22h adds explicit whole-package network reports via `network_handoffs:acknowledge`; reads require `network_handoffs:read`. Preserve organization/client UUID retry identity across keys, post-wait authority checks, independent histories, all-location browser RLS and actual-parent audit/deletion behavior. Copied-batch reports survive source deletion. See [network-handoff-acknowledgements.md](docs/network-handoff-acknowledgements.md).
 
 Step 22g adds read-only network integration endpoints with explicit organization-wide `network_handoffs:read`. Preserve complete saved JSON and separate live selection, including copied batches with unavailable source context. Existing scopes gain no access; browser all-location restrictions remain. See [network-handoff-read-api.md](docs/network-handoff-read-api.md).

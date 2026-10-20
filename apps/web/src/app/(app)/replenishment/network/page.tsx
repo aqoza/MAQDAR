@@ -61,6 +61,7 @@ export default async function NetworkHistory({
   if (result.error) throw new Error('Allocation history unavailable')
   const rows = range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])
   const th = await getTranslations('NetworkHandoffs')
+  const ti = await getTranslations('IntegrationWorkbench')
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
@@ -94,6 +95,12 @@ export default async function NetworkHistory({
           </HelpDisclosure>
         }
       />
+      <Link
+        className="inline-flex min-h-11 items-center underline md:min-h-0"
+        href="/replenishment/network/integrations"
+      >
+        {ti('networkLink')}
+      </Link>
       <form
         className="workspace-toolbar flex flex-wrap items-end gap-3"
         action="/replenishment/network"

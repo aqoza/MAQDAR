@@ -17,6 +17,7 @@ import {
   integrationFamilies,
   eventIntegrationResultSchema,
   dispositionIntegrationResultSchema,
+  networkIntegrationResultSchema,
   type IntegrationFamily,
 } from '@/lib/integration-workbench'
 
@@ -27,6 +28,7 @@ export async function IntegrationWorkbenchScreen({
   searchParams: Promise<RawSearchParams>
   family?: IntegrationFamily
 }) {
+  const network = family === 'network'
   const transfer = family === 'transfer'
   const disposition = family === 'disposition'
   const configuration = integrationFamilies[family]
@@ -45,15 +47,14 @@ export async function IntegrationWorkbenchScreen({
     p_size: params.size,
   })
   if (response.error) throw new Error('Integration workbench unavailable')
-  const result = (
-    disposition
-      ? dispositionIntegrationResultSchema
-      : family === 'event'
-        ? eventIntegrationResultSchema
-        : transfer
-          ? transferIntegrationResultSchema
-          : integrationResultSchema
-  ).parse(response.data)
+  const resultSchema = {
+    purchase: integrationResultSchema,
+    transfer: transferIntegrationResultSchema,
+    event: eventIntegrationResultSchema,
+    disposition: dispositionIntegrationResultSchema,
+    network: networkIntegrationResultSchema,
+  }[family]
+  const result = resultSchema.parse(response.data)
   if (result.page !== params.page) redirect(integrationHref(params, result.page, family))
   const pages = lastPage(result.total, result.size)
   const inputClass = 'w-full min-w-0 rounded-md border bg-background p-2'
@@ -72,6 +73,22 @@ export async function IntegrationWorkbenchScreen({
               {t(integrationFamilies[other].link)}
             </Link>
           ))}
+        {network && (
+          <>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/network/handoffs"
+            >
+              {t('networkHandoffs')}
+            </Link>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/network/batches"
+            >
+              {t('networkBatches')}
+            </Link>
+          </>
+        )}
         {disposition && (
           <>
             <Link
@@ -121,25 +138,37 @@ export async function IntegrationWorkbenchScreen({
         key={JSON.stringify(params)}
       >
         <label className="col-span-2 grid min-w-0 grid-rows-[1fr_auto] gap-1 sm:col-span-1">
-          {t(disposition ? 'dispositionSearch' : family === 'event' ? 'eventSearch' : 'search')}
+          {t(
+            network
+              ? 'networkSearch'
+              : disposition
+                ? 'dispositionSearch'
+                : family === 'event'
+                  ? 'eventSearch'
+                  : 'search',
+          )}
           <input name="q" maxLength={100} defaultValue={params.q} className={inputClass} />
         </label>
-        {(disposition
-          ? (['location', 'system'] as const)
-          : ([transfer ? 'source' : 'supplier', 'location', 'system'] as const)
+        {(network
+          ? (['source', 'branch', 'system'] as const)
+          : disposition
+            ? (['location', 'system'] as const)
+            : ([transfer ? 'source' : 'supplier', 'location', 'system'] as const)
         ).map((field) => (
           <label
             className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'system' ? 'col-span-2 sm:col-span-1' : ''}`}
             key={field}
           >
             {t(
-              field === 'location'
-                ? transfer
-                  ? 'destination'
-                  : family === 'event'
-                    ? 'receiver'
-                    : field
-                : field,
+              network && field === 'source'
+                ? 'warehouse'
+                : field === 'location'
+                  ? transfer
+                    ? 'destination'
+                    : family === 'event'
+                      ? 'receiver'
+                      : field
+                  : field,
             )}
             <input
               name={field}
@@ -154,7 +183,7 @@ export async function IntegrationWorkbenchScreen({
             ['kind', ['handoff', 'batch']],
             [
               'selection',
-              disposition
+              disposition || network
                 ? (['current', 'historical', 'unavailable'] as const)
                 : (['current', 'historical'] as const),
             ],
@@ -166,7 +195,7 @@ export async function IntegrationWorkbenchScreen({
             className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'status' ? 'col-span-2 sm:col-span-1' : ''}`}
             key={field}
           >
-            {t(disposition && field === 'selection' ? 'liveContext' : field)}
+            {t((disposition || network) && field === 'selection' ? 'liveContext' : field)}
             <select name={field} defaultValue={params.filters[field] ?? ''} className={inputClass}>
               <option value="">{t('all')}</option>
               {values.map((value) => (
@@ -210,12 +239,14 @@ export async function IntegrationWorkbenchScreen({
               {(
                 [
                   'package',
-                  disposition
-                    ? 'intentLocation'
-                    : transfer
-                      ? 'sourceDestination'
-                      : 'supplierLocation',
-                  disposition ? 'liveContext' : 'selection',
+                  network
+                    ? 'warehouseBranches'
+                    : disposition
+                      ? 'intentLocation'
+                      : transfer
+                        ? 'sourceDestination'
+                        : 'supplierLocation',
+                  disposition || network ? 'liveContext' : 'selection',
                   'reportedBy',
                   'latestReport',
                   'inspect',
@@ -263,7 +294,24 @@ export async function IntegrationWorkbenchScreen({
                         ? row.source_code
                         : row.supplier_code}
                   </p>
-                  <p className="max-w-48 break-words text-muted-foreground">{row.location_code}</p>
+                  {'branch_codes' in row ? (
+                    <details className="max-w-56 text-muted-foreground">
+                      <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-1">
+                        {t('includedBranches', { count: row.branch_codes.length })}
+                      </summary>
+                      <ul className="space-y-1 text-xs">
+                        {row.branch_codes.map((code) => (
+                          <li className="break-words [overflow-wrap:anywhere]" key={code}>
+                            {code}
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  ) : (
+                    <p className="max-w-48 break-words text-muted-foreground">
+                      {row.location_code}
+                    </p>
+                  )}
                 </td>
                 <td className="p-3">
                   {t('selection' in row ? row.selection : row.selected ? 'current' : 'historical')}

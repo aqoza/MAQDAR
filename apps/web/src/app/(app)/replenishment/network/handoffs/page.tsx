@@ -62,6 +62,7 @@ export default async function NetworkHandoffs({
   const rows = (range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])).map(
     (row) => handoffRowSchema.parse(row),
   )
+  const ti = await getTranslations('IntegrationWorkbench')
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
@@ -85,6 +86,12 @@ export default async function NetworkHandoffs({
           </HelpDisclosure>
         }
       />
+      <Link
+        className="inline-flex min-h-11 items-center underline md:min-h-0"
+        href="/replenishment/network/integrations"
+      >
+        {ti('networkLink')}
+      </Link>
       <Form
         action="/replenishment/network/handoffs"
         className="workspace-toolbar flex flex-wrap items-end gap-3"
