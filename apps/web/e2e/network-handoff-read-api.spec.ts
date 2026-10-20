@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve } from 'node:path'
-import { test, expect, type APIResponse } from '@playwright/test'
+import { test, expect, type APIResponse, type Page } from '@playwright/test'
 import {
   createConfirmedUser,
   organizationIdBySlug,
@@ -14,6 +14,26 @@ import {
 import { createOrganization, openSettings } from './helpers/organizations'
 
 test.use({ actionTimeout: 30_000 })
+
+async function expectPermissionTextFits(page: Page) {
+  const clipped = await page.locator('input[name="scopes"]').evaluateAll((inputs) =>
+    inputs.flatMap((input) => {
+      const row = input.parentElement!
+      const bounds = row.getBoundingClientRect()
+      return Array.from(row.querySelectorAll('label, bdi, p')).flatMap((text) => {
+        const rect = text.getBoundingClientRect()
+        return rect.left < bounds.left - 1 ||
+          rect.right > bounds.right + 1 ||
+          text.scrollWidth > text.clientWidth + 1
+          ? [input.id]
+          : []
+      })
+    }),
+  )
+  expect(clipped, 'Permission labels, identifiers and help must fit their own grid cell').toEqual(
+    [],
+  )
+}
 
 test('network read API scopes complete evidence and retained batches at five widths and RTL', async ({
   page,
@@ -185,6 +205,7 @@ print(json.dumps(dict(second=str(second),third=str(third))))`)
   for (const width of [375, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 })
     await expect(page.getByLabel('Read network handoffs', { exact: true })).toBeVisible()
+    await expectPermissionTextFits(page)
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
     ).toBe(true)
@@ -384,6 +405,7 @@ with psycopg.connect(sys.argv[1]) as db:
   for (const width of [375, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 })
     await expect(page.getByLabel('قراءة تسليمات الشبكة', { exact: true })).toBeVisible()
+    await expectPermissionTextFits(page)
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
     ).toBe(true)
