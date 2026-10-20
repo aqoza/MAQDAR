@@ -83,6 +83,13 @@ jobs:
           name: playwright-report
           path: apps/web/playwright-report
           retention-days: 7
+      - name: Retain network integration visual evidence
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: network-integration-visuals
+          path: apps/web/test-results/**/network-integrations-*.png
+          retention-days: 7
       - name: Stop local Supabase
         if: always()
         run: pnpm exec supabase stop --no-backup
