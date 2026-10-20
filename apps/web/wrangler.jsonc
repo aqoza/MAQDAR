@@ -7,12 +7,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "zeespare-web",
   "main": ".open-next/worker.js",
+  // Public website domains belong to Cloudflare Pages; legacy maqdar.org is retired.
   "routes": [
     { "pattern": "ote.zeespare.com", "custom_domain": true },
     { "pattern": "acme.zeespare.com", "custom_domain": true },
-    { "pattern": "zeespare.com", "custom_domain": true },
-    { "pattern": "www.zeespare.com", "custom_domain": true },
-    { "pattern": "maqdar.org", "custom_domain": true },
   ],
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://zeespare.com",
