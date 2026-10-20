@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import psycopg
 import pytest
 
-from maqdar_engine.scoped_worker import main, process_one
+from maqdar_engine.scoped_worker import main, process_one, failure_category
 from test_policy_simulation import task
 
 
@@ -102,3 +102,14 @@ def test_supervised_probe_exposes_health_but_never_claims(monkeypatch):
     monkeypatch.setattr('maqdar_engine.scoped_worker.threading.Event', lambda: stopped)
     assert main() == 0
     assert not any('claim' in c.args[0] for c in db.execute.call_args_list)
+
+
+@pytest.mark.parametrize('error,expected', [
+    (psycopg.errors.InsufficientPrivilege('private credential'), 'SQLSTATE 42501'),
+    (psycopg.OperationalError('SSL connection has been closed unexpectedly: private'), 'connection closed'),
+    (psycopg.OperationalError('prepared statement does not exist: private'), 'prepared statement'),
+    (psycopg.OperationalError('private credential'), 'database transport'),
+    (ValueError('private credential'), 'configuration or identity'),
+])
+def test_failure_diagnostics_never_include_provider_text(error, expected):
+    assert failure_category(error) == expected

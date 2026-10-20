@@ -15,6 +15,22 @@ from maqdar_engine.worker import validate_dsn
 from maqdar_engine.worker_health import health_server
 
 
+def failure_category(error: Exception) -> str:
+    """Emit fixed categories or SQLSTATE only, never DSNs or server messages."""
+    if isinstance(error, ValueError):
+        return 'configuration or identity'
+    if isinstance(error, psycopg.Error):
+        code = error.sqlstate
+        if code and len(code) == 5 and code.isascii() and code.isalnum():
+            return f'SQLSTATE {code}'
+        message = str(error).lower()
+        if 'closed' in message:
+            return 'connection closed'
+        if 'prepared statement' in message:
+            return 'prepared statement'
+    return 'database transport'
+
+
 def process_one(connection: psycopg.Connection) -> bool:
     claim = connection.execute('select * from app.scoped_simulation_claim()').fetchone()
     if claim is None:
@@ -56,15 +72,19 @@ def main() -> int:
     stopped = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, lambda *_: stopped.set())
+    stage = 'configuration'
     try:
         dsn = os.environ.get('MAQDAR_WORKER_DSN', '')
         validate_dsn(dsn)
         expected = UUID(os.environ.get('MAQDAR_EXPECTED_ORGANIZATION', ''))
+        stage = 'connection'
         with psycopg.connect(dsn, autocommit=True, connect_timeout=10,
                              application_name='maqdar-simulation-worker') as connection:
+            stage = 'session setup'
             connection.execute('set role maqdar_simulation_worker')
             connection.execute("set statement_timeout = '90s'")
             connection.execute("set lock_timeout = '5s'")
+            stage = 'identity'
             actual = connection.execute('select app.scoped_simulation_identity()').fetchone()[0]
             if UUID(str(actual)) != expected:
                 raise ValueError('Unexpected scope')
@@ -73,7 +93,9 @@ def main() -> int:
                 return 0
             if args.probe:
                 print('Simulation connection-only probe ready; consumption disabled.')
+            stage = 'health listener'
             with health_server(os.environ.get('MAQDAR_WORKER_HEALTH_PORT', '')) as health:
+                stage = 'probe' if args.probe else 'consume'
                 while not stopped.is_set():
                     health.touch()
                     if args.probe:
@@ -89,8 +111,8 @@ def main() -> int:
                     if not worked:
                         stopped.wait(5)
         return 0
-    except (ValueError, psycopg.Error):
-        print('Simulation worker stopped: check connection, scope and migrations.', file=sys.stderr)
+    except (ValueError, psycopg.Error) as error:
+        print(f'Simulation worker stopped ({stage}; {failure_category(error)}).', file=sys.stderr)
         return 1
 
 
