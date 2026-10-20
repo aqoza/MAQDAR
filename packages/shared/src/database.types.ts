@@ -3169,6 +3169,12 @@ isOneToOne: false
 "set_member_role":
 { Args: { "p_organization_id": string,"p_role": string,"p_user_id": string }; Returns: undefined
                            },
+"simulation_calendars_enqueue":
+{ Args: { "p_calendar_id": string,"p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_source_run_id": string }; Returns: string
+                           },
+"simulation_calendars_preview":
+{ Args: { "p_calendar_id": string,"p_organization_id": string,"p_source_run_id": string }; Returns: Json
+                           },
 "simulation_configurations_enqueue":
 { Args: { "p_configurations": Json,"p_organization_id": string,"p_request_id": string,"p_reuse_confirmed": boolean,"p_source_run_id": string }; Returns: string
                            },

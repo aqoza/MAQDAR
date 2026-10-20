@@ -3,6 +3,7 @@ vi.mock('@/lib/forms', () => import('../../../../lib/forms'))
 vi.mock('@/lib/policy-simulation', () => import('../../../../lib/policy-simulation'))
 vi.mock('@/lib/policy-configurations', () => import('../../../../lib/policy-configurations'))
 vi.mock('@/lib/policy-constraints', () => import('../../../../lib/policy-constraints'))
+vi.mock('@/lib/policy-calendars', () => import('../../../../lib/policy-calendars'))
 vi.mock('@/lib/policy-sensitivity', () => import('../../../../lib/policy-sensitivity'))
 const mocks = vi.hoisted(() => ({
   guard: vi.fn(),
@@ -25,7 +26,46 @@ import {
   enqueueSensitivity,
   enqueueConfigurations,
   enqueueConstraints,
+  enqueueCalendars,
 } from './actions'
+
+function calendarForm() {
+  const data = new FormData()
+  for (const [key, value] of Object.entries({
+    organization_id: 'untrusted',
+    source: '11111111-1111-4111-8111-111111111111',
+    calendar: '22222222-2222-4222-8222-222222222222',
+    request_id: '33333333-3333-4333-8333-333333333333',
+    fingerprint: 'a'.repeat(64),
+    confirmed: 'on',
+  }))
+    data.set(key, value)
+  return data
+}
+it('queues captured calendars with the active organization and preview fingerprint', async () => {
+  await expect(enqueueCalendars(idleState, calendarForm())).rejects.toThrow('REDIRECT')
+  expect(mocks.rpc).toHaveBeenCalledWith('simulation_calendars_enqueue', {
+    p_organization_id: 'session-org',
+    p_source_run_id: '11111111-1111-4111-8111-111111111111',
+    p_calendar_id: '22222222-2222-4222-8222-222222222222',
+    p_request_id: '33333333-3333-4333-8333-333333333333',
+    p_fingerprint: 'a'.repeat(64),
+    p_calendars_confirmed: true,
+  })
+})
+it('rejects an unconfirmed calendar request without calling the database', async () => {
+  const form = calendarForm()
+  form.delete('confirmed')
+  expect((await enqueueCalendars(idleState, form)).code).toBe('validation')
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('preserves calendar inputs on changed evidence without exposing database details', async () => {
+  mocks.rpc.mockResolvedValue({ error: { code: 'MQ409', message: 'private database detail' } })
+  const result = await enqueueCalendars(idleState, calendarForm())
+  expect(result.values?.fingerprint).toBe('a'.repeat(64))
+  expect(JSON.stringify(result)).not.toContain('private database detail')
+  expect(mocks.redirect).not.toHaveBeenCalled()
+})
 import { idleState } from '../../../../lib/forms'
 const values = {
   organization_id: 'untrusted',
