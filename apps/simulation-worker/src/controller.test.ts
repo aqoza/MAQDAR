@@ -74,7 +74,19 @@ test('unhealthy process is stopped without logging its response', async () => {
     },
   })
   await assert.rejects(() => tick(container, configured), {
-    message: 'Simulation container health failed',
+    message: 'Simulation container health failed (HTTP 503)',
   })
   assert.deepEqual(calls, ['timeout', 'stop'])
+})
+
+test('health transport failures expose only a fixed diagnostic category', async () => {
+  const { container } = fake(true)
+  container.getTcpPort = () => ({
+    async fetch() {
+      throw new TypeError('private provider payload with a credential')
+    },
+  })
+  await assert.rejects(() => tick(container, configured), {
+    message: 'Simulation container health failed (transport TypeError)',
+  })
 })
