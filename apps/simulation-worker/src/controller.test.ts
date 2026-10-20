@@ -90,3 +90,24 @@ test('health transport failures expose only a fixed diagnostic category', async 
     message: 'Simulation container health failed (transport TypeError)',
   })
 })
+
+test('cold startup may outlast twenty connection-refused checks without being stopped', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] })
+  const { container, calls } = fake()
+  let probes = 0
+  container.getTcpPort = () => ({
+    async fetch() {
+      if (++probes < 25) throw new Error('connection refused')
+      return new Response('{}')
+    },
+  })
+  const check = tick(container, configured)
+  void check.catch(() => {})
+  for (let attempt = 0; attempt < 30; attempt++) {
+    t.mock.timers.tick(500)
+    await new Promise((resolve) => setImmediate(resolve))
+  }
+  await check
+  assert.equal(probes, 25)
+  assert.ok(!calls.includes('stop'))
+})
