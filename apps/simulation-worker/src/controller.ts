@@ -17,8 +17,52 @@ export interface ContainerHandle {
     env: Record<string, string>
   }): void
   signal(signal: number): void
+  monitor(): Promise<void>
   setInactivityTimeout(ms: number): Promise<void>
   getTcpPort(port: number): { fetch(url: string, init?: RequestInit): Promise<Response> }
+}
+
+// Recreated with the Durable Object: monitors do not survive an isolate restart.
+export class ContainerMonitor {
+  private pending: Promise<void> | undefined
+  private readonly waitUntil: (pending: Promise<void>) => void
+  private readonly report: (message: string) => void
+
+  constructor(
+    waitUntil: (pending: Promise<void>) => void,
+    report: (message: string) => void = console.log,
+  ) {
+    this.waitUntil = waitUntil
+    this.report = report
+  }
+
+  observe(container: ContainerHandle): void {
+    if (this.pending) return
+    // Observe immediately after start, before yielding to readiness checks.
+    // Native failures may be synchronous; never log their provider text.
+    let observed: Promise<void>
+    try {
+      observed = container.monitor()
+    } catch (error) {
+      observed = Promise.reject(error)
+    }
+    this.pending = observed
+      .then(
+        () => this.report('Simulation container exited cleanly'),
+        (error: unknown) => {
+          const code = error instanceof Error && 'exitCode' in error ? error.exitCode : undefined
+          this.report(
+            typeof code === 'number' && Number.isInteger(code) && code >= 0 && code <= 255
+              ? `Simulation container exited (code ${code})`
+              : 'Simulation container lifecycle failed',
+          )
+        },
+      )
+      .finally(() => {
+        this.pending = undefined
+      })
+    this.waitUntil(this.pending)
+  }
 }
 
 function transportFailure(error: unknown): string {
@@ -37,7 +81,11 @@ function transportFailure(error: unknown): string {
   return 'transport unavailable'
 }
 
-export async function tick(container: ContainerHandle, config: RuntimeConfig): Promise<void> {
+export async function tick(
+  container: ContainerHandle,
+  config: RuntimeConfig,
+  monitor = new ContainerMonitor(() => {}),
+): Promise<void> {
   if (config.ENABLED !== 'true') {
     if (container.running) container.signal(15)
     return
@@ -66,6 +114,7 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
       },
     })
   }
+  monitor.observe(container)
   // Cron refreshes the watchdog each minute; absent cron stops only this instance.
   await container.setInactivityTimeout(180_000)
   const port = container.getTcpPort(8080)

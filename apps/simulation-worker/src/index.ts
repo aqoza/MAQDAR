@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers'
-import { tick, type RuntimeConfig } from './controller'
+import { tick, ContainerMonitor, type RuntimeConfig } from './controller'
 
 interface Env extends RuntimeConfig {
   ACME_SIMULATION: DurableObjectNamespace<AcmeSimulationContainer>
@@ -7,6 +7,7 @@ interface Env extends RuntimeConfig {
 
 export class AcmeSimulationContainer extends DurableObject<Env> {
   private pending: Promise<void> | undefined
+  private readonly monitor = new ContainerMonitor((pending) => this.ctx.waitUntil(pending))
 
   check(): Promise<void> {
     // Every trigger uses the same named DO and shares startup/health work.
@@ -19,7 +20,7 @@ export class AcmeSimulationContainer extends DurableObject<Env> {
   private async run(): Promise<void> {
     if (!this.ctx.container) throw new Error('Simulation container binding is missing')
     try {
-      await tick(this.ctx.container, this.env)
+      await tick(this.ctx.container, this.env, this.monitor)
     } catch (error) {
       // Only tick's fixed diagnostic categories may be logged, never provider text.
       if (

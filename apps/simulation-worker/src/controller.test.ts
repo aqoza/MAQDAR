@@ -86,7 +86,10 @@ test('unhealthy process is stopped without logging its response', async () => {
 test('one background monitor survives repeated health ticks without blocking readiness', async () => {
   const { container, calls } = fake(true)
   const background: Promise<void>[] = []
-  const monitor = new ContainerMonitor((pending) => background.push(pending), () => {})
+  const monitor = new ContainerMonitor(
+    (pending) => background.push(pending),
+    () => {},
+  )
   await tick(container, configured, monitor)
   await tick(container, configured, monitor)
   assert.equal(background.length, 1)
@@ -97,9 +100,13 @@ test('monitor reports only a bounded exit code and can reattach after an exit', 
   const { container } = fake(true)
   const background: Promise<void>[] = []
   const messages: string[] = []
-  const monitor = new ContainerMonitor((pending) => background.push(pending), (m) => messages.push(m))
+  const monitor = new ContainerMonitor(
+    (pending) => background.push(pending),
+    (m) => messages.push(m),
+  )
   for (const exitCode of [137, 'private credential', -1, 999]) {
-    container.monitor = () => Promise.reject(Object.assign(new Error('private credential'), { exitCode }))
+    container.monitor = () =>
+      Promise.reject(Object.assign(new Error('private credential'), { exitCode }))
     await tick(container, configured, monitor)
     await background.at(-1)
   }
@@ -115,14 +122,22 @@ test('monitor handles clean exits and synchronous native failure without provide
   const { container } = fake(true)
   const background: Promise<void>[] = []
   const messages: string[] = []
-  const monitor = new ContainerMonitor((pending) => background.push(pending), (m) => messages.push(m))
+  const monitor = new ContainerMonitor(
+    (pending) => background.push(pending),
+    (m) => messages.push(m),
+  )
   container.monitor = async () => {}
   await tick(container, configured, monitor)
   await background.at(-1)
-  container.monitor = () => { throw new Error('private credential') }
+  container.monitor = () => {
+    throw new Error('private credential')
+  }
   await tick(container, configured, monitor)
   await background.at(-1)
-  assert.deepEqual(messages, ['Simulation container exited cleanly', 'Simulation container lifecycle failed'])
+  assert.deepEqual(messages, [
+    'Simulation container exited cleanly',
+    'Simulation container lifecycle failed',
+  ])
 })
 
 test('health transport failures expose only a fixed diagnostic category', async () => {
