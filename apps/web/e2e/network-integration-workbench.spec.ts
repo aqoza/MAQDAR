@@ -30,6 +30,17 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   const base = '/replenishment/network/integrations'
+  const applyFilters = async (expected: Record<string, string>) => {
+    await page.getByRole('button', { name: 'Apply filters' }).click()
+    // Different filters can produce the same row count. Wait for the form navigation
+    // to commit before editing the next form, whose default values come from the URL.
+    await expect(page).toHaveURL(
+      (url) =>
+        url.pathname === base &&
+        Object.entries(expected).every(([key, value]) => url.searchParams.get(key) === value),
+      { timeout: 30_000 },
+    )
+  }
   const overlapResult = await editorClient.rpc('network_handoff_batch_create', {
     p_organization_id: org,
     p_handoff_ids: [ids[0], ids[2]],
@@ -94,24 +105,24 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   expect(await page.locator('tbody script').count()).toBe(0)
   await page.getByLabel('Included branch code', { exact: true }).fill('BRANCH-B')
   await page.getByLabel('Warehouse code', { exact: true }).fill('WAREHOUSE')
-  await page.getByRole('button', { name: 'Apply filters' }).click()
+  await applyFilters({ source: 'WAREHOUSE', branch: 'BRANCH-B' })
   await expect(rows).toHaveCount(7)
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('rejected')
-  await page.getByRole('button', { name: 'Apply filters' }).click()
+  await applyFilters({ source: 'WAREHOUSE', branch: 'BRANCH-B', status: 'rejected' })
   await expect(rows).toHaveCount(3)
   await page.getByLabel('Exact system label').fill('ERP')
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('no_report')
-  await page.getByRole('button', { name: 'Apply filters' }).click()
+  await applyFilters({ system: 'ERP', status: 'no_report' })
   await expect(rows).toHaveCount(3)
   await page.getByLabel('Exact system label').fill(' ERP ')
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('rejected')
-  await page.getByRole('button', { name: 'Apply filters' }).click()
+  await applyFilters({ system: ' ERP ', status: 'rejected' })
   await expect(rows).toHaveCount(1)
   await expect(page.getByLabel('Exact system label')).toHaveValue(' ERP ')
   await rows.getByText('2 included branches', { exact: true }).focus()
