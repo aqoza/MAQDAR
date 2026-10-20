@@ -24,7 +24,7 @@ export class AcmeSimulationContainer extends DurableObject<Env> {
       // Only tick's fixed diagnostic categories may be logged, never provider text.
       if (
         error instanceof Error &&
-        /^Simulation container health failed \((?:HTTP [1-5][0-9]{2}|transport TypeError|transport unavailable|unavailable)\)$/.test(
+        /^Simulation container health failed \((?:HTTP [1-5][0-9]{2}|transport TypeError|transport unavailable|unavailable|instance unavailable|instance not running|connection refused|HTTP protocol|network lost)\)$/.test(
           error.message,
         )
       )

@@ -21,6 +21,22 @@ export interface ContainerHandle {
   getTcpPort(port: number): { fetch(url: string, init?: RequestInit): Promise<Response> }
 }
 
+function transportFailure(error: unknown): string {
+  if (error instanceof TypeError) return 'transport TypeError'
+  if (!(error instanceof Error)) return 'transport unavailable'
+  const message = error.message.toLowerCase()
+  for (const [fragment, category] of [
+    ['no container instance', 'instance unavailable'],
+    ['container is not running', 'instance not running'],
+    ['connection refused', 'connection refused'],
+    ['http', 'HTTP protocol'],
+    ['network connection lost', 'network lost'],
+  ]) {
+    if (message.includes(fragment)) return category
+  }
+  return 'transport unavailable'
+}
+
 export async function tick(container: ContainerHandle, config: RuntimeConfig): Promise<void> {
   if (config.ENABLED !== 'true') {
     if (container.running) container.signal(15)
@@ -67,7 +83,7 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
       failure = `HTTP ${response.status}`
     } catch (error) {
       // Startup can precede the health listener. Never log provider errors/secrets.
-      failure = error instanceof TypeError ? 'transport TypeError' : 'transport unavailable'
+      failure = transportFailure(error)
     }
     if (attempt + 1 < attempts) await new Promise((resolve) => setTimeout(resolve, 500))
   }
