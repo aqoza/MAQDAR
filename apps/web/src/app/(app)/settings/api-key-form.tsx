@@ -118,7 +118,7 @@ export function ApiKeyForm({
             {scopes.map((scope) => {
               const id = `api-key-scope-${scope.key}`
               return (
-                <div key={scope.value} className="flex items-start gap-2 text-sm">
+                <div key={scope.value} className="flex min-w-0 items-start gap-2 text-sm">
                   <input
                     id={id}
                     type="checkbox"
@@ -129,12 +129,15 @@ export function ApiKeyForm({
                     aria-describedby={`${id}-description`}
                     className="accent-primary mt-0.5 size-4 shrink-0"
                   />
-                  <div className="flex flex-col gap-0.5">
+                  <div className="flex min-w-0 flex-col gap-0.5">
                     <div className="flex flex-wrap items-baseline gap-x-2">
                       <label htmlFor={id} className="font-medium">
                         {t(`scopes.${scope.key}.label`)}
                       </label>
-                      <bdi dir="ltr" className="text-muted-foreground font-mono text-xs">
+                      <bdi
+                        dir="ltr"
+                        className="text-muted-foreground min-w-0 font-mono text-xs break-all"
+                      >
                         {scope.value}
                       </bdi>
                     </div>

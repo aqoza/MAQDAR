@@ -26,6 +26,7 @@ import {
 } from './resources'
 import { OPENAPI_DOCUMENT_VERSION, deprecationFor } from './versioning'
 import { handoffPaths, handoffSchemas } from './handoff-openapi'
+import { networkHandoffPaths, networkHandoffSchemas } from './network-handoff-openapi'
 import { dispositionHandoffPaths, dispositionHandoffSchemas } from './disposition-handoff-openapi'
 import { eventHandoffPaths, eventHandoffSchemas } from './event-handoff-openapi'
 import { transferHandoffPaths, transferHandoffSchemas } from './transfer-handoff-openapi'
@@ -936,6 +937,7 @@ export function buildOpenApi(): OpenApiDocument {
     transferHandoffPaths(),
     eventHandoffPaths(),
     dispositionHandoffPaths(),
+    networkHandoffPaths(),
   )
   Object.assign(paths, acknowledgementPaths())
   Object.assign(
@@ -945,6 +947,7 @@ export function buildOpenApi(): OpenApiDocument {
     transferHandoffSchemas(),
     eventHandoffSchemas(),
     dispositionHandoffSchemas(),
+    networkHandoffSchemas(),
     acknowledgementSchemas(),
   )
 
@@ -959,6 +962,11 @@ export function buildOpenApi(): OpenApiDocument {
     servers: [{ url: API_BASE_PATH }],
     security: [{ bearerAuth: [] }],
     tags: [
+      {
+        name: 'Network handoffs',
+        description:
+          'Complete network planning approvals and copied batches with currency-separated freight and independent live selection.',
+      },
       {
         name: 'Disposition handoffs',
         description:
