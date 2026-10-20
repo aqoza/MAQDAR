@@ -199,6 +199,8 @@ def test_scoped_comparisons_use_same_identity_and_publication(scoped, method):
         payload = comparison_task()
         payload['policy'] = replay['policy']
         payload['source_simulation']['evidence']['policy'] = replay['policy']
+        if 'source_comparison' in payload:
+            payload['source_comparison']['evidence']['policy'] = replay['policy']
         db.execute('update planning.simulation_inputs set payload=%s where run_id=%s', (Jsonb(payload), target))
     with runtime(scoped) as db:
         assert process_one(db) is True

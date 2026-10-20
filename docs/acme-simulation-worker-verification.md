@@ -4,7 +4,7 @@
 
 ## Journeys and guarantees
 
-Publication follow-up: current main through PR #112 was integrated before CI. Two new regression cases reproduced missing scoped dispatch for `periodic-constraints-v1` and `periodic-calendars-v1` (two failures, eight passes). Both now use the scoped publication path; the focused unit/calculation/health run passed **87 tests**. Real scoped publication coverage includes both new methods in the full CI database suite. These source integrations do not add their later migrations to the three-file hosted rollout.
+Publication follow-up: current main through PR #112 was integrated before CI. Two new regression cases reproduced missing scoped dispatch for `periodic-constraints-v1` and `periodic-calendars-v1` (two failures, eight passes). Both now use the scoped publication path; the focused unit/calculation/health run passed **87 tests**. The real scoped database suite passed **18 cases**, including both new methods, after correcting the calendar fixture's nested captured policy identifiers. Initial CI also identified eight missing entries in the central function-privilege snapshot; they now explicitly require no API-role execution privileges. These source integrations do not add their later migrations to the three-file hosted rollout.
 
 | Guarantee                                                                                                   | Verification                                                                | Result |
 | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------ |
