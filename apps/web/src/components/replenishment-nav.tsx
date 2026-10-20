@@ -6,6 +6,7 @@ export async function ReplenishmentNav({
   current,
 }: {
   current:
+    | 'network'
     | 'excess'
     | 'eventIntegrations'
     | 'eventBatches'
@@ -23,6 +24,7 @@ export async function ReplenishmentNav({
   const links = [
     ['drafts', '/replenishment'],
     ['redistribution', '/replenishment/redistribution'],
+    ['network', '/replenishment/network'],
     ['locator', '/replenishment/stock-locator'],
     ['excess', '/replenishment/excess'],
     ['review', '/replenishment/review'],

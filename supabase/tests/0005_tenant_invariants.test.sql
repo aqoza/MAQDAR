@@ -30,6 +30,11 @@ select format(
 ) as predicate
 from unnest(array['id', 'location_id', 'source_location_id']) as column_name;
 
+-- Step 22: an RPC-derived immutable array requires every participating location.
+-- Both authority sets are evaluated once, never through a per-row membership helper.
+insert into allowed_restrictive values
+('((organization_id = ANY (ARRAY( SELECT app.unscoped_organizations() AS unscoped_organizations))) OR (required_location_ids <@ ARRAY( SELECT app.scoped_locations() AS scoped_locations)))');
+
 -- Tables written only through the security-definer RPCs (Step 3 tenancy, Step 5a imports, Step 5b
 -- API keys).
 create temporary table rpc_only_tables on commit drop as
@@ -37,6 +42,7 @@ select unnest(array['organizations', 'memberships', 'membership_locations', 'org
                     'import_batches', 'import_files', 'import_errors', 'api_keys', 'planning_runs', 'demand_classifications', 'forecast_results', 'demand_preparations', 'inventory_policies', 'policy_overrides', 'replenishment_drafts', 'redistribution_drafts', 'transfer_date_scenarios', 'transfer_freight_estimates', 'transfer_proposals', 'transfer_handoffs', 'transfer_handoff_batches', 'transfer_handoff_acknowledgements', 'purchase_handoff_acknowledgements', 'supplier_scenarios', 'delivery_scenarios', 'purchase_cost_estimates', 'purchase_proposals', 'purchase_handoffs', 'purchase_handoff_batches', 'excess_stock_assessments', 'excess_disposition_proposals', 'excess_disposition_handoffs', 'excess_disposition_handoff_batches', 'container_capacity_scenarios', 'planned_event_scenarios', 'event_policy_scenarios', 'event_replenishment_drafts', 'event_supplier_scenarios', 'event_delivery_scenarios', 'event_purchase_cost_estimates', 'event_purchase_proposals', 'event_purchase_handoffs', 'event_purchase_handoff_batches', 'event_purchase_handoff_acknowledgements']) as table_name;
 
 -- Columns no API role may read or write in any way (Step 5b: the SHA-256 of every API key).
+insert into rpc_only_tables values ('network_allocation_scenarios');
 create temporary table secret_columns on commit drop as
 select * from (values ('api_keys', 'key_hash')) as s (table_name, column_name);
 
