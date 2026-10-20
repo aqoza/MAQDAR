@@ -183,11 +183,14 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 21b  | **Policy sensitivity comparisons:** one captured simulation, calculated maximum versus up to ten explicit alternatives, compact metrics and selected daily ledgers with immutable scoped evidence.                          | [PR #103](https://github.com/aqoza/MAQDAR/pull/103) |
 | 21c  | **Policy configuration comparisons:** captured original simulation versus up to ten explicit maximum/lead/review tuples, exact metrics and daily ledgers without extending history.                                         | Merged — PR #105                                    |
 | 21d  | **MOQ/pack simulations:** captured original baseline versus explicit maximum/lead/review/MOQ/pack assumptions, exact order rounding and inspectable scoped results.                                                         | Merged — PR #108                                    |
-| 21e  | **Calendar-aware simulations:** preserved MOQ/pack comparison plus adjusted reviews/receipts from captured ordering and receiving calendars, explicit unavailable diagnoses and immutable scoped history.                   | Implemented; verification and review                |
+| 21e  | **Calendar-aware simulations:** preserved MOQ/pack comparison plus adjusted reviews/receipts from captured ordering and receiving calendars, explicit unavailable diagnoses and immutable scoped history.                   | Merged — PR #109                                    |
+| 22   | **Bounded network allocation:** one warehouse policy and up to twenty branch drafts, exact proportional rationing, all-location access and immutable evidence/history.                                                      | Implemented; verification and review                |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
 See [policy-sensitivity.md](policy-sensitivity.md) for the approved multiple-maximum comparison contract.
+
+See [network-allocation.md](network-allocation.md) for Step 22. The immutable required-location array uses an approved restrictive RLS subset predicate against a single scoped-location InitPlan, reviewed in `0005_tenant_invariants.test.sql`.
 
 ## Decision log
 
@@ -561,3 +564,7 @@ PR #105 was reviewed at `a524a1e` without blocking findings and merged as `5eb97
 ### Step 21e — approved 2026-10-20
 
 PR #108 was reviewed at `e0429c8` with no blocking findings and merged as `88cc17e` after all three CI jobs and 211 focused regression tests passed. The owner approved calendar-aware replays from one completed MOQ/pack comparison. Preserve its baseline and original alternatives; select one active ordering work calendar and use the source location's receiving calendar. Shift closed-day reviews, combine reviews on the same actual day, recompute the gap and round one order before daily demand. Add the saved calendar-day lead and shift receipts to known receiving days. Reviews beyond the window do not create orders; later receipts stay in the pipeline. Capture current calendars, holidays and overrides with applicability confirmation and reject stale previews. Unknown required dates or 90-day search exhaustion make the whole adjusted comparison unavailable. Preserve source evidence, exact quantities, immutable results, stable retries and editor/location access, with shared compact green UI at five widths plus Arabic RTL. No winner, policy update or operational order. See [policy-calendars.md](policy-calendars.md).
+
+### Step 22 — approved 2026-10-20
+
+The owner merged PR #109 as `0414d18` and approved a bounded network allocation increment: one item, one source warehouse and 1–20 receiving branches using explicitly selected saved replenishment drafts and a source policy maximum. Protect the warehouse maximum and commitments, exclude source inbound, and ration available surplus proportionally in exact 0.001-unit increments using largest remainder and a stable location-UUID tie-break. Reuse matching item/unit/cutoff, exact-cutoff stock, active directed-lane and applicability-confirmation rules. Require access to all locations, editor-only saves, refreshed changed previews and immutable scoped history. Show remaining branch gaps and retained warehouse stock; scenarios remain independent, reserve nothing and promise no arrival. Whole-network policy optimization and execution remain deferred. See [network-allocation.md](network-allocation.md).

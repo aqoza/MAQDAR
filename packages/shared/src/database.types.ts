@@ -278,6 +278,12 @@ isOneToOne: false
       foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
       columns: ["organization_id","policy_id"]
 isOneToOne: false
+      referencedRelation: "network_allocation_source_options"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "event_policy_scenarios_organization_id_policy_id_fkey"
+      columns: ["organization_id","policy_id"]
+isOneToOne: false
       referencedRelation: "policy_workbench"
       referencedColumns: ["organization_id","id"]
     },{
@@ -1016,6 +1022,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"network_allocation_scenarios": {
+                  Row: {
+                    "created_at": string,"id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"source_location_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"source_location_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"required_location_ids"?: (string)[],"source_location_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "network_allocation_scenarios_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "network_allocation_scenarios_organization_id_source_locati_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"network_links": {
                   Row: {
                     "created_at": string,"currency": string | null,"freight_basis": string,"freight_cost": number | null,"freight_unit": string | null,"freight_valid_from": string | null,"from_location_id": string,"id": string,"is_active": boolean,"lead_time_days_p50": number,"lead_time_days_p90": number,"organization_id": string,"to_location_id": string,"updated_at": string
@@ -1230,6 +1262,12 @@ isOneToOne: false
       foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
+      referencedRelation: "network_allocation_source_options"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
       referencedRelation: "policy_workbench"
       referencedColumns: ["organization_id","id","location_id"]
     },{
@@ -1430,6 +1468,12 @@ isOneToOne: true
       foreignKeyName: "purchase_proposals_organization_id_draft_id_fkey"
       columns: ["organization_id","draft_id"]
 isOneToOne: false
+      referencedRelation: "network_allocation_branch_options"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
       referencedRelation: "replenishment_draft_list"
       referencedColumns: ["organization_id","id"]
     },{
@@ -1538,6 +1582,12 @@ isOneToOne: false
       foreignKeyName: "redistribution_drafts_organization_id_draft_id_fkey"
       columns: ["organization_id","draft_id"]
 isOneToOne: false
+      referencedRelation: "network_allocation_branch_options"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
       referencedRelation: "replenishment_draft_list"
       referencedColumns: ["organization_id","id"]
     },{
@@ -1563,6 +1613,12 @@ isOneToOne: false
       columns: ["organization_id","source_policy_id","source_location_id"]
 isOneToOne: false
       referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "network_allocation_source_options"
       referencedColumns: ["organization_id","id","location_id"]
     },{
       foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
@@ -1601,6 +1657,12 @@ isOneToOne: false
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
       referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "network_allocation_source_options"
       referencedColumns: ["organization_id","id","location_id"]
     },{
       foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
@@ -1705,6 +1767,12 @@ isOneToOne: false
                   }
                   Relationships: [
                     {
+      foreignKeyName: "supplier_scenarios_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "network_allocation_branch_options"
+      referencedColumns: ["organization_id","id"]
+    },{
       foreignKeyName: "supplier_scenarios_organization_id_draft_id_fkey"
       columns: ["organization_id","draft_id"]
 isOneToOne: false
@@ -2321,6 +2389,48 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"network_allocation_branch_options": {
+                  Row: {
+                    "created_at": string | null,"cutoff": string | null,"gap": string | null,"id": string | null,"item_id": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"search_text": string | null,"source_policy_id": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+
+                  ]
+                },"network_allocation_list": {
+                  Row: {
+                    "allocated": string | null,"branch_count": number | null,"created_at": string | null,"cutoff": string | null,"id": string | null,"item_code": string | null,"organization_id": string | null,"search_text": string | null,"source_code": string | null,"source_location_id": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "allocated"?: never,"branch_count"?: never,"created_at"?: string | null,"cutoff"?: never,"id"?: string | null,"item_code"?: never,"organization_id"?: string | null,"search_text"?: never,"source_code"?: never,"source_location_id"?: string | null,"unit"?: never
+                         }
+                        Update: {
+                           "allocated"?: never,"branch_count"?: never,"created_at"?: string | null,"cutoff"?: never,"id"?: string | null,"item_code"?: never,"organization_id"?: string | null,"search_text"?: never,"source_code"?: never,"source_location_id"?: string | null,"unit"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "network_allocation_scenarios_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "network_allocation_scenarios_organization_id_source_locati_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"network_allocation_source_options": {
+                  Row: {
+                    "cutoff": string | null,"finished_at": string | null,"id": string | null,"item_code": string | null,"item_id": string | null,"location_id": string | null,"maximum": string | null,"organization_id": string | null,"search_text": string | null,"source_code": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+
+                  ]
                 },"policy_override_history": {
                   Row: {
                     "created_at": string | null,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"id": string | null,"location_id": string | null,"order_up_to": string | null,"organization_id": string | null,"policy_id": string | null,"reason": string | null,"reorder_point": string | null,"revision": number | null,"status": string | null,"submitted_by": string | null
@@ -2344,6 +2454,12 @@ isOneToOne: false
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
       referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
+      referencedRelation: "network_allocation_source_options"
       referencedColumns: ["organization_id","id","location_id"]
     },{
       foreignKeyName: "policy_overrides_organization_id_policy_id_location_id_fkey"
@@ -2487,6 +2603,12 @@ isOneToOne: true
       foreignKeyName: "purchase_proposals_organization_id_draft_id_fkey"
       columns: ["organization_id","draft_id"]
 isOneToOne: false
+      referencedRelation: "network_allocation_branch_options"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "purchase_proposals_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
       referencedRelation: "replenishment_draft_list"
       referencedColumns: ["organization_id","id"]
     },{
@@ -2531,6 +2653,12 @@ isOneToOne: false
       foreignKeyName: "redistribution_drafts_organization_id_draft_id_fkey"
       columns: ["organization_id","draft_id"]
 isOneToOne: false
+      referencedRelation: "network_allocation_branch_options"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
       referencedRelation: "replenishment_draft_list"
       referencedColumns: ["organization_id","id"]
     },{
@@ -2556,6 +2684,12 @@ isOneToOne: false
       columns: ["organization_id","source_policy_id","source_location_id"]
 isOneToOne: false
       referencedRelation: "inventory_policies"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
+      columns: ["organization_id","source_policy_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "network_allocation_source_options"
       referencedColumns: ["organization_id","id","location_id"]
     },{
       foreignKeyName: "redistribution_drafts_organization_id_source_policy_id_sou_fkey"
@@ -2607,6 +2741,12 @@ isOneToOne: false
       foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
       columns: ["organization_id","policy_id","location_id"]
 isOneToOne: false
+      referencedRelation: "network_allocation_source_options"
+      referencedColumns: ["organization_id","id","location_id"]
+    },{
+      foreignKeyName: "replenishment_drafts_organization_id_policy_id_location_id_fkey"
+      columns: ["organization_id","policy_id","location_id"]
+isOneToOne: false
       referencedRelation: "policy_workbench"
       referencedColumns: ["organization_id","id","location_id"]
     },{
@@ -2630,6 +2770,12 @@ isOneToOne: false
                          }
                         Relationships: [
                     {
+      foreignKeyName: "supplier_scenarios_organization_id_draft_id_fkey"
+      columns: ["organization_id","draft_id"]
+isOneToOne: false
+      referencedRelation: "network_allocation_branch_options"
+      referencedColumns: ["organization_id","id"]
+    },{
       foreignKeyName: "supplier_scenarios_organization_id_draft_id_fkey"
       columns: ["organization_id","draft_id"]
 isOneToOne: false
@@ -3082,6 +3228,12 @@ isOneToOne: false
 { Args: Record<PropertyKey, never>; Returns: {
               "arabic_enabled": boolean,"base_currency": string,"default_locale": string,"effective_time_zone": string,"home_country": string,"id": string,"is_active": boolean,"name": string,"numbering_system": string,"role": string,"slug": string,"time_zone": string
             }[]
+                           },
+"network_allocation_preview":
+{ Args: { "p_backorders"?: string,"p_basis": string,"p_commitments_confirmed"?: boolean,"p_draft_ids": (string)[],"p_lanes_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_source_policy_id": string }; Returns: Json
+                           },
+"network_allocation_save":
+{ Args: { "p_backorders"?: string,"p_basis": string,"p_commitments_confirmed"?: boolean,"p_draft_ids": (string)[],"p_fingerprint"?: string,"p_lanes_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_request_id"?: string,"p_source_policy_id": string }; Returns: string
                            },
 "organization_members":
 { Args: { "p_organization_id": string }; Returns: {
