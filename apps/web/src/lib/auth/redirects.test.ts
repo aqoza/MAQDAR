@@ -31,6 +31,18 @@ describe('safeNextPath', () => {
 })
 
 describe('safeDestination', () => {
+  it('unwraps legacy next callbacks before a Server Action redirects', () => {
+    const id = '00000000-0000-4000-8000-000000000095'
+    expect(safeDestination(`${ORIGIN}/auth/email/invitations/${id}`, ORIGIN)).toBe(
+      `/invitations/${id}`,
+    )
+    expect(safeDestination('/auth/email/dashboard', ORIGIN)).toBe('/dashboard')
+    expect(safeDestination('/auth/email/invitations/not-a-uuid', ORIGIN)).toBe('/dashboard')
+    expect(safeDestination(`https://evil.example/auth/email/invitations/${id}`, ORIGIN)).toBe(
+      '/dashboard',
+    )
+  })
+
   it('keeps relative paths under the same rules as safeNextPath', () => {
     expect(safeDestination('/items?page=2', ORIGIN)).toBe('/items?page=2')
     expect(safeDestination('//evil.example', ORIGIN)).toBe('/dashboard')

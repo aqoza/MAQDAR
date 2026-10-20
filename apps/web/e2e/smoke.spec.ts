@@ -12,7 +12,7 @@ const run = Date.now()
 const PASSWORD = `Smoke-pass-${run}`
 
 test('anonymous visitors are sent to the login page', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/dashboard')
   await expect(page).toHaveURL(/\/login(?:[?#].*)?$/)
   await expect(page.getByRole('heading', { name: 'Sign in to ZeeSpare' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible()

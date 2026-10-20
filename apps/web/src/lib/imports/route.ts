@@ -121,7 +121,15 @@ export function isSameOrigin(
 ): boolean {
   const origin = request.headers.get('origin')
   if (!origin || origin === 'null') return false
-  const allowed = [originOf(request.url), originOf(siteUrl)].filter(Boolean)
+
+  const requestOrigin = originOf(request.url)
+  // Tenant requests must never accept a sibling's Origin via the public-site fallback.
+  const requestHost = new URL(request.url).hostname
+  const isTenant = requestHost.endsWith('.zeespare.com') && requestHost !== 'www.zeespare.com'
+  const isLocalTenant = requestHost.endsWith('.localhost')
+  const allowed = [requestOrigin, isTenant || isLocalTenant ? null : originOf(siteUrl)].filter(
+    Boolean,
+  )
   return allowed.includes(origin.replace(/\/$/, ''))
 }
 

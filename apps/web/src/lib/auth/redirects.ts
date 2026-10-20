@@ -1,3 +1,5 @@
+import { emailDestination } from './email-destination'
+
 const DEFAULT_PATH = '/dashboard'
 const PROBE_ORIGIN = 'http://maqdar.invalid'
 // Browsers strip ASCII tab and newline from URLs and treat backslashes like slashes, so
@@ -18,6 +20,12 @@ export function safeNextPath(candidate: string | null | undefined): string {
   // query; anything that resolves elsewhere is not a same-origin path.
   const url = parseUrl(candidate, PROBE_ORIGIN)
   if (!url || url.origin !== PROBE_ORIGIN) return DEFAULT_PATH
+  // Older email templates pass the new callback in `next` after verifying the token.
+  // Resolve it before a Server Action redirects: Next may stream the final page while
+  // retaining the intermediate route-handler URL, making the next form POST target it.
+  if (url.pathname.startsWith('/auth/email/')) {
+    return emailDestination(url.pathname.slice('/auth/email/'.length).split('/')) ?? DEFAULT_PATH
+  }
   const path = `${url.pathname}${url.search}`
   return path.startsWith('//') ? DEFAULT_PATH : path
 }
