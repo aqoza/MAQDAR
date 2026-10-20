@@ -95,7 +95,7 @@ export default async function CalendarSimulation({
             className="workspace-panel flex flex-wrap items-end gap-3"
           >
             <input type="hidden" name="source" value={source} />
-            <label className="grid min-w-0 flex-1 gap-1">
+            <label className="grid min-w-0 flex-1 basis-64 gap-1">
               {t('ordering')}
               <select
                 required
