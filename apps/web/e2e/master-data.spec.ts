@@ -133,6 +133,30 @@ test('items: create with a brand, list it with money formatted, edit and save', 
   await expect(listRow(page, item.code)).toContainText(/KWD\s1,250\.750/)
 })
 
+test('wide item lists are named and keyboard-scrollable at phone width', async ({
+  page,
+}, testInfo) => {
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.goto('/items')
+  const region = page.getByRole('region', { name: 'Items', exact: true })
+  await expect(region).toHaveAttribute('tabindex', '0')
+  await expect(region.getByRole('table', { name: 'Items', exact: true })).toBeVisible()
+  await expect(region).toContainText(/KWD\s1,250\.750/)
+  expect(await region.evaluate((node) => node.scrollWidth > node.clientWidth)).toBe(true)
+
+  // Reach the scroll container from the final toolbar control through ordinary keyboard order.
+  await region.press('Shift+Tab')
+  await page.keyboard.press('Tab')
+  await expect(region).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await expect.poll(() => region.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0)
+  expect(await region.evaluate((node) => getComputedStyle(node).outlineStyle)).not.toBe('none')
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  )
+  await page.screenshot({ path: testInfo.outputPath('item-table-keyboard-phone.png') })
+})
+
 test('supplier items: a supplier, then a supplier item entered by part code', async ({ page }) => {
   const supplier = {
     code: 'SUP-GULF',

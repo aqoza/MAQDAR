@@ -1,5 +1,9 @@
 # UI regression ledger
 
+## Master-data table keyboard access
+
+- `MASTER-TABLE-001`: populated master-data tables expose their translated entity name and a focusable horizontal scroll region. At 375px, keyboard users can Tab into the region and scroll to trailing monetary columns with ArrowRight; focus remains visible and the page does not overflow. Keep sort links, exact currency formatting and generated table primitives unchanged. Run `master-data.spec.ts` against local fixtures and retain the phone screenshot.
+
 ## Policy simulation conflicts
 
 - `SIM-CONFLICT-001`: a blocked simulation submission must show simulation-specific active-run/request-reuse guidance, preserve the entered quantities and leave the original run queued. Do not display the generic organization-owner conflict copy. Run the simulation action tests and `pnpm --filter web test:e2e policy-simulation.spec.ts` against loopback fixtures. Database errors, tenant checks and queue limits remain unchanged.

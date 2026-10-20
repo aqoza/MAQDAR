@@ -174,60 +174,69 @@ export async function DataTable({
   const ctx: CellContext = { definition, t, format, locale, yes: tList('yes'), no: tList('no') }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          {definition.columns.map((column) => {
-            const label = t(`columns.${column.key}`)
-            const numeric = NUMERIC.has(column.kind)
-            const sortColumn = column.sortBy ?? column.key
-            const sorted = column.sortable === true && params.sort === sortColumn
-            const Icon = sorted
-              ? params.dir === 'asc'
-                ? ArrowUpIcon
-                : ArrowDownIcon
-              : ArrowUpDownIcon
-            return (
-              <TableHead
-                key={column.key}
-                scope="col"
-                aria-sort={sorted ? (params.dir === 'asc' ? 'ascending' : 'descending') : undefined}
-                className={cn(numeric && 'text-end')}
-              >
-                {column.sortable ? (
-                  <Link
-                    href={sortHref(definition.basePath, definition.list, params, sortColumn)}
-                    prefetch={false}
-                    className="hover:text-foreground inline-flex items-center gap-1"
-                  >
-                    {label}
-                    <Icon
-                      aria-hidden="true"
-                      className={cn('size-3.5', sorted ? 'opacity-100' : 'opacity-40')}
-                    />
-                  </Link>
-                ) : (
-                  label
-                )}
-              </TableHead>
-            )
-          })}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {rows.map((row) => (
-          <TableRow key={String(row.id)}>
-            {definition.columns.map((column) => (
-              <TableCell
-                key={column.key}
-                className={cn(NUMERIC.has(column.kind) && 'text-end tabular-nums')}
-              >
-                <Cell column={column} row={row} ctx={ctx} />
-              </TableCell>
-            ))}
+    <div
+      role="region"
+      aria-label={t('title')}
+      tabIndex={0}
+      className="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&_[data-slot=table-container]]:overflow-visible"
+    >
+      <Table aria-label={t('title')}>
+        <TableHeader>
+          <TableRow>
+            {definition.columns.map((column) => {
+              const label = t(`columns.${column.key}`)
+              const numeric = NUMERIC.has(column.kind)
+              const sortColumn = column.sortBy ?? column.key
+              const sorted = column.sortable === true && params.sort === sortColumn
+              const Icon = sorted
+                ? params.dir === 'asc'
+                  ? ArrowUpIcon
+                  : ArrowDownIcon
+                : ArrowUpDownIcon
+              return (
+                <TableHead
+                  key={column.key}
+                  scope="col"
+                  aria-sort={
+                    sorted ? (params.dir === 'asc' ? 'ascending' : 'descending') : undefined
+                  }
+                  className={cn(numeric && 'text-end')}
+                >
+                  {column.sortable ? (
+                    <Link
+                      href={sortHref(definition.basePath, definition.list, params, sortColumn)}
+                      prefetch={false}
+                      className="hover:text-foreground inline-flex items-center gap-1"
+                    >
+                      {label}
+                      <Icon
+                        aria-hidden="true"
+                        className={cn('size-3.5', sorted ? 'opacity-100' : 'opacity-40')}
+                      />
+                    </Link>
+                  ) : (
+                    label
+                  )}
+                </TableHead>
+              )
+            })}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={String(row.id)}>
+              {definition.columns.map((column) => (
+                <TableCell
+                  key={column.key}
+                  className={cn(NUMERIC.has(column.kind) && 'text-end tabular-nums')}
+                >
+                  <Cell column={column} row={row} ctx={ctx} />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
