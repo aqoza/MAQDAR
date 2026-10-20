@@ -1,19 +1,33 @@
 /** Bounded cron consumer. Fixed endpoints only; no session cookies or credentials in diagnostics. */
 export async function deliverInvitations({
-  url, key, tenantOrigins, fetcher = fetch, maxMessages = 8,
+  url,
+  key,
+  tenantOrigins,
+  fetcher = fetch,
+  maxMessages = 5,
   pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 }) {
   const base = new URL(url)
-  if (base.username || base.password || base.search || base.hash || base.pathname !== '/' ||
-      (base.protocol !== 'https:' && !(base.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(base.hostname))))
+  if (
+    base.username ||
+    base.password ||
+    base.search ||
+    base.hash ||
+    base.pathname !== '/' ||
+    (base.protocol !== 'https:' &&
+      !(base.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(base.hostname)))
+  )
     throw new Error('Invalid Supabase origin')
-  if (!key || !Number.isInteger(maxMessages) || maxMessages < 1 || maxMessages > 8)
+  if (!key || !Number.isInteger(maxMessages) || maxMessages < 1 || maxMessages > 5)
     throw new Error('Invalid delivery configuration')
   const headers = { apikey: key, 'Content-Type': 'application/json' }
   if (!key.startsWith('sb_secret_')) headers.Authorization = `Bearer ${key}`
   async function request(path, body) {
     return fetcher(new URL(path, base), {
-      method: 'POST', headers, body: JSON.stringify(body), redirect: 'error',
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+      redirect: 'error',
       signal: AbortSignal.timeout(15000),
     })
   }
@@ -24,31 +38,59 @@ export async function deliverInvitations({
   }
   let sent = 0
   for (let index = 0; index < maxMessages; index++) {
-    if (index) await pause(7500)
+    if (index) await pause(12000)
     const job = await rpc('onboarding_claim', {})
     if (!job) break
     const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-    if (![job.id, job.lease, job.invitation_id, job.organization_id].every((id) => typeof id === 'string' && uuid.test(id)) ||
-        typeof job.email !== 'string' || job.email.length > 254 || /[\r\n]/.test(job.email))
+    if (
+      ![job.id, job.lease, job.invitation_id, job.organization_id].every(
+        (id) => typeof id === 'string' && uuid.test(id),
+      ) ||
+      typeof job.email !== 'string' ||
+      job.email.length > 254 ||
+      /[\r\n]/.test(job.email)
+    )
       throw new Error('Invalid queue response')
     let outcome = 'failed'
     const tenant = tenantOrigins[job.organization_id]
     if (tenant) {
       const destination = new URL(tenant)
-      if (destination.protocol !== 'https:' || destination.username || destination.password || destination.pathname !== '/' || destination.search || destination.hash)
+      const localTest =
+        ['localhost', '127.0.0.1'].includes(base.hostname) &&
+        ['localhost', '127.0.0.1'].includes(destination.hostname)
+      if (
+        (destination.protocol !== 'https:' && !(localTest && destination.protocol === 'http:')) ||
+        destination.username ||
+        destination.password ||
+        destination.pathname !== '/' ||
+        destination.search ||
+        destination.hash
+      )
         throw new Error('Invalid tenant origin')
       const redirectTo = `${destination.origin}/auth/email/invitations/${job.invitation_id}`
       try {
-        let response = await request(`/auth/v1/invite?redirect_to=${encodeURIComponent(redirectTo)}`, { email: job.email })
+        let response = await request(
+          `/auth/v1/invite?redirect_to=${encodeURIComponent(redirectTo)}`,
+          { email: job.email },
+        )
         if (response.status === 422 || response.status === 400) {
           const error = await response.json()
-          if (error.code === 'email_exists') {
+          // Auth's unversioned wire response uses error_code; versioned responses use code.
+          if ((error.error_code ?? error.code) === 'email_exists') {
             response = await request(`/auth/v1/otp?redirect_to=${encodeURIComponent(redirectTo)}`, {
-              email: job.email, create_user: false,
+              email: job.email,
+              create_user: false,
             })
           }
         }
-        outcome = response.ok ? 'sent' : response.status === 429 ? 'retry' : response.status >= 500 ? 'uncertain' : 'failed'
+        outcome = response.ok
+          ? 'sent'
+          : response.status === 429
+            ? 'retry'
+            : response.status >= 500
+              ? 'uncertain'
+              : 'failed'
+        if (!response.bodyUsed) await response.body?.cancel()
       } catch {
         // A timeout may follow SMTP acceptance. Never blindly retry an uncertain send.
         outcome = 'uncertain'
