@@ -111,3 +111,19 @@ test('cold startup may outlast twenty connection-refused checks without being st
   assert.equal(probes, 25)
   assert.ok(!calls.includes('stop'))
 })
+
+test('known native port errors use fixed categories without provider text', async () => {
+  for (const [message, category] of [
+    ['There is no container instance that can be provided to this Durable Object, try again later', 'instance unavailable'],
+    ['The container is not running', 'instance not running'],
+    ['connect(): Connection refused: container port not found', 'connection refused'],
+    ['HTTP protocol error: private provider details', 'HTTP protocol'],
+    ['Network connection lost.', 'network lost'],
+  ]) {
+    const { container } = fake(true)
+    container.getTcpPort = () => ({ async fetch() { throw new Error(message) } })
+    await assert.rejects(() => tick(container, configured), {
+      message: `Simulation container health failed (${category})`,
+    })
+  }
+})
