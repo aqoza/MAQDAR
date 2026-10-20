@@ -28,6 +28,7 @@ export default async function NetworkFreightHistory({
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
+  const reviewT = await getTranslations('NetworkReview')
   const params = networkFreightListParams(await searchParams)
   const [db, t] = await Promise.all([createClient(), getTranslations('NetworkFreight')])
   const query = (head: boolean) => {
@@ -70,12 +71,17 @@ export default async function NetworkFreightHistory({
           </HelpDisclosure>
         }
         actions={
-          <Link
-            className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
-            href="/replenishment/network/dates"
-          >
-            {t('chooseScenario')}
-          </Link>
+          <>
+            <Link href="/replenishment/network/review" className="underline">
+              {reviewT('title')}
+            </Link>
+            <Link
+              className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+              href="/replenishment/network/dates"
+            >
+              {t('chooseScenario')}
+            </Link>
+          </>
         }
       />
       <form
