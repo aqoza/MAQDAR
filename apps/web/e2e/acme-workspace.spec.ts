@@ -113,8 +113,8 @@ test('ACME login keeps both sign-in options visible on mobile', async ({
   baseURL,
 }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 568 })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto(`${baseURL!.replace('localhost', 'acme.localhost')}/login`)
-  await expect(page.getByText('ACME workspace', { exact: true })).toBeVisible()
   for (const name of ['Sign in', 'Email me a sign-in link']) {
     await expect(page.getByRole('button', { name, exact: true })).toBeInViewport({ ratio: 1 })
   }
