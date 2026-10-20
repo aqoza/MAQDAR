@@ -45,6 +45,7 @@ select unnest(array['organizations', 'memberships', 'membership_locations', 'org
 insert into rpc_only_tables values ('network_allocation_scenarios');
 insert into rpc_only_tables values ('network_date_scenarios');
 insert into rpc_only_tables values ('network_freight_estimates');
+insert into rpc_only_tables values ('network_transfer_proposals');
 create temporary table secret_columns on commit drop as
 select * from (values ('api_keys', 'key_hash')) as s (table_name, column_name);
 

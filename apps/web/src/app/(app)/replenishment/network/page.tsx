@@ -29,11 +29,12 @@ export default async function NetworkHistory({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const params = redistributionListParams(await searchParams)
-  const [db, t, locale, dates] = await Promise.all([
+  const [db, t, locale, dates, review] = await Promise.all([
     createClient(),
     getTranslations('NetworkAllocation'),
     getLocale(),
     getTranslations('NetworkDates'),
+    getTranslations('NetworkReview'),
   ])
   const query = (head: boolean) => {
     let q = db
@@ -76,6 +77,9 @@ export default async function NetworkHistory({
             </Link>
             <Link className="underline" href="/replenishment/network/dates">
               {dates('dateHistory')}
+            </Link>
+            <Link className="underline" href="/replenishment/network/review">
+              {review('title')}
             </Link>
           </>
         }

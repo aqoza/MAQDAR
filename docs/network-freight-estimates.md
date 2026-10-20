@@ -1,6 +1,6 @@
 # Network freight estimates — Step 22c
 
-Status: implemented; verification and review pending. Revision 1.
+Status: merged in PR #115. Revision 1.
 
 The owner approved saved freight estimates from one saved network transfer-date scenario on 2026-10-20. Preserve all branch quantities, dates, stock/inbound evidence and timing warnings. This increment adds no approvals, shipment consolidation, taxes, FX, reservations or operational transfers.
 
