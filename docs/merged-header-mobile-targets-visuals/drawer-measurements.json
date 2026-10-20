@@ -1,0 +1,279 @@
+{
+  "baseline": "f5337c0214d4ba33b3fce625a80ec4ce4d23aae9",
+  "mobileViewport": "375x812",
+  "laptopViewport": "1366x768",
+  "expectedNavigationType": "14px/20px, 16px icons",
+  "expectedTargets": "mobile at least 44px; desktop navigation 32px",
+  "localBrowserCases": {
+    "baseline": 31,
+    "postFix": 11,
+    "stableCaptureRecheck": 4
+  },
+  "localUnitTestsPassed": 1644,
+  "locales": {
+    "en": {
+      "before": [
+        {
+          "text": "MAQDAR",
+          "height": 24,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Dashboard",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Items",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Locations",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Suppliers",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Imports",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Forecasts",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Replenishment",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Settings",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        }
+      ],
+      "after": [
+        {
+          "text": "MAQDAR",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Dashboard",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Items",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Locations",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Suppliers",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Imports",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Forecasts",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Replenishment",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "Settings",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "Inter, \"Inter Fallback\", \"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", ui-sans-serif, system-ui, sans-serif"
+        }
+      ]
+    },
+    "ar": {
+      "before": [
+        {
+          "text": "مقدار",
+          "height": 24,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "لوحة التحكم",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "الأصناف",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "المواقع",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "الموردون",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "الاستيراد",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "التنبؤات",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "التزويد",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "الإعدادات",
+          "height": 32,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        }
+      ],
+      "after": [
+        {
+          "text": "مقدار",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "لوحة التحكم",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "الأصناف",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "المواقع",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "الموردون",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "الاستيراد",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "التنبؤات",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "التزويد",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        },
+        {
+          "text": "الإعدادات",
+          "height": 44,
+          "size": "14px",
+          "lineHeight": "20px",
+          "family": "\"Noto Sans Arabic\", \"Noto Sans Arabic Fallback\", Inter, \"Inter Fallback\", ui-sans-serif, system-ui, sans-serif"
+        }
+      ]
+    }
+  }
+}

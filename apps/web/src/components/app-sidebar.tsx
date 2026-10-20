@@ -93,7 +93,7 @@ export function AppSidebar({
         <Link
           href="/dashboard"
           onClick={closeMobileNavigation}
-          className="app-brand flex items-center gap-2 px-2 pt-1 font-semibold tracking-tight group-data-[collapsible=icon]:hidden"
+          className="app-brand flex items-center gap-2 px-2 pt-1 font-semibold tracking-tight max-md:min-h-11 group-data-[collapsible=icon]:hidden"
         >
           <ZeeSpareMark className="text-primary size-6 shrink-0" />
           <span dir="ltr">{tCommon('appName')}</span>
@@ -114,6 +114,7 @@ export function AppSidebar({
                 return (
                   <SidebarMenuItem key={key}>
                     <SidebarMenuButton
+                      className="max-md:min-h-11"
                       render={<Link href={href} onClick={closeMobileNavigation} />}
                       isActive={isActive}
                       tooltip={t(key)}

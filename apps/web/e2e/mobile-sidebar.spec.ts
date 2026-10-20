@@ -1,8 +1,10 @@
 import { randomUUID } from 'node:crypto'
+import { writeFile } from 'node:fs/promises'
 import { expect, test } from '@playwright/test'
 import { createConfirmedUser, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 import { selectSettingsSection } from './helpers/settings'
+import { expectPageTitle } from './helpers/typography'
 
 for (const locale of ['en', 'ar'] as const) {
   test.describe(`sidebar navigation (${locale})`, () => {
@@ -36,6 +38,45 @@ for (const locale of ['en', 'ar'] as const) {
       const drawer = page.getByRole('dialog')
 
       await trigger.click()
+      await expect(drawer).toBeVisible()
+      const links = drawer.locator('[data-sidebar="group"] a[data-sidebar="menu-button"]')
+      const family = await page
+        .locator('html')
+        .evaluate((node) => getComputedStyle(node).fontFamily)
+      await expect(links.first()).toBeVisible()
+      await page.screenshot({
+        path: testInfo.outputPath(`mobile-sidebar-open-${locale}.png`),
+        animations: 'disabled',
+      })
+      await writeFile(
+        testInfo.outputPath(`mobile-sidebar-${locale}-type.json`),
+        JSON.stringify(
+          await drawer
+            .locator('[data-sidebar="group"] a[data-sidebar="menu-button"], a.app-brand')
+            .evaluateAll((nodes) =>
+              nodes.map((node) => {
+                const css = getComputedStyle(node)
+                return {
+                  text: node.textContent?.trim(),
+                  height: node.getBoundingClientRect().height,
+                  size: css.fontSize,
+                  lineHeight: css.lineHeight,
+                  family: css.fontFamily,
+                }
+              }),
+            ),
+          null,
+          2,
+        ),
+      )
+      for (const link of await links.all()) {
+        await expect(link).toHaveCSS('font-size', '14px')
+        await expect(link).toHaveCSS('line-height', '20px')
+        await expect(link).toHaveCSS('font-family', family)
+        await expect(link.locator('svg')).toHaveCSS('width', '16px')
+        expect((await link.boundingBox())!.height).toBeGreaterThanOrEqual(44)
+      }
+      expect((await drawer.locator('a.app-brand').boundingBox())!.height).toBeGreaterThanOrEqual(44)
       const newTabPromise = page.context().waitForEvent('page')
       await drawer
         .locator('a[href="/dashboard"]')
@@ -74,8 +115,18 @@ for (const locale of ['en', 'ar'] as const) {
       await page.screenshot({ path: testInfo.outputPath(`mobile-sidebar-${locale}.png`) })
     })
 
-    test('desktop navigation preserves the collapsed sidebar', async ({ page }) => {
-      await page.setViewportSize({ width: 1440, height: 900 })
+    test('desktop navigation preserves the collapsed sidebar', async ({ page }, testInfo) => {
+      await page.setViewportSize({ width: 1366, height: 768 })
+      await expectPageTitle(page.locator('main h1'))
+      const links = page.locator('[data-sidebar="group"] a[data-sidebar="menu-button"]')
+      await expect(links.first()).toBeVisible()
+      for (const link of await links.all()) {
+        await expect(link).toHaveCSS('font-size', '14px')
+        await expect(link).toHaveCSS('line-height', '20px')
+        await expect(link.locator('svg')).toHaveCSS('width', '16px')
+        expect((await link.boundingBox())!.height).toBe(32)
+      }
+      await page.screenshot({ path: testInfo.outputPath(`desktop-sidebar-${locale}-1366.png`) })
       await page.locator('[data-sidebar="trigger"]').click()
       const sidebar = page.locator('[data-slot="sidebar"][data-state]')
       await expect(sidebar).toHaveAttribute('data-state', 'collapsed')

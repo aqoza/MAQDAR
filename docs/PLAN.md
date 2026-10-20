@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Merged header verification and mobile sidebar targets — requested 2026-10-20
+
+Verify the merged compact type scale on laptop, mobile and Arabic RTL. The fresh production-browser audit found no font-role mismatch, but the open mobile drawer retained 32px navigation rows and a 24px brand link rather than the required 44px targets. Increase only those app-owned hit areas below 768px, retain the 14px labels/16px icons and 32px desktop rows, and enforce both densities in the existing navigation workflow. Preserve the generated primitive, routing, permissions and collapse/dismiss behavior. Retain screenshots and open a focused PR without deployment. See [merged-header-mobile-targets.md](merged-header-mobile-targets.md).
+
 ## Compact shared typography — approved 2026-10-19
 
 The owner selected 16px/24px page titles and 14px/20px record values after highlighting the disposition-batch title and location code. Update the shared tokens and current design rules across every consumer, retain body/sidebar typography and documented Dashboard/login exceptions, and enforce the approved roles in browser checks. Verify actual laptop, mobile and Arabic RTL screenshots, including current disposition integrations, then open a PR without merging or deployment. See [compact-shared-typography.md](compact-shared-typography.md).

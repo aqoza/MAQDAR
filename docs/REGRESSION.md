@@ -6,6 +6,8 @@
 
 ## Mobile sidebar navigation
 
+- `MOBILE-NAV-002`: drawer navigation and the brand link meet the 44px mobile target rule in English and Arabic RTL while labels remain 14px/20px and icons remain 16px. The 1366×768 checks retain 32px desktop rows and the shared 16px page title, then exercise collapse/navigation. Capture the open drawer so target density is reviewable. Run `mobile-sidebar.spec.ts`, `responsive-planning.spec.ts`, `dashboard-reference.spec.ts` and `page-headers.spec.ts` against the local production build. See [merged-header-mobile-targets.md](merged-header-mobile-targets.md).
+
 - `MOBILE-NAV-001`: ordinary navigation and brand-link activation dismiss the mobile drawer, including the active route. Modified clicks retain the drawer and desktop navigation retains collapse state. Verify English and Arabic RTL with `pnpm --filter web test:e2e mobile-sidebar.spec.ts responsive-planning.spec.ts dashboard-reference.spec.ts` against loopback fixtures. The generated sidebar primitive and all tenant/permission queries remain unchanged. See [mobile-sidebar-navigation.md](mobile-sidebar-navigation.md).
 
 ## Dashboard metrics
