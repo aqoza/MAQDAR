@@ -53,7 +53,9 @@ export async function tick(container: ContainerHandle, config: RuntimeConfig): P
   // Cron refreshes the watchdog each minute; absent cron stops only this instance.
   await container.setInactivityTimeout(180_000)
   const port = container.getTcpPort(8080)
-  const attempts = starting ? 20 : 1
+  // Cold image/network startup needs a bounded grace period. Running instances
+  // still fail their first unhealthy probe immediately.
+  const attempts = starting ? 60 : 1
   let failure = 'unavailable'
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
