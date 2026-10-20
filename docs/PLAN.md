@@ -556,3 +556,7 @@ The owner approved saved configuration comparisons from one completed original s
 ### Step 21d approved decisions (2026-10-20)
 
 PR #105 was reviewed at `a524a1e` without blocking findings and merged as `5eb9719` after all CI checks and focused tests passed. The owner approved saved MOQ/pack simulations from one completed original simulation, retaining its calculated baseline and comparing up to ten explicit maximum, fixed lead, review, MOQ and pack tuples. On review, a zero gap orders zero; otherwise round the greater of the inventory-position gap and MOQ up to a pack multiple. MOQ is nonnegative and pack positive in the captured unit, with existing quantity precision and timing bounds. Reuse captured evidence and opening state, preserve the original window and later pipeline, and require explicit what-if confirmation rather than claiming current supplier terms. Keep canonical retries, immutable results, editor/location access, lost sales separate and no automatic winner or operational writes. Retain shared green design at all five widths plus Arabic RTL. See [policy-constraints.md](policy-constraints.md).
+
+## ZeeSpare public site and OTEGROUP pilot — approved 2026-10-20
+
+Separate the public apex homepage from the explicitly bound OTE tenant hostname. Preserve shared deployment, RLS and existing login design. Oman/OMR; production email through Amazon SES is deferred by the owner. See [ote-workspace.md](ote-workspace.md) for acceptance and rollout.

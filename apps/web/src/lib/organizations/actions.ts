@@ -4,6 +4,8 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
+import { requestSite } from '@/lib/workspaces/request'
+import { getActiveContext } from '@/lib/organizations/context'
 import { requireClaims } from '@/lib/auth/session'
 import { checkboxValue, fieldValues, type ActionState } from '@/lib/forms'
 import { createOrganizationSchema } from '@/lib/organizations/schemas'
@@ -24,6 +26,11 @@ async function refreshClaims(supabase: SupabaseClient): Promise<void> {
 /** Makes the organization active and reloads the app with a fresh token. */
 export async function switchOrganization(organizationId: string): Promise<void> {
   await requireClaims()
+
+  const context = await getActiveContext()
+  if (!context?.organizations.some((organization) => organization.id === organizationId)) {
+    redirect('/organizations?error=MQ403')
+  }
   const supabase = await createClient()
   const { error } = await supabase.rpc('set_active_organization', {
     p_organization_id: organizationId,
@@ -41,6 +48,12 @@ export async function acceptInvitation(
 ): Promise<ActionState> {
   await requireClaims()
   const invitationId = String(formData.get('invitationId') ?? '')
+
+  const context = await getActiveContext()
+  if (!context?.invitations.some((invitation) => invitation.id === invitationId)) {
+    const t = await getTranslations('RpcErrors')
+    return { status: 'error', message: t('MQ403'), code: 'MQ403' }
+  }
   const supabase = await createClient()
   const { error } = await supabase.rpc('accept_invitation', { p_invitation_id: invitationId })
   if (error) {
@@ -65,6 +78,7 @@ export async function createOrganization(
   formData: FormData,
 ): Promise<ActionState> {
   await requireClaims()
+  if ((await requestSite()).workspace) redirect('/organizations')
   const arabicEnabled = checkboxValue(formData, 'arabic_enabled')
   const values = {
     ...fieldValues(formData, CREATE_ORGANIZATION_FIELDS),

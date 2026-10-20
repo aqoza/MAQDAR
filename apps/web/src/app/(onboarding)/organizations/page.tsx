@@ -39,15 +39,18 @@ export default async function OrganizationsPage({
     getTranslations('RpcErrors'),
     getFormatter(),
   ])
+  const tWorkspace = await getTranslations('Workspace')
   const roleLabel = (role: string) => (isRole(role) ? tRoles(role) : role)
 
   return (
     <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <PageHeader pattern={undefined} title={t('title')} description={t('description')} />
-        <Button render={<Link href="/organizations/new" />} nativeButton={false}>
-          {t('create')}
-        </Button>
+        {!context.workspace ? (
+          <Button render={<Link href="/organizations/new" />} nativeButton={false}>
+            {t('create')}
+          </Button>
+        ) : null}
       </div>
 
       {error ? (
@@ -57,7 +60,14 @@ export default async function OrganizationsPage({
       ) : null}
 
       {context.organizations.length === 0 ? (
-        <EmptyState title={t('empty')} description={t('emptyHint')} />
+        <EmptyState
+          title={
+            context.workspace
+              ? tWorkspace('accessTitle', { name: context.workspace.name })
+              : t('empty')
+          }
+          description={context.workspace ? tWorkspace('accessDescription') : t('emptyHint')}
+        />
       ) : (
         <ul className="flex flex-col gap-3">
           {context.organizations.map((organization) => (

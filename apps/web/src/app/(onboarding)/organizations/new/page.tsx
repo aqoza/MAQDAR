@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation'
+import { requestSite } from '@/lib/workspaces/request'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
@@ -24,6 +26,7 @@ function withDefault(options: ReferenceOption[], code: string): ReferenceOption[
 
 export default async function NewOrganizationPage() {
   await requireClaims()
+  if ((await requestSite()).workspace) redirect('/organizations')
   const supabase = await createClient()
   const [currenciesResult, countriesResult, t, tCommon] = await Promise.all([
     supabase.from('currencies').select('code, name_en').order('code'),

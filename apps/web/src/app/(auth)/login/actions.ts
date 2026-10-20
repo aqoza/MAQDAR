@@ -3,6 +3,7 @@
 import type { AuthError } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+import { emailReturnPath } from '@/lib/auth/email-destination'
 import { siteOrigin } from '@/lib/auth/origin'
 import { createClient } from '@/lib/supabase/server'
 
@@ -30,9 +31,8 @@ export async function signIn(_previous: SignInState, formData: FormData): Promis
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        // The sign-in template links to /auth/confirm?…&next={{ .RedirectTo }}; same-origin
-        // absolute destinations are reduced to a path there (safeDestination).
-        emailRedirectTo: `${origin}/dashboard`,
+        // The template appends the token to this exact, approved callback path.
+        emailRedirectTo: `${origin}${emailReturnPath()}`,
         // Invitation-only: the login form never creates users. Accounts come from
         // auth.admin.inviteUserByEmail (Settings > Members) or `pnpm db:user` locally.
         shouldCreateUser: false,

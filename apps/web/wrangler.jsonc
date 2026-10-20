@@ -8,11 +8,15 @@
   "name": "zeespare-web",
   "main": ".open-next/worker.js",
   "routes": [
+    { "pattern": "ote.zeespare.com", "custom_domain": true },
     { "pattern": "zeespare.com", "custom_domain": true },
     { "pattern": "www.zeespare.com", "custom_domain": true },
     { "pattern": "maqdar.org", "custom_domain": true },
   ],
-  "vars": { "NEXT_PUBLIC_SITE_URL": "https://zeespare.com" },
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "https://zeespare.com",
+    "OTE_ORGANIZATION_ID": "49727e18-35a9-462f-998f-9f202f963dfc",
+  },
   // Cloudflare dropped the compressed Worker size limit on 2026-09-04. Minify stays because a smaller
   // script parses and starts faster. wrangler deploy --dry-run "Total Upload" gzipped, unminified /
   // minified: 3.21 / 2.81 MiB at Step 4, 3.72 / 3.27 MiB with the Step 5a import wizard (measured
