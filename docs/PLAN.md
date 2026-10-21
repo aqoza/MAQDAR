@@ -210,7 +210,9 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 23   | **External-driver foundation:** immutable dated measurements and assumptions, source-declared availability, exact CSV validation, cutoff coverage and location-scoped history.                                              | Merged — PR #132                                    |
 | 23b  | **Driver forecasts:** captured individual demand and driver evidence, bounded weekday regression, per-fit availability checks, rolling selection, conditional bands and scoped immutable results.                           | Merged — PR #134                                    |
 | 23c  | **Multi-driver forecasts:** 2–5 captured predictors, joint fixed-ridge/weekday candidate, per-fit availability, canonical retries and scoped immutable evidence.                                                            | Merged — PR #135                                    |
-| 24   | **Installed-base foundation:** immutable equipment populations, exact fitted-part quantities, known/unknown ages, source availability and scoped history.                                                                   | Implemented — review pending                        |
+| 24   | **Installed-base foundation:** immutable equipment populations, exact fitted-part quantities, known/unknown ages, source availability and scoped history.                                                                   | Merged — PR #136                                    |
+| 24b  | **Installed-base demand scenarios:** explicit group replacement rates, exact conditional expectations and immutable scoped evidence.                                                                                        | Merged — PR #137                                    |
+| 24c  | **Installed-base evaluations:** completed recorded-sales comparisons, exact daily evidence, MAE/RMSE/bias and immutable scoped history.                                                                                     | Implemented — review pending                        |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -708,3 +710,16 @@ copied evidence, immutable history, canonical retries and current editor/locatio
 access, using the compact green UI at five widths plus Arabic RTL. No learned models,
 uncertainty bands, policy integration or operational changes. See
 [installed-base-demand.md](installed-base-demand.md).
+
+### Step 24c — approved 2026-10-22
+
+PR #137 was merged as `17f9bbd` after all four CI checks passed. The owner approved
+saved installed-base evaluations against completed recorded sales over the entire
+scenario horizon, with matching identities/known units and complete-history
+confirmation before absent days become zero. Preserve separate lost sales, exact
+daily differences, totals and MAE/RMSE/signed bias, copied inputs, refreshed changed
+previews, canonical retries and current editor/location access. Results are
+retrospective sales comparisons, not measured failures or verified out-of-sample
+accuracy. Keep compact green UI at five widths plus Arabic RTL. Rate fitting,
+policy integration and operational changes remain separate. See
+[installed-base-evaluations.md](installed-base-evaluations.md).
