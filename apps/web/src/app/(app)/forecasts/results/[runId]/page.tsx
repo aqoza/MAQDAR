@@ -48,8 +48,10 @@ export default async function ForecastResults({
   if (run.status !== 'succeeded') redirect('/forecasts')
   const expanded = z.object({ method: z.literal('expanded-v1') }).safeParse(run.options).success
   const regional = z.object({ method: z.literal('regional-v1') }).safeParse(run.options).success
-  const driver = z.object({ method: z.literal('driver-v1') }).safeParse(run.options).success
-  const driverText = await getTranslations('DriverForecast')
+  const multi = z.object({ method: z.literal('multi-driver-v1') }).safeParse(run.options).success
+  const driver =
+    multi || z.object({ method: z.literal('driver-v1') }).safeParse(run.options).success
+  const driverText = await getTranslations(multi ? 'MultiDriverForecast' : 'DriverForecast')
   const events = await getTranslations('PlannedEvents')
   const prepared = await getTranslations('PreparedForecast')
   const { data: rows, error } = await db

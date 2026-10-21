@@ -66,17 +66,16 @@ export default async function ForecastsPage() {
       run.locations?.name_en ||
       run.locations?.code ||
       run.location_id
-    const isDriver =
-      run.kind === 'forecast' &&
-      run.options &&
-      typeof run.options === 'object' &&
-      !Array.isArray(run.options) &&
-      run.options.method === 'driver-v1'
-    const kind = isDriver
-      ? quality('methods.driver-v1')
-      : t(
-          `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation' | 'policy' | 'simulation'}`,
-        )
+    const method =
+      run.options && typeof run.options === 'object' && !Array.isArray(run.options)
+        ? run.options.method
+        : null
+    const kind =
+      run.kind === 'forecast' && (method === 'driver-v1' || method === 'multi-driver-v1')
+        ? quality(`methods.${method}`)
+        : t(
+            `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation' | 'policy' | 'simulation'}`,
+          )
     const resultLink =
       run.kind === 'classification'
         ? { href: `/forecasts/${run.id}`, label: t('classificationResults') }

@@ -13,11 +13,12 @@ def test_empty_queue_does_no_work():
     assert connection.execute.call_count == 1
 
 
-def test_driver_forecast_uses_bounded_process_and_existing_publication(monkeypatch):
+@pytest.mark.parametrize('method', ['driver-v1','multi-driver-v1'])
+def test_driver_forecast_uses_bounded_process_and_existing_publication(monkeypatch,method):
     compute = MagicMock(return_value=[{'item_id': 'captured'}])
     monkeypatch.setattr('maqdar_engine.forecast_process.compute', compute)
     connection = MagicMock()
-    task = {'kind': 'forecast', 'method': 'driver-v1'}
+    task = {'kind': 'forecast', 'method': method}
     connection.execute.return_value.fetchone.side_effect = [('run', 'token'), (task,), (True,)]
     assert process_one(connection) is True
     compute.assert_called_once_with(task)

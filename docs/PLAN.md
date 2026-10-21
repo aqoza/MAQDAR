@@ -184,7 +184,8 @@ Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-sce
 ## Phase 4 build steps
 
 Step 22i and its browser follow-up are merged in PRs #123 and #128. Step 23 is merged
-in PR #132. Step 23b adds the approved driver forecast comparisons; see
+in PR #132. Step 23b is merged in PR #134 (`a51dba6`). Step 23c adds the approved joint multi-driver comparisons; see
+[multi-driver-forecasts.md](multi-driver-forecasts.md),
 [driver-forecasts.md](driver-forecasts.md) and
 [external-driver-datasets.md](external-driver-datasets.md) for its contract and acceptance checks.
 
@@ -207,7 +208,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 22h  | **Network acknowledgements:** explicit whole-package received/rejected reports, independent history, safe retries and warehouse/all-branch access.                                                                          | Merged in PR #122                                   |
 | 22i  | **Network integration workbench:** latest whole-package reports, exact system labels, warehouse/branch filters, retained copied evidence and all-location member access.                                                    | Merged — PR #123; verified #128                     |
 | 23   | **External-driver foundation:** immutable dated measurements and assumptions, source-declared availability, exact CSV validation, cutoff coverage and location-scoped history.                                              | Merged — PR #132                                    |
-| 23b  | **Driver forecasts:** captured individual demand and driver evidence, bounded weekday regression, per-fit availability checks, rolling selection, conditional bands and scoped immutable results.                           | Implemented — review pending                        |
+| 23b  | **Driver forecasts:** captured individual demand and driver evidence, bounded weekday regression, per-fit availability checks, rolling selection, conditional bands and scoped immutable results.                           | Merged — PR #134                                    |
+| 23c  | **Multi-driver forecasts:** 2–5 captured predictors, joint fixed-ridge/weekday candidate, per-fit availability, canonical retries and scoped immutable evidence.                                                            | Implemented — review pending                        |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -218,6 +220,20 @@ See [network-allocation.md](network-allocation.md) for Step 22. The immutable re
 See [network-transfer-dates.md](network-transfer-dates.md) for the approved fixed-quantity scheduling rules and evidence lifecycle.
 
 ## Decision log
+
+### Step 23c — approved 2026-10-21
+
+The owner approved one completed individual forecast and 2–5 matching saved driver
+datasets, compared jointly with the nine existing candidates using three rolling
+RMSE windows. Enforce every driver's declared availability at each fit cutoff,
+training-only scaling and fixed regularization; missing, late or constant inputs
+exclude the joint candidate without filling or dropping selected drivers. Require
+distinct-applicable-driver confirmation, known demand units, copied evidence,
+order-independent retries and current editor/location access. Preserve single-driver
+behavior, conditional 80%/95% residual bands and independent held-out coverage,
+excluding driver uncertainty and causal claims. Keep compact green design at five
+widths plus Arabic RTL; no policy/order changes. Contract and acceptance:
+[multi-driver-forecasts.md](multi-driver-forecasts.md).
 
 ### Step 23b — approved 2026-10-21
 

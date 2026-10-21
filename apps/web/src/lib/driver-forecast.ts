@@ -31,3 +31,22 @@ export const capturedDriverSchema = z.object({
   imported_at: z.string(),
   report: driverReportSchema,
 })
+
+export const multiDriverForecastRequest = driverForecastRequest.omit({ dataset_id: true }).extend({
+  dataset_ids: z
+    .array(z.guid())
+    .min(2)
+    .max(5)
+    .refine((ids) => new Set(ids).size === ids.length),
+})
+export const multiDriverPredictorSchema = driverModelSchema
+  .pick({
+    center: true,
+    scale: true,
+    slope: true,
+    training_min: true,
+    training_max: true,
+    extrapolated_dates: true,
+  })
+  .required()
+  .extend({ dataset_id: z.guid() })

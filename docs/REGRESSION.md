@@ -79,3 +79,12 @@ Audit bases for the full header pass: `8a078f5`, then main `4707e36` including e
 - Propagation: retain queries, contracts, mutations and permissions; run the complete browser suite when common headers/loading change, including empty, validation, independent review, stale evidence and read-only users. The tab suite also protects the existing document/form lifecycle and LTR/RTL keyboard behavior.
 
 Final exit codes and screenshot evidence for this audit are recorded in [header-consistency.md](header-consistency.md). A green record requires actual command completion; unrun checks remain unverified.
+
+- Multi-driver forecasts (Step 23c): run `0098_multi_driver_forecasts.test.sql`,
+  `test_multi_driver_forecasting.py`, `test_multi_driver_forecasts_db.py`,
+  `multi-forecast-actions.test.ts` and `multi-driver-forecasts.spec.ts`. Cover 2/5
+  drivers, an independent ridge oracle, constant/collinear inputs, no availability
+  leakage, canonical concurrent retries, revoked authority, immutable deletion-safe
+  capture and fenced publication. Exercise the real bounded numerical child,
+  quality filtering, five widths and Arabic RTL; inspect saved screenshots.
+  Keep Step 23b suites and frozen policy/export/OpenAPI contracts unchanged.

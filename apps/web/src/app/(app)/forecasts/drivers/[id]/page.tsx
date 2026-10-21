@@ -32,6 +32,7 @@ export default async function DriverDataset({ params }: { params: Promise<{ id: 
   if (!data) notFound()
   const report = driverReportSchema.parse(data.report)
   const forecast = await getTranslations('DriverForecast')
+  const multi = await getTranslations('MultiDriverForecast')
   return (
     <div className="min-w-0 space-y-4">
       <PageHeader
@@ -45,6 +46,11 @@ export default async function DriverDataset({ params }: { params: Promise<{ id: 
         }
         actions={
           <>
+            {isEditorRole(context.role) && (
+              <Link href={`/forecasts/drivers/${id}/multi-forecast`} className="underline">
+                {multi('title')}
+              </Link>
+            )}
             {isEditorRole(context.role) && (
               <Link href={`/forecasts/drivers/${id}/forecast`} className="underline">
                 {forecast('title')}

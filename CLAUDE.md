@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 23c adds `multi-driver-v1`: canonical sets of 2–5 saved drivers, one joint fixed-ridge/weekday candidate and per-fit availability for every predictor. Preserve `driver-v1`, copied sources, order-independent retries, editor/location access and frozen downstream schemas. See [multi-driver-forecasts.md](docs/multi-driver-forecasts.md).
+
 Step 23b adds `driver-v1` forecasts from one saved individual forecast and matching driver dataset. Copy inputs at enqueue; each training/prediction window independently enforces source-declared availability. Preserve source claims versus import time, explicit exclusions, conditional uncertainty, current location access and the existing bounded worker. See [driver-forecasts.md](docs/driver-forecasts.md).
 
 Step 23 adds immutable external-driver datasets under Forecasts. Preserve exact signed decimal strings, observed/planned distinctions, source-declared availability versus server import time, explicit missing dates and current tenant/location access. Preview and save validate independently; corrections create new evidence, never alter forecasts or policies. See [external-driver-datasets.md](docs/external-driver-datasets.md).

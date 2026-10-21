@@ -70,18 +70,19 @@ def driver_predict(series, start, horizon, rows):
     return values, fit
 
 
-def select(series, start, horizon, rows):
+def select(series, start, horizon, rows, *, candidate='driver_weekday', predictor=None):
+    predictor = predictor or driver_predict
     scores, residuals, unavailable, checks = [], {}, [], []
     driver_fit = dict(status='unavailable')
     final_driver = None
-    for model in MODELS:
+    for model in (*EXISTING_MODELS, candidate):
         errors, folds = [], []
         try:
             for n in [len(series)-k*horizon for k in (3, 2, 1)]:
-                if model == 'driver_weekday':
+                if model == candidate:
                     check = dict(cutoff=str(start+timedelta(days=n-1)), stage='selection')
                     try:
-                        predicted, _ = driver_predict(series[:n], start, horizon, rows)
+                        predicted, _ = predictor(series[:n], start, horizon, rows)
                     except DriverUnavailable as error:
                         checks.append(dict(check, status='unavailable', **error.detail))
                         raise
@@ -91,10 +92,10 @@ def select(series, start, horizon, rows):
                 current = [p-y for p, y in zip(predicted, series[n:n+horizon], strict=True)]
                 errors.extend(current)
                 folds.append(accuracy(current))
-            if model == 'driver_weekday':
+            if model == candidate:
                 check = dict(cutoff=str(start+timedelta(days=len(series)-1)), stage='final')
                 try:
-                    final_driver, driver_fit = driver_predict(series, start, horizon, rows)
+                    final_driver, driver_fit = predictor(series, start, horizon, rows)
                 except DriverUnavailable as error:
                     checks.append(dict(check, status='unavailable', **error.detail))
                     raise
@@ -109,7 +110,7 @@ def select(series, start, horizon, rows):
     while scores:
         winner = min(scores, key=lambda s: Decimal(s['rmse']))
         try:
-            predictions = final_driver if winner['model'] == 'driver_weekday' else predict(series, horizon, winner['model'])
+            predictions = final_driver if winner['model'] == candidate else predict(series, horizon, winner['model'])
             return dict(model=winner['model'], scores=scores, unavailable_models=unavailable,
                         driver_checks=checks, driver_model=driver_fit), predictions, residuals[winner['model']]
         except (ValueError, ArithmeticError, RuntimeError, LinAlgError):
@@ -120,10 +121,10 @@ def select(series, start, horizon, rows):
     raise ValueError('No forecast candidate')
 
 
-def evaluation(series, start, horizon, rows, seed):
+def evaluation(series, start, horizon, rows, seed, *, candidate='driver_weekday', predictor=None):
     if len(series) < MIN_TRAIN + 4*horizon:
         return dict(status='insufficient_history')
-    selection, predicted, residuals = select(series[:-horizon], start, horizon, rows)
+    selection, predicted, residuals = select(series[:-horizon], start, horizon, rows, candidate=candidate, predictor=predictor)
     bands = bootstrap_bands(predicted, residuals, seed+':evaluation')
     if bands['status'] != 'available':
         return dict(status='insufficient_residuals', driver_checks=selection['driver_checks'])
@@ -136,23 +137,24 @@ def evaluation(series, start, horizon, rows, seed):
                 bands=bands['bands'], driver_checks=selection['driver_checks'], **coverage)
 
 
-def forecast(snapshot):
+def forecast_captured(snapshot, *, version=VERSION, candidate='driver_weekday', predictor=None, rows=None):
     horizon = snapshot['options']['horizon']
-    if snapshot.get('method') != VERSION or type(horizon) is not int or not 1 <= horizon <= 90 or len(snapshot['items']) != 1:
+    if snapshot.get('method') != version or type(horizon) is not int or not 1 <= horizon <= 90 or len(snapshot['items']) != 1:
         raise ValueError('Invalid driver forecast')
     item = snapshot['items'][0]
     start, series = daily_series(item)
     cutoff = date.fromisoformat(snapshot['to_date'])
     if start+timedelta(days=len(series)-1) != cutoff or len(series) < MIN_TRAIN+3*horizon:
         raise ValueError('Invalid captured demand window')
-    source_rows = snapshot['driver']['report']['input']['rows']
-    rows = {r['date']: r for r in source_rows}
-    if len(rows) != len(source_rows):
-        raise ValueError('Duplicate driver dates')
+    if rows is None:
+        source_rows = snapshot['driver']['report']['input']['rows']
+        rows = {r['date']: r for r in source_rows}
+        if len(rows) != len(source_rows):
+            raise ValueError('Duplicate driver dates')
     with localcontext() as context:
         context.prec = 60
-        selection, predictions, residuals = select(series, start, horizon, rows)
-        seed = f'{VERSION}:{item["item_id"]}:{start}:{cutoff}:{horizon}'
+        selection, predictions, residuals = select(series, start, horizon, rows, candidate=candidate, predictor=predictor)
+        seed = f'{version}:{item["item_id"]}:{start}:{cutoff}:{horizon}'
         uncertainty = dict(bootstrap_bands(predictions, residuals, seed), driver_uncertainty_included=False)
         future = []
         for i, value in enumerate(predictions):
@@ -167,4 +169,8 @@ def forecast(snapshot):
                      folds=[dict(train_from=str(start), train_to=str(start+timedelta(days=n-1)),
                                  test_from=str(start+timedelta(days=n)), test_to=str(start+timedelta(days=n+horizon-1)))
                             for n in [len(series)-k*horizon for k in (3, 2, 1)]],
-                     uncertainty=uncertainty, evaluation=evaluation(series, start, horizon, rows, seed))]
+                     uncertainty=uncertainty, evaluation=evaluation(series, start, horizon, rows, seed, candidate=candidate, predictor=predictor))]
+
+
+def forecast(snapshot):
+    return forecast_captured(snapshot)
