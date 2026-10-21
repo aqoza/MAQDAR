@@ -29,6 +29,7 @@
     "synth:large": "uv run --project engine maqdar-synth all --preset large"
   },
   "devDependencies": {
+    "miniflare": "5.20261006.1-alpha",
     "prettier": "3.9.9",
     "supabase": "2.120.0"
   }

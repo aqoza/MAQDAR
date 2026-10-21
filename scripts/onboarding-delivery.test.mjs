@@ -118,8 +118,9 @@ test('consumer is bounded and preserves the interval between messages', async ()
   )
   assert.deepEqual(pauses, Array(4).fill(12000))
 })
-test('server-side errors are uncertain, permanent errors fail, and queue errors stop delivery', async () => {
+test('ambiguous responses are uncertain, permanent errors fail, and queue errors stop delivery', async () => {
   for (const [status, outcome] of [
+    [302, 'uncertain'],
     [503, 'uncertain'],
     [403, 'failed'],
   ]) {
