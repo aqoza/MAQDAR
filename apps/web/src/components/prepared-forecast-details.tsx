@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import type { z } from 'zod'
-import type { forecastEvidenceSchema } from '@/lib/forecasting'
+import type { forecastReadEvidenceSchema as forecastEvidenceSchema } from '@/lib/forecasting'
 
 export async function PreparedForecastDetails({
   detail,

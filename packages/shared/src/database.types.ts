@@ -3631,6 +3631,9 @@ isOneToOne: false
 "external_driver_save":
 { Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
                            },
+"forecast_driver_enqueue":
+{ Args: { "p_confirmed": boolean,"p_dataset_id": string,"p_forecast_id": string,"p_organization_id": string,"p_request_id": string }; Returns: string
+                           },
 "forecast_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
                            },

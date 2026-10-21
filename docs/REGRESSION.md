@@ -65,6 +65,14 @@ Audit bases for the full header pass: `8a078f5`, then main `4707e36` including e
 
 ## Planning, Imports and account administration
 
+- Driver forecasts (Step 23b): `driver-forecasts.spec.ts` queues from captured sources,
+  publishes through the worker boundary, checks viewer/hidden-location access and
+  retains form/result screenshots at all five widths in English and Arabic. Run
+  `test_driver_forecasting.py`, `test_driver_forecasts_db.py` and
+  `0097_driver_forecasts.test.sql` for availability, holdout, retry and lease gates.
+  Keep the legacy forecast evidence schema used by purchase/export APIs unchanged;
+  the extended read schema serves forecast results and saved quality only.
+
 - Downstream consumers: forecast tabs/results/policies/events, ordinary/event purchasing and transfer flows, imports/wizard, Settings and Audit.
 - Dependency evidence: the PageHeader/SectionLoading call scan above, thin forecast route wrappers and the standalone/embedded component props.
 - Acceptance commands: `pnpm --filter web test:e2e`, `pnpm --filter web test:tabs`.

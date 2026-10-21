@@ -2,6 +2,8 @@ import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { DemandUnitEvidence } from '@/components/demand-unit-evidence'
+import { DriverForecastDetails } from '@/components/driver-forecast-details'
+import { TableScrollRegion } from '@/components/table-scroll-region'
 import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
@@ -12,9 +14,9 @@ import { PreparedForecastDetails } from '@/components/prepared-forecast-details'
 import { InventoryPolicyForm } from '@/components/inventory-policy-form'
 import { isEditorRole } from '@/lib/auth/roles'
 import {
-  forecastEvidenceSchema,
-  forecastSummarySchema,
-  FORECAST_MODELS,
+  forecastReadEvidenceSchema as forecastEvidenceSchema,
+  forecastReadSummarySchema as forecastSummarySchema,
+  ALL_FORECAST_MODELS as FORECAST_MODELS,
   FORECAST_STATUSES,
 } from '@/lib/forecasting'
 
@@ -46,6 +48,8 @@ export default async function ForecastResults({
   if (run.status !== 'succeeded') redirect('/forecasts')
   const expanded = z.object({ method: z.literal('expanded-v1') }).safeParse(run.options).success
   const regional = z.object({ method: z.literal('regional-v1') }).safeParse(run.options).success
+  const driver = z.object({ method: z.literal('driver-v1') }).safeParse(run.options).success
+  const driverText = await getTranslations('DriverForecast')
   const events = await getTranslations('PlannedEvents')
   const prepared = await getTranslations('PreparedForecast')
   const { data: rows, error } = await db
@@ -79,7 +83,7 @@ export default async function ForecastResults({
     detail = parsed.data
   }
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <PageHeader
         pattern="forecasts"
         back={
@@ -95,7 +99,13 @@ export default async function ForecastResults({
         }
         help={
           <HelpDisclosure label={regional ? prepared('comparisonLabel') : undefined}>
-            <p>{regional ? prepared('method') : t(expanded ? 'expandedMethod' : 'method')}</p>
+            <p>
+              {driver
+                ? driverText('method')
+                : regional
+                  ? prepared('method')
+                  : t(expanded ? 'expandedMethod' : 'method')}
+            </p>
             {regional && <p>{prepared('comparisonNote')}</p>}
           </HelpDisclosure>
         }
@@ -161,7 +171,7 @@ export default async function ForecastResults({
           <h2 className="text-section-title">
             {t('details')} · {rows?.find((r) => r.item_id === item)?.item_code}
           </h2>
-          {selected?.status === 'selected' && isEditorRole(context.role) && (
+          {!driver && selected?.status === 'selected' && isEditorRole(context.role) && (
             <NextIntlClientProvider messages={{ InventoryPolicy: messages.InventoryPolicy }}>
               <InventoryPolicyForm
                 key={selected.id}
@@ -172,7 +182,7 @@ export default async function ForecastResults({
               />
             </NextIntlClientProvider>
           )}
-          {selected && (
+          {!driver && selected && (
             <div className="flex flex-wrap gap-4">
               {isEditorRole(context.role) && (
                 <Link className="underline" href={`/forecasts/events/new?forecast=${selected.id}`}>
@@ -185,6 +195,7 @@ export default async function ForecastResults({
             </div>
           )}
           <p>{t('observed', { from: detail.source.start_day, to: detail.source.end_day })}</p>
+          {driver && <DriverForecastDetails detail={detail} />}
           {!detail.source.preparation && (
             <DemandUnitEvidence evidence={detail.source.unit_provenance} />
           )}
@@ -286,35 +297,39 @@ export default async function ForecastResults({
                   )}
                 </div>
               )}
-              <table className="w-full text-sm">
-                <caption className="sr-only">{t('daily')}</caption>
-                <thead>
-                  <tr>
-                    <th className="p-2 text-start">{t('date')}</th>
-                    <th className="p-2 text-start">{t('quantity')}</th>
-                    {detail.output.uncertainty?.status === 'available' &&
-                      (['lower80', 'upper80', 'lower95', 'upper95'] as const).map((key) => (
-                        <th key={key} className="p-2 text-start">
-                          {t(key)}
-                        </th>
-                      ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {detail.output.forecast.map((p, index) => (
-                    <tr key={p.date} className="border-t">
-                      <td className="p-2">{p.date}</td>
-                      <td className="p-2 tabular-nums">{format(p.quantity)}</td>
+              <TableScrollRegion label={t('daily')}>
+                <table className="w-full text-sm">
+                  <caption className="sr-only">{t('daily')}</caption>
+                  <thead>
+                    <tr>
+                      <th className="p-2 text-start">{t('date')}</th>
+                      <th className="p-2 text-start">{t('quantity')}</th>
                       {detail.output.uncertainty?.status === 'available' &&
                         (['lower80', 'upper80', 'lower95', 'upper95'] as const).map((key) => (
-                          <td key={key} className="p-2 tabular-nums">
-                            {format(detail.output.uncertainty?.bands[index]?.[key] ?? null)}
-                          </td>
+                          <th key={key} className="p-2 text-start">
+                            {t(key)}
+                          </th>
                         ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {detail.output.forecast.map((p, index) => (
+                      <tr key={p.date} className="border-t">
+                        <td className="whitespace-nowrap p-2">
+                          <bdi>{p.date}</bdi>
+                        </td>
+                        <td className="p-2 tabular-nums">{format(p.quantity)}</td>
+                        {detail.output.uncertainty?.status === 'available' &&
+                          (['lower80', 'upper80', 'lower95', 'upper95'] as const).map((key) => (
+                            <td key={key} className="p-2 tabular-nums">
+                              {format(detail.output.uncertainty?.bands[index]?.[key] ?? null)}
+                            </td>
+                          ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TableScrollRegion>
               {detail.output.evaluation && (
                 <section className="space-y-2" aria-label={t('coverage')}>
                   <h3 className="text-subsection-title">{t('coverage')}</h3>
@@ -350,27 +365,29 @@ export default async function ForecastResults({
           <details>
             <summary className="cursor-pointer">{t('source')}</summary>
             <p className="my-2 text-sm">{regional ? prepared('sourceNote') : t('sourceNote')}</p>
-            <table className="w-full text-sm">
-              <caption className="sr-only">{t('source')}</caption>
-              <thead>
-                <tr>
-                  {(['date', 'sold', 'lost'] as const).map((k) => (
-                    <th key={k} className="p-2 text-start">
-                      {t(k)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {detail.source.demand.map(([day, sold, lost]) => (
-                  <tr key={day} className="border-t">
-                    <td className="p-2">{day}</td>
-                    <td className="p-2 tabular-nums">{format(sold)}</td>
-                    <td className="p-2 tabular-nums">{format(lost)}</td>
+            <TableScrollRegion label={t('source')}>
+              <table className="w-full text-sm">
+                <caption className="sr-only">{t('source')}</caption>
+                <thead>
+                  <tr>
+                    {(['date', 'sold', 'lost'] as const).map((k) => (
+                      <th key={k} className="p-2 text-start">
+                        {t(k)}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {detail.source.demand.map(([day, sold, lost]) => (
+                    <tr key={day} className="border-t">
+                      <td className="p-2">{day}</td>
+                      <td className="p-2 tabular-nums">{format(sold)}</td>
+                      <td className="p-2 tabular-nums">{format(lost)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableScrollRegion>
           </details>
         </section>
       )}

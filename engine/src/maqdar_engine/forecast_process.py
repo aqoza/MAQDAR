@@ -9,6 +9,8 @@ def _run(sender, task):
             from maqdar_engine.inventory_policy import calculate as forecast
         elif task.get('method') == 'regional-v1':
             from maqdar_engine.regional_forecasting import forecast
+        elif task.get('method') == 'driver-v1':
+            from maqdar_engine.driver_forecasting import forecast
         else:
             from maqdar_engine.expanded_forecasting import forecast
         with threadpool_limits(limits=1):

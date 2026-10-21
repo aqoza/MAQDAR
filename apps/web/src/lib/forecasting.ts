@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { unitProvenanceSchema } from './stock-comparison'
+import { capturedDriverSchema, driverCheckSchema, driverModelSchema } from './driver-forecast'
 import {
   calendarModelSchema,
   preparedSourceSchema,
@@ -18,6 +19,7 @@ export const FORECAST_MODELS = [
   'auto_arima',
   'calendar',
 ] as const
+export const ALL_FORECAST_MODELS = [...FORECAST_MODELS, 'driver_weekday'] as const
 export const FORECAST_STATUSES = [
   'selected',
   'insufficient',
@@ -111,5 +113,44 @@ export const forecastEvidenceSchema = z.object({
         test_to: z.string(),
       }),
     ),
+  }),
+})
+
+// Keep the existing policy/export contract frozen. Driver results extend only the
+// results reader and quality workbench until downstream use is separately approved.
+export const forecastReadSummarySchema = forecastSummarySchema.extend({
+  scores: z.array(score.extend({ model: z.enum(ALL_FORECAST_MODELS) })),
+})
+export const forecastReadEvidenceSchema = forecastEvidenceSchema.extend({
+  driver: capturedDriverSchema.optional(),
+  original_forecast: z
+    .object({ id: z.guid(), run_id: z.guid(), method: z.string(), summary: forecastSummarySchema })
+    .optional(),
+  output: forecastEvidenceSchema.shape.output.extend({
+    ...forecastReadSummarySchema.shape,
+    model: z.enum(ALL_FORECAST_MODELS).nullable(),
+    driver_checks: z.array(driverCheckSchema).optional(),
+    driver_model: driverModelSchema.optional(),
+    unavailable_models: z
+      .array(
+        z.object({
+          model: z.enum(ALL_FORECAST_MODELS),
+          reason: z.enum([
+            'fit_failed',
+            'refit_failed',
+            'driver_missing',
+            'driver_late',
+            'driver_constant',
+          ]),
+        }),
+      )
+      .optional(),
+    evaluation: forecastEvidenceSchema.shape.output.shape.evaluation
+      .unwrap()
+      .extend({
+        model: z.enum(ALL_FORECAST_MODELS).optional(),
+        driver_checks: z.array(driverCheckSchema).optional(),
+      })
+      .optional(),
   }),
 })
