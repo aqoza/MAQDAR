@@ -18,14 +18,14 @@ const options = {
   maxMessages: 1,
 }
 
-async function runScheduled(responses) {
+async function runScheduled(responses, maxMessages = 1) {
   const calls = []
   const runtime = new Miniflare(
     convertV4MiniflareOptions({
       modules: true,
       script: `${delivery}\nexport default {
         scheduled(_event, _env, ctx) {
-          ctx.waitUntil(deliverInvitations(${JSON.stringify(options)}))
+          ctx.waitUntil(deliverInvitations(${JSON.stringify({ ...options, maxMessages })}))
         }
       }`,
       compatibilityDate: '2026-10-01',
@@ -79,13 +79,12 @@ test('Workers scheduled event stops at a queue redirect without forwarding crede
   assert.equal(calls.length, 1)
 })
 
-test('Workers scheduled event marks an Auth redirect failed without following it', async () => {
-  const { result, calls } = await runScheduled([
-    { body: job },
-    { location: 'https://untrusted.example/invite' },
-    { body: true },
-  ])
+test('Workers scheduled event holds an Auth redirect uncertain and stops without following it', async () => {
+  const { result, calls } = await runScheduled(
+    [{ body: job }, { location: 'https://untrusted.example/invite' }, { body: true }],
+    5,
+  )
   assert.equal(result.outcome, 'ok')
   assert.equal(calls.length, 3)
-  assert.equal(calls[2].body.p_outcome, 'failed')
+  assert.equal(calls[2].body.p_outcome, 'uncertain')
 })
