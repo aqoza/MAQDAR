@@ -278,7 +278,7 @@ with psycopg.connect(sys.argv[1]) as db:
         else expect(await response!.text()).not.toContain('Equipment population')
         const creation = await scoped.goto('/forecasts/installed-base/new')
         expect(creation?.status()).toBe(404)
-        await scoped.goto('/forecasts/installed-base?q=population')
+        await scoped.goto('/forecasts/installed-base?q=Equipment')
         await expect(
           scoped.getByRole('link', { name: 'Import population', exact: true }),
         ).toHaveCount(0)
