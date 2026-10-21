@@ -82,7 +82,7 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   await page.goto('/replenishment/network')
   await page.getByRole('link', { name: 'Network integrations', exact: true }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Network integration workbench')
-  const rows = page.locator('tbody tr')
+  const rows = page.getByRole('table').locator('tbody tr')
   await expect(rows).toHaveCount(7)
   await expect(rows.filter({ hasText: 'old-reference' })).toHaveCount(0)
   await expect(rows.filter({ hasText: 'latest-reference' })).toContainText('Reported received')
@@ -92,8 +92,8 @@ test('network workbench keeps whole-package reports, all-branch access and retai
     'Branch mapping <script>alert(1)</script>',
   )
   expect(await page.locator('tbody script').count()).toBe(0)
-  await page.getByLabel('Included branch code', { exact: true }).fill('BRANCH-B')
-  await page.getByLabel('Warehouse code', { exact: true }).fill('WAREHOUSE')
+  await page.getByRole('textbox', { name: 'Included branch code', exact: true }).fill('BRANCH-B')
+  await page.getByRole('textbox', { name: 'Warehouse code', exact: true }).fill('WAREHOUSE')
   await page.getByRole('button', { name: 'Apply filters' }).click()
   await expect(page).toHaveURL(
     (url) =>
@@ -107,7 +107,7 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   await page.getByRole('button', { name: 'Apply filters' }).click()
   await expect(page).toHaveURL((url) => url.searchParams.get('status') === 'rejected')
   await expect(rows).toHaveCount(3)
-  await page.getByLabel('Exact system label').fill('ERP')
+  await page.getByRole('textbox', { name: 'Exact system label', exact: true }).fill('ERP')
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('no_report')
@@ -117,7 +117,7 @@ test('network workbench keeps whole-package reports, all-branch access and retai
       url.searchParams.get('system') === 'ERP' && url.searchParams.get('status') === 'no_report',
   )
   await expect(rows).toHaveCount(3)
-  await page.getByLabel('Exact system label').fill(' ERP ')
+  await page.getByRole('textbox', { name: 'Exact system label', exact: true }).fill(' ERP ')
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('rejected')
@@ -127,7 +127,9 @@ test('network workbench keeps whole-package reports, all-branch access and retai
       url.searchParams.get('system') === ' ERP ' && url.searchParams.get('status') === 'rejected',
   )
   await expect(rows).toHaveCount(1)
-  await expect(page.getByLabel('Exact system label')).toHaveValue(' ERP ')
+  await expect(page.getByRole('textbox', { name: 'Exact system label', exact: true })).toHaveValue(
+    ' ERP ',
+  )
   await rows.getByText('2 included branches', { exact: true }).focus()
   await page.keyboard.press('Enter')
   await expect(rows.getByText('BRANCH-B', { exact: true })).toBeVisible()
@@ -152,7 +154,7 @@ test('network workbench keeps whole-package reports, all-branch access and retai
         'font-size',
         width < 768 ? '16px' : '14px',
       )
-      const region = page.locator('[role="region"]').filter({ has: page.locator('table') })
+      const region = page.getByRole('region').filter({ has: page.getByRole('table') })
       await region.focus()
       await expect(region).toBeFocused()
       if (width === 375) {
@@ -182,7 +184,9 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   )
   for (let i = 0; i < 25; i++) await report(`System-${i}`, `reference-${i}`)
   await page.goto(base)
-  await expect(page.getByText('32 package/system results', { exact: true })).toBeVisible()
+  await expect(
+    page.getByText('32 package/system results', { exact: true }).filter({ visible: true }),
+  ).toBeVisible()
   await expect(rows).toHaveCount(25)
   await page.getByRole('link', { name: 'Next', exact: true }).click()
   await expect(rows).toHaveCount(7)
@@ -210,14 +214,24 @@ with psycopg.connect(sys.argv[1]) as db:
   const viewerPage = await viewerContext.newPage()
   await signInWithPassword(viewerPage, viewerEmail, password)
   await viewerPage.goto(`${base}?system=ERP`)
-  await expect(viewerPage.locator('tbody tr')).toHaveCount(5)
+  await expect(viewerPage.getByRole('table').locator('tbody tr')).toHaveCount(5)
   await viewerContext.close()
   const branchContext = await browser.newContext()
   const branchPage = await branchContext.newPage()
+  const expectNoPackageData = async () => {
+    const response = await branchPage.request.get(branchPage.url())
+    expect(response.status()).toBe(200)
+    expect(new URL(response.url()).pathname).toBe(base)
+    const html = await response.text()
+    for (const packageId of [ids[0], batch, overlap]) expect(html).not.toContain(packageId)
+  }
   await signInWithPassword(branchPage, branchEmail, password)
   await branchPage.goto(`${base}?branch=BRANCH-A&system=ERP`)
-  await expect(branchPage.locator('tbody tr')).toHaveCount(0)
-  await expect(branchPage.getByText('0 package/system results', { exact: true })).toBeVisible()
+  await expect(branchPage.getByRole('table').locator('tbody tr')).toHaveCount(0)
+  await expect(
+    branchPage.getByText('0 package/system results', { exact: true }).filter({ visible: true }),
+  ).toBeVisible()
+  await expectNoPackageData()
   expect((await branchPage.request.get(`/replenishment/network/handoffs/${ids[0]}`)).status()).toBe(
     404,
   )
@@ -225,7 +239,7 @@ with psycopg.connect(sys.argv[1]) as db:
 with psycopg.connect(sys.argv[1]) as db:
     db.execute("insert into public.membership_locations values(%s,%s,%s)",(sys.argv[2],'${branchUser}','${fixture.second}'))`)
   await branchPage.reload()
-  await expect(branchPage.locator('tbody tr')).toHaveCount(5)
+  await expect(branchPage.getByRole('table').locator('tbody tr')).toHaveCount(5)
   expect(await (await page.request.get(`/api/network-handoffs/${ids[0]}/json`)).json()).toEqual(
     individual,
   )
@@ -253,12 +267,13 @@ with psycopg.connect(sys.argv[1]) as db:
     originalCsv,
   )
   await branchPage.goto(`${base}?selection=unavailable&system=ERP`)
-  await expect(branchPage.locator('tbody tr')).toHaveCount(2)
+  await expect(branchPage.getByRole('table').locator('tbody tr')).toHaveCount(2)
   await python(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute("delete from public.membership_locations where organization_id=%s and user_id=%s and location_id=%s",(sys.argv[2],'${branchUser}','${fixture.second}'))`)
   await branchPage.reload()
-  await expect(branchPage.locator('tbody tr')).toHaveCount(0)
+  await expect(branchPage.getByRole('table').locator('tbody tr')).toHaveCount(0)
+  await expectNoPackageData()
   await branchContext.close()
   expect(errors).toEqual([])
 })
