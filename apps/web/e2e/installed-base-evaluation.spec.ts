@@ -36,14 +36,38 @@ test('installed-base evaluations capture completed sales and retain scoped respo
   page.on('pageerror', (error) => errors.push(error.message))
   const visual = async (kind: string, locale: string) => {
     await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr')
-    for (const width of [375, 768, 1024, 1440, 1920]) {
-      await page.setViewportSize({ width, height: 1000 })
+    for (const width of [375, 390, 768, 1024, 1366, 1440, 1920]) {
+      const height = width === 1366 ? 768 : width === 390 ? 844 : 1000
+      await page.setViewportSize({ width, height })
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       ).toBe(true)
       await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+      for (const heading of await page.locator('h2').all()) {
+        await expect(heading).toHaveCSS('font-size', '14px')
+      }
+      for (const heading of await page.locator('th').all()) {
+        await expect(heading).toHaveCSS('font-size', '12px')
+        await expect(heading).toHaveCSS('font-weight', '500')
+      }
+      if (await page.locator('dd.text-evidence-value').count()) {
+        await expect(page.locator('dd.text-evidence-value').first()).toHaveCSS('font-size', '14px')
+      }
+      if (kind !== 'detail') {
+        await expect(page.getByRole('textbox').first()).toHaveCSS(
+          'font-size',
+          width < 768 ? '16px' : '14px',
+        )
+      }
+      if (width < 768) {
+        for (const summary of await page.locator('summary:visible').all()) {
+          expect((await summary.boundingBox())!.height).toBeGreaterThanOrEqual(44)
+        }
+      }
       await page.screenshot({
-        path: testInfo.outputPath(`installed-base-evaluation-${kind}-${locale}-${width}.png`),
+        path: testInfo.outputPath(
+          `installed-base-evaluation-${kind}-${locale}-${width}x${height}.png`,
+        ),
         fullPage: true,
       })
     }
@@ -59,6 +83,8 @@ from psycopg.types.json import Jsonb
 with psycopg.connect(sys.argv[1]) as db:
     org=sys.argv[2]
     db.execute("insert into public.locations(organization_id,code,name_en,location_type,country_code,timezone) values(%s,'BASE-L','Service location','branch','SA','Asia/Riyadh'),(%s,'OTHER-L','Other location','branch','SA','Asia/Riyadh')",(org,org))
+    db.execute("insert into public.locations(organization_id,code,name_en,name_ar,location_type,country_code,timezone,is_active) values(%s,'CLOSED-L','Closed service location','موقع خدمة مغلق','branch','SA','Asia/Riyadh',false)",(org,))
+    db.execute("update public.locations set name_ar='موقع الخدمة' where organization_id=%s and code='BASE-L'",(org,))
     db.execute("insert into public.items(organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency) values(%s,'BASE-P','Installed part','Test','EA',1,'SAR')",(org,))
     for user,role in [(sys.argv[4],'viewer'),(sys.argv[5],'branch_user')]:
         db.execute('insert into public.memberships(organization_id,user_id,role) values(%s,%s,%s)',(org,user,role))
@@ -78,6 +104,10 @@ with psycopg.connect(sys.argv[1]) as db:
     print(scenario)`)
     const scenario = seeded.stdout.trim(),
       createUrl = `/forecasts/installed-base/demand/${scenario}/evaluate`
+    await page.goto('/forecasts/installed-base/evaluations')
+    await expect(
+      page.locator('p[role="status"]:visible').filter({ hasText: /^No evaluations saved yet\.$/ }),
+    ).toHaveText('No evaluations saved yet.')
     await page.goto(`/forecasts/installed-base/demand/${scenario}`)
     await page.getByRole('link', { name: 'Evaluate demand scenario', exact: true }).click()
     const preview = page.getByRole('button', { name: 'Preview evaluation', exact: true })
@@ -127,6 +157,11 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(
       page.getByRole('heading', { name: 'Captured evaluation', exact: true }),
     ).toBeVisible()
+    await expect(page.locator('details').last().locator('dd').first()).toHaveCSS(
+      'font-size',
+      '12px',
+    )
+    await expect(page.locator('details').last().locator('dd').last()).toHaveCSS('font-size', '12px')
     await visual('detail', 'en')
     await page.setViewportSize({ width: 375, height: 1000 })
     await ledger.focus()
@@ -147,12 +182,73 @@ with psycopg.connect(sys.argv[1]) as db:
     ).toBeVisible()
     await visual('form', 'ar')
     await page.goto('/forecasts/installed-base/evaluations')
+    const arabicLocation = page.getByRole('combobox')
+    await arabicLocation.fill('موقع الخدمة')
+    await expect(page.getByRole('option').filter({ hasText: 'BASE-L' })).toBeVisible()
+    await arabicLocation.press('ArrowDown')
+    await arabicLocation.press('Enter')
+    await expect(arabicLocation).toHaveAttribute('aria-expanded', 'false')
+    await expect(arabicLocation).toHaveValue('BASE-L')
     await visual('history', 'ar')
     await locale('en')
     await visual('history', 'en')
+    const historySearch = page.getByRole('textbox', { name: 'Evaluation name', exact: true })
+    const historyLocation = page.getByRole('combobox', {
+      name: 'Service location',
+      exact: true,
+    })
+    const historyUrl = page.url()
+    await historySearch.fill('Unsaved search')
+    await historyLocation.fill('HISTORICAL-L')
+    await expect(historyLocation).toHaveAttribute('aria-expanded', 'true')
+    await historyLocation.press('Escape')
+    await expect(historyLocation).toHaveAttribute('aria-expanded', 'false')
+    await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await expect(page).toHaveURL(historyUrl)
+    await expect(historySearch).toHaveValue('')
+    await expect(historyLocation).toHaveValue('')
+    await page.goto('/forecasts/installed-base/evaluations?item=BASE-P')
+    const appliedItem = page.getByRole('textbox', { name: 'Part code', exact: true })
+    await expect(appliedItem).toHaveValue('BASE-P')
+    await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await expect(page).toHaveURL(/\/forecasts\/installed-base\/evaluations$/)
+    await expect(appliedItem).toHaveValue('')
+    await historySearch.fill('Temporary search')
+    await page.getByRole('button', { name: 'Clear search', exact: true }).click()
+    await expect(historySearch).toHaveValue('')
+    await expect(historySearch).toBeFocused()
+    const historicalLookup = page.waitForResponse((response) => {
+      const url = new URL(response.url())
+      return (
+        url.pathname === '/api/lookup/locations' &&
+        url.searchParams.get('q') === 'Closed service' &&
+        url.searchParams.get('include_inactive') === 'true'
+      )
+    })
+    await historyLocation.fill('Closed service')
+    await historicalLookup
+    await expect(page.getByRole('option').filter({ hasText: 'CLOSED-L' })).toBeVisible()
+    await historyLocation.press('ArrowDown')
+    await historyLocation.press('Enter')
+    await expect(historyLocation).toHaveAttribute('aria-expanded', 'false')
+    await expect(historyLocation).toHaveValue('CLOSED-L')
+    await page.getByRole('button', { name: 'Search', exact: true }).click()
+    await expect(page).toHaveURL(/location=CLOSED-L/)
+    await expect(page.locator('p[role="status"]:visible')).toHaveText(
+      'No saved evaluations match these filters.',
+    )
+    await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await expect(page).toHaveURL(/\/forecasts\/installed-base\/evaluations$/)
+    await expect(historyLocation).toHaveValue('')
+    await historySearch.fill('Captured')
+    await page.getByRole('button', { name: 'Search', exact: true }).click()
+    await expect(page).toHaveURL(/q=Captured/)
+    await expect(page.getByRole('link', { name: 'Captured evaluation', exact: true })).toBeVisible()
     await page.getByLabel('Evaluation name', { exact: true }).fill('no-match')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
-    await expect(page.getByRole('status')).toContainText('No saved evaluations')
+    await expect(page.locator('p[role="status"]:visible')).toHaveText(
+      'No saved evaluations match these filters.',
+    )
     for (const [address, allowed] of [
       [viewerEmail, true],
       [branchEmail, false],

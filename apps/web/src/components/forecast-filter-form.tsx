@@ -32,6 +32,8 @@ export function ForecastFilterForm({
         ? event.target.closest<HTMLAnchorElement>('a[data-forecast-filter-reset]')
         : null
     if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return
+    // Same-URL Next navigation refreshes page data and can discard sibling drafts.
+    if (link.href === window.location.href) event.preventDefault()
     onReset?.()
     setRevision((current) => current + 1)
   }

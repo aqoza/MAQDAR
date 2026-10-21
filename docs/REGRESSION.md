@@ -79,7 +79,9 @@ Audit bases for the full header pass: `8a078f5`, then main `4707e36` including e
   every workflow; `policy-workbench.spec.ts` checks embedded apply/reset/paging and
   Back/Forward plus standalone behavior. Driver/installed-base suites retain
   preview invalidation, exact-code submission, historical lookup, scoped HTTP 404
-  and their existing responsive/RTL cases. See
+  and their existing responsive/RTL cases. Include newly merged installed-base
+  evaluation history, creation and saved reports in `installed-base-evaluation.spec.ts`.
+  See
   [forecast-pages-consistency.md](forecast-pages-consistency.md). These are
   presentation/lookup refinements; no action/RPC/calculation changes are authorized.
 

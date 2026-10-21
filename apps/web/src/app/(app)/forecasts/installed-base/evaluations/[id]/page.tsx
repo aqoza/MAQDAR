@@ -80,17 +80,19 @@ export default async function InstalledEvaluationDetail({
         <InstalledBaseEvaluationReport report={report} />
       </NextIntlClientProvider>
       <details className="min-w-0 workspace-panel text-sm">
-        <summary className="cursor-pointer">{t('savedEvidence')}</summary>
+        <summary className="min-h-11 cursor-pointer text-subsection-title md:min-h-0">
+          {t('savedEvidence')}
+        </summary>
         <dl className="mt-3 grid gap-3 sm:grid-cols-2">
           <div className="min-w-0">
             <dt className="text-xs text-muted-foreground">{t('importTime')}</dt>
-            <dd className="break-words">
+            <dd className="break-words text-xs">
               <bdi>{data.created_at}</bdi>
             </dd>
           </div>
           <div className="min-w-0">
             <dt className="text-xs text-muted-foreground">{t('fingerprint')}</dt>
-            <dd className="break-all">{report.fingerprint}</dd>
+            <dd className="break-all text-xs">{report.fingerprint}</dd>
           </div>
         </dl>
         <p className="mt-3">{t('immutable')}</p>

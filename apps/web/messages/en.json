@@ -5488,6 +5488,7 @@
     "search": "Search",
     "reset": "Reset",
     "empty": "No saved evaluations match these filters.",
+    "emptyDataset": "No evaluations saved yet.",
     "page": "Page {page} of {pages}",
     "previous": "Previous",
     "next": "Next",

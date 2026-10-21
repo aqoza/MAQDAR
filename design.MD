@@ -74,7 +74,7 @@ Location suggestions show code and localized name and submit the existing exact 
 
 Apply the same roles throughout Forecasts: classification, creation/preparation,
 policy and stock evidence, simulations/calendars/events, external drivers,
-installed-base populations and conditional demand scenarios. Nested window and
+installed-base populations, conditional demand scenarios and retrospective evaluations. Nested window and
 summary-card headings use 14px/20px; table headings use 12px/16px, weight 500.
 Source timestamps, identifiers, fingerprints, training windows and supporting
 method notes use the caption role. Keep primary codes, quantities, scores and
@@ -89,9 +89,11 @@ authorization. Embedded workbench filtering, reset and paging retain the workspa
 and selected tab, matching embedded quality navigation; standalone routes remain
 available.
 
-Reset clears both applied filters and unsubmitted edits, including when its
-destination is already the current URL. Reset only the current filter form;
-retained drafts in other Forecasts workflow tabs must survive.
+Reset clears applied filters and unsubmitted edits. When its destination matches
+the current URL, reset only the current form locally and preserve drafts in other
+mounted Forecasts tabs. Local tab switches also preserve drafts. URL-changing
+filter, reset, pagination and browser-history navigation retain their existing
+server-navigation behavior.
 
 Recent-run search has a flexible-width control row, a clear button, status/type filters and a visible **Latest 20 only** scope with a matching count. It searches only the loaded, authorized recent runs. Do not imply it searches the complete archive. Keep mobile input text at 16px and interactive targets at least 44px; layout changes must not shrink the shared type scale.
 
