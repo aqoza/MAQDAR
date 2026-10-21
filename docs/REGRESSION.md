@@ -100,3 +100,14 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
   `engine/tests/test_installed_base_db.py`. Keep database tests and browser fixtures
   sequential against loopback only. Check canonical/concurrent retries and revoked
   authority after waits, catalog changes/deletion and no operational writes.
+
+- `BASE-002`: `installed-base-demand.spec.ts` validates manual rates and CSV imports,
+  explicit zero versus missing assumptions, late evidence, confirmation, stale preview
+  hiding, exact fractional expectations, daily/group evidence, source deletion and
+  scoped paginated history. Capture form/detail/history at all five widths and Arabic
+  RTL; verify keyboard scrolling and inspect representative screenshots.
+- Run `installed-base-demand.test.ts`, its server-action tests,
+  `0100_installed_base_demand.test.sql`, privilege/tenant invariants and
+  `test_installed_base_demand_db.py`. Include maximum/tiny decimal oracles, 1,000
+  groups, concurrent retries and revoked authority/evidence changes during both
+  advisory and source-row waits. Keep shared database and browser suites sequential.

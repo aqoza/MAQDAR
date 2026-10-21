@@ -874,6 +874,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"installed_base_demand_scenarios": {
+                  Row: {
+                    "created_at": string,"cutoff": string,"dataset_id": string,"id": string,"item_code": string,"item_id": string,"location_code": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_name": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"cutoff": string,"dataset_id": string,"id"?: string,"item_code": string,"item_id": string,"location_code": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_name": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"cutoff"?: string,"dataset_id"?: string,"id"?: string,"item_code"?: string,"item_id"?: string,"location_code"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"scenario_name"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "installed_base_demand_scenario_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "installed_base_demand_scenarios_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"inventory_policies": {
                   Row: {
                     "evidence": NonNullable<Json>,"forecast_id": string,"id": string,"item_code": string,"item_id": string,"location_id": string,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>,"unit": string | null
@@ -3703,6 +3729,12 @@ isOneToOne: false
                            },
 "import_stage_chunk":
 { Args: { "p_batch_id": string,"p_file_no": number,"p_first_row": number,"p_rows": string }; Returns: Json
+                           },
+"installed_base_demand_preview":
+{ Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
+                           },
+"installed_base_demand_save":
+{ Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
                            },
 "installed_base_preview":
 { Args: { "p_input": Json,"p_organization_id": string }; Returns: Json

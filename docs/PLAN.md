@@ -695,3 +695,16 @@ source-declared availability and server import time. Require applicability/non-o
 confirmation, stable retries and tenant/location access. Keep the compact green UI
 at five widths plus Arabic RTL. See [installed-base-datasets.md](installed-base-datasets.md)
 for accepted calculations, bounds, lifecycle and verification. Forecast fitting follows separately.
+
+### Step 24b — approved 2026-10-21
+
+PR #136 was merged as `e545ab9` after all four CI checks passed. The owner approved
+saved installed-base demand scenarios from one population dataset, with an explicit
+nonnegative replacement rate and source/availability evidence for every group. Keep
+population and rates constant across a 1–90 day horizon (default 28), calculate exact
+daily and horizon expectations starting after the cutoff, and preserve unknown ages.
+Require population/rate availability by cutoff and applicability confirmation. Retain
+copied evidence, immutable history, canonical retries and current editor/location
+access, using the compact green UI at five widths plus Arabic RTL. No learned models,
+uncertainty bands, policy integration or operational changes. See
+[installed-base-demand.md](installed-base-demand.md).
