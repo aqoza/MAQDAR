@@ -1,15 +1,19 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { PlanningRefresh } from '@/components/planning-controls'
+import { normalizeSearch, searchTokens } from '@/lib/master-data/search'
 import styles from '@/components/forecast-workspace.module.css'
 
 type Run = {
   id: string
   location: string
   code: string
+  searchText: string
   kind: string
+  kindKey: string
   status: string
   statusLabel: string
   window: string
@@ -48,16 +52,23 @@ export function ForecastRunBrowser({
   statuses: { value: string; label: string }[]
   labels: Labels
 }) {
-  const initialView = { search: '', status: 'all', id: runs[0]?.id, latest: runs[0]?.id }
+  const t = useTranslations('ForecastSearch')
+  const initialView = { search: '', status: 'all', kind: '', id: runs[0]?.id, latest: runs[0]?.id }
   const [savedView, setView] = useState(initialView)
   // A newly queued run must remain visible even if the previous view was filtered.
   const view = savedView.latest === runs[0]?.id ? savedView : initialView
-  const { search, status } = view
-  const query = search.trim().toLocaleLowerCase()
+  const { search, status, kind } = view
+  const tokens = searchTokens(search)
+  const kinds = [...new Map(runs.map((run) => [run.kindKey, run.kind]))]
   const filtered = runs.filter(
     (run) =>
       (status === 'all' || run.status === status) &&
-      `${run.location} ${run.code} ${run.kind} ${run.id}`.toLocaleLowerCase().includes(query),
+      (!kind || run.kindKey === kind) &&
+      tokens.every((token) =>
+        normalizeSearch(
+          `${run.location} ${run.searchText} ${run.code} ${run.kind} ${run.id}`,
+        ).includes(token),
+      ),
   )
   // A newly queued run becomes selected after the server refresh; ordinary refreshes keep selection.
   const preferred = view.id
@@ -69,33 +80,64 @@ export function ForecastRunBrowser({
           <h2 id="run-history-title" className="text-section-title">
             {labels.recent}
           </h2>
-          <div className={styles.filters}>
-            <label className={styles.search}>
+          <p className={styles.runScope}>{t('scope')}</p>
+        </div>
+        <div className={styles.filters}>
+          <div className={styles.search}>
+            <label>
               <span className="sr-only">{labels.search}</span>
               <Search aria-hidden="true" />
               <input
                 type="search"
                 value={search}
                 onChange={(event) => setView({ ...view, search: event.target.value })}
-                placeholder={labels.search}
+                placeholder={t('placeholder')}
+                maxLength={100}
               />
             </label>
-            <label>
-              <span className="sr-only">{labels.status}</span>
-              <select
-                value={status}
-                onChange={(event) => setView({ ...view, status: event.target.value })}
+            {search && (
+              <button
+                type="button"
+                className={styles.clearSearch}
+                aria-label={t('clear')}
+                onClick={(event) => {
+                  setView({ ...view, search: '' })
+                  event.currentTarget.parentElement?.querySelector('input')?.focus()
+                }}
               >
-                <option value="all">{labels.allStatuses}</option>
-                {statuses.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <PlanningRefresh active={active} label={labels.refresh} compact />
+                <X aria-hidden="true" />
+              </button>
+            )}
           </div>
+          <label>
+            <span className="sr-only">{labels.status}</span>
+            <select
+              value={status}
+              onChange={(event) => setView({ ...view, status: event.target.value })}
+            >
+              <option value="all">{labels.allStatuses}</option>
+              {statuses.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span className="sr-only">{t('type')}</span>
+            <select
+              value={kind}
+              onChange={(event) => setView({ ...view, kind: event.target.value })}
+            >
+              <option value="">{t('allTypes')}</option>
+              {kinds.map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <PlanningRefresh active={active} label={labels.refresh} compact />
         </div>
         {filtered.length ? (
           <div className={styles.tableScroll} role="region" aria-label={labels.recent} tabIndex={0}>
@@ -143,11 +185,14 @@ export function ForecastRunBrowser({
           </div>
         )}
         <div className={styles.tableFooter}>
+          <p role="status" aria-live="polite">
+            {t('count', { matched: filtered.length, total: runs.length })}
+          </p>
           <p>{labels.historyNote}</p>
-          {(search || status !== 'all') && (
+          {(search || status !== 'all' || kind) && (
             <button
               onClick={() => {
-                setView({ ...view, search: '', status: 'all' })
+                setView({ ...view, search: '', status: 'all', kind: '' })
               }}
             >
               {labels.reset}

@@ -11,14 +11,26 @@ export function ForecastTabs({
   tabs,
   panels,
   header,
+  initialTab,
+  navigationKey = '',
 }: {
   label: string
   tabs: { key: string; label: string }[]
   panels: ReactNode[]
   header?: ReactNode
+  initialTab?: string
+  navigationKey?: string
 }) {
   const id = useId()
-  const [selected, setSelected] = useState(0)
+  const initialIndex = Math.max(
+    0,
+    tabs.findIndex((tab) => tab.key === initialTab),
+  )
+  const [view, setView] = useState({ selected: initialIndex, source: navigationKey })
+  // Local tab switches keep mounted form drafts. A new URL restores its requested tab,
+  // including quality search, pagination and browser back/forward navigation.
+  const selected = view.source === navigationKey ? view.selected : initialIndex
+  const setSelected = (index: number) => setView({ selected: index, source: navigationKey })
 
   function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const rtl = getComputedStyle(event.currentTarget).direction === 'rtl'

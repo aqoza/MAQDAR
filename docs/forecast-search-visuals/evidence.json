@@ -1,0 +1,136 @@
+{
+  "contract": "../forecast-search-usability.md and ../../design.MD: approved Forecasts search and compact evidence contract; actual local production app with synthetic fixtures only.",
+  "verifiedAt": "2026-10-22",
+  "targetViewports": ["1366x768", "390x844", "768x844", "800x844"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Production Chromium checks exercise keyboard suggestion selection, ordinary Tab dismissal and next-control focus, Escape, clear/focus behavior, keyboard disclosure toggling, labels, visible focus and 44px standalone mobile summary targets. Real screen-reader testing was not performed."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "Both English and real Arabic locales were captured at laptop and mobile viewports; both quality surfaces were also checked at 768/800px. Assertions verify no document overflow, input bounds, the tablet header height and mobile input size. Tables retain local horizontal scrolling."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "A held lookup request visibly shows Searching locations; a later request wins and stale responses cannot replace its suggestions."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Active-only lookup for an inactive location yields a visible no-match explanation and manual-code recovery; filtered quality no-match feedback is verified for a branch-restricted location."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "An intercepted 500 lookup displays localized recovery text while preserving the typed manual code. A later request recovers successfully."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "The existing planning KPI browser regression verifies unavailable saved quality scores remain an em dash, while populated exact scores and independent coverage evidence remain visible."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Production checks apply quality search, advanced filters, chips, reset, display controls and paging, preserve exact decimal scores, and restore a single quality form through browser Back/Forward."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Actual local sessions verify anonymous lookup denial, foreign-tenant exclusion, branch-only suggestions and branch-restricted saved-quality visibility. Unit tests also verify missing-active-organization denial and no-store responses."
+    }
+  },
+  "limitations": [
+    "Chromium only; no Firefox/Safari or physical-device certification.",
+    "Full-page images can be taller than their browser viewport.",
+    "No perceptual similarity percentage or test coverage percentage was collected."
+  ],
+  "renderedEvidence": [
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-quality-en-1366.png",
+      "observation": "en production quality: measured 14px evidence headings, 12px notes, 14px desktop/16px mobile location input; full-width disclosure and local table scrolling."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-runs-en-1366.png",
+      "observation": "en production readiness and recent runs: localized location suggestions, compact shared typography, flexible search/filter controls and visible latest-20 scope."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "forecast-quality-en-390.png",
+      "observation": "en production quality: measured 14px evidence headings, 12px notes, 14px desktop/16px mobile location input; full-width disclosure and local table scrolling."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "forecast-runs-en-390.png",
+      "observation": "en production readiness and recent runs: localized location suggestions, compact shared typography, flexible search/filter controls and visible latest-20 scope."
+    },
+    {
+      "viewport": "768x844",
+      "artifact": "quality-workspace-en-768.png",
+      "observation": "en workspace quality: flexible tablet filter columns, keyboard-opened advanced filters, no page overflow; embedded header remains one line with actions below."
+    },
+    {
+      "viewport": "768x844",
+      "artifact": "quality-standalone-en-768.png",
+      "observation": "en standalone quality: flexible tablet filter columns, keyboard-opened advanced filters and no page overflow."
+    },
+    {
+      "viewport": "800x844",
+      "artifact": "quality-workspace-en-800.png",
+      "observation": "en workspace quality: flexible tablet filter columns, keyboard-opened advanced filters, no page overflow; embedded header remains one line with actions below."
+    },
+    {
+      "viewport": "800x844",
+      "artifact": "quality-standalone-en-800.png",
+      "observation": "en standalone quality: flexible tablet filter columns, keyboard-opened advanced filters and no page overflow."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "quality-standalone-en-390.png",
+      "observation": "en standalone quality: keyboard-opened disclosure has a measured target of at least 44px; controls and table stay within the page."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-quality-ar-1366.png",
+      "observation": "ar production quality: measured 14px evidence headings, 12px notes, 14px desktop/16px mobile location input; full-width disclosure and local table scrolling."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-runs-ar-1366.png",
+      "observation": "ar production readiness and recent runs: localized location suggestions, compact shared typography, flexible search/filter controls and visible latest-20 scope."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "forecast-quality-ar-390.png",
+      "observation": "ar production quality: measured 14px evidence headings, 12px notes, 14px desktop/16px mobile location input; full-width disclosure and local table scrolling."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "forecast-runs-ar-390.png",
+      "observation": "ar production readiness and recent runs: localized location suggestions, compact shared typography, flexible search/filter controls and visible latest-20 scope."
+    },
+    {
+      "viewport": "768x844",
+      "artifact": "quality-workspace-ar-768.png",
+      "observation": "ar workspace quality: flexible tablet filter columns, keyboard-opened advanced filters, no page overflow; embedded header remains one line with actions below."
+    },
+    {
+      "viewport": "768x844",
+      "artifact": "quality-standalone-ar-768.png",
+      "observation": "ar standalone quality: flexible tablet filter columns, keyboard-opened advanced filters and no page overflow."
+    },
+    {
+      "viewport": "800x844",
+      "artifact": "quality-workspace-ar-800.png",
+      "observation": "ar workspace quality: flexible tablet filter columns, keyboard-opened advanced filters, no page overflow; embedded header remains one line with actions below."
+    },
+    {
+      "viewport": "800x844",
+      "artifact": "quality-standalone-ar-800.png",
+      "observation": "ar standalone quality: flexible tablet filter columns, keyboard-opened advanced filters and no page overflow."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "quality-standalone-ar-390.png",
+      "observation": "ar standalone quality: keyboard-opened disclosure has a measured target of at least 44px; controls and table stay within the page."
+    }
+  ]
+}

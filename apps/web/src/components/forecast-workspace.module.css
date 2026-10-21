@@ -11,6 +11,7 @@
 }
 .heading {
   display: flex;
+  flex-wrap: wrap;
   align-items: start;
   justify-content: space-between;
   gap: 16px;
@@ -210,10 +211,12 @@
   flex: none;
 }
 .filters {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(110px, 130px) minmax(130px, 160px) 38px;
   align-items: center;
   gap: 8px;
   min-inline-size: 0;
+  padding: 0 14px 12px;
 }
 .filters label {
   min-inline-size: 0;
@@ -221,7 +224,7 @@
 .filters input,
 .filters select {
   font: inherit;
-  block-size: 34px;
+  block-size: 38px;
   max-inline-size: 100%;
   min-inline-size: 0;
   border: 1px solid var(--workspace-border);
@@ -233,16 +236,49 @@
   position: relative;
 }
 .search input {
-  inline-size: 175px;
+  inline-size: 100%;
   padding-inline-start: 29px;
+  padding-inline-end: 36px;
 }
-.search svg {
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+.search > label > svg {
   position: absolute;
   inset-inline-start: 8px;
-  inset-block-start: 9px;
+  inset-block-start: 11px;
   inline-size: 15px;
   block-size: 15px;
   color: var(--workspace-muted);
+}
+.clearSearch {
+  position: absolute;
+  inset-inline-end: 1px;
+  inset-block-start: 1px;
+  display: grid;
+  place-items: center;
+  inline-size: 36px;
+  block-size: 36px;
+  color: var(--workspace-muted);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.clearSearch:hover {
+  color: var(--workspace-accent);
+  background: #edf5ef;
+}
+.clearSearch svg {
+  inline-size: 16px;
+  block-size: 16px;
+}
+.runScope {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--workspace-muted);
+}
+.tableFooter {
+  flex-wrap: wrap;
+  gap: 8px 16px;
 }
 .tableScroll {
   overflow: auto;
@@ -460,8 +496,11 @@
   .panelHeading {
     flex-wrap: wrap;
   }
-  .search input {
-    inline-size: 150px;
+  .filters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 38px;
+  }
+  .search {
+    grid-column: 1 / -1;
   }
 }
 @media (width < 1100px) {
@@ -509,7 +548,9 @@
   }
   .filters {
     inline-size: 100%;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px;
     gap: 6px;
+    padding: 0 12px 12px;
   }
   .search {
     flex: 1;
@@ -518,7 +559,15 @@
     inline-size: 100%;
   }
   .filters select {
-    max-inline-size: 135px;
+    inline-size: 100%;
+    max-inline-size: 100%;
+  }
+  .clearSearch {
+    inline-size: 44px;
+    block-size: 44px;
+  }
+  .search input {
+    padding-inline-end: 46px;
   }
   .filters input,
   .filters select,
@@ -534,7 +583,7 @@
     align-items: center;
     min-block-size: 44px;
   }
-  .search svg {
+  .search > label > svg {
     inset-block-start: 14px;
   }
   .panelHeading {

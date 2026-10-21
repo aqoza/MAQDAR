@@ -40,9 +40,20 @@ for (const width of [375, 1440]) {
         await expect(panel.getByRole('form', { name: labels[index], exact: true })).toBeVisible()
       } else {
         await expect(panel.getByRole('heading', { name: labels[index], exact: true })).toBeVisible()
+        if (index === 1) {
+          await expect(
+            panel.getByText('No saved forecast results yet.', { exact: true }),
+          ).toBeVisible()
+        }
       }
       if (index === 0 || index >= 3) {
         await panel.getByLabel('Location code', { exact: true }).fill(`TEST-${index}`)
+        if (index === 0) {
+          const location = panel.getByRole('combobox', { name: 'Location code', exact: true })
+          await expect(location).toHaveAttribute('aria-expanded', 'true')
+          await location.press('Escape')
+          await expect(location).toHaveAttribute('aria-expanded', 'false')
+        }
       }
       expect(page.url()).toBe(url)
       expect(await originalDocument.evaluate((original) => original === document)).toBe(true)

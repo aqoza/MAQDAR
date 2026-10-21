@@ -1,10 +1,14 @@
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { PageHeader } from '@/components/page-header'
-import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { TableScrollRegion } from '@/components/table-scroll-region'
+import { X } from 'lucide-react'
+import {
+  ForecastQualityDisplay,
+  ForecastQualityFilters,
+} from '@/components/forecast-quality-filters'
+import { ForecastQualityTable } from '@/components/forecast-quality-table'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { ALL_FORECAST_MODELS as FORECAST_MODELS, FORECAST_STATUSES } from '@/lib/forecasting'
@@ -14,17 +18,17 @@ import {
   formatScore,
   qualityParams,
   qualityRowSchema,
-  qualitySpec,
 } from '@/lib/forecast-quality'
+import { forecastQualityHref, forecastQualityResetHref } from '@/lib/forecast-quality-navigation'
 import {
+  isFiltered,
   lastPage,
-  listHref,
   nearestRange,
   toRange,
-  PAGE_SIZES,
   type RawSearchParams,
 } from '@/lib/master-data/list-params'
 import { searchPatterns } from '@/lib/master-data/search'
+import styles from './forecast-quality.module.css'
 
 export async function ForecastQuality({
   searchParams,
@@ -59,7 +63,7 @@ export async function ForecastQuality({
   if (count.error) throw new Error('Forecast quality unavailable')
   const total = count.count ?? 0
   const pages = lastPage(total, params.size)
-  const href = (page: number) => listHref('/forecasts/quality', qualitySpec, params, { page })
+  const href = (page: number) => forecastQualityHref(params, { page }, embedded)
   if (params.page > pages) redirect(href(pages))
   const { from, to } = toRange(params.page, params.size)
   const range = nearestRange(from, to, total)
@@ -73,8 +77,33 @@ export async function ForecastQuality({
   const rows = (range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])).map(
     (row) => qualityRowSchema.parse(row),
   )
-  const inputClass = 'w-full min-w-0 max-w-full rounded-md border bg-background p-2'
-  const amount = (value: string | null | undefined) => formatScore(value, locale)
+  const filtered = isFiltered(params)
+  const advancedCount =
+    Number(Boolean(params.filters.model)) + Number(Boolean(params.filters.method))
+  const applied = [
+    ...(params.q
+      ? [
+          {
+            label: t('search'),
+            value: params.q,
+            href: forecastQualityHref(params, { q: '' }, embedded),
+          },
+        ]
+      : []),
+    ...Object.entries(params.filters).map(([key, value]) => ({
+      label: t(key === 'status' ? 'result' : (key as 'location' | 'model' | 'method')),
+      value:
+        key === 'model'
+          ? forecasting(`models.${value as (typeof FORECAST_MODELS)[number]}`)
+          : key === 'status'
+            ? forecasting(`statuses.${value as (typeof FORECAST_STATUSES)[number]}`)
+            : key === 'method'
+              ? t(`methods.${value as (typeof FORECAST_METHODS)[number]}`)
+              : value,
+      href: forecastQualityHref(params, { filters: { [key]: null } }, embedded),
+    })),
+  ]
+
   return (
     <div className="space-y-4">
       <PageHeader
@@ -96,141 +125,115 @@ export async function ForecastQuality({
           )
         }
       />
-      <Form
-        action="/forecasts/quality"
-        className="workspace-toolbar flex flex-wrap items-end gap-3"
-        key={JSON.stringify(params)}
-      >
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('search')}
-          <input name="q" defaultValue={params.q} maxLength={100} className={inputClass} />
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('location')}
-          <input
-            name="location"
-            defaultValue={params.filters.location ?? ''}
-            maxLength={64}
-            className={inputClass}
-          />
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('result')}
-          <select name="status" defaultValue={params.filters.status ?? ''} className={inputClass}>
-            <option value="">{t('all')}</option>
-            {FORECAST_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {forecasting(`statuses.${s}`)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('model')}
-          <select name="model" defaultValue={params.filters.model ?? ''} className={inputClass}>
-            <option value="">{t('all')}</option>
-            {FORECAST_MODELS.map((s) => (
-              <option key={s} value={s}>
-                {forecasting(`models.${s}`)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('method')}
-          <select name="method" defaultValue={params.filters.method ?? ''} className={inputClass}>
-            <option value="">{t('all')}</option>
-            {FORECAST_METHODS.map((s) => (
-              <option key={s} value={s}>
-                {t(`methods.${s}`)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('size')}
-          <select name="size" defaultValue={params.size} className={inputClass}>
-            {PAGE_SIZES.map((size) => (
-              <option key={size}>{size}</option>
-            ))}
-          </select>
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('order')}
-          <select name="dir" defaultValue={params.dir} className={inputClass}>
-            <option value="desc">{t('newest')}</option>
-            <option value="asc">{t('oldest')}</option>
-          </select>
-        </label>
-        <button className="rounded-md bg-primary px-4 py-2 text-primary-foreground">
-          {t('filter')}
-        </button>
-        <Link href="/forecasts/quality">{t('reset')}</Link>
-      </Form>
-      <p>{t('count', { total })}</p>
-      <TableScrollRegion label={t('title')}>
-        <table className="w-full text-sm">
-          <caption className="sr-only">{t('title')}</caption>
-          <thead>
-            <tr>
-              {(
-                [
-                  'item',
-                  'location',
-                  'window',
-                  'model',
-                  'result',
-                  'rmse',
-                  'mae',
-                  'bias',
-                  'evidence',
-                ] as const
-              ).map((k) => (
-                <th className="p-2 text-start" key={k}>
-                  {t(k)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className="border-t align-top">
-                <th className="p-2 text-start">
-                  <Link
-                    prefetch={false}
-                    href={`/forecasts/results/${row.run_id}?item=${row.item_id}`}
-                    className="underline"
-                  >
-                    {row.item_code}
-                  </Link>
-                  <p className="font-normal">{row.item_name}</p>
-                </th>
-                <td className="p-2">{row.location_code}</td>
-                <td className="p-2">
-                  <p>
-                    {row.from_date} – {row.to_date}
-                  </p>
-                  <p>{t('horizon', { days: row.horizon })}</p>
-                  <p>{t(`methods.${row.method}`)}</p>
-                </td>
-                <td className="p-2">{row.model ? forecasting(`models.${row.model}`) : '—'}</td>
-                <td className="p-2">{forecasting(`statuses.${row.status}`)}</td>
-                <td className="p-2 tabular-nums">{amount(row.rmse)}</td>
-                <td className="p-2 tabular-nums">{amount(row.mae)}</td>
-                <td className="p-2 tabular-nums">{amount(row.bias)}</td>
-                <td className="min-w-72 p-2">
-                  <details>
-                    <summary className="cursor-pointer">
-                      {t('inspect', { item: row.item_code })}
-                    </summary>
-                    <p className="mt-2">
+      <ForecastQualityFilters
+        key={`filters-${JSON.stringify(params)}`}
+        params={params}
+        embedded={embedded}
+        labels={{
+          search: t('search'),
+          searchPlaceholder: t('searchPlaceholder'),
+          clearSearch: t('clearSearch'),
+          location: t('location'),
+          locationPlaceholder: t('locationPlaceholder'),
+          result: t('result'),
+          all: t('all'),
+          filter: t('filter'),
+          reset: t('reset'),
+          searchScope: t('searchScope'),
+          moreFilters: t('moreFilters'),
+          activeFilters: t('activeFilters', { count: advancedCount }),
+          model: t('model'),
+          method: t('method'),
+        }}
+        statuses={FORECAST_STATUSES.map((value) => ({
+          value,
+          label: forecasting(`statuses.${value}`),
+        }))}
+        models={FORECAST_MODELS.map((value) => ({ value, label: forecasting(`models.${value}`) }))}
+        methods={FORECAST_METHODS.map((value) => ({ value, label: t(`methods.${value}`) }))}
+      />
+      <div className={styles.resultsBar}>
+        <div className={styles.chips}>
+          <p role="status">{t('count', { total })}</p>
+          {applied.map((chip) => (
+            <Link
+              key={chip.label}
+              href={chip.href}
+              className={styles.chip}
+              aria-label={t('removeFilter', { filter: chip.label })}
+            >
+              <span>
+                {chip.label}: {chip.value}
+              </span>
+              <X aria-hidden="true" />
+            </Link>
+          ))}
+        </div>
+        <ForecastQualityDisplay
+          key={`display-${JSON.stringify(params)}`}
+          params={params}
+          embedded={embedded}
+          labels={{
+            displaySettings: t('displaySettings'),
+            size: t('size'),
+            order: t('order'),
+            newest: t('newest'),
+            oldest: t('oldest'),
+            updateDisplay: t('updateDisplay'),
+          }}
+        />
+      </div>
+      {rows.length > 0 ? (
+        <ForecastQualityTable
+          key={`table-${JSON.stringify(params)}`}
+          label={t('title')}
+          columns={(
+            [
+              'item',
+              'location',
+              'window',
+              'model',
+              'result',
+              'rmse',
+              'mae',
+              'bias',
+              'evidence',
+            ] as const
+          ).map((key) => t(key))}
+          records={rows.map((row) => ({
+            id: row.id,
+            itemCode: row.item_code,
+            itemName: row.item_name,
+            href: `/forecasts/results/${row.run_id}?item=${row.item_id}`,
+            location: row.location_code,
+            window: (
+              <div className="text-xs text-muted-foreground">
+                <p>
+                  {row.from_date} – {row.to_date}
+                </p>
+                <p>{t('horizon', { days: row.horizon })}</p>
+                <p>{t(`methods.${row.method}`)}</p>
+              </div>
+            ),
+            model: row.model ? forecasting(`models.${row.model}`) : '—',
+            result: forecasting(`statuses.${row.status}`),
+            rmse: formatScore(row.rmse, locale),
+            mae: formatScore(row.mae, locale),
+            bias: formatScore(row.bias, locale),
+            inspectLabel: t('inspect', { item: row.item_code }),
+            hideLabel: t('hideEvidence', { item: row.item_code }),
+            evidence: (
+              <div className={styles.evidenceGrid}>
+                <section>
+                  <h3 className="text-subsection-title">{t('folds')}</h3>
+                  <div className={`${styles.evidenceNotes} mt-2`}>
+                    <p>
                       {row.comparison === 'fixed-group-v1'
                         ? t('fixedGroup', { unit: row.unit ?? '—' })
                         : row.unit
                           ? t('individualUnit', { unit: row.unit })
                           : t('individual')}
                     </p>
-                    <h2 className="text-section-title mt-3">{t('folds')}</h2>
                     {row.folds.length ? (
                       <ol className="space-y-2">
                         {row.folds.map((fold) => (
@@ -240,7 +243,11 @@ export async function ForecastQuality({
                     ) : (
                       <p>{t('unavailable')}</p>
                     )}
-                    <h2 className="text-section-title mt-3">{t('coverage')}</h2>
+                  </div>
+                </section>
+                <section>
+                  <h3 className="text-subsection-title">{t('coverage')}</h3>
+                  <div className={`${styles.evidenceNotes} mt-2`}>
                     <p>{t('coverageNote')}</p>
                     <p>{t(`coverageStatuses.${row.evaluation.status}`)}</p>
                     {row.evaluation.status === 'available' && (
@@ -268,23 +275,34 @@ export async function ForecastQuality({
                         </p>
                       </>
                     )}
-                  </details>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </TableScrollRegion>
-      {!rows.length && <p>{t('empty')}</p>}
-      <nav aria-label={t('pagination')} className="flex gap-4">
+                  </div>
+                </section>
+              </div>
+            ),
+          }))}
+        />
+      ) : (
+        <div className={styles.empty}>
+          <p className="text-subsection-title">{filtered ? t('noMatches') : t('empty')}</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {filtered ? t('noMatchesHint') : t('emptyHint')}
+          </p>
+          {filtered && (
+            <Link href={forecastQualityResetHref(embedded)} className={`${styles.reset} mt-2`}>
+              {t('reset')}
+            </Link>
+          )}
+        </div>
+      )}
+      <nav aria-label={t('pagination')} className="flex flex-wrap items-center gap-4 text-xs">
         {params.page > 1 && (
-          <Link href={href(params.page - 1)} className="underline">
+          <Link href={href(params.page - 1)} className={styles.reset}>
             {t('previous')}
           </Link>
         )}
         <span>{t('page', { page: params.page, pages })}</span>
         {params.page < pages && (
-          <Link href={href(params.page + 1)} className="underline">
+          <Link href={href(params.page + 1)} className={styles.reset}>
             {t('next')}
           </Link>
         )}
