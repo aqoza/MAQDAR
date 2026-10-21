@@ -93,7 +93,8 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   await page.goto('/replenishment/network')
   await page.getByRole('link', { name: 'Network integrations', exact: true }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Network integration workbench')
-  const rows = page.locator('tbody tr')
+  // React streaming may retain hidden payload copies; assertions inspect the rendered UI.
+  const rows = page.locator('tbody tr:visible')
   await expect(rows).toHaveCount(7)
   await expect(rows.filter({ hasText: 'old-reference' })).toHaveCount(0)
   await expect(rows.filter({ hasText: 'latest-reference' })).toContainText('Reported received')
@@ -145,11 +146,11 @@ test('network workbench keeps whole-package reports, all-branch access and retai
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
       ).toBe(true)
       await expectPageTitle(page.getByRole('heading', { level: 1 }))
-      await expect(page.locator('input[name="system"]')).toHaveCSS(
-        'font-size',
-        width < 768 ? '16px' : '14px',
-      )
-      const region = page.locator('[role="region"]').filter({ has: page.locator('table') })
+      const systemInput = page.locator('input[name="system"]:visible')
+      await expect(systemInput).toHaveCount(1)
+      await expect(systemInput).toHaveCSS('font-size', width < 768 ? '16px' : '14px')
+      const region = page.locator('[role="region"]:visible').filter({ has: page.locator('table') })
+      await expect(region).toHaveCount(1)
       await region.focus()
       await expect(region).toBeFocused()
       if (width === 375) {
