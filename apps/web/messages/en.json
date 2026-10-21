@@ -42,7 +42,10 @@
     "kind": "Value type",
     "available_on": "Declared available on",
     "availability": "Availability at cutoff",
-    "kinds": { "observed": "Observed", "planned": "Planned / forecast assumption" },
+    "kinds": {
+      "observed": "Observed",
+      "planned": "Planned / forecast assumption"
+    },
     "availabilityValues": {
       "missing": "Missing — unknown",
       "declared_available": "Declared available by cutoff",
@@ -2106,7 +2109,8 @@
       "tsb": "TSB",
       "auto_ets": "Automatic ETS",
       "auto_arima": "Automatic ARIMA",
-      "calendar": "Weekday and regional events"
+      "calendar": "Weekday and regional events",
+      "driver_weekday": "Driver + weekday regression"
     },
     "statuses": {
       "selected": "Model selected",
@@ -2420,7 +2424,8 @@
     "methods": {
       "baseline-v1": "Seven baselines",
       "expanded-v1": "Baselines, ETS and ARIMA",
-      "regional-v1": "Prepared group with calendar candidate"
+      "regional-v1": "Prepared group with calendar candidate",
+      "driver-v1": "Captured external driver"
     },
     "empty": "No saved forecast results match these filters.",
     "pagination": "Forecast quality pagination",
@@ -5181,5 +5186,54 @@
     "uncertainDelivery": "Delivery is unconfirmed. Check the recipient mailbox or provider logs before resending.",
     "failedDelivery": "Delivery was not completed. Check workspace permissions and email configuration before sending a new invitation.",
     "batchLabel": "Created {date} · {role}"
+  },
+  "DriverForecast": {
+    "title": "Create driver forecast",
+    "dataset": "Driver dataset",
+    "sourceForecast": "Captured source forecast",
+    "choose": "Choose a matching saved forecast",
+    "noMatches": "No matching individual forecasts with known demand units. Create a baseline or expanded forecast for the same item, location, history window and horizon first.",
+    "confirmation": "I confirm this captured demand and driver dataset apply together. Availability dates are source claims; planned values remain assumptions. Reuse the saved history, units and windows without refreshing demand.",
+    "confirmationRequired": "Confirm applicability and reuse of the captured evidence.",
+    "incompatible": "Choose a successful individual forecast with known units and exactly matching item, location, history and forecast windows.",
+    "pending": "Queueing…",
+    "submit": "Queue driver forecast",
+    "history": "Captured history",
+    "horizon": "Forecast horizon (days)",
+    "driverUnit": "Driver unit",
+    "methodDetails": "Calculation and evidence",
+    "method": "driver-v1 compares the nine existing models with one fixed regularized linear driver/weekday model using the same three rolling RMSE windows. Each fit and its scaling use only that training prefix. Negative predictions are clipped to zero. Missing or late driver values exclude that candidate; existing models can still be selected.",
+    "uncertainty": "80% and 95% bands use reproducible pooled residual bootstrapping. They are conditional on supplied driver values and exclude uncertainty in those values. Coverage is checked on a separate held-out window when sufficient history exists. No causal effect or guaranteed service level is established.",
+    "evidence": "Captured driver and availability checks",
+    "availabilityNote": "Each check uses its own cutoff, including future predictor values. Source-declared availability is unverified and is separate from server import time. These are conditional comparisons, not a reconstruction of what the system knew historically.",
+    "importedAt": "Server import time:",
+    "selectionChecks": "Driver checks for model selection and final fit",
+    "evaluationChecks": "Driver checks for held-out evaluation",
+    "cutoff": "Training cutoff",
+    "stage": "Stage",
+    "status": "Availability",
+    "reason": "Reason",
+    "date": "First affected date",
+    "phase": "Input period",
+    "selection": "Rolling comparison",
+    "final": "Final fit",
+    "available": "Available",
+    "unavailable": "Unavailable",
+    "training": "Training",
+    "prediction": "Prediction",
+    "driver_missing": "Required driver value missing",
+    "driver_late": "Driver value declared after this cutoff",
+    "driver_constant": "No driver variation beyond weekday effects",
+    "fit_failed": "Model fitting unavailable",
+    "refit_failed": "Final model fitting unavailable",
+    "coefficients": "Inspect driver model coefficients",
+    "formula": "Forecast = weekday intercept + slope × supplied driver value, clipped at zero. Intercepts below run Monday through Sunday. The fixed penalty applies to the slope after training-only centering and scaling; coefficients describe association, not causation.",
+    "slope": "Slope per supplied driver unit",
+    "penalty": "Fixed ridge penalty",
+    "training_min": "Training driver minimum",
+    "training_max": "Training driver maximum",
+    "extrapolation": "Driver values outside the training range occur on:",
+    "capturedDataset": "Inspect copied driver dataset",
+    "conditionalNote": "Source availability is unverified. Comparisons are conditional on supplied driver values; uncertainty bands exclude uncertainty in those values."
   }
 }

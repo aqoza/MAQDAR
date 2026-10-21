@@ -38,7 +38,7 @@ export default async function ForecastsPage() {
   const { data, error } = await db
     .from('planning_runs')
     .select(
-      'id,kind,location_id,from_date,to_date,status,attempts,created_at,finished_at,result,locations(code,name_en,name_ar)',
+      'id,kind,options,location_id,from_date,to_date,status,attempts,created_at,finished_at,result,locations(code,name_en,name_ar)',
     )
     .eq('organization_id', organization.id)
     .order('created_at', { ascending: false })
@@ -52,6 +52,7 @@ export default async function ForecastsPage() {
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
   const canStart = editor && !active
   const drivers = await getTranslations('ExternalDrivers')
+  const quality = await getTranslations('ForecastQuality')
   const statuses = (['queued', 'running', 'succeeded', 'failed', 'canceled'] as const).map(
     (value) => ({ value, label: t(`status.${value}`) }),
   )
@@ -65,9 +66,17 @@ export default async function ForecastsPage() {
       run.locations?.name_en ||
       run.locations?.code ||
       run.location_id
-    const kind = t(
-      `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation' | 'policy' | 'simulation'}`,
-    )
+    const isDriver =
+      run.kind === 'forecast' &&
+      run.options &&
+      typeof run.options === 'object' &&
+      !Array.isArray(run.options) &&
+      run.options.method === 'driver-v1'
+    const kind = isDriver
+      ? quality('methods.driver-v1')
+      : t(
+          `kinds.${run.kind as 'readiness' | 'classification' | 'forecast' | 'preparation' | 'policy' | 'simulation'}`,
+        )
     const resultLink =
       run.kind === 'classification'
         ? { href: `/forecasts/${run.id}`, label: t('classificationResults') }

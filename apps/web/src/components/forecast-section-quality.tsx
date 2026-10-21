@@ -7,7 +7,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
-import { FORECAST_MODELS, FORECAST_STATUSES } from '@/lib/forecasting'
+import { ALL_FORECAST_MODELS as FORECAST_MODELS, FORECAST_STATUSES } from '@/lib/forecasting'
 import {
   FORECAST_METHODS,
   formatCoverage,

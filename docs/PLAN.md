@@ -183,8 +183,9 @@ Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-sce
 
 ## Phase 4 build steps
 
-Step 22i and its browser follow-up are merged in PRs #123 and #128. Step 23 begins
-the approved external-driver evidence foundation; see
+Step 22i and its browser follow-up are merged in PRs #123 and #128. Step 23 is merged
+in PR #132. Step 23b adds the approved driver forecast comparisons; see
+[driver-forecasts.md](driver-forecasts.md) and
 [external-driver-datasets.md](external-driver-datasets.md) for its contract and acceptance checks.
 
 Step 21 begins the simulation center. Deferred Phase 3 work, including automatic approval, operational allocation/reservations and outbound transmission, remains on the roadmap.
@@ -205,7 +206,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 22g  | **Network handoff read API:** explicit organization-wide readers, original whole-network JSON, bounded pagination and separate live context for retained copied batches.                                                    | Merged in PR #121                                   |
 | 22h  | **Network acknowledgements:** explicit whole-package received/rejected reports, independent history, safe retries and warehouse/all-branch access.                                                                          | Merged in PR #122                                   |
 | 22i  | **Network integration workbench:** latest whole-package reports, exact system labels, warehouse/branch filters, retained copied evidence and all-location member access.                                                    | Merged — PR #123; verified #128                     |
-| 23   | **External-driver foundation:** immutable dated measurements and assumptions, source-declared availability, exact CSV validation, cutoff coverage and location-scoped history.                                              | Implemented; pending review                         |
+| 23   | **External-driver foundation:** immutable dated measurements and assumptions, source-declared availability, exact CSV validation, cutoff coverage and location-scoped history.                                              | Merged — PR #132                                    |
+| 23b  | **Driver forecasts:** captured individual demand and driver evidence, bounded weekday regression, per-fit availability checks, rolling selection, conditional bands and scoped immutable results.                           | Implemented — review pending                        |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -216,6 +218,22 @@ See [network-allocation.md](network-allocation.md) for Step 22. The immutable re
 See [network-transfer-dates.md](network-transfer-dates.md) for the approved fixed-quantity scheduling rules and evidence lifecycle.
 
 ## Decision log
+
+### Step 23b — approved 2026-10-21
+
+Use one successful individual-item forecast and a matching saved driver dataset.
+Reuse captured demand and compare a bounded linear driver/weekday candidate with
+the existing nine models using three rolling RMSE windows. Every training and
+prediction driver value must be source-declared available by that fit's cutoff;
+missing/late evidence excludes the driver without filling gaps. Preserve kinds
+and server import time, distinguishing conditional comparisons from verified
+historical availability or causation. Retain reproducible 80%/95% residual bands
+and independent held-out coverage when eligible, excluding predictor uncertainty.
+Require known demand units, matching identities/windows, applicability confirmation,
+editor queueing and current location access. Preserve copied evidence, retries and
+immutable results; no changes to existing forecasts, policies or orders. Keep
+compact green design at five widths and Arabic RTL. Multiple drivers and feeds
+remain separate. Contract and verification: [driver-forecasts.md](driver-forecasts.md).
 
 ### Step 23 — approved 2026-10-21
 
