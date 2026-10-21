@@ -290,4 +290,47 @@ begin
  end loop;
 end; $$;
 
+-- Keep event v1 readers/exports closed to the new conditional forecast method.
+create or replace function public.planned_event_source(p_organization_id uuid,p_forecast_id uuid)
+returns jsonb language plpgsql stable security invoker set search_path='' as $$
+declare
+  f public.forecast_results; r public.planning_runs; reason text:='available';
+  days jsonb; day jsonb; n integer:=0; unit text; location_code text;
+begin
+  if auth.uid() is null or p_organization_id is null
+    or not(p_organization_id=any(array(select app.member_organizations()))) then
+    raise exception using errcode='MQ404',message='event source unavailable';
+  end if;
+  -- Explicit scope also protects callers through the definer save RPC.
+  select * into f from public.forecast_results x where x.organization_id=p_organization_id and x.id=p_forecast_id
+    and (x.organization_id=any(array(select app.unscoped_organizations())) or x.location_id=any(array(select app.scoped_locations())));
+  if not found then raise exception using errcode='MQ404',message='event source unavailable'; end if;
+  select * into r from public.planning_runs x where x.organization_id=p_organization_id and x.id=f.run_id;
+  select code into location_code from public.locations where organization_id=p_organization_id and id=f.location_id;
+  unit:=f.evidence#>>'{source,unit_provenance,unit}';
+  days:=f.evidence#>'{output,forecast}';
+  if r.kind is distinct from 'forecast' or r.status is distinct from 'succeeded' or f.status<>'selected'
+    or f.evidence#>>'{output,status}' is distinct from 'selected'
+    or r.options->>'method'='driver-v1' then reason:='forecast_unavailable';
+  elsif coalesce(f.evidence#>'{source,preparation}','null'::jsonb)<>'null'::jsonb
+    or r.options->>'method'='regional-v1' then reason:='prepared_group';
+  elsif f.evidence#>>'{source,unit_provenance,status}' is distinct from 'consistent'
+    or unit is null or unit not in ('EA','SET','L','KG') then reason:='unit_unknown';
+  elsif jsonb_typeof(days) is distinct from 'array' then reason:='source_invalid';
+  elsif jsonb_array_length(days) not between 1 and 90 then reason:='source_invalid';
+  else
+    for day in select value from jsonb_array_elements(days) loop
+      n:=n+1;
+      if day->>'date' is distinct from (r.to_date+n)::text
+        or coalesce(day->>'quantity','') !~ '^[0-9]{1,15}(\.[0-9]{1,6})?$' then
+        reason:='source_invalid'; exit;
+      end if;
+    end loop;
+  end if;
+  return jsonb_build_object('status',reason,'forecast_id',f.id,'run_id',f.run_id,
+    'location_id',f.location_id,'location_code',location_code,'item_id',f.item_id,
+    'item_code',f.item_code,'item_name',f.item_name,'unit',unit,'cutoff',r.to_date,
+    'model',f.model,'method',r.options->>'method','summary',f.summary,'evidence',f.evidence);
+end; $$;
+
 reset lock_timeout;

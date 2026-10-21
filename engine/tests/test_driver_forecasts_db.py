@@ -125,8 +125,13 @@ def test_real_numerical_output_is_validated_and_published_atomically(sources):
         assert db.execute('select app.forecast_finish(%s,%s,%s)',(run,token,Jsonb(output))).fetchone()[0]
         assert not db.execute('select app.forecast_finish(%s,%s,%s)',(run,token,Jsonb(output))).fetchone()[0]
     with session(tenant) as db:
-        evidence=db.execute('select evidence from public.forecast_results where run_id=%s',(run,)).fetchone()[0]
+        evidence,forecast_id=db.execute('select evidence,id from public.forecast_results where run_id=%s',(run,)).fetchone()
         assert evidence['driver']==task['driver']
         assert evidence['source']==task['items'][0]
         assert evidence['original_forecast']==task['original_forecast']
         assert datetime.fromisoformat(evidence['driver']['imported_at'])<=datetime.now(timezone.utc)
+        assert db.execute('select public.planned_event_source(%s,%s)',(tenant[1],forecast_id)).fetchone()[0]['status']=='forecast_unavailable'
+        with pytest.raises(psycopg.Error) as error:
+            with db.transaction():
+                db.execute("select public.planned_event_preview(%s,%s,'campaign','Blocked','Unsupported conditional source','EA','[{\"date\":\"2026-05-21\",\"quantity\":\"1\"}]',true)", (tenant[1],forecast_id))
+        assert error.value.sqlstate=='MQ422'
