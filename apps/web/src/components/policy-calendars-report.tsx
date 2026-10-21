@@ -48,9 +48,9 @@ export async function PolicyCalendarsReport({
   return (
     <div className="min-w-0 space-y-4">
       <HelpDisclosure>
-        <p>{t('meaning')}</p>
-        <p>{t('scheduling')}</p>
-        <p>{t('captureMeaning')}</p>
+        <p className="text-xs">{t('meaning')}</p>
+        <p className="text-xs">{t('scheduling')}</p>
+        <p className="text-xs">{t('captureMeaning')}</p>
       </HelpDisclosure>
       {evidence.output.failure && (
         <div role="status" className="workspace-panel space-y-2">
@@ -72,7 +72,7 @@ export async function PolicyCalendarsReport({
         </p>
         <TableScrollRegion label={t('comparison')}>
           <table aria-label={t('comparison')} className="w-full min-w-[1100px] text-sm">
-            <thead>
+            <thead className="text-xs [&_th]:font-medium">
               <tr>
                 <th className="p-2 text-start text-xs">{t('variant')}</th>
                 {(['maximum', 'lead', 'review', 'moq', 'pack'] as const).map((key) => (
@@ -144,7 +144,7 @@ export async function PolicyCalendarsReport({
             <h3 className="text-subsection-title">{t('reviewShifts')}</h3>
             <TableScrollRegion label={t('reviewShifts')}>
               <table aria-label={t('reviewShifts')} className="w-full min-w-[480px] text-sm">
-                <thead>
+                <thead className="text-xs [&_th]:font-medium">
                   <tr>
                     {(['nominalReview', 'actualReview', 'status'] as const).map((key) => (
                       <th key={key} className="p-2 text-start text-xs">
@@ -167,7 +167,7 @@ export async function PolicyCalendarsReport({
             <h3 className="text-subsection-title">{t('receiptShifts')}</h3>
             <TableScrollRegion label={t('receiptShifts')}>
               <table aria-label={t('receiptShifts')} className="w-full min-w-[480px] text-sm">
-                <thead>
+                <thead className="text-xs [&_th]:font-medium">
                   <tr>
                     {(['actualReview', 'nominalReceipt', 'actualReceipt'] as const).map((key) => (
                       <th key={key} className="p-2 text-start text-xs">

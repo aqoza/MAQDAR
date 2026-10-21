@@ -74,17 +74,17 @@ export default async function ClassificationResults({
         }
         help={
           <HelpDisclosure>
-            <p>{t('methodNote')}</p>
+            <p className="text-xs">{t('methodNote')}</p>
           </HelpDisclosure>
         }
       />
 
       <details>
-        <summary className="cursor-pointer">{t('thresholds')}</summary>
+        <summary className="min-h-11 cursor-pointer md:min-h-0">{t('thresholds')}</summary>
         <dl className="mt-2 grid gap-2 sm:grid-cols-3">
           {CLASSIFICATION_FIELDS.map((key) => (
             <div key={key}>
-              <dt>{t(`fields.${key}`)}</dt>
+              <dt className="text-xs">{t(`fields.${key}`)}</dt>
               <dd>{format(options[key])}</dd>
             </div>
           ))}
@@ -112,7 +112,7 @@ export default async function ClassificationResults({
       <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('results')}</caption>
-          <thead>
+          <thead className="text-xs [&_th]:font-medium">
             <tr>
               {(
                 [
@@ -157,7 +157,9 @@ export default async function ClassificationResults({
                   </td>
                   <td className="p-2">
                     <details>
-                      <summary className="cursor-pointer">{t('details')}</summary>
+                      <summary className="min-h-11 cursor-pointer md:min-h-0">
+                        {t('details')}
+                      </summary>
                       <dl className="min-w-52 space-y-1 py-2">
                         {(
                           [
@@ -170,17 +172,17 @@ export default async function ClassificationResults({
                           ] as const
                         ).map((k) => (
                           <div key={k}>
-                            <dt className="text-muted-foreground">{t(`evidence.${k}`)}</dt>
+                            <dt className="text-xs text-muted-foreground">{t(`evidence.${k}`)}</dt>
                             <dd>{format(source[k])}</dd>
                           </div>
                         ))}
                         <div>
-                          <dt>{t('evidence.status')}</dt>
+                          <dt className="text-xs">{t('evidence.status')}</dt>
                           <dd>{t(`statuses.${source.status}`)}</dd>
                         </div>
                         {(['introduced_on', 'discontinued_on', 'last_sale'] as const).map((k) => (
                           <div key={k}>
-                            <dt>{t(`evidence.${k}`)}</dt>
+                            <dt className="text-xs">{t(`evidence.${k}`)}</dt>
                             <dd>{source[k] ?? t('unknown')}</dd>
                           </div>
                         ))}

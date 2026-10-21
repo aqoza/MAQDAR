@@ -72,6 +72,27 @@ Keep item search, location selection and Result prominent. Put Model and Method 
 
 Location suggestions show code and localized name and submit the existing exact code. Readiness suggestions contain active locations; historical-quality selection also supports inactive and saved codes no longer present in the catalog. Every suggestion comes from the session's organization/branch-scoped query. Do not replace this with a privileged or unbounded catalog download.
 
+Apply the same roles throughout Forecasts: classification, creation/preparation,
+policy and stock evidence, simulations/calendars/events, external drivers,
+installed-base populations and conditional demand scenarios. Nested window and
+summary-card headings use 14px/20px; table headings use 12px/16px, weight 500.
+Source timestamps, identifiers, fingerprints, training windows and supporting
+method notes use the caption role. Keep primary codes, quantities, scores and
+actionable assumptions/confirmations at 14px/20px; a compact layout must not obscure
+their meaning or precision. Native evidence disclosures retain 44px mobile targets.
+
+New workflow and dataset forms reuse active-location code/name suggestions.
+Historical workbench and dataset filters also support inactive/manual saved codes.
+Provide a labeled, clearable search with flexible width and truthful empty/no-match
+feedback. Preserve each form's exact-code fields, preview invalidation and server
+authorization. Embedded workbench filtering, reset and paging retain the workspace
+and selected tab, matching embedded quality navigation; standalone routes remain
+available.
+
+Reset clears both applied filters and unsubmitted edits, including when its
+destination is already the current URL. Reset only the current filter form;
+retained drafts in other Forecasts workflow tabs must survive.
+
 Recent-run search has a flexible-width control row, a clear button, status/type filters and a visible **Latest 20 only** scope with a matching count. It searches only the loaded, authorized recent runs. Do not imply it searches the complete archive. Keep mobile input text at 16px and interactive targets at least 44px; layout changes must not shrink the shared type scale.
 
 ## Implementation and review

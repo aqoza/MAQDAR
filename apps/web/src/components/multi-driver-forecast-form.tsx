@@ -14,7 +14,7 @@ export function MultiDriverForecastForm({
 }: {
   organizationId: string
   datasetId: string
-  datasets: { id: string; label: string }[]
+  datasets: { id: string; label: string; metadata: string }[]
   requestId: string
   forecasts: { id: string; label: string }[]
 }) {
@@ -48,7 +48,7 @@ export function MultiDriverForecastForm({
         {!forecasts.length && <p className="text-sm">{t('noMatches')}</p>}
         <fieldset className="min-w-0 space-y-2">
           <legend className="font-medium text-sm">{t('datasets')}</legend>
-          <p className="text-sm" id="driver-selection-help">
+          <p className="text-xs" id="driver-selection-help">
             {t('selectionHelp', { count: selected.length + 1 })}
           </p>
           {!datasets.length && <p className="text-sm">{t('noDatasets')}</p>}
@@ -71,7 +71,10 @@ export function MultiDriverForecastForm({
                     )
                   }
                 />
-                <span className="min-w-0">{d.label}</span>
+                <span className="grid min-w-0 gap-1">
+                  <span className="break-words">{d.label}</span>
+                  <bdi className="break-all text-xs text-muted-foreground">{d.metadata}</bdi>
+                </span>
               </label>
             ))}
           </div>

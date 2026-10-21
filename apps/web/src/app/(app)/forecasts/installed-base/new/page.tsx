@@ -34,7 +34,12 @@ export default async function NewPopulationDataset() {
           </HelpDisclosure>
         }
       />
-      <NextIntlClientProvider messages={{ InstalledBase: messages.InstalledBase }}>
+      <NextIntlClientProvider
+        messages={{
+          InstalledBase: messages.InstalledBase,
+          LocationLookup: messages.LocationLookup,
+        }}
+      >
         <InstalledBaseForm
           organizationId={context.active.id}
           requestId={crypto.randomUUID()}

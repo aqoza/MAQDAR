@@ -4,6 +4,7 @@ import { useActionState } from 'react'
 import { useTranslations } from 'next-intl'
 import { enqueuePreparation } from '@/app/(app)/forecasts/prepare/actions'
 import { idleState } from '@/lib/forms'
+import { LocationCodeInput } from '@/components/master-data/location-code-input'
 
 export function PreparationForm({
   organizationId,
@@ -24,16 +25,15 @@ export function PreparationForm({
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="request_id" value={requestId} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="grid gap-1 text-sm">
-          {t('location')}
-          <input
+        <div className="grid min-w-0 gap-1 text-sm">
+          <label htmlFor="preparation-location">{t('location')}</label>
+          <LocationCodeInput
+            id="preparation-location"
             name="location_code"
             required
-            maxLength={64}
             defaultValue={state.values?.location_code ?? ''}
-            className={inputClass}
           />
-        </label>
+        </div>
         <label className="grid gap-1 text-sm">
           {t('from')}
           <input
@@ -66,7 +66,7 @@ export function PreparationForm({
           className={inputClass}
         />
       </label>
-      <p className="text-sm text-muted-foreground">{t('limits')}</p>
+      <p className="text-xs text-muted-foreground">{t('limits')}</p>
       <p className="text-sm">{t('rules')}</p>
       <label className="flex items-start gap-2 text-sm">
         <input name="history_complete" type="checkbox" required className="mt-1" />

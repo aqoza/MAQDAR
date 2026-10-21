@@ -4,6 +4,7 @@ import { useActionState } from 'react'
 import { useTranslations } from 'next-intl'
 import { enqueueForecast } from '@/app/(app)/forecasts/new/actions'
 import { idleState } from '@/lib/forms'
+import { LocationCodeInput } from '@/components/master-data/location-code-input'
 
 export function ForecastForm({
   organizationId,
@@ -35,16 +36,15 @@ export function ForecastForm({
         </select>
       </label>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="grid min-w-0 gap-1 text-sm">
-          {t('location')}
-          <input
+        <div className="grid min-w-0 gap-1 text-sm">
+          <label htmlFor="forecast-location">{t('location')}</label>
+          <LocationCodeInput
+            id="forecast-location"
             name="location_code"
             required
-            maxLength={64}
             defaultValue={state.values?.location_code ?? ''}
-            className={inputClass}
           />
-        </label>
+        </div>
         <label className="grid min-w-0 gap-1 text-sm">
           {t('horizon')}
           <input
@@ -90,7 +90,7 @@ export function ForecastForm({
           className={inputClass}
         />
       </label>
-      <p className="text-sm text-muted-foreground">{t('limits')}</p>
+      <p className="text-xs text-muted-foreground">{t('limits')}</p>
       <label className="flex items-start gap-2 text-sm">
         <input name="history_complete" type="checkbox" required className="mt-1" />
         {t('confirmation')}

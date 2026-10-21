@@ -91,12 +91,12 @@ export default async function PreparedResults({
 
       <p>{t('rules')}</p>
       <HelpDisclosure>
-        <p>{t('calendarNote')}</p>
+        <p className="text-xs">{t('calendarNote')}</p>
       </HelpDisclosure>
       <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('groups')}</caption>
-          <thead>
+          <thead className="text-xs [&_th]:font-medium">
             <tr>
               {(['target', 'status', 'sources', 'unit', 'sold', 'lost', 'details'] as const).map(
                 (k) => (
@@ -148,11 +148,11 @@ export default async function PreparedResults({
             </NextIntlClientProvider>
           )}
           <h2 className="text-section-title">{t('contributions')}</h2>
-          <p className="text-sm">{t('contributionNote')}</p>
+          <p className="text-xs">{t('contributionNote')}</p>
           <div className="workspace-table overflow-x-auto">
             <table className="w-full text-sm">
               <caption className="sr-only">{t('contributions')}</caption>
-              <thead>
+              <thead className="text-xs [&_th]:font-medium">
                 <tr>
                   {(
                     ['item', 'factor', 'sold', 'lost', 'convertedSold', 'convertedLost'] as const
@@ -181,7 +181,7 @@ export default async function PreparedResults({
             </table>
           </div>
           {calendar && (
-            <p>
+            <p className="text-xs">
               {t('calendarHeader', {
                 country: calendar.country,
                 calendar: calendar.calendar_code ?? t('countryDefault'),
@@ -193,11 +193,11 @@ export default async function PreparedResults({
           {!!detail.daily.length && (
             <>
               <h2 className="text-section-title">{t('daily')}</h2>
-              <p className="text-sm">{t('lifecycleNote')}</p>
+              <p className="text-xs">{t('lifecycleNote')}</p>
               <div className="workspace-table overflow-x-auto">
                 <table className="w-full text-sm">
                   <caption className="sr-only">{t('daily')}</caption>
-                  <thead>
+                  <thead className="text-xs [&_th]:font-medium">
                     <tr>
                       {(
                         [

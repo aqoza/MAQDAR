@@ -65,7 +65,7 @@ export default async function EventPolicyHistory({
           </>
         }
       />
-      <p className="text-sm text-muted-foreground">{t('historyNote')}</p>
+      <p className="text-xs text-muted-foreground">{t('historyNote')}</p>
       {rows.data.length ? (
         <ul className="space-y-3">
           {rows.data.map((row) => (

@@ -1,0 +1,4022 @@
+[
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "forecast-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Select up to 10 items for automatic models, or 100 for baselines. History is limited to 1,096 days; horizons are 1–90 days. Automatic runs may take several minutes.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "classification-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Shares use fractions (0.8 = 80%). ADI must be at least 1; ABC shares must increase and stay below 1; XYZ boundaries must increase. Equal-value items remain together in ABC.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "preparation-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Select up to 25 codes at one location. All connected predecessors, successors and two-way interchanges are included, up to 100 source items and 1,096 history days. Larger groups must be reviewed separately.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "workbench",
+    "tableHeads": [
+      {
+        "text": "Item or group",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Location code",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Planning date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Units",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculation result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated reorder reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated periodic maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Latest proposal",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Review",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "1 saved policies",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Item or group",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Location code",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Planning date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Units",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculation result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated reorder reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated periodic maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Latest proposal",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Review",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "forecast-result",
+    "tableHeads": [
+      {
+        "text": "Item",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Model",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Horizon total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Signed bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Forecast evidence",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Model",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Signed bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Expected sold quantity",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Sold quantity",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Lost sales quantity",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [
+      {
+        "text": "Model comparison",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Daily forecast",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Daily forecast uncertainty",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "ItemResultModelHorizon totalRMSEMAESigned biasForecast evidence",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Observed interval: 2026-01-01 – 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Recorded introduction: —; discontinuation: —",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Scores pool daily forecast errors across the same three withheld windows. Signed bias is forecast minus actual: positive means over-forecasting. Scores use unrounded predictions; displayed forecasts use three decimals. Equal scores follow the listed model order. These are selection scores, not an independent estimate of future accuracy.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ModelRMSEMAESigned bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "80% and 95% empirical bands use 2,000 seeded bootstrap draws from pooled out-of-sample errors. They assume errors are exchangeable across days and forecast horizons. They may understate uncertainty for sparse demand, changing patterns or dependent errors; all-zero history cannot reveal unseen demand. These are marginal daily bands, not a horizon-total interval or a service-level guarantee.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateExpected sold quantity80% lower80% upper95% lower95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Stored observations within the lifecycle-clipped window are shown below. Unlisted observed days count as zero; lost sales are retained as evidence but excluded from the models.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateSold quantityLost sales quantity",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "policy-evidence",
+    "tableHeads": [
+      {
+        "text": "Reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Days",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Point-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Demand quantile",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Safety stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Stock target",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Point-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Planning date: 2026-10-10. This recommendation starts after the saved forecast cutoff.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Conditional estimate from sold-demand forecasts and independently sampled historical forecast errors. Sparse demand, serial dependence, changing demand and unseen demand can invalidate this estimate. Lost sales and variable supply lead times are not modeled. The target is not a guarantee of achieved service.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "The reorder-point reference covers lead time. The periodic order-up-to maximum covers lead time plus the review interval. These describe different review rules, not an optimized hybrid min/max policy. They are recommendations, before stock/order netting, sourcing and pack-size rounding.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ReferenceDaysPoint-forecast totalDemand quantileSafety stockStock target",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "21 calibration errors · 30 positive history days · 5000 sampled paths",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DatePoint-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "policy-detail",
+    "tableHeads": [
+      {
+        "text": "Basis",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Reorder-point reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Periodic order-up-to maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "BasisReorder-point referencePeriodic order-up-to maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "stock-evidence",
+    "tableHeads": [],
+    "values": [
+      {
+        "text": "0 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "5",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "2",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "3",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "1 SAR",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Policy forecast cutoff: 2026-10-10. Only this comparison date is eligible.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Quantity above maximum = max(on-hand − allocations − selected periodic maximum, 0).",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Snapshot: 2026-10-10 · 0 days old · unit: EA",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Physical stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Allocated stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Available stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Cost per physical unit",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Snapshot 540db799-8e47-447c-bcc3-8e0a7d4dbaf5, last updated 2026-10-21T22:12:36.816063+00:00",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Saved policy d7ae7c8d-c7a0-4945-92ba-d1793412ed0f",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "event-evidence",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Baseline demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Scenario demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Model",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Signed bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [
+      {
+        "text": "7.007 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "6.259 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "13.266 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [
+      {
+        "text": "Baseline demand",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Event addition",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Scenario demand",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "Saved October 22, 2026 at 1:12 AM",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateBaseline demandEvent additionScenario demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "These model-selection scores and daily uncertainty bands belong to the unchanged baseline forecast. They do not evaluate this event scenario.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ModelRMSEMAESigned bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Baseline-only daily uncertainty bands",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Date80% lower80% upper95% lower95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "event-create",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Baseline demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Enter additional quantity in EA for each date. Use zero for no addition.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateBaseline demandEvent addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "event-policy",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Within lead time",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Within protection period",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [
+      {
+        "text": "3.011 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "8.264 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [
+      {
+        "text": "Reorder-point reference",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Periodic-review maximum",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "Saved October 22, 2026 at 1:12 AM",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "2 calendar days after 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "5 calendar days after 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Fixed lead time: 2 days · Review interval: 3 days · Conditional cycle-service target: 95%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Event additions beyond the protection period: 4 EA. They do not change these thresholds.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Original forecast scores, uncertainty and policy calibration remain baseline evidence. Scenarios do not stack, inherit approved overrides, activate policies or change replenishment.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateEvent additionWithin lead timeWithin protection period",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "drivers-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "driver-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "UTF-8 comma CSV, up to 512 KiB. Columns: date, value, kind, available_on. Use YYYY-MM-DD dates, plain decimals and observed or planned. One row per date within the selected window. Parsed evidence is saved; the original file is not stored.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "installed-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "installed-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "UTF-8 CSV · up to 512 KiB / 1,000 groups. Use group_code, group_name, installed_on, active_assets and parts_per_asset. Leave installation date empty only when unknown.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "demand-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "simulation-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "en",
+    "width": 1366,
+    "route": "simulation-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "At the start of each day, receive due simulated orders and serve older backlog first. Review on the first day and every saved review interval, ordering max(maximum − (stock + on-order − backlog), 0). Zero-lead orders arrive before that day’s demand; other orders arrive after the fixed calendar-day lead. Keep each maximum fixed, carry shortages as backlog, and assume unlimited supply. MOQ, packs, calendars and supply variability are excluded.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Recorded-sales replay only. Historical stock-outs may have suppressed sales; recorded lost sales are shown separately and are not added to demand. Results are not actual achieved service or future performance. No policy, stock, inbound or operational order is changed.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "forecast-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Select up to 10 items for automatic models, or 100 for baselines. History is limited to 1,096 days; horizons are 1–90 days. Automatic runs may take several minutes.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "classification-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Shares use fractions (0.8 = 80%). ADI must be at least 1; ABC shares must increase and stay below 1; XYZ boundaries must increase. Equal-value items remain together in ABC.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "preparation-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Select up to 25 codes at one location. All connected predecessors, successors and two-way interchanges are included, up to 100 source items and 1,096 history days. Larger groups must be reviewed separately.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "workbench",
+    "tableHeads": [
+      {
+        "text": "Item or group",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Location code",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Planning date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Units",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculation result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated reorder reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated periodic maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Latest proposal",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Review",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "1 saved policies",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Item or group",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Location code",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Planning date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Units",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculation result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated reorder reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated periodic maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Latest proposal",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Review",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "forecast-result",
+    "tableHeads": [
+      {
+        "text": "Item",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Model",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Horizon total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Signed bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Forecast evidence",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Model",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Signed bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Expected sold quantity",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Sold quantity",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Lost sales quantity",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [
+      {
+        "text": "Model comparison",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Daily forecast",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Daily forecast uncertainty",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "ItemResultModelHorizon totalRMSEMAESigned biasForecast evidence",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Observed interval: 2026-01-01 – 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Recorded introduction: —; discontinuation: —",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Scores pool daily forecast errors across the same three withheld windows. Signed bias is forecast minus actual: positive means over-forecasting. Scores use unrounded predictions; displayed forecasts use three decimals. Equal scores follow the listed model order. These are selection scores, not an independent estimate of future accuracy.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ModelRMSEMAESigned bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "80% and 95% empirical bands use 2,000 seeded bootstrap draws from pooled out-of-sample errors. They assume errors are exchangeable across days and forecast horizons. They may understate uncertainty for sparse demand, changing patterns or dependent errors; all-zero history cannot reveal unseen demand. These are marginal daily bands, not a horizon-total interval or a service-level guarantee.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateExpected sold quantity80% lower80% upper95% lower95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Stored observations within the lifecycle-clipped window are shown below. Unlisted observed days count as zero; lost sales are retained as evidence but excluded from the models.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateSold quantityLost sales quantity",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "policy-evidence",
+    "tableHeads": [
+      {
+        "text": "Reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Days",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Point-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Demand quantile",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Safety stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Stock target",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Point-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Planning date: 2026-10-10. This recommendation starts after the saved forecast cutoff.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Conditional estimate from sold-demand forecasts and independently sampled historical forecast errors. Sparse demand, serial dependence, changing demand and unseen demand can invalidate this estimate. Lost sales and variable supply lead times are not modeled. The target is not a guarantee of achieved service.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "The reorder-point reference covers lead time. The periodic order-up-to maximum covers lead time plus the review interval. These describe different review rules, not an optimized hybrid min/max policy. They are recommendations, before stock/order netting, sourcing and pack-size rounding.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ReferenceDaysPoint-forecast totalDemand quantileSafety stockStock target",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "21 calibration errors · 30 positive history days · 5000 sampled paths",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DatePoint-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "policy-detail",
+    "tableHeads": [
+      {
+        "text": "Basis",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Reorder-point reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Periodic order-up-to maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "BasisReorder-point referencePeriodic order-up-to maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "stock-evidence",
+    "tableHeads": [],
+    "values": [
+      {
+        "text": "0 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "5",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "2",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "3",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "1 SAR",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Policy forecast cutoff: 2026-10-10. Only this comparison date is eligible.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Quantity above maximum = max(on-hand − allocations − selected periodic maximum, 0).",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Snapshot: 2026-10-10 · 0 days old · unit: EA",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Physical stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Allocated stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Available stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Cost per physical unit",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Snapshot 540db799-8e47-447c-bcc3-8e0a7d4dbaf5, last updated 2026-10-21T22:12:36.816063+00:00",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Saved policy d7ae7c8d-c7a0-4945-92ba-d1793412ed0f",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "event-evidence",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Baseline demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Scenario demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Model",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Signed bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [
+      {
+        "text": "7.007 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "6.259 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "13.266 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [
+      {
+        "text": "Baseline demand",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Event addition",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Scenario demand",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "Saved October 22, 2026 at 1:12 AM",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateBaseline demandEvent additionScenario demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "These model-selection scores and daily uncertainty bands belong to the unchanged baseline forecast. They do not evaluate this event scenario.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ModelRMSEMAESigned bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Baseline-only daily uncertainty bands",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Date80% lower80% upper95% lower95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "event-create",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Baseline demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Enter additional quantity in EA for each date. Use zero for no addition.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateBaseline demandEvent addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "event-policy",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Within lead time",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Within protection period",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [
+      {
+        "text": "3.011 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "8.264 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [
+      {
+        "text": "Reorder-point reference",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Periodic-review maximum",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "Saved October 22, 2026 at 1:12 AM",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "2 calendar days after 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "5 calendar days after 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Fixed lead time: 2 days · Review interval: 3 days · Conditional cycle-service target: 95%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Event additions beyond the protection period: 4 EA. They do not change these thresholds.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Original forecast scores, uncertainty and policy calibration remain baseline evidence. Scenarios do not stack, inherit approved overrides, activate policies or change replenishment.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateEvent additionWithin lead timeWithin protection period",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "drivers-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "driver-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "UTF-8 comma CSV, up to 512 KiB. Columns: date, value, kind, available_on. Use YYYY-MM-DD dates, plain decimals and observed or planned. One row per date within the selected window. Parsed evidence is saved; the original file is not stored.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "installed-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "installed-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "UTF-8 CSV · up to 512 KiB / 1,000 groups. Use group_code, group_name, installed_on, active_assets and parts_per_asset. Leave installation date empty only when unknown.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "demand-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "simulation-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "simulation-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "At the start of each day, receive due simulated orders and serve older backlog first. Review on the first day and every saved review interval, ordering max(maximum − (stock + on-order − backlog), 0). Zero-lead orders arrive before that day’s demand; other orders arrive after the fixed calendar-day lead. Keep each maximum fixed, carry shortages as backlog, and assume unlimited supply. MOQ, packs, calendars and supply variability are excluded.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Recorded-sales replay only. Historical stock-outs may have suppressed sales; recorded lost sales are shown separately and are not added to demand. Results are not actual achieved service or future performance. No policy, stock, inbound or operational order is changed.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "forecast-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Select up to 10 items for automatic models, or 100 for baselines. History is limited to 1,096 days; horizons are 1–90 days. Automatic runs may take several minutes.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "classification-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Shares use fractions (0.8 = 80%). ADI must be at least 1; ABC shares must increase and stay below 1; XYZ boundaries must increase. Equal-value items remain together in ABC.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "preparation-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Select up to 25 codes at one location. All connected predecessors, successors and two-way interchanges are included, up to 100 source items and 1,096 history days. Larger groups must be reviewed separately.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "workbench",
+    "tableHeads": [
+      {
+        "text": "Item or group",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Location code",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Planning date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Units",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculation result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated reorder reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated periodic maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Latest proposal",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Review",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "1 saved policies",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Item or group",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Location code",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Planning date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Units",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculation result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated reorder reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated periodic maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Latest proposal",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Review",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "forecast-result",
+    "tableHeads": [
+      {
+        "text": "الصنف",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "النتيجة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "النموذج",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "إجمالي الأفق",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الانحياز الموقّع",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "أدلة التنبؤ",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "النموذج",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الانحياز الموقّع",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "التاريخ",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "كمية المبيعات المتوقعة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الحد الأدنى 80%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الحد الأعلى 80%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الحد الأدنى 95%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الحد الأعلى 95%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "التاريخ",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الكمية المباعة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "كمية المبيعات المفقودة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [
+      {
+        "text": "مقارنة النماذج",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "التنبؤ اليومي",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "عدم اليقين في التنبؤ اليومي",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "الصنفالنتيجةالنموذجإجمالي الأفقRMSEMAEالانحياز الموقّعأدلة التنبؤ",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "الفترة المرصودة: 2026-01-01 – 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "تاريخ الإدخال المسجل: —؛ الإيقاف: —",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "تجمع المقاييس أخطاء التنبؤ اليومية عبر نوافذ الاختبار الثلاث نفسها. الانحياز هو التنبؤ ناقص الفعلي؛ وتشير القيمة الموجبة إلى المبالغة في التنبؤ. تستخدم المقاييس تنبؤات غير مقربة، وتُعرض الكميات بثلاث منازل عشرية. عند التعادل يُتبع ترتيب النماذج المعروض. هذه مقاييس اختيار وليست تقديراً مستقلاً للدقة المستقبلية.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "النموذجRMSEMAEالانحياز الموقّع",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "تستخدم نطاقات 80% و95% التجريبية 2,000 عينة قابلة للتكرار من أخطاء الاختبار المجمعة. تفترض قابلية تبادل الأخطاء بين الأيام والآفاق. قد تقلل من عدم اليقين عند الطلب المتقطع أو تغير الأنماط أو ترابط الأخطاء؛ ولا يكشف التاريخ الصفري عن طلب غير مرصود. هذه نطاقات يومية منفردة وليست نطاقاً لإجمالي الأفق أو ضماناً للخدمة.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "التاريخكمية المبيعات المتوقعةالحد الأدنى 80%الحد الأعلى 80%الحد الأدنى 95%الحد الأعلى 95%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "تظهر أدناه المشاهدات المخزنة ضمن فترة دورة الحياة المسجلة. تُحسب الأيام غير المدرجة صفراً، وتبقى المبيعات المفقودة أدلة منفصلة لا تدخل في النماذج.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "التاريخالكمية المباعةكمية المبيعات المفقودة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "policy-evidence",
+    "tableHeads": [
+      {
+        "text": "Reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Days",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Point-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Demand quantile",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Safety stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Stock target",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Point-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Planning date: 2026-10-10. This recommendation starts after the saved forecast cutoff.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Conditional estimate from sold-demand forecasts and independently sampled historical forecast errors. Sparse demand, serial dependence, changing demand and unseen demand can invalidate this estimate. Lost sales and variable supply lead times are not modeled. The target is not a guarantee of achieved service.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "The reorder-point reference covers lead time. The periodic order-up-to maximum covers lead time plus the review interval. These describe different review rules, not an optimized hybrid min/max policy. They are recommendations, before stock/order netting, sourcing and pack-size rounding.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ReferenceDaysPoint-forecast totalDemand quantileSafety stockStock target",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "21 calibration errors · 30 positive history days · 5000 sampled paths",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DatePoint-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "policy-detail",
+    "tableHeads": [
+      {
+        "text": "Basis",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Reorder-point reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Periodic order-up-to maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "BasisReorder-point referencePeriodic order-up-to maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "stock-evidence",
+    "tableHeads": [],
+    "values": [
+      {
+        "text": "0 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "5",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "2",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "3",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "1 SAR",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Policy forecast cutoff: 2026-10-10. Only this comparison date is eligible.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Quantity above maximum = max(on-hand − allocations − selected periodic maximum, 0).",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Snapshot: 2026-10-10 · 0 days old · unit: EA",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Physical stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Allocated stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Available stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Cost per physical unit",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Snapshot 540db799-8e47-447c-bcc3-8e0a7d4dbaf5, last updated 2026-10-21T22:12:36.816063+00:00",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Saved policy d7ae7c8d-c7a0-4945-92ba-d1793412ed0f",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "event-evidence",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Baseline demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Scenario demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Model",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Signed bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [
+      {
+        "text": "7.007 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "6.259 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "13.266 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [
+      {
+        "text": "Baseline demand",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Event addition",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Scenario demand",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "Saved 22 أكتوبر 2026 في 1:12 ص",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateBaseline demandEvent additionScenario demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "These model-selection scores and daily uncertainty bands belong to the unchanged baseline forecast. They do not evaluate this event scenario.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ModelRMSEMAESigned bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Baseline-only daily uncertainty bands",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Date80% lower80% upper95% lower95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "event-create",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Baseline demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Enter additional quantity in EA for each date. Use zero for no addition.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateBaseline demandEvent addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "event-policy",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Within lead time",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Within protection period",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [
+      {
+        "text": "3.011 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "8.264 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [
+      {
+        "text": "Reorder-point reference",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Periodic-review maximum",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "Saved 22 أكتوبر 2026 في 1:12 ص",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "2 calendar days after 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "5 calendar days after 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Fixed lead time: 2 days · Review interval: 3 days · Conditional cycle-service target: 95‎%‎",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Event additions beyond the protection period: 4 EA. They do not change these thresholds.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Original forecast scores, uncertainty and policy calibration remain baseline evidence. Scenarios do not stack, inherit approved overrides, activate policies or change replenishment.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateEvent additionWithin lead timeWithin protection period",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "drivers-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "driver-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "ملف UTF-8 مفصول بفواصل بحد 512 KiB. الأعمدة: date, value, kind, available_on. التواريخ YYYY-MM-DD والقيم عشرية والنوع observed أو planned. صف واحد لكل تاريخ داخل النافذة. تحفظ الأدلة المحللة ولا يحفظ الملف الأصلي.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "installed-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "installed-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "ملف UTF-8 CSV بحد أقصى 512 KiB و1,000 مجموعة. استخدم group_code وgroup_name وinstalled_on وactive_assets وparts_per_asset. اترك تاريخ التركيب فارغاً فقط إذا كان غير معروف.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "demand-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "simulation-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "ar",
+    "width": 1366,
+    "route": "simulation-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "في بداية كل يوم تُستلم الطلبات الافتراضية المستحقة وتُلبّى الطلبات المتأخرة أولاً. تتم المراجعة في اليوم الأول وكل فترة مراجعة محفوظة لرفع وضع المخزون إلى الحد الأقصى. الطلب ذو المهلة الصفرية يصل قبل طلب اليوم، وغيره بعد المهلة التقويمية الثابتة. تُرحّل الكميات غير الملباة كطلبات متأخرة مع افتراض توريد غير محدود. تُستبعد أحجام العبوات والحدود الدنيا والتقاويم وتقلبات التوريد.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "محاكاة للمبيعات المسجلة فقط. قد يكون نفاد المخزون قد خفّض المبيعات التاريخية؛ تُعرض المبيعات المفقودة منفصلة ولا تُضاف إلى الطلب. النتائج ليست مستوى خدمة فعلياً أو أداءً مستقبلياً. لا تتغير السياسات أو المخزون أو الوارد أو الطلبات التشغيلية.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "forecast-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Select up to 10 items for automatic models, or 100 for baselines. History is limited to 1,096 days; horizons are 1–90 days. Automatic runs may take several minutes.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "classification-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Shares use fractions (0.8 = 80%). ADI must be at least 1; ABC shares must increase and stay below 1; XYZ boundaries must increase. Equal-value items remain together in ABC.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "preparation-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Select up to 25 codes at one location. All connected predecessors, successors and two-way interchanges are included, up to 100 source items and 1,096 history days. Larger groups must be reviewed separately.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "workbench",
+    "tableHeads": [
+      {
+        "text": "Item or group",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Location code",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Planning date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Units",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculation result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated reorder reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated periodic maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Latest proposal",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Review",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "1 saved policies",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Item or group",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Location code",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Planning date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Units",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculation result",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated reorder reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Calculated periodic maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Latest proposal",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Review",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "forecast-result",
+    "tableHeads": [
+      {
+        "text": "الصنف",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "النتيجة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "النموذج",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "إجمالي الأفق",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الانحياز الموقّع",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "أدلة التنبؤ",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "النموذج",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الانحياز الموقّع",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "التاريخ",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "كمية المبيعات المتوقعة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الحد الأدنى 80%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الحد الأعلى 80%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الحد الأدنى 95%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الحد الأعلى 95%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "التاريخ",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "الكمية المباعة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "كمية المبيعات المفقودة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [
+      {
+        "text": "مقارنة النماذج",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "التنبؤ اليومي",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "عدم اليقين في التنبؤ اليومي",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "الصنفالنتيجةالنموذجإجمالي الأفقRMSEMAEالانحياز الموقّعأدلة التنبؤ",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "الفترة المرصودة: 2026-01-01 – 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "تاريخ الإدخال المسجل: —؛ الإيقاف: —",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "تجمع المقاييس أخطاء التنبؤ اليومية عبر نوافذ الاختبار الثلاث نفسها. الانحياز هو التنبؤ ناقص الفعلي؛ وتشير القيمة الموجبة إلى المبالغة في التنبؤ. تستخدم المقاييس تنبؤات غير مقربة، وتُعرض الكميات بثلاث منازل عشرية. عند التعادل يُتبع ترتيب النماذج المعروض. هذه مقاييس اختيار وليست تقديراً مستقلاً للدقة المستقبلية.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "النموذجRMSEMAEالانحياز الموقّع",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "تستخدم نطاقات 80% و95% التجريبية 2,000 عينة قابلة للتكرار من أخطاء الاختبار المجمعة. تفترض قابلية تبادل الأخطاء بين الأيام والآفاق. قد تقلل من عدم اليقين عند الطلب المتقطع أو تغير الأنماط أو ترابط الأخطاء؛ ولا يكشف التاريخ الصفري عن طلب غير مرصود. هذه نطاقات يومية منفردة وليست نطاقاً لإجمالي الأفق أو ضماناً للخدمة.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "التاريخكمية المبيعات المتوقعةالحد الأدنى 80%الحد الأعلى 80%الحد الأدنى 95%الحد الأعلى 95%",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "تظهر أدناه المشاهدات المخزنة ضمن فترة دورة الحياة المسجلة. تُحسب الأيام غير المدرجة صفراً، وتبقى المبيعات المفقودة أدلة منفصلة لا تدخل في النماذج.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "التاريخالكمية المباعةكمية المبيعات المفقودة",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "policy-evidence",
+    "tableHeads": [
+      {
+        "text": "Reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Days",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Point-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Demand quantile",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Safety stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Stock target",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Point-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Planning date: 2026-10-10. This recommendation starts after the saved forecast cutoff.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Conditional estimate from sold-demand forecasts and independently sampled historical forecast errors. Sparse demand, serial dependence, changing demand and unseen demand can invalidate this estimate. Lost sales and variable supply lead times are not modeled. The target is not a guarantee of achieved service.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "The reorder-point reference covers lead time. The periodic order-up-to maximum covers lead time plus the review interval. These describe different review rules, not an optimized hybrid min/max policy. They are recommendations, before stock/order netting, sourcing and pack-size rounding.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ReferenceDaysPoint-forecast totalDemand quantileSafety stockStock target",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "21 calibration errors · 30 positive history days · 5000 sampled paths",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DatePoint-forecast total",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "policy-detail",
+    "tableHeads": [
+      {
+        "text": "Basis",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Reorder-point reference",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Periodic order-up-to maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "BasisReorder-point referencePeriodic order-up-to maximum",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "stock-evidence",
+    "tableHeads": [],
+    "values": [
+      {
+        "text": "0 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "5",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "2",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "3",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "1 SAR",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Policy forecast cutoff: 2026-10-10. Only this comparison date is eligible.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Quantity above maximum = max(on-hand − allocations − selected periodic maximum, 0).",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Snapshot: 2026-10-10 · 0 days old · unit: EA",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Physical stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Allocated stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Available stock",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Cost per physical unit",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Snapshot 540db799-8e47-447c-bcc3-8e0a7d4dbaf5, last updated 2026-10-21T22:12:36.816063+00:00",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Saved policy d7ae7c8d-c7a0-4945-92ba-d1793412ed0f",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "event-evidence",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Baseline demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Scenario demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Model",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "RMSE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "MAE",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Signed bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "80% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% lower",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [
+      {
+        "text": "7.007 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "6.259 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "13.266 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [
+      {
+        "text": "Baseline demand",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Event addition",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Scenario demand",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "Saved 22 أكتوبر 2026 في 1:12 ص",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateBaseline demandEvent additionScenario demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "These model-selection scores and daily uncertainty bands belong to the unchanged baseline forecast. They do not evaluate this event scenario.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "ModelRMSEMAESigned bias",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Baseline-only daily uncertainty bands",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Date80% lower80% upper95% lower95% upper",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "event-create",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Baseline demand",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "Enter additional quantity in EA for each date. Use zero for no addition.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateBaseline demandEvent addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "event-policy",
+    "tableHeads": [
+      {
+        "text": "Date",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Event addition",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Within lead time",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      },
+      {
+        "text": "Within protection period",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "500"
+      }
+    ],
+    "values": [
+      {
+        "text": "3.011 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "8.264 EA",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "subsections": [
+      {
+        "text": "Reorder-point reference",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      },
+      {
+        "text": "Periodic-review maximum",
+        "size": "14px",
+        "lineHeight": "20px",
+        "weight": "600"
+      }
+    ],
+    "captions": [
+      {
+        "text": "Saved 22 أكتوبر 2026 في 1:12 ص",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "2 calendar days after 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "5 calendar days after 2026-10-10",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Fixed lead time: 2 days · Review interval: 3 days · Conditional cycle-service target: 95‎%‎",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Event additions beyond the protection period: 4 EA. They do not change these thresholds.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "Original forecast scores, uncertainty and policy calibration remain baseline evidence. Scenarios do not stack, inherit approved overrides, activate policies or change replenishment.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "DateEvent additionWithin lead timeWithin protection period",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "drivers-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "driver-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "ملف UTF-8 مفصول بفواصل بحد 512 KiB. الأعمدة: date, value, kind, available_on. التواريخ YYYY-MM-DD والقيم عشرية والنوع observed أو planned. صف واحد لكل تاريخ داخل النافذة. تحفظ الأدلة المحللة ولا يحفظ الملف الأصلي.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "installed-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "installed-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "ملف UTF-8 CSV بحد أقصى 512 KiB و1,000 مجموعة. استخدم group_code وgroup_name وinstalled_on وactive_assets وparts_per_asset. اترك تاريخ التركيب فارغاً فقط إذا كان غير معروف.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "demand-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "simulation-empty",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": []
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "simulation-create",
+    "tableHeads": [],
+    "values": [],
+    "subsections": [],
+    "captions": [
+      {
+        "text": "في بداية كل يوم تُستلم الطلبات الافتراضية المستحقة وتُلبّى الطلبات المتأخرة أولاً. تتم المراجعة في اليوم الأول وكل فترة مراجعة محفوظة لرفع وضع المخزون إلى الحد الأقصى. الطلب ذو المهلة الصفرية يصل قبل طلب اليوم، وغيره بعد المهلة التقويمية الثابتة. تُرحّل الكميات غير الملباة كطلبات متأخرة مع افتراض توريد غير محدود. تُستبعد أحجام العبوات والحدود الدنيا والتقاويم وتقلبات التوريد.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      },
+      {
+        "text": "محاكاة للمبيعات المسجلة فقط. قد يكون نفاد المخزون قد خفّض المبيعات التاريخية؛ تُعرض المبيعات المفقودة منفصلة ولا تُضاف إلى الطلب. النتائج ليست مستوى خدمة فعلياً أو أداءً مستقبلياً. لا تتغير السياسات أو المخزون أو الوارد أو الطلبات التشغيلية.",
+        "size": "12px",
+        "lineHeight": "16px",
+        "weight": "400"
+      }
+    ]
+  }
+]

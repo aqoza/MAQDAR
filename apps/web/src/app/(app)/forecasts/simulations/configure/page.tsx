@@ -52,8 +52,8 @@ export default async function NewConfigurations({
         }
         help={
           <HelpDisclosure>
-            <p>{t('interpretation')}</p>
-            <p>{simulation('method')}</p>
+            <p className="text-xs">{t('interpretation')}</p>
+            <p className="text-xs">{simulation('method')}</p>
           </HelpDisclosure>
         }
       />

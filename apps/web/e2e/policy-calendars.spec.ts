@@ -154,12 +154,30 @@ with psycopg.connect(sys.argv[1]) as db:
         .addCookies([{ name: 'locale', value: locale, url: new URL(page.url()).origin }])
       await page.goto(`${resultUrl}?variant=2`)
       await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr')
+      const calendarToggle = page.locator('summary').filter({
+        hasText: locale === 'ar' ? /^أدلة التقاويم الملتقطة$/ : /^Captured calendar evidence$/,
+      })
+      await calendarToggle.click()
+      const calendarEvidence = calendarToggle.locator('..')
       for (const width of [375, 768, 1024, 1440, 1920]) {
         await page.setViewportSize({ width, height: 900 })
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
           true,
         )
         await expectPageTitle(page.getByRole('heading', { level: 1 }))
+        const calendarTitle = calendarEvidence.getByRole('heading').first()
+        await expect(calendarTitle).toHaveCSS('font-size', '14px')
+        await expect(calendarTitle).toHaveCSS('line-height', '20px')
+        const coverage = calendarEvidence.locator('section').first().locator('p').first()
+        await expect(coverage).toHaveCSS('font-size', '12px')
+        await expect(coverage).toHaveCSS('line-height', '16px')
+        const calendarTable = calendarEvidence.getByRole('table').first()
+        await expect(calendarTable.getByRole('columnheader').first()).toHaveCSS('font-size', '12px')
+        await expect(calendarTable.getByRole('columnheader').first()).toHaveCSS(
+          'font-weight',
+          '500',
+        )
+        await expect(calendarTable.getByRole('cell').first()).toHaveCSS('font-size', '14px')
         const metrics = page.getByRole('region').first()
         await metrics.focus()
         await expect(metrics).toBeFocused()

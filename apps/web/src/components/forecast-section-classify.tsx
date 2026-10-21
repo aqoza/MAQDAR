@@ -33,7 +33,12 @@ export async function ClassifyPage({ embedded = false }: { embedded?: boolean })
       <HelpDisclosure>
         <p>{t('scope')}</p>
       </HelpDisclosure>
-      <NextIntlClientProvider messages={{ Classification: messages.Classification }}>
+      <NextIntlClientProvider
+        messages={{
+          Classification: messages.Classification,
+          LocationLookup: messages.LocationLookup,
+        }}
+      >
         <ClassificationForm
           key={context.active.id}
           organizationId={context.active.id}

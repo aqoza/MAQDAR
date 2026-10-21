@@ -68,27 +68,31 @@ export default async function PopulationDataset({ params }: { params: Promise<{ 
         <InstalledBaseReport report={report} />
       </NextIntlClientProvider>
       <details className="rounded-md border p-3 text-sm">
-        <summary className="cursor-pointer">{t('evidence')}</summary>
+        <summary className="min-h-11 cursor-pointer md:min-h-0">{t('evidence')}</summary>
         <dl className="mt-3 grid gap-3 sm:grid-cols-2">
           {Object.entries(report.source).map(([key, value]) => (
             <div key={key} className="min-w-0">
               <dt className="text-xs text-muted-foreground">
                 {t(`evidenceFields.${key as keyof typeof report.source}`)}
               </dt>
-              <dd className="break-words">
+              <dd
+                className={
+                  key.endsWith('_id') || key === 'time_zone' ? 'break-words text-xs' : 'break-words'
+                }
+              >
                 <bdi>{value}</bdi>
               </dd>
             </div>
           ))}
           <div>
             <dt className="text-xs text-muted-foreground">{t('importTime')}</dt>
-            <dd>
+            <dd className="text-xs">
               <bdi>{data.created_at}</bdi>
             </dd>
           </div>
           <div className="min-w-0">
             <dt className="text-xs text-muted-foreground">{t('fingerprint')}</dt>
-            <dd className="break-all">{report.fingerprint}</dd>
+            <dd className="break-all text-xs">{report.fingerprint}</dd>
           </div>
         </dl>
         <p className="mt-3">{t('immutable')}</p>

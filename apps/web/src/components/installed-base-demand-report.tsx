@@ -23,7 +23,7 @@ export function InstalledBaseDemandReport({ report }: { report: InstalledDemandR
   return (
     <div className="min-w-0 space-y-4">
       <section className="workspace-panel" aria-label={t('summary')}>
-        <h2 className="text-section-title">{t('summary')}</h2>
+        <h2 className="text-subsection-title">{t('summary')}</h2>
         <p className="mt-1 text-xs text-muted-foreground">{t('conditional')}</p>
         <dl className="mt-3 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3">
           {Object.entries(summary).map(([key, value]) => (
@@ -51,7 +51,7 @@ export function InstalledBaseDemandReport({ report }: { report: InstalledDemandR
                   'rateEvidence',
                 ] as const
               ).map((key) => (
-                <th key={key} className="p-2 text-start">
+                <th key={key} className="p-2 text-start text-xs font-medium">
                   {t(key)}
                 </th>
               ))}
@@ -108,13 +108,15 @@ export function InstalledBaseDemandReport({ report }: { report: InstalledDemandR
         </nav>
       )}
       <details className="min-w-0 workspace-panel">
-        <summary className="cursor-pointer text-subsection-title">{t('dailyLedger')}</summary>
+        <summary className="min-h-11 cursor-pointer md:min-h-0 text-subsection-title">
+          {t('dailyLedger')}
+        </summary>
         <TableScrollRegion label={t('dailyLedger')}>
           <table className="mt-3 w-full min-w-[24rem] text-sm">
             <thead>
               <tr>
-                <th className="p-2 text-start">{t('date')}</th>
-                <th className="p-2 text-start">{t('daily_demand')}</th>
+                <th className="p-2 text-start text-xs font-medium">{t('date')}</th>
+                <th className="p-2 text-start text-xs font-medium">{t('daily_demand')}</th>
               </tr>
             </thead>
             <tbody>
@@ -133,7 +135,7 @@ export function InstalledBaseDemandReport({ report }: { report: InstalledDemandR
         </TableScrollRegion>
       </details>
       <details className="min-w-0 workspace-panel">
-        <summary className="cursor-pointer text-subsection-title">
+        <summary className="min-h-11 cursor-pointer md:min-h-0 text-subsection-title">
           {t('populationEvidence')}
         </summary>
         <p className="my-3 text-xs">

@@ -37,6 +37,8 @@ test('installed-base groups preserve exact quantities, unknown ages and scoped r
 with psycopg.connect(sys.argv[1]) as db:
     org=sys.argv[2]
     db.execute("insert into public.locations(organization_id,code,name_en,location_type,country_code,timezone) values(%s,'BASE-L','Service location','branch','SA','Asia/Riyadh'),(%s,'OTHER-L','Other location','branch','SA','Asia/Riyadh')",(org,org))
+    db.execute("insert into public.locations(organization_id,code,name_en,name_ar,location_type,country_code,timezone,is_active) values(%s,'CLOSED-L','Closed service location','موقع خدمة مغلق','branch','SA','Asia/Riyadh',false)",(org,))
+    db.execute("update public.locations set name_ar='موقع الخدمة' where organization_id=%s and code='BASE-L'",(org,))
     db.execute("insert into public.items(organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency) values(%s,'BASE-P','Installed part','Test','EA',1,'SAR')",(org,))
     for user,role in [(sys.argv[4],'viewer'),(sys.argv[5],'branch_user')]:
         db.execute('insert into public.memberships(organization_id,user_id,role) values(%s,%s,%s)',(org,user,role))
@@ -46,6 +48,12 @@ with psycopg.connect(sys.argv[1]) as db:
     page.on('pageerror', (error) => errors.push(error.message))
     await page.goto('/forecasts')
     await page.getByRole('link', { name: 'Installed base', exact: true }).click()
+    await expect(page).toHaveURL(/\/forecasts\/installed-base$/)
+    await expect(
+      page
+        .locator('p[role="status"]:visible')
+        .filter({ hasText: /^No population datasets saved yet\.$/ }),
+    ).toHaveText('No population datasets saved yet.')
     await page.getByRole('link', { name: 'Import population', exact: true }).click()
     await expect(page).toHaveURL(/\/forecasts\/installed-base\/new$/)
     await expect(
@@ -66,7 +74,33 @@ with psycopg.connect(sys.argv[1]) as db:
           : page.getByLabel(label, { exact: true })
       await field.fill(value)
       await expect(field).toHaveValue(value)
+      if (label === 'Service location code') {
+        await expect(field).toHaveAttribute('aria-expanded', 'true')
+        await field.press('Escape')
+        await expect(field).toHaveAttribute('aria-expanded', 'false')
+      }
     }
+    const location = page.getByRole('combobox', { name: 'Service location code', exact: true })
+    const activeLookup = page.waitForResponse((response) => {
+      const url = new URL(response.url())
+      return (
+        url.pathname === '/api/lookup/locations' &&
+        url.searchParams.get('q') === 'Closed service' &&
+        !url.searchParams.has('include_inactive')
+      )
+    })
+    await location.fill('Closed service')
+    expect((await (await activeLookup).json()).locations).toEqual([])
+    await location.fill('Service location')
+    await expect(page.getByRole('option').filter({ hasText: 'BASE-L' })).toBeVisible()
+    await expect(page.getByRole('option').filter({ hasText: 'CLOSED-L' })).toHaveCount(0)
+    await location.press('ArrowDown')
+    await location.press('Enter')
+    await expect(location).toHaveAttribute('aria-expanded', 'false')
+    await expect(location).toHaveValue('BASE-L')
+    expect(
+      JSON.parse(await page.locator('input[name="input"]').first().inputValue()).location_code,
+    ).toBe('BASE-L')
     const header = 'group_code,group_name,installed_on,active_assets,parts_per_asset\n'
     const first = 'A,Known group,2026-01-01,12,2.500\n'
     const file = (text: string) => ({
@@ -86,7 +120,7 @@ with psycopg.connect(sys.argv[1]) as db:
       .setInputFiles(
         file(header + first + 'B,Unknown age,,999999999999999,2.001\nC,Zero group,,0,1\n'),
       )
-    await expect(page.getByRole('status')).toContainText('3 equipment groups')
+    await expect(page.locator('p[role="status"]')).toContainText('3 equipment groups')
     await expect(page.getByLabel('Part code', { exact: true })).toHaveValue('BASE-P')
     await expect(page.getByLabel('Service location code', { exact: true })).toHaveValue('BASE-L')
     await expect(page.getByLabel('Dataset name', { exact: true })).toHaveValue(
@@ -94,6 +128,8 @@ with psycopg.connect(sys.argv[1]) as db:
     )
     await page.getByRole('button', { name: 'Preview population', exact: true }).click()
     const region = page.getByRole('region', { name: 'Equipment group evidence', exact: true })
+    await expect(region.getByRole('columnheader').first()).toHaveCSS('font-size', '12px')
+    await expect(region.getByRole('columnheader').first()).toHaveCSS('font-weight', '500')
     await expect(region.getByText('2000999999999997.999', { exact: true })).toBeVisible()
     await expect(page.getByLabel('Part code', { exact: true })).toHaveValue('BASE-P')
     await expect(region.getByRole('row').filter({ hasText: 'Unknown age' })).toContainText(
@@ -114,6 +150,17 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(
       page.getByRole('button', { name: 'Save population dataset', exact: true }),
     ).toBeVisible()
+    await location.fill('OTHER-L')
+    await expect(location).toHaveAttribute('aria-expanded', 'true')
+    await location.press('Escape')
+    await expect(location).toHaveAttribute('aria-expanded', 'false')
+    await expect(
+      page.getByRole('button', { name: 'Save population dataset', exact: true }),
+    ).toHaveCount(0)
+    await location.fill('BASE-L')
+    await expect(location).toHaveAttribute('aria-expanded', 'true')
+    await location.press('Escape')
+    await expect(location).toHaveAttribute('aria-expanded', 'false')
     await page.getByLabel('Part unit', { exact: true }).fill('BOX')
     await expect(
       page.getByRole('button', { name: 'Save population dataset', exact: true }),
@@ -125,6 +172,8 @@ with psycopg.connect(sys.argv[1]) as db:
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       ).toBe(true)
       await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+      await expect(page.locator('dd.text-evidence-value').first()).toHaveCSS('font-size', '14px')
+      await expect(page.getByRole('columnheader').first()).toHaveCSS('font-size', '12px')
       await expect(page.getByLabel('Part code', { exact: true })).toHaveCSS(
         'font-size',
         width < 768 ? '16px' : '14px',
@@ -162,6 +211,9 @@ with psycopg.connect(sys.argv[1]) as db:
           await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
         ).toBe(true)
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+        await expect(page.locator('h2').first()).toHaveCSS('font-size', '14px')
+        await expect(page.locator('dd.text-evidence-value').first()).toHaveCSS('font-size', '14px')
+        await expect(page.getByRole('columnheader').first()).toHaveCSS('font-size', '12px')
         const table = page.getByRole('region', {
           name: locale === 'ar' ? 'أدلة مجموعات المعدات' : 'Equipment group evidence',
           exact: true,
@@ -188,6 +240,13 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(
       page.getByRole('heading', { name: 'استيراد مجموعة معدات', exact: true }),
     ).toBeVisible()
+    const arabicLocation = page.getByRole('combobox')
+    await arabicLocation.fill('موقع الخدمة')
+    await expect(page.getByRole('option').filter({ hasText: 'BASE-L' })).toBeVisible()
+    await arabicLocation.press('ArrowDown')
+    await arabicLocation.press('Enter')
+    await expect(arabicLocation).toHaveAttribute('aria-expanded', 'false')
+    await expect(arabicLocation).toHaveValue('BASE-L')
     for (const width of [375, 768, 1024, 1440, 1920]) {
       await page.setViewportSize({ width, height: 1000 })
       expect(
@@ -202,6 +261,31 @@ with psycopg.connect(sys.argv[1]) as db:
       .context()
       .addCookies([{ name: 'locale', value: 'en', url: new URL(savedUrl).origin }])
     await page.goto('/forecasts/installed-base')
+    const historySearch = page.getByRole('textbox', { name: 'Dataset name', exact: true })
+    const unsavedLocation = page.getByRole('combobox', {
+      name: 'Service location code',
+      exact: true,
+    })
+    const unfilteredHistoryUrl = page.url()
+    await historySearch.fill('Unsaved search')
+    await unsavedLocation.fill('HISTORICAL-L')
+    await expect(unsavedLocation).toHaveAttribute('aria-expanded', 'true')
+    await unsavedLocation.press('Escape')
+    await expect(unsavedLocation).toHaveAttribute('aria-expanded', 'false')
+    await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await expect(page).toHaveURL(unfilteredHistoryUrl)
+    await expect(historySearch).toHaveValue('')
+    await expect(unsavedLocation).toHaveValue('')
+    await page.goto('/forecasts/installed-base?item=BASE-P')
+    const appliedItem = page.getByRole('textbox', { name: 'Part code', exact: true })
+    await expect(appliedItem).toHaveValue('BASE-P')
+    await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await expect(page).toHaveURL(/\/forecasts\/installed-base$/)
+    await expect(appliedItem).toHaveValue('')
+    await historySearch.fill('Temporary search')
+    await page.getByRole('button', { name: 'Clear search', exact: true }).click()
+    await expect(historySearch).toHaveValue('')
+    await expect(historySearch).toBeFocused()
     await page.getByLabel('Dataset name', { exact: true }).fill('population')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
     await expect(page).toHaveURL(/q=population/)
@@ -233,10 +317,34 @@ with psycopg.connect(sys.argv[1]) as db:
       .context()
       .addCookies([{ name: 'locale', value: 'en', url: new URL(savedUrl).origin }])
     await page.reload()
-    await page.getByLabel('Service location code', { exact: true }).fill('OTHER-L')
+    const historicalLocation = page.getByRole('combobox', {
+      name: 'Service location code',
+      exact: true,
+    })
+    const historicalLookup = page.waitForResponse((response) => {
+      const url = new URL(response.url())
+      return (
+        url.pathname === '/api/lookup/locations' &&
+        url.searchParams.get('q') === 'Closed service' &&
+        url.searchParams.get('include_inactive') === 'true'
+      )
+    })
+    await historicalLocation.fill('Closed service')
+    await historicalLookup
+    await expect(page.getByRole('option').filter({ hasText: 'CLOSED-L' })).toBeVisible()
+    await historicalLocation.press('ArrowDown')
+    await historicalLocation.press('Enter')
+    await expect(historicalLocation).toHaveAttribute('aria-expanded', 'false')
+    await expect(historicalLocation).toHaveValue('CLOSED-L')
+    await historicalLocation.fill('OTHER-L')
+    await expect(historicalLocation).toHaveAttribute('aria-expanded', 'true')
+    await historicalLocation.press('Escape')
+    await expect(historicalLocation).toHaveAttribute('aria-expanded', 'false')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
     await expect(page).toHaveURL(/location=OTHER-L/)
-    await expect(page.getByRole('status')).toHaveText('No population datasets match these filters.')
+    await expect(page.locator('p[role="status"]')).toHaveText(
+      'No population datasets match these filters.',
+    )
     const paged = await python(`import sys,json,psycopg
 from uuid import uuid4
 from psycopg.types.json import Jsonb

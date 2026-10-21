@@ -50,11 +50,13 @@ export async function PolicySensitivityReport({
         })}
       </p>
       <HelpDisclosure>
-        <p>{t('interpretation')}</p>
-        {evidence.method === 'periodic-constraints-v1' && <p>{t('roundingHelp')}</p>}
-        <p>{simulation('method')}</p>
-        <p>{simulation('ratios')}</p>
-        <p>
+        <p className="text-xs">{t('interpretation')}</p>
+        {evidence.method === 'periodic-constraints-v1' && (
+          <p className="text-xs">{t('roundingHelp')}</p>
+        )}
+        <p className="text-xs">{simulation('method')}</p>
+        <p className="text-xs">{simulation('ratios')}</p>
+        <p className="text-xs">
           {simulation('captured', {
             time: evidence.source_simulation.evidence.computed_at,
             recorded: evidence.demand.filter((day) => day.recorded).length,
@@ -72,7 +74,7 @@ export async function PolicySensitivityReport({
       <TableScrollRegion label={t('comparison')}>
         <table className="w-full min-w-[68rem] text-sm">
           <caption className="p-3 text-start text-section-title">{t('comparison')}</caption>
-          <thead>
+          <thead className="text-xs [&_th]:font-medium">
             <tr>
               <th className="p-3 text-start">{t('variant')}</th>
               <th className="p-3 text-start">{simulation('maximum')}</th>

@@ -24,7 +24,7 @@ export function InstalledBaseReport({ report }: { report: PopulationReport }) {
         )}
       </dl>
       <section className="min-w-0 workspace-panel" aria-label={t('summary')}>
-        <h2 className="text-section-title">{t('summary')}</h2>
+        <h2 className="text-subsection-title">{t('summary')}</h2>
         <p className="mt-1 text-xs text-muted-foreground">{t('quantityMeaning')}</p>
         <dl className="mt-3 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3">
           {Object.entries(report.totals).map(([key, value]) => (
@@ -55,7 +55,7 @@ export function InstalledBaseReport({ report }: { report: PopulationReport }) {
                   'installed_quantity',
                 ] as const
               ).map((key) => (
-                <th key={key} className="p-2 text-start">
+                <th key={key} className="p-2 text-start text-xs font-medium">
                   {t(key)}
                 </th>
               ))}

@@ -30,7 +30,9 @@ export async function NewForecastPage({ embedded = false }: { embedded?: boolean
           )
         }
       />
-      <NextIntlClientProvider messages={{ Forecasting: messages.Forecasting }}>
+      <NextIntlClientProvider
+        messages={{ Forecasting: messages.Forecasting, LocationLookup: messages.LocationLookup }}
+      >
         <ForecastForm
           key={context.active.id}
           organizationId={context.active.id}

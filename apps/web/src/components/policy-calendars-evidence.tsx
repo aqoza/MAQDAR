@@ -7,22 +7,22 @@ export async function PolicyCalendarsEvidence({ evidence }: { evidence: Calendar
   return (
     <details className="workspace-panel">
       <summary className="min-h-11 cursor-pointer py-2 font-medium">{t('evidence')}</summary>
-      <p className="mb-3">{t('captureMeaning')}</p>
+      <p className="mb-3 text-xs">{t('captureMeaning')}</p>
       {(['ordering', 'receiving'] as const).map((stage) => {
         const calendar = evidence.calendars[stage]
         return (
           <section key={stage} className="mb-4 min-w-0 space-y-2">
-            <h2 className="text-section-title">
+            <h2 className="text-subsection-title">
               {t(stage)} · {calendar.calendar_code ?? t('countryDefault')}
             </h2>
-            <p>
+            <p className="text-xs">
               {t('coverage', {
                 from: calendar.coverage_from ?? '—',
                 to: calendar.coverage_to ?? '—',
               })}{' '}
               · {calendar.country ?? '—'}
             </p>
-            <p>
+            <p className="text-xs">
               {t('settings', {
                 weekends: calendar.weekend_days?.join(', ') || '—',
                 holidays: calendar.observe_public_holidays ? t('yes') : t('no'),
@@ -30,7 +30,7 @@ export async function PolicyCalendarsEvidence({ evidence }: { evidence: Calendar
             </p>
             <TableScrollRegion label={t(stage)} className="max-h-80">
               <table className="w-full min-w-[440px] text-sm">
-                <thead>
+                <thead className="text-xs [&_th]:font-medium">
                   <tr>
                     {(['date', 'working', 'reason'] as const).map((key) => (
                       <th key={key} className="p-2 text-start text-xs">

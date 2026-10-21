@@ -34,7 +34,12 @@ export default async function NewDriverDataset() {
           </HelpDisclosure>
         }
       />
-      <NextIntlClientProvider messages={{ ExternalDrivers: messages.ExternalDrivers }}>
+      <NextIntlClientProvider
+        messages={{
+          ExternalDrivers: messages.ExternalDrivers,
+          LocationLookup: messages.LocationLookup,
+        }}
+      >
         <ExternalDriverForm
           organizationId={context.active.id}
           requestId={crypto.randomUUID()}

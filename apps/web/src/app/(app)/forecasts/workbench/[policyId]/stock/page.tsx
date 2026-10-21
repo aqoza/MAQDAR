@@ -72,7 +72,7 @@ export default async function StockComparison({
       />
 
       <p>{t('description')}</p>
-      <p>{t('cutoff', { date: policy.data.to_date ?? '—' })}</p>
+      <p className="text-xs">{t('cutoff', { date: policy.data.to_date ?? '—' })}</p>
       <Form
         action={`${back}/stock`}
         className="workspace-toolbar flex flex-wrap items-end gap-3"
@@ -129,7 +129,7 @@ export default async function StockComparison({
             · {amount(report.maximum)} {report.unit ?? '—'}
           </p>
           <DemandUnitEvidence evidence={report.unit_provenance} />
-          <p>{t(report.pool ? 'pool.formula' : 'formula')}</p>
+          <p className="text-xs">{t(report.pool ? 'pool.formula' : 'formula')}</p>
           {report.status === 'available' && (
             <div className="workspace-panel">
               <p className="text-evidence-value wrap-anywhere tabular-nums">
@@ -146,15 +146,17 @@ export default async function StockComparison({
             <>
               <StockPoolReport pool={report.pool} unit={report.unit} locale={locale} />
               <details>
-                <summary>{t('identity')}</summary>
-                <p>{t('policyId', { id: report.policy_id })}</p>
-                {report.override_id && <p>{t('overrideId', { id: report.override_id })}</p>}
+                <summary className="min-h-11 cursor-pointer md:min-h-0">{t('identity')}</summary>
+                <p className="text-xs">{t('policyId', { id: report.policy_id })}</p>
+                {report.override_id && (
+                  <p className="text-xs">{t('overrideId', { id: report.override_id })}</p>
+                )}
               </details>
             </>
           )}
           {snapshot && (
             <>
-              <p>
+              <p className="text-xs">
                 {t('snapshot', {
                   date: snapshot.date,
                   age: snapshot.age,
@@ -164,8 +166,8 @@ export default async function StockComparison({
               <dl className="grid grid-cols-2 gap-2 workspace-panel">
                 {(['quantity', 'allocated', 'available', 'unit_cost'] as const).map((key) => (
                   <div key={key}>
-                    <dt>{t(key)}</dt>
-                    <dd className="tabular-nums">
+                    <dt className="text-xs">{t(key)}</dt>
+                    <dd className="text-evidence-value tabular-nums">
                       {amount(snapshot[key])}
                       {key === 'unit_cost' ? ` ${snapshot.currency}` : ''}
                     </dd>
@@ -173,10 +175,14 @@ export default async function StockComparison({
                 ))}
               </dl>
               <details>
-                <summary>{t('identity')}</summary>
-                <p>{t('snapshotId', { id: snapshot.id, time: snapshot.updated_at })}</p>
-                <p>{t('policyId', { id: report.policy_id })}</p>
-                {report.override_id && <p>{t('overrideId', { id: report.override_id })}</p>}
+                <summary className="min-h-11 cursor-pointer md:min-h-0">{t('identity')}</summary>
+                <p className="text-xs">
+                  {t('snapshotId', { id: snapshot.id, time: snapshot.updated_at })}
+                </p>
+                <p className="text-xs">{t('policyId', { id: report.policy_id })}</p>
+                {report.override_id && (
+                  <p className="text-xs">{t('overrideId', { id: report.override_id })}</p>
+                )}
               </details>
             </>
           )}

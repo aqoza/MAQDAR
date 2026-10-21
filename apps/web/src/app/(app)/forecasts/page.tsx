@@ -304,7 +304,11 @@ export default async function ForecastsPage({
             embedded
             searchParams={Promise.resolve(initialTab === 'quality' ? rawParams : {})}
           />,
-          <PolicyWorkbench key="workbench" embedded searchParams={Promise.resolve({})} />,
+          <PolicyWorkbench
+            key="workbench"
+            embedded
+            searchParams={Promise.resolve(initialTab === 'workbench' ? rawParams : {})}
+          />,
           editor ? (
             <ClassifyPage key="classify" embedded />
           ) : (

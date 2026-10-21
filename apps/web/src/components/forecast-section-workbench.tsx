@@ -1,5 +1,8 @@
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { PageHeader } from '@/components/page-header'
+import { ForecastFilterSearchInput } from '@/components/forecast-filter-search-input'
+import { ForecastFilterForm } from '@/components/forecast-filter-form'
+import { LocationCodeInput } from '@/components/master-data/location-code-input'
 import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -8,15 +11,13 @@ import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { POLICY_STATUSES } from '@/lib/inventory-policy'
+import { REVIEW_STATUSES, workbenchParams, workbenchRowSchema } from '@/lib/policy-workbench'
 import {
-  REVIEW_STATUSES,
-  workbenchParams,
-  workbenchRowSchema,
-  workbenchSpec,
-} from '@/lib/policy-workbench'
+  forecastWorkbenchHref,
+  forecastWorkbenchResetHref,
+} from '@/lib/forecast-workbench-navigation'
 import {
   lastPage,
-  listHref,
   nearestRange,
   toRange,
   type RawSearchParams,
@@ -33,11 +34,12 @@ export async function PolicyWorkbench({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const params = workbenchParams(await searchParams)
-  const [db, t, policy, locale] = await Promise.all([
+  const [db, t, policy, locale, search] = await Promise.all([
     createClient(),
     getTranslations('PolicyWorkbench'),
     getTranslations('InventoryPolicy'),
     getLocale(),
+    getTranslations('ForecastSearch'),
   ])
   const organizationId = context.active.id
   const query = (head: boolean) => {
@@ -55,7 +57,7 @@ export async function PolicyWorkbench({
   if (count.error) throw new Error('Policy workbench unavailable')
   const total = count.count ?? 0
   const pages = lastPage(total, params.size)
-  const href = (page: number) => listHref('/forecasts/workbench', workbenchSpec, params, { page })
+  const href = (page: number) => forecastWorkbenchHref(params, { page }, embedded)
   if (params.page > pages) redirect(href(pages))
   const { from, to } = toRange(params.page, params.size)
   const range = nearestRange(from, to, total)
@@ -96,67 +98,76 @@ export async function PolicyWorkbench({
           </HelpDisclosure>
         }
       />
-      <Form
-        action="/forecasts/workbench"
-        className="workspace-toolbar flex flex-wrap items-end gap-3"
-        key={JSON.stringify(params)}
-      >
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('search')}
-          <input
+      <ForecastFilterForm>
+        <Form
+          action={embedded ? '/forecasts' : '/forecasts/workbench'}
+          className="workspace-toolbar flex flex-wrap items-end gap-3"
+          key={JSON.stringify(params)}
+        >
+          {embedded && <input type="hidden" name="tab" value="workbench" />}
+          <input type="hidden" name="size" value={params.size} />
+          <input type="hidden" name="dir" value={params.dir} />
+          <ForecastFilterSearchInput
+            id="workbench-item-search"
             name="q"
+            label={t('search')}
+            clearLabel={search('clearSearch')}
             defaultValue={params.q}
             maxLength={100}
-            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
+            className="min-w-0 max-w-full flex-[1_1_150px]"
           />
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('location')}
-          <input
-            name="location"
-            defaultValue={params.filters.location ?? ''}
-            maxLength={64}
-            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
-          />
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('result')}
-          <select
-            name="status"
-            defaultValue={params.filters.status ?? ''}
-            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
+          <div className="grid min-w-0 max-w-full flex-[1_1_150px] gap-1">
+            <label htmlFor="workbench-location">{t('location')}</label>
+            <LocationCodeInput
+              id="workbench-location"
+              name="location"
+              defaultValue={params.filters.location ?? ''}
+              includeInactive
+            />
+          </div>
+          <label className="grid min-w-0 max-w-full gap-1">
+            {t('result')}
+            <select
+              name="status"
+              defaultValue={params.filters.status ?? ''}
+              className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
+            >
+              <option value="">{t('all')}</option>
+              {POLICY_STATUSES.map((s) => (
+                <option value={s} key={s}>
+                  {policy(`statuses.${s}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="grid min-w-0 max-w-full gap-1">
+            {t('lastProposal')}
+            <select
+              name="review"
+              defaultValue={params.filters.review ?? ''}
+              className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
+            >
+              <option value="">{t('all')}</option>
+              {REVIEW_STATUSES.map((s) => (
+                <option value={s} key={s}>
+                  {t(`statuses.${s}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button className="rounded-md bg-primary px-4 py-2 text-primary-foreground">
+            {t('filter')}
+          </button>
+          <Link
+            data-forecast-filter-reset
+            href={forecastWorkbenchResetHref(embedded)}
+            className="inline-flex min-h-11 items-center underline"
           >
-            <option value="">{t('all')}</option>
-            {POLICY_STATUSES.map((s) => (
-              <option value={s} key={s}>
-                {policy(`statuses.${s}`)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="grid min-w-0 max-w-full gap-1">
-          {t('lastProposal')}
-          <select
-            name="review"
-            defaultValue={params.filters.review ?? ''}
-            className="w-full min-w-0 max-w-full rounded-md border bg-background p-2"
-          >
-            <option value="">{t('all')}</option>
-            {REVIEW_STATUSES.map((s) => (
-              <option value={s} key={s}>
-                {t(`statuses.${s}`)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button className="rounded-md bg-primary px-4 py-2 text-primary-foreground">
-          {t('filter')}
-        </button>
-        <Link href="/forecasts/workbench" className="underline">
-          {t('reset')}
-        </Link>
-      </Form>
-      <p>{t('count', { total })}</p>
+            {t('reset')}
+          </Link>
+        </Form>
+      </ForecastFilterForm>
+      <p className="text-xs text-muted-foreground">{t('count', { total })}</p>
       <TableScrollRegion label={t('title')}>
         <table className="w-full text-sm">
           <caption className="sr-only">{t('title')}</caption>
@@ -175,7 +186,7 @@ export async function PolicyWorkbench({
                   'inspect',
                 ] as const
               ).map((k) => (
-                <th className="p-2 text-start" key={k}>
+                <th className="p-2 text-start text-xs font-medium" key={k}>
                   {t(k)}
                 </th>
               ))}

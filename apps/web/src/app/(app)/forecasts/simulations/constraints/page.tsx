@@ -52,9 +52,9 @@ export default async function NewConstraints({
         }
         help={
           <HelpDisclosure>
-            <p>{t('interpretation')}</p>
-            <p>{t('roundingHelp')}</p>
-            <p>{simulation('method')}</p>
+            <p className="text-xs">{t('interpretation')}</p>
+            <p className="text-xs">{t('roundingHelp')}</p>
+            <p className="text-xs">{simulation('method')}</p>
           </HelpDisclosure>
         }
       />

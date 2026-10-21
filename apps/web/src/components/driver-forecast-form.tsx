@@ -40,7 +40,7 @@ export function DriverForecastForm({
           </select>
         </label>
         {!forecasts.length && <p className="text-sm">{t('noMatches')}</p>}
-        <label className="flex items-start gap-2 text-sm">
+        <label className="flex min-h-11 items-start gap-2 text-sm">
           <input name="confirmed" type="checkbox" required className="mt-1" />
           {t('confirmation')}
         </label>

@@ -25,7 +25,7 @@ export async function PolicySimulationLedger({
     <TableScrollRegion label={label}>
       <table className="w-full whitespace-nowrap text-sm">
         <caption className="sr-only">{label}</caption>
-        <thead>
+        <thead className="text-xs [&_th]:font-medium">
           <tr>
             {(
               [

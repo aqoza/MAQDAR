@@ -122,7 +122,7 @@ export default async function NewEventPolicy({
           {choices?.data?.length ? (
             <TableScrollRegion label={t('choose')}>
               <table className="w-full text-sm">
-                <thead>
+                <thead className="text-xs [&_th]:font-medium">
                   <tr>
                     {(['policy', 'leadDays', 'reviewDays', 'service', 'action'] as const).map(
                       (key) => (

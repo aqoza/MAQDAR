@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 import { test, expect } from '@playwright/test'
 import { createConfirmedUser, organizationIdBySlug, signInWithPassword } from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
+import { expectEvidenceValue } from './helpers/typography'
 
 test.use({ actionTimeout: 30_000 })
 test('event-policy scenarios preserve conditional evidence, permissions and five-width layouts', async ({
@@ -74,6 +75,15 @@ with psycopg.connect(sys.argv[1]) as db:
   for (const width of [375, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 1000 })
     await page.evaluate(() => window.scrollTo(0, 0))
+    const comparison = page.getByRole('region', {
+      name: 'Event-adjusted policy comparison',
+      exact: true,
+    })
+    await expectEvidenceValue(comparison.getByRole('heading').first())
+    await expectEvidenceValue(comparison.getByText('8.264 EA', { exact: true }))
+    await expect(
+      comparison.getByText('2 calendar days after 2026-10-10', { exact: true }),
+    ).toHaveCSS('font-size', '12px')
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
       true,
     )
@@ -96,6 +106,12 @@ with psycopg.connect(sys.argv[1]) as db:
   await expect(
     page.getByRole('region', { name: 'Event contributions by date', exact: true }),
   ).toBeVisible()
+  const dailyHeader = page
+    .getByRole('table', { name: 'Event contributions by date', exact: true })
+    .getByRole('columnheader')
+    .first()
+  await expect(dailyHeader).toHaveCSS('font-size', '12px')
+  await expect(dailyHeader).toHaveCSS('font-weight', '500')
   await page.getByRole('button', { name: 'Save policy scenario', exact: true }).click()
   await expect(page).toHaveURL(/\/forecasts\/events\/policies\/[0-9a-f-]{36}$/)
   const savedUrl = page.url()
@@ -115,6 +131,12 @@ with psycopg.connect(sys.argv[1]) as db:
   await expect(page.getByText('8.264 EA', { exact: true })).toBeVisible()
   for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: 1000 })
+    const comparison = page.getByRole('region', {
+      name: 'Event-adjusted policy comparison',
+      exact: true,
+    })
+    await expectEvidenceValue(comparison.getByRole('heading').first())
+    await expectEvidenceValue(comparison.getByText('8.264 EA', { exact: true }))
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
       true,
     )

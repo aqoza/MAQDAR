@@ -30,7 +30,9 @@ export async function PreparePage({ embedded = false }: { embedded?: boolean }) 
           )
         }
       />
-      <NextIntlClientProvider messages={{ Preparation: messages.Preparation }}>
+      <NextIntlClientProvider
+        messages={{ Preparation: messages.Preparation, LocationLookup: messages.LocationLookup }}
+      >
         <PreparationForm
           key={context.active.id}
           organizationId={context.active.id}

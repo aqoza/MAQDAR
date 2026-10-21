@@ -98,7 +98,7 @@ export default async function PolicyReview({
       <p role="status">{policy(`statuses.${row.status}`)}</p>
       <table className="w-full text-sm">
         <caption className="text-start font-semibold">{t('comparison')}</caption>
-        <thead>
+        <thead className="text-xs [&_th]:font-medium">
           <tr>
             <th className="p-2 text-start">{t('basis')}</th>
             <th className="p-2 text-start">{policy('lead_time')}</th>
@@ -148,7 +148,7 @@ export default async function PolicyReview({
                 maximum: amount(proposal.order_up_to),
               })}
             </p>
-            <p>
+            <p className="text-xs text-muted-foreground">
               {t('submitted', {
                 actor: actor(proposal.submitted_by),
                 time: format.dateTime(new Date(proposal.created_at!), 'long'),
@@ -167,7 +167,7 @@ export default async function PolicyReview({
             )}
             {proposal.decided_at && (
               <>
-                <p>
+                <p className="text-xs text-muted-foreground">
                   {t('decided', {
                     actor: actor(proposal.decided_by),
                     time: format.dateTime(new Date(proposal.decided_at), 'long'),

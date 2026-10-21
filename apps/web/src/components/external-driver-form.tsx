@@ -14,6 +14,7 @@ import {
   DRIVER_FILE_BYTES,
   type DriverRow,
 } from '@/lib/external-drivers'
+import { LocationCodeInput } from './master-data/location-code-input'
 import { idleState } from '@/lib/forms'
 import { ExternalDriverReport } from './external-driver-report'
 
@@ -101,24 +102,36 @@ export function ExternalDriverForm({
                 'forecast_to',
               ] as const
             ).map((key) => (
-              <label key={key} className="grid min-w-0 gap-1 text-sm">
-                {t(key)}
-                <input
-                  required
-                  value={fields[key]}
-                  type={
-                    key === 'history_from' || key === 'cutoff' || key === 'forecast_to'
-                      ? 'date'
-                      : 'text'
-                  }
-                  maxLength={key === 'unit' ? 80 : key === 'driver_name' ? 200 : 100}
-                  onChange={(e) => {
-                    const value = e.currentTarget.value
-                    setFields((previous) => ({ ...previous, [key]: value }))
-                  }}
-                  className="min-w-0 w-full rounded-md border bg-background px-3 py-2"
-                />
-              </label>
+              <div key={key} className="grid min-w-0 gap-1 text-sm">
+                <label htmlFor={`external-driver-${key}`}>{t(key)}</label>
+                {key === 'location_code' ? (
+                  <LocationCodeInput
+                    id={`external-driver-${key}`}
+                    required
+                    disabled={!hydrated || saving || pending}
+                    onValueChange={(location_code) =>
+                      setFields((previous) => ({ ...previous, location_code }))
+                    }
+                  />
+                ) : (
+                  <input
+                    id={`external-driver-${key}`}
+                    required
+                    value={fields[key]}
+                    type={
+                      key === 'history_from' || key === 'cutoff' || key === 'forecast_to'
+                        ? 'date'
+                        : 'text'
+                    }
+                    maxLength={key === 'unit' ? 80 : key === 'driver_name' ? 200 : 100}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value
+                      setFields((previous) => ({ ...previous, [key]: value }))
+                    }}
+                    className="min-w-0 w-full rounded-md border bg-background px-3 py-2"
+                  />
+                )}
+              </div>
             ))}
             <label className="grid min-w-0 gap-1 text-sm sm:col-span-2">
               {t('source')}

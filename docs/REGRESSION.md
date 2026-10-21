@@ -70,6 +70,19 @@ Audit bases for the full header pass: `8a078f5`, then main `4707e36` including e
 
 ## Planning, Imports and account administration
 
+- `FORECAST-003`: `forecast-pages-consistency.spec.ts` checks remaining Forecasts
+  forms, saved forecast/policy/stock/event evidence and driver/installed-base
+  histories in the real production app at 1366×768 and 390×844, English and Arabic.
+  Assert 16px titles, 14px subsection/value roles, 12px/500 table headings, no page
+  overflow and 44px mobile controls/disclosures. Preserve exact saved values.
+  `forecast-tabs.spec.ts` checks active-only suggestions and draft retention for
+  every workflow; `policy-workbench.spec.ts` checks embedded apply/reset/paging and
+  Back/Forward plus standalone behavior. Driver/installed-base suites retain
+  preview invalidation, exact-code submission, historical lookup, scoped HTTP 404
+  and their existing responsive/RTL cases. See
+  [forecast-pages-consistency.md](forecast-pages-consistency.md). These are
+  presentation/lookup refinements; no action/RPC/calculation changes are authorized.
+
 - Driver forecasts (Step 23b): `driver-forecasts.spec.ts` queues from captured sources,
   publishes through the worker boundary, checks viewer/hidden-location access and
   retains form/result screenshots at all five widths in English and Arabic. Run
