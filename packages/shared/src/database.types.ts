@@ -660,6 +660,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"external_driver_datasets": {
+                  Row: {
+                    "created_at": string,"driver_name": string,"id": string,"item_code": string,"item_id": string,"location_code": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"driver_name": string,"id"?: string,"item_code": string,"item_id": string,"location_code": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"driver_name"?: string,"id"?: string,"item_code"?: string,"item_id"?: string,"location_code"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "external_driver_datasets_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "external_driver_datasets_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"forecast_results": {
                   Row: {
                     "evidence": NonNullable<Json>,"id": string,"item_code": string,"item_id": string,"item_name": string,"location_id": string,"model": string | null,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>
@@ -3598,6 +3624,12 @@ isOneToOne: false
                            },
 "excess_stock_save":
 { Args: { "p_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_reason": string,"p_request_id": string,"p_selections": Json }; Returns: string
+                           },
+"external_driver_preview":
+{ Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
+                           },
+"external_driver_save":
+{ Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
                            },
 "forecast_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string

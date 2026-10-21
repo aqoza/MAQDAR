@@ -30,6 +30,9 @@ select set_eq(
     cross join (values ('anon'::text), ('authenticated'), ('service_role')) as r (rolname)
     where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f')$$,
   $$values
+    ('external_driver_datasets', 'anon', 'r', ''),
+    ('external_driver_datasets', 'authenticated', 'r', 'SELECT'),
+    ('external_driver_datasets', 'service_role', 'r', ''),
     ('network_handoff_acknowledgements', 'anon', 'r', ''),
     ('network_handoff_acknowledgements', 'authenticated', 'r', 'SELECT'),
     ('network_handoff_acknowledgements', 'service_role', 'r', ''),
@@ -543,6 +546,9 @@ select set_eq(
     ('public.transfer_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.event_purchase_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.excess_disposition_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
+    ('app.external_driver_input(jsonb)', ''),
+    ('public.external_driver_preview(uuid, jsonb)', 'authenticated'),
+    ('public.external_driver_save(uuid, jsonb, uuid, text)', 'authenticated'),
     ('public.network_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.stock_locator(uuid, text, text, text, date, jsonb, integer, integer)', 'authenticated'),
     ('public.transfer_handoff_create(uuid, uuid)', 'authenticated'),

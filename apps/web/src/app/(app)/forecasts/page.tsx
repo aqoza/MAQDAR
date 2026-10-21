@@ -51,6 +51,7 @@ export default async function ForecastsPage() {
   const from = new Date(Date.parse(to) - 364 * 86_400_000).toISOString().slice(0, 10)
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
   const canStart = editor && !active
+  const drivers = await getTranslations('ExternalDrivers')
   const statuses = (['queued', 'running', 'succeeded', 'failed', 'canceled'] as const).map(
     (value) => ({ value, label: t(`status.${value}`) }),
   )
@@ -187,7 +188,13 @@ export default async function ForecastsPage() {
             <PageHeaderArt pattern="forecasts" />
             <header className={styles.heading}>
               <h1 className="self-start text-page-title">{t('title')}</h1>
-              <div className={styles.method}>
+              <div className={`${styles.method} flex flex-wrap items-start gap-x-3`}>
+                <Link
+                  href="/forecasts/drivers"
+                  className="inline-flex min-h-11 items-center text-sm underline"
+                >
+                  {drivers('title')}
+                </Link>
                 <HelpDisclosure>
                   <p>{t('scope')}</p>
                 </HelpDisclosure>

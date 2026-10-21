@@ -183,6 +183,10 @@ Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-sce
 
 ## Phase 4 build steps
 
+Step 22i and its browser follow-up are merged in PRs #123 and #128. Step 23 begins
+the approved external-driver evidence foundation; see
+[external-driver-datasets.md](external-driver-datasets.md) for its contract and acceptance checks.
+
 Step 21 begins the simulation center. Deferred Phase 3 work, including automatic approval, operational allocation/reservations and outbound transmission, remains on the roadmap.
 
 | Step | Scope                                                                                                                                                                                                                       | Status                                              |
@@ -200,7 +204,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 22f  | **Network handoff batches:** complete approvals grouped by warehouse/dispatch, separate freight currencies, copied CSV/JSON, visible overlap and all-location history.                                                      | Merged in PR #120                                   |
 | 22g  | **Network handoff read API:** explicit organization-wide readers, original whole-network JSON, bounded pagination and separate live context for retained copied batches.                                                    | Merged in PR #121                                   |
 | 22h  | **Network acknowledgements:** explicit whole-package received/rejected reports, independent history, safe retries and warehouse/all-branch access.                                                                          | Merged in PR #122                                   |
-| 22i  | **Network integration workbench:** latest whole-package reports, exact system labels, warehouse/branch filters, retained copied evidence and all-location member access.                                                    | Implemented; PR validation                          |
+| 22i  | **Network integration workbench:** latest whole-package reports, exact system labels, warehouse/branch filters, retained copied evidence and all-location member access.                                                    | Merged — PR #123; verified #128                     |
+| 23   | **External-driver foundation:** immutable dated measurements and assumptions, source-declared availability, exact CSV validation, cutoff coverage and location-scoped history.                                              | Implemented; pending review                         |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -211,6 +216,19 @@ See [network-allocation.md](network-allocation.md) for Step 22. The immutable re
 See [network-transfer-dates.md](network-transfer-dates.md) for the approved fixed-quantity scheduling rules and evidence lifecycle.
 
 ## Decision log
+
+### Step 23 — approved 2026-10-21
+
+Save one external-driver dataset for one item/location, imported from dated CSV
+measurements with explicit name, unit and source. Preview history/forecast coverage
+and gaps without filling values. Observed values and planned/forecast assumptions
+remain distinct; source-declared availability dates remain separate from server
+import time and are compared with the selected cutoff. Reject invalid/duplicate
+rows atomically. Editors save after applicability confirmation; members inspect
+immutable location-scoped history. Corrections create independent datasets, retries
+are stable and changed preview evidence requires refresh. Preserve compact green
+design at five widths and Arabic RTL. Model fitting, automatic feeds and changes
+to forecasts/policies/orders are excluded from this increment.
 
 | Date       | Decision                                                                                  | Why                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | ---------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

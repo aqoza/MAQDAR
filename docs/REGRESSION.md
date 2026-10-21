@@ -1,5 +1,9 @@
 # UI regression ledger
 
+## External-driver evidence
+
+- `DRIVER-001`: `external-drivers.spec.ts` imports signed high-precision CSV values, rejects duplicates, distinguishes gaps/availability/types, invalidates changed previews and saves immutable evidence. Verify viewer/branch history and HTTP 404, five widths in English/Arabic, shared typography, keyboard tables and escaped source text. Run parser units, `0096_external_drivers.test.sql`, tenant/privilege inventories and `test_external_drivers_db.py` sequentially with browser tests against loopback only.
+
 ## Master-data table keyboard access
 
 - `MASTER-TABLE-001`: populated master-data tables expose their translated entity name and a focusable horizontal scroll region. At 375px, keyboard users can Tab into the region and scroll to trailing monetary columns with ArrowRight; focus remains visible and the page does not overflow. Keep sort links, exact currency formatting and generated table primitives unchanged. Run `master-data.spec.ts` against local fixtures and retain the phone screenshot.
