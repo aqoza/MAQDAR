@@ -184,7 +184,7 @@ Step 13b acceptance, exact rounding, provenance and rollout are in [supplier-sce
 ## Phase 4 build steps
 
 Step 22i and its browser follow-up are merged in PRs #123 and #128. Step 23 is merged
-in PR #132. Step 23b is merged in PR #134 (`a51dba6`). Step 23c adds the approved joint multi-driver comparisons; see
+in PR #132. Step 23b is merged in PR #134 (`a51dba6`). Step 23c is merged in PR #135 (`47977c1`); see
 [multi-driver-forecasts.md](multi-driver-forecasts.md),
 [driver-forecasts.md](driver-forecasts.md) and
 [external-driver-datasets.md](external-driver-datasets.md) for its contract and acceptance checks.
@@ -209,7 +209,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 22i  | **Network integration workbench:** latest whole-package reports, exact system labels, warehouse/branch filters, retained copied evidence and all-location member access.                                                    | Merged — PR #123; verified #128                     |
 | 23   | **External-driver foundation:** immutable dated measurements and assumptions, source-declared availability, exact CSV validation, cutoff coverage and location-scoped history.                                              | Merged — PR #132                                    |
 | 23b  | **Driver forecasts:** captured individual demand and driver evidence, bounded weekday regression, per-fit availability checks, rolling selection, conditional bands and scoped immutable results.                           | Merged — PR #134                                    |
-| 23c  | **Multi-driver forecasts:** 2–5 captured predictors, joint fixed-ridge/weekday candidate, per-fit availability, canonical retries and scoped immutable evidence.                                                            | Implemented — review pending                        |
+| 23c  | **Multi-driver forecasts:** 2–5 captured predictors, joint fixed-ridge/weekday candidate, per-fit availability, canonical retries and scoped immutable evidence.                                                            | Merged — PR #135                                    |
+| 24   | **Installed-base foundation:** immutable equipment populations, exact fitted-part quantities, known/unknown ages, source availability and scoped history.                                                                   | Implemented — review pending                        |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -685,3 +686,12 @@ PR #121 was reviewed at `69f1f2f` with no blocking findings and merged as `bfe3a
 ### Step 22i — approved 2026-10-21
 
 PR #122 was reviewed at `05f3a0c` without blocking findings and merged as `a365cf0` after all four CI jobs passed. The owner approved a read-only network integration workbench with warehouse, included-branch, package-kind, current/historical/unavailable context and reported-status filters, search, rejection reasons and links to original evidence/history. Select the latest server-recorded report per exact external-system label before status/search filtering, preserving independent whole-package/member/overlap histories. No report expresses absent evidence, including for a selected system. Copied batches remain searchable after source deletion, with live context independent of report status. Branch filtering finds complete packages and never relaxes warehouse/all-branch access, including zero allocations, or implies branch-level acceptance. Preserve shared compact green screens at 375, 768, 1024, 1440 and 1920px plus Arabic RTL. No transmission or execution. See [network-integration-workbench.md](network-integration-workbench.md).
+
+### Step 24 — approved 2026-10-21
+
+Implement immutable installed-base datasets for one part/service location, with named
+equipment groups, exact active counts and fitted-part quantities, known/unknown ages,
+source-declared availability and server import time. Require applicability/non-overlap
+confirmation, stable retries and tenant/location access. Keep the compact green UI
+at five widths plus Arabic RTL. See [installed-base-datasets.md](installed-base-datasets.md)
+for accepted calculations, bounds, lifecycle and verification. Forecast fitting follows separately.

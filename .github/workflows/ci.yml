@@ -102,6 +102,13 @@ jobs:
             apps/web/test-results/**/driver-forecast-*.png
             apps/web/test-results/**/multi-driver-forecast-*.png
           retention-days: 7
+      - name: Retain installed-base visual evidence
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: installed-base-visuals
+          path: apps/web/test-results/**/installed-base-*.png
+          retention-days: 7
       - name: Stop local Supabase
         if: always()
         run: pnpm exec supabase stop --no-backup
