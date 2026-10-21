@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 24 adds immutable installed-base populations, exact fitted-part quantities and known/unknown equipment age. Preserve source claims versus import time, explicit applicability/non-overlap confirmation, canonical retries and current tenant/location access. No inferred demand or operational changes. See [installed-base-datasets.md](docs/installed-base-datasets.md).
+
 Step 23c adds `multi-driver-v1`: canonical sets of 2–5 saved drivers, one joint fixed-ridge/weekday candidate and per-fit availability for every predictor. Preserve `driver-v1`, copied sources, order-independent retries, editor/location access and frozen downstream schemas. See [multi-driver-forecasts.md](docs/multi-driver-forecasts.md).
 
 Step 23b adds `driver-v1` forecasts from one saved individual forecast and matching driver dataset. Copy inputs at enqueue; each training/prediction window independently enforces source-declared availability. Preserve source claims versus import time, explicit exclusions, conditional uncertainty, current location access and the existing bounded worker. See [driver-forecasts.md](docs/driver-forecasts.md).

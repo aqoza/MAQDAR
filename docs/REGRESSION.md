@@ -88,3 +88,15 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
   capture and fenced publication. Exercise the real bounded numerical child,
   quality filtering, five widths and Arabic RTL; inspect saved screenshots.
   Keep Step 23b suites and frozen policy/export/OpenAPI contracts unchanged.
+
+## Installed-base evidence
+
+- `BASE-001`: `installed-base.spec.ts` validates CSV duplicates, exact installed
+  quantities, unknown ages, both confirmations, stale previews, immutable history,
+  filters/pagination and viewer/branch HTTP 404. Capture and inspect form, detail
+  and history at 375/768/1024/1440/1920px in English and Arabic RTL.
+- Run `src/lib/installed-base.test.ts`, the installed-base server-action tests,
+  `0099_installed_base.test.sql`, tenant/privilege invariants and
+  `engine/tests/test_installed_base_db.py`. Keep database tests and browser fixtures
+  sequential against loopback only. Check canonical/concurrent retries and revoked
+  authority after waits, catalog changes/deletion and no operational writes.

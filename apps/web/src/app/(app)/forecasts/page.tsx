@@ -52,6 +52,7 @@ export default async function ForecastsPage() {
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
   const canStart = editor && !active
   const drivers = await getTranslations('ExternalDrivers')
+  const installedBase = await getTranslations('InstalledBase')
   const quality = await getTranslations('ForecastQuality')
   const statuses = (['queued', 'running', 'succeeded', 'failed', 'canceled'] as const).map(
     (value) => ({ value, label: t(`status.${value}`) }),
@@ -202,6 +203,12 @@ export default async function ForecastsPage() {
                   className="inline-flex min-h-11 items-center text-sm underline"
                 >
                   {drivers('title')}
+                </Link>
+                <Link
+                  href="/forecasts/installed-base"
+                  className="inline-flex min-h-11 items-center text-sm underline"
+                >
+                  {installedBase('title')}
                 </Link>
                 <HelpDisclosure>
                   <p>{t('scope')}</p>
