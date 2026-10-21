@@ -48,12 +48,13 @@ The responsive evidence is available as [desktop](enterprise-onboarding-visuals/
 
 Journey: the operator enables scheduled onboarding, an empty queue completes without an email, and a reviewed queued invitation is delivered only through the configured Supabase origin.
 
-The real Workers runtime rejects `fetch(..., { redirect: 'error' })` before any network request. Node's fetch accepts it, so the original mocked tests missed the deployment failure. The consumer now uses `manual`: queue redirects stop the drain and Auth redirects fail the current job without forwarding credentials or following the Location header. Existing origin validation, pacing, lease and retry rules remain.
+The real Workers runtime rejects `fetch(..., { redirect: 'error' })` before any network request. Node's fetch accepts it, so the original mocked tests missed the deployment failure. The consumer now uses `manual`: queue redirects stop the drain and Auth redirects hold the current job as uncertain and stop the drain without forwarding credentials or following the Location header. This preserves review before a resend when a redirected POST might already have been accepted. Existing origin validation, pacing, lease and retry rules remain.
 
 TDD evidence on `codex/onboarding-worker-redirect-fix`:
 
 - RED checkpoint `43b93bc`: all four native scheduled-event tests failed against the original consumer. The isolated reproduction reported Workers' `Invalid redirect value` error and zero outbound requests.
 - GREEN checkpoint `9aba70f`: `node --test --experimental-test-coverage --test-coverage-include=scripts/onboarding-delivery.mjs scripts/onboarding-delivery.test.mjs scripts/onboarding-worker-runtime.test.mjs` passed all 14 tests. Consumer coverage: 99.05% lines, 93.44% branches, 80% functions.
+- Redirect-safety RED checkpoint `24fc3dd`: the native Auth-redirect drain continued and failed, and the Node assertion reported failed instead of uncertain. GREEN checkpoint `2c2a74b` passed the same 14 tests with 99.05% line, 93.55% branch and 80% function coverage. The native Auth-redirect case permits five messages but observes only one claim, one Auth request and one uncertain lease acknowledgement, proving that draining stops.
 - Native tests cover an empty queue, a synthetic invitation and exact lease acknowledgement, a queue redirect, and an Auth redirect. Every outbound request is intercepted locally, restricted to the synthetic Supabase origin, and checked for the synthetic API key. No hosted account, recipient, or SMTP service is used by these tests.
 - Miniflare is pinned as a development dependency to the same `5.20261006.1-alpha` version already required by Wrangler 4.149.0. No existing dependency version changed. CI runs the native tests with the delivery safety suite.
 
