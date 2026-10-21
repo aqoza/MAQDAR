@@ -17,6 +17,12 @@ HTTP 200 before a hidden-location `notFound()` result. Removing only that bounda
 complete dashboard return the correct HTTP 404. The final page, shared header, typography,
 sidebar and other routes' loading boundaries retain their existing rendering.
 
+Dashboard links, its GET filter form and the shared sidebar while Dashboard is active disable
+speculative Next.js route prefetching. Explicit clicks still use client navigation; other pages
+retain the existing prefetch behavior. This prevents unrelated list/planning reads competing
+with an opened dashboard. The isolation browser case observes successful Dashboard views,
+including its currency disclosure; it checks error responses separately.
+
 ## Migration and authority
 
 `20261021013001_dashboard_location_projection.sql` replaces only the existing stable
@@ -55,12 +61,18 @@ inside the timed interval. Normal bounded fixture teardown remains part of a pas
 
 The single-response run passed those four timings at **1,297 / 1,443 / 1,299ms**, filtered
 **1,090ms**; its then-existing HTTP-status failure was separately retained and corrected.
-Final post-boundary verification is recorded in the ACME coverage report after execution.
-The KPI/privilege checks pass **76 assertions** and the full web unit suite passes **1,872 tests**.
+A later run passed **1,163 / 1,273 / 1,303ms**, filtered **784ms**, including bounded teardown.
+The final-build scale run passed **1,082 / 1,160 / 1,178ms**, filtered **1,586ms**.
+The complete final browser outcome is recorded in the ACME coverage report after execution.
+The KPI/privilege checks pass **76 assertions** and the current-main web unit suite passes
+**1,907 tests**. Two current-main CI failures also need test-only corrections: await network
+filter navigation, ignore hidden streaming copies, and identify the exact invitation feedback.
+These preserve the original business and responsive assertions.
 Measured temporary reads fell from **3,170 to 398 blocks** on comparable authenticated plans.
 No JIT, work-memory, statement-timeout or performance-limit tuning was retained.
 
 An overlap-only variant still missed the strict gate and was rejected. Fresh-entry private
-profiles and a contended scale sample are retained as limitations, not substituted for the
+profiles, a contended scale sample and a later **2,312ms** outlier are retained as limitations,
+not substituted for the
 repository benchmark. These local samples do not certify production cold starts, p95 latency,
 concurrency, endurance or capacity. No hosted performance rollout is claimed before review.

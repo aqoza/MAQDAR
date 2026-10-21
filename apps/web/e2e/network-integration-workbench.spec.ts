@@ -30,6 +30,17 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   const base = '/replenishment/network/integrations'
+  const applyFilters = async (expected: Record<string, string>) => {
+    await page.getByRole('button', { name: 'Apply filters' }).click()
+    // Different filters can produce the same row count. Wait for the form navigation
+    // to commit before editing the next form, whose default values come from the URL.
+    await expect(page).toHaveURL(
+      (url) =>
+        url.pathname === base &&
+        Object.entries(expected).every(([key, value]) => url.searchParams.get(key) === value),
+      { timeout: 30_000 },
+    )
+  }
   const overlapResult = await editorClient.rpc('network_handoff_batch_create', {
     p_organization_id: org,
     p_handoff_ids: [ids[0], ids[2]],
@@ -82,7 +93,8 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   await page.goto('/replenishment/network')
   await page.getByRole('link', { name: 'Network integrations', exact: true }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Network integration workbench')
-  const rows = page.locator('tbody tr')
+  // React streaming may retain hidden payload copies; assertions inspect the rendered UI.
+  const rows = page.locator('tbody tr:visible')
   await expect(rows).toHaveCount(7)
   await expect(rows.filter({ hasText: 'old-reference' })).toHaveCount(0)
   await expect(rows.filter({ hasText: 'latest-reference' })).toContainText('Reported received')
@@ -94,24 +106,24 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   expect(await page.locator('tbody script').count()).toBe(0)
   await page.getByLabel('Included branch code', { exact: true }).fill('BRANCH-B')
   await page.getByLabel('Warehouse code', { exact: true }).fill('WAREHOUSE')
-  await page.getByRole('button', { name: 'Apply filters' }).click()
+  await applyFilters({ source: 'WAREHOUSE', branch: 'BRANCH-B' })
   await expect(rows).toHaveCount(7)
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('rejected')
-  await page.getByRole('button', { name: 'Apply filters' }).click()
+  await applyFilters({ source: 'WAREHOUSE', branch: 'BRANCH-B', status: 'rejected' })
   await expect(rows).toHaveCount(3)
   await page.getByLabel('Exact system label').fill('ERP')
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('no_report')
-  await page.getByRole('button', { name: 'Apply filters' }).click()
+  await applyFilters({ system: 'ERP', status: 'no_report' })
   await expect(rows).toHaveCount(3)
   await page.getByLabel('Exact system label').fill(' ERP ')
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('rejected')
-  await page.getByRole('button', { name: 'Apply filters' }).click()
+  await applyFilters({ system: ' ERP ', status: 'rejected' })
   await expect(rows).toHaveCount(1)
   await expect(page.getByLabel('Exact system label')).toHaveValue(' ERP ')
   await rows.getByText('2 included branches', { exact: true }).focus()
@@ -134,11 +146,11 @@ test('network workbench keeps whole-package reports, all-branch access and retai
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
       ).toBe(true)
       await expectPageTitle(page.getByRole('heading', { level: 1 }))
-      await expect(page.locator('input[name="system"]')).toHaveCSS(
-        'font-size',
-        width < 768 ? '16px' : '14px',
-      )
-      const region = page.locator('[role="region"]').filter({ has: page.locator('table') })
+      const systemInput = page.locator('input[name="system"]:visible')
+      await expect(systemInput).toHaveCount(1)
+      await expect(systemInput).toHaveCSS('font-size', width < 768 ? '16px' : '14px')
+      const region = page.locator('[role="region"]:visible').filter({ has: page.locator('table') })
+      await expect(region).toHaveCount(1)
       await region.focus()
       await expect(region).toBeFocused()
       if (width === 375) {

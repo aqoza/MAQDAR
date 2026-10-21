@@ -14,8 +14,10 @@ test('dashboard projection retains tenant, branch and hidden-location 404 bounda
   page,
 }) => {
   const prefetched = new Set<string>()
+  let observeDashboard = false
   page.on('request', (request) => {
     if (
+      observeDashboard &&
       new URL(page.url()).pathname === '/dashboard' &&
       request.headers()['next-router-prefetch']
     ) {
@@ -100,10 +102,19 @@ test('dashboard projection retains tenant, branch and hidden-location 404 bounda
     ].map((row) => ({ ...row, snapshot_date: '2026-10-17', unit_cost: '1.125', currency: 'SAR' })),
   )
 
-  await page.goto('/dashboard?day=2026-10-17')
+  const ownerResponse = await page.goto('/dashboard?day=2026-10-17')
+  expect(ownerResponse?.status()).toBe(200)
+  await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible()
+  observeDashboard = true
   await expect(page.locator('.dashboard-location-table tbody tr')).toHaveCount(2)
   await expect(page.locator('.dashboard-metric').first()).toContainText('50%')
   await expect(page.locator('#dashboard-location-options option')).toHaveCount(2)
+  await page.locator('.dashboard-currencies summary').click()
+  await expect(page.locator('.dashboard-currency-popover')).toContainText('2.250')
+  await page.locator('.dashboard-currencies summary').click()
+  // Only successful Dashboard views suppress speculative work. Error pages keep the
+  // ordinary shared navigation behavior and are checked separately for their HTTP status.
+  observeDashboard = false
   const foreignResponse = await page.goto('/dashboard?day=2026-10-17&location=FOREIGN')
   expect(foreignResponse?.status()).toBe(404)
 
@@ -120,12 +131,16 @@ test('dashboard projection retains tenant, branch and hidden-location 404 bounda
   if (active.error) throw new Error('Could not activate local branch fixture')
   await signOut(page)
   await signInWithPassword(page, branchEmail, password)
-  await page.goto('/dashboard?day=2026-10-17')
+  const branchResponse = await page.goto('/dashboard?day=2026-10-17')
+  expect(branchResponse?.status()).toBe(200)
+  await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible()
+  observeDashboard = true
   await expect(page.locator('.dashboard-location-table tbody tr')).toHaveCount(1)
   await expect(page.locator('.dashboard-location-table')).toContainText('ALLOWED')
   await expect(page.locator('.dashboard-location-table')).not.toContainText('RESTRICTED')
   await expect(page.locator('.dashboard-metric').first()).toContainText('100%')
   await expect(page.locator('#dashboard-location-options option')).toHaveCount(1)
+  observeDashboard = false
   for (const location of ['RESTRICTED', 'FOREIGN']) {
     const response = await page.goto(`/dashboard?day=2026-10-17&location=${location}`)
     expect(response?.status()).toBe(404)

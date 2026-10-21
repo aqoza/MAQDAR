@@ -228,7 +228,7 @@ export async function DashboardInsights({ summary }: { summary: DashboardKpis })
           <Sparkles aria-hidden="true" />
           {t('insights')}
         </h2>
-        <Link href="/forecasts">
+        <Link href="/forecasts" prefetch={false}>
           {t('planningLink')}
           <ArrowRight aria-hidden="true" />
         </Link>
