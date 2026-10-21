@@ -95,23 +95,37 @@ test('network workbench keeps whole-package reports, all-branch access and retai
   await page.getByLabel('Included branch code', { exact: true }).fill('BRANCH-B')
   await page.getByLabel('Warehouse code', { exact: true }).fill('WAREHOUSE')
   await page.getByRole('button', { name: 'Apply filters' }).click()
+  await expect(page).toHaveURL(
+    (url) =>
+      url.searchParams.get('branch') === 'BRANCH-B' &&
+      url.searchParams.get('source') === 'WAREHOUSE',
+  )
   await expect(rows).toHaveCount(7)
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('rejected')
   await page.getByRole('button', { name: 'Apply filters' }).click()
+  await expect(page).toHaveURL((url) => url.searchParams.get('status') === 'rejected')
   await expect(rows).toHaveCount(3)
   await page.getByLabel('Exact system label').fill('ERP')
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('no_report')
   await page.getByRole('button', { name: 'Apply filters' }).click()
+  await expect(page).toHaveURL(
+    (url) =>
+      url.searchParams.get('system') === 'ERP' && url.searchParams.get('status') === 'no_report',
+  )
   await expect(rows).toHaveCount(3)
   await page.getByLabel('Exact system label').fill(' ERP ')
   await page
     .getByRole('combobox', { name: 'Latest reported status', exact: true })
     .selectOption('rejected')
   await page.getByRole('button', { name: 'Apply filters' }).click()
+  await expect(page).toHaveURL(
+    (url) =>
+      url.searchParams.get('system') === ' ERP ' && url.searchParams.get('status') === 'rejected',
+  )
   await expect(rows).toHaveCount(1)
   await expect(page.getByLabel('Exact system label')).toHaveValue(' ERP ')
   await rows.getByText('2 included branches', { exact: true }).focus()
