@@ -126,7 +126,11 @@ test('Arabic Settings translate member controls, dialogs, invitation feedback an
     const pending = `pending-${id.slice(0, 8)}-${width}@example.com`
     await panel.getByLabel('البريد الإلكتروني', { exact: true }).fill(pending)
     await panel.getByRole('button', { name: 'إرسال دعوة', exact: true }).click()
-    await expect(panel.getByRole('status')).toHaveText(`أُرسلت الدعوة إلى ${pending}.`)
+    const confirmation = `أُرسلت الدعوة إلى ${pending}.`
+    // The directory also announces pagination; target the invitation feedback explicitly.
+    await expect(panel.getByRole('status').filter({ hasText: confirmation })).toHaveText(
+      confirmation,
+    )
     const row = panel.getByRole('listitem').filter({ hasText: pending })
     await expect(row).toContainText('أُرسلت في')
     await expect(row).toContainText('تنتهي في')
