@@ -8,7 +8,7 @@ export function RegionalStockReport({ report }: { report: Report }) {
   return (
     <div className="min-w-0 space-y-4">
       <section aria-label={t('totals')} className="space-y-3 workspace-panel">
-        <h2 className="text-base font-semibold">{t('totals')}</h2>
+        <h2 className="text-section-title">{t('totals')}</h2>
         <p className="break-words text-sm">
           <bdi>{report.item.code}</bdi> ·{' '}
           {locale.startsWith('ar') && report.item.name_ar
@@ -24,7 +24,7 @@ export function RegionalStockReport({ report }: { report: Report }) {
             {(['on_hand', 'allocated', 'net'] as const).map((key) => (
               <div key={key} className="min-w-0">
                 <dt className="text-xs text-muted-foreground">{t(key)}</dt>
-                <dd className="break-all text-base font-semibold">
+                <dd className="break-all text-evidence-value">
                   <bdi>{report.totals![key]}</bdi>
                 </dd>
               </div>

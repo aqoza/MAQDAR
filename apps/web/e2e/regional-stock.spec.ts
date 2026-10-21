@@ -42,6 +42,8 @@ test('regional stock preserves exact evidence and all-location access at every r
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       ).toBe(true)
       await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+      const evidence = page.locator('section[aria-label] dd').first()
+      if (await evidence.count()) await expect(evidence).toHaveCSS('font-size', '14px')
       await page.screenshot({
         path: testInfo.outputPath(`regional-stock-${kind}-${locale}-${width}.png`),
         fullPage: true,
