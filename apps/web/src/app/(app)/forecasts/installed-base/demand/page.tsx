@@ -29,6 +29,7 @@ export default async function InstalledDemandHistory({
     getTranslations('InstalledBaseDemand'),
     getFormatter(),
   ])
+  const evaluationT = await getTranslations('InstalledBaseEvaluation')
   const base = () => {
     let query = db
       .from('installed_base_demand_scenarios')
@@ -63,6 +64,9 @@ export default async function InstalledDemandHistory({
         }
         actions={
           <>
+            <Link href="/forecasts/installed-base/evaluations" className="underline">
+              {evaluationT('title')}
+            </Link>
             <Link href="/forecasts/installed-base" className="underline">
               {t('choosePopulation')}
             </Link>

@@ -900,6 +900,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"installed_base_evaluations": {
+                  Row: {
+                    "created_at": string,"cutoff": string,"evaluation_name": string,"id": string,"item_code": string,"item_id": string,"location_code": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"cutoff": string,"evaluation_name": string,"id"?: string,"item_code": string,"item_id": string,"location_code": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"scenario_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"cutoff"?: string,"evaluation_name"?: string,"id"?: string,"item_code"?: string,"item_id"?: string,"location_code"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"scenario_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "installed_base_evaluations_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "installed_base_evaluations_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"inventory_policies": {
                   Row: {
                     "evidence": NonNullable<Json>,"forecast_id": string,"id": string,"item_code": string,"item_id": string,"location_id": string,"organization_id": string,"run_id": string,"status": string,"summary": NonNullable<Json>,"unit": string | null
@@ -3734,6 +3760,12 @@ isOneToOne: false
 { Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
                            },
 "installed_base_demand_save":
+{ Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
+                           },
+"installed_base_evaluation_preview":
+{ Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
+                           },
+"installed_base_evaluation_save":
 { Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
                            },
 "installed_base_preview":

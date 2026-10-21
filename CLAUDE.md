@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 24c adds retrospective installed-base evaluations against a completed recorded-sales window. Preserve confirmed missing-day zeros, known matching units, exact error sums, copied evidence, stable retries and current editor/location access. Never label sales as failures or claim verified historical availability. See [installed-base-evaluations.md](docs/installed-base-evaluations.md).
+
 Step 24 adds immutable installed-base populations, exact fitted-part quantities and known/unknown equipment age. Preserve source claims versus import time, explicit applicability/non-overlap confirmation, canonical retries and current tenant/location access. No inferred demand or operational changes. See [installed-base-datasets.md](docs/installed-base-datasets.md).
 
 Step 24b adds conditional installed-base demand scenarios using explicit per-group daily replacement rates. Preserve exact arithmetic, complete rate evidence available by cutoff, constant-population applicability, copied inputs, canonical retries and current editor/location access. Unknown ages remain unknown; no learned failures, uncertainty bands or operational changes. See [installed-base-demand.md](docs/installed-base-demand.md).
