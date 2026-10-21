@@ -108,7 +108,7 @@ export default async function DriverHistory({
       </form>
       {rows.data.length ? (
         <TableScrollRegion label={t('title')}>
-          <table className="w-full text-sm">
+          <table className="w-full min-w-[36rem] text-sm">
             <thead>
               <tr>
                 {(['driver_name', 'item_code', 'location_code', 'importTime'] as const).map(
@@ -128,13 +128,15 @@ export default async function DriverHistory({
                       {row.driver_name}
                     </Link>
                   </td>
-                  <td className="p-2">
+                  <td className="whitespace-nowrap p-2">
                     <bdi>{row.item_code}</bdi>
                   </td>
-                  <td className="p-2">
+                  <td className="whitespace-nowrap p-2">
                     <bdi>{row.location_code}</bdi>
                   </td>
-                  <td className="p-2">{format.dateTime(new Date(row.created_at), 'long')}</td>
+                  <td className="whitespace-nowrap p-2">
+                    {format.dateTime(new Date(row.created_at), 'long')}
+                  </td>
                 </tr>
               ))}
             </tbody>
