@@ -200,6 +200,25 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.getByRole('button', { name: 'Search', exact: true }).click()
     await expect(page).toHaveURL(/q=temperature/)
     await expect(page.getByRole('link', { name: 'Daily temperature', exact: true })).toBeVisible()
+    for (const locale of ['en', 'ar']) {
+      await page.context().addCookies([{ name: 'locale', value: locale, url: savedUrl }])
+      await page.reload()
+      await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr')
+      await expect(page.getByRole('link', { name: 'Daily temperature', exact: true })).toBeVisible()
+      for (const width of [375, 768, 1024, 1440, 1920]) {
+        await page.setViewportSize({ width, height: 1000 })
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+        ).toBe(true)
+        await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+        await page.screenshot({
+          path: testInfo.outputPath(`drivers-history-${locale}-${width}.png`),
+          fullPage: true,
+        })
+      }
+    }
+    await page.context().addCookies([{ name: 'locale', value: 'en', url: savedUrl }])
+    await page.reload()
     await page.getByLabel('Location code', { exact: true }).fill('OTHER-L')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
     await expect(page).toHaveURL(/location=OTHER-L/)
