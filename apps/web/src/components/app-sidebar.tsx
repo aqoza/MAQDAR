@@ -94,6 +94,7 @@ export function AppSidebar({
       <SidebarHeader className="gap-2 app-sidebar-header">
         <Link
           href="/dashboard"
+          prefetch={pathname === '/dashboard' ? false : null}
           onClick={closeMobileNavigation}
           className="app-brand flex items-center gap-2 px-2 pt-1 font-semibold tracking-tight max-md:min-h-11 group-data-[collapsible=icon]:hidden"
         >
@@ -118,7 +119,13 @@ export function AppSidebar({
                   <SidebarMenuItem key={key}>
                     <SidebarMenuButton
                       className="max-md:min-h-11"
-                      render={<Link href={href} onClick={closeMobileNavigation} />}
+                      render={
+                        <Link
+                          href={href}
+                          prefetch={pathname === '/dashboard' ? false : null}
+                          onClick={closeMobileNavigation}
+                        />
+                      }
                       isActive={isActive}
                       tooltip={t(key)}
                     >
