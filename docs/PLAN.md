@@ -295,7 +295,7 @@ Step 6 definitions (owner-confirmed 2026-10-15): latest stock observations are v
 ## Deferred
 
 - Safe Links mitigation for sign-in links (`/auth/confirm` is still a GET; invite links already complete by POST).
-- Send Email Hook with a provider key for bilingual, branded invitation e-mails; until then the Supabase templates (mirrored by hand into the Dashboard) are English only.
+- Localized email delivery remains deferred (for example, a reviewed Send Email Hook/provider integration). Native Supabase templates have a shared ZeeSpare brand shell; they remain English only and require owner-run mirroring into the hosted Dashboard. See [branded-emails.md](branded-emails.md).
 - Self-service resend of expired invitation links (admins resend from Settings today) and deleting the unconfirmed auth user left behind by a revoked invitation.
 - Per-tab active organization (today one organization per user lives in the JWT; a consolidated dealer-group view would need per-request scoping).
 - ESLint rule for logical utilities (eslint-plugin-better-tailwindcss) once the ESLint 10 plugin ecosystem settles; `pnpm check:logical` covers it now.

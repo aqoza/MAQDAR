@@ -15,6 +15,8 @@
     "check:logical": "pnpm --filter web check:logical",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "emails:generate": "node scripts/render-email-templates.mjs",
+    "emails:check": "node scripts/render-email-templates.mjs --check",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:status": "supabase status",
