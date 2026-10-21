@@ -1,5 +1,10 @@
 # UI regression ledger
 
+## Forecast search and comparison evidence
+
+- `FORECAST-SEARCH-001`: `forecast-search-usability.spec.ts` verifies active-only readiness suggestions, inactive/manual historical quality codes, normalized code/name search, cancellation, visible loading/empty/error feedback, keyboard selection and tenant/branch isolation. Keep recent-run search explicitly scoped to the latest 20 authorized runs and use stable run-type codes across locales.
+- `FORECAST-SEARCH-002`: quality search, reset, chips, display controls, paging and browser Back/Forward retain the embedded quality tab with one filter form; standalone quality remains supported. Expanded evidence uses full-row 14px headings and 12px metadata without changing exact scores or coverage meaning. Verify populated mobile keyboard scrolling as well as the truthful empty state. Run the new spec with `forecast-tabs.spec.ts`, `planning-kpis.spec.ts`, `planning.spec.ts` and `responsive-planning.spec.ts` against the local production build. Run queue-sensitive pgTAP and browser workers sequentially. Retain English/Arabic laptop, mobile and tablet screenshots; see [forecast-search-usability.md](forecast-search-usability.md).
+
 ## External-driver evidence
 
 - `DRIVER-001`: `external-drivers.spec.ts` imports signed high-precision CSV values, rejects duplicates, distinguishes gaps/availability/types, invalidates changed previews and saves immutable evidence. Verify viewer/branch history and HTTP 404, five widths in English/Arabic, shared typography, keyboard tables and escaped source text. Run parser units, `0096_external_drivers.test.sql`, tenant/privilege inventories and `test_external_drivers_db.py` sequentially with browser tests against loopback only.

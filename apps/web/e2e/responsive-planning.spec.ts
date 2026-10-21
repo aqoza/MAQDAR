@@ -52,8 +52,11 @@ async function expectContainedLayout(page: Page) {
     .toBeLessThanOrEqual(1)
 
   // No clipping the page to hide the defect: the actual form controls must fit too.
+  // Base UI's clipped 1px form proxy is hidden from assistive technology and the tab sequence.
   for (const control of await page
-    .locator('main input:not([type=hidden]):visible, main select:visible, main textarea:visible')
+    .locator(
+      'main input:not([type=hidden]):not([aria-hidden="true"][tabindex="-1"]):visible, main select:visible, main textarea:visible',
+    )
     .all()) {
     const bounds = await control.boundingBox()
     expect(bounds).not.toBeNull()
@@ -173,7 +176,7 @@ for (const { width, height } of [
         }
         for (const control of await page
           .locator(
-            'main select:visible, main input:not([type=hidden]):not([type=checkbox]):visible, main textarea:visible',
+            'main select:visible, main input:not([type=hidden]):not([type=checkbox]):not([aria-hidden="true"][tabindex="-1"]):visible, main textarea:visible',
           )
           .all()) {
           const controlFontSize = width < 768 ? '16px' : '14px'
@@ -214,17 +217,24 @@ for (const { width, height } of [
         await expectContainedLayout(page)
 
         if (screen.reset) {
-          const region = page.getByRole('region', { name: screen.title, exact: true })
           await page.getByRole('link', { name: screen.reset, exact: true }).focus()
           await page.keyboard.press('Tab')
-          await expect(region).toBeFocused()
-          if (width === 375) {
-            expect(await region.evaluate((el) => el.scrollWidth - el.clientWidth)).toBeGreaterThan(
-              0,
-            )
-            await page.keyboard.press('ArrowRight')
-            await expect.poll(() => region.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0)
-            await expectContainedLayout(page)
+          if (screen.path === '/forecasts/quality') {
+            await expect(
+              page.getByText('No saved forecast results yet.', { exact: true }),
+            ).toBeVisible()
+            await expect(page.getByTestId('quality-more-filters').locator('summary')).toBeFocused()
+          } else {
+            const region = page.getByRole('region', { name: screen.title, exact: true })
+            await expect(region).toBeFocused()
+            if (width === 375) {
+              expect(
+                await region.evaluate((el) => el.scrollWidth - el.clientWidth),
+              ).toBeGreaterThan(0)
+              await page.keyboard.press('ArrowRight')
+              await expect.poll(() => region.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0)
+              await expectContainedLayout(page)
+            }
           }
         }
         await page.screenshot({

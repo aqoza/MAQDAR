@@ -1,0 +1,356 @@
+.filters {
+  min-inline-size: 0;
+  padding: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--background);
+}
+
+.primaryFilters {
+  display: grid;
+  grid-template-columns: minmax(15rem, 2fr) minmax(12rem, 1.25fr) minmax(9rem, 0.8fr) auto auto;
+  align-items: end;
+  gap: 0.75rem;
+}
+
+.field {
+  display: grid;
+  min-inline-size: 0;
+  gap: 0.375rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+}
+
+.input,
+.searchBox {
+  min-inline-size: 0;
+  inline-size: 100%;
+  min-block-size: 2.375rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--background);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 400;
+}
+
+.input {
+  padding: 0.5rem 0.625rem;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline-start: 0.625rem;
+}
+
+.searchBox > svg {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--muted-foreground);
+}
+
+.searchBox input {
+  min-inline-size: 0;
+  inline-size: 100%;
+  border: 0;
+  background: transparent;
+  padding-block: 0.5rem;
+  outline: none;
+}
+
+.searchBox:focus-within {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.clear {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.25rem;
+  min-block-size: 2.25rem;
+  color: var(--muted-foreground);
+}
+
+.clear svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.apply,
+.reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 2.375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.375rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  white-space: nowrap;
+}
+
+.apply {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 500;
+}
+
+.reset {
+  color: var(--primary);
+}
+
+.advanced {
+  margin-block-start: 0.75rem;
+  border-block-start: 1px solid var(--border);
+  padding-block-start: 0.625rem;
+}
+
+.advanced summary {
+  cursor: pointer;
+  inline-size: fit-content;
+  color: var(--primary);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 500;
+}
+
+.advancedFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  max-inline-size: 42rem;
+  margin-block-start: 0.75rem;
+}
+
+.resultsBar,
+.chips,
+.displaySettings {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-inline-size: 0;
+}
+
+.resultsBar {
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  max-inline-size: 100%;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--secondary);
+  color: var(--primary);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+}
+
+.chip span {
+  overflow-wrap: anywhere;
+}
+
+.chip svg {
+  flex: none;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+}
+
+.displaySettings select {
+  inline-size: auto;
+}
+
+.tableRegion {
+  container-type: inline-size;
+}
+
+.table {
+  inline-size: 100%;
+  min-inline-size: 66rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: start;
+  vertical-align: top;
+}
+
+.table thead th {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.dataRow {
+  border-block-start: 1px solid var(--border);
+}
+
+.dataRow > :first-child {
+  min-inline-size: 12rem;
+  max-inline-size: 22rem;
+}
+
+.dataRow > :nth-child(2) {
+  min-inline-size: 7rem;
+  max-inline-size: 11rem;
+  overflow-wrap: anywhere;
+}
+
+.dataRow > :nth-child(3) {
+  min-inline-size: 12rem;
+}
+
+.dataRow > :nth-child(4) {
+  min-inline-size: 7.5rem;
+}
+
+.dataRow > :last-child {
+  min-inline-size: 10.5rem;
+}
+
+.inspect {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-block-size: 2rem;
+  color: var(--primary);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  text-align: start;
+}
+
+.inspect svg {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  flex: none;
+}
+
+.mobileInspect {
+  display: none;
+}
+
+.evidenceCell {
+  background: var(--secondary);
+  border-block-start: 1px solid var(--border);
+}
+
+.evidencePanel {
+  position: sticky;
+  inset-inline-start: 0.75rem;
+  inline-size: calc(100cqw - 1.5rem);
+  max-inline-size: calc(100cqw - 1.5rem);
+  overflow-wrap: anywhere;
+}
+
+.evidenceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  padding-block: 0.25rem;
+}
+
+.evidenceNotes {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+}
+
+.evidenceNotes > * + * {
+  margin-block-start: 0.5rem;
+}
+
+.empty {
+  padding: 2rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--background);
+  text-align: center;
+}
+
+@media (max-width: 1150px) {
+  .primaryFilters {
+    grid-template-columns: minmax(13rem, 1.6fr) minmax(10rem, 1fr) minmax(8rem, 0.8fr);
+  }
+
+  .apply,
+  .reset {
+    justify-self: start;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .primaryFilters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .primaryFilters > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .primaryFilters,
+  .advancedFields,
+  .evidenceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .input,
+  .searchBox,
+  .apply,
+  .reset,
+  .clear,
+  .chip,
+  .inspect {
+    min-block-size: 2.75rem;
+  }
+
+  .advanced summary {
+    min-block-size: 2.75rem;
+    padding-block: 0.875rem;
+  }
+
+  .input,
+  .searchBox {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .clear {
+    inline-size: 2.75rem;
+  }
+
+  .apply,
+  .reset {
+    inline-size: 100%;
+  }
+
+  .desktopInspect {
+    display: none;
+  }
+
+  .mobileInspect {
+    display: inline-flex;
+  }
+
+  .evidenceGrid {
+    gap: 1rem;
+  }
+
+  .displaySettings label {
+    max-inline-size: 7rem;
+  }
+}

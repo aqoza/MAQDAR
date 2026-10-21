@@ -399,6 +399,13 @@ for (const method of ['baseline-v1', 'expanded-v1']) {
 test('planner queues a readiness check, the worker completes it, and another run can be canceled', async ({
   page,
 }) => {
+  async function enterLocation(code: string) {
+    const location = page.getByRole('combobox', { name: 'Location code', exact: true })
+    await location.fill(code)
+    await expect(location).toHaveAttribute('aria-expanded', 'true')
+    await location.press('Escape')
+    await expect(location).toHaveAttribute('aria-expanded', 'false')
+  }
   const id = randomUUID()
   const email = `planning-${id}@example.com`
   const password = `Planning-${id}`
@@ -421,7 +428,7 @@ test('planner queues a readiness check, the worker completes it, and another run
   ])
   await page.goto('/forecasts')
   await expect(page.getByRole('heading', { name: 'Forecasts and planning runs' })).toBeVisible()
-  await page.getByLabel('Location code', { exact: true }).filter({ visible: true }).fill('MISSING')
+  await enterLocation('MISSING')
   await page.getByRole('button', { name: 'Check demand data', exact: true }).click()
   await expect(
     page.getByRole('form', { name: 'Check demand data', exact: true }).getByRole('alert'),
@@ -429,7 +436,7 @@ test('planner queues a readiness check, the worker completes it, and another run
   await expect(
     page.getByLabel('Location code', { exact: true }).filter({ visible: true }),
   ).toHaveValue('MISSING')
-  await page.getByLabel('Location code', { exact: true }).filter({ visible: true }).fill('TEST')
+  await enterLocation('TEST')
   await page.getByRole('button', { name: 'Check demand data', exact: true }).click()
   await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Check demand data', exact: true })).toHaveCount(0)
@@ -449,7 +456,7 @@ test('planner queues a readiness check, the worker completes it, and another run
   await expect(page.getByRole('form', { name: 'Check demand data', exact: true })).toHaveCount(1)
   // A new run must clear old history filters so its cancellation remains reachable.
   await page.getByRole('combobox', { name: 'Run status', exact: true }).selectOption('succeeded')
-  await page.getByLabel('Location code', { exact: true }).filter({ visible: true }).fill('TEST')
+  await enterLocation('TEST')
   await page.getByRole('button', { name: 'Check demand data', exact: true }).click()
   await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Cancel run' }).click()

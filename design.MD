@@ -64,6 +64,16 @@ Use grouped, searchable section navigation beside one focused panel. The desktop
 
 Render only authorized sections on the server. Keep allowed form panels mounted while switching so drafts and validation feedback survive. Section URLs contain only navigation state; never put field values, passwords or API secrets in URLs or browser storage. Preserve the compact illustrated header during loading, existing mutation guards and each form's own save action.
 
+## Forecast search and evidence
+
+Nested forecast-comparison headings use `text-subsection-title` (14px/20px), and detailed method notes, training/test windows and coverage metadata use `text-xs` (12px/16px). Page/section headings stay 16px/24px and primary records/scores stay 14px/20px. Preserve the complete saved evidence and its historical-coverage caveats. Expand comparison evidence below the full result row; opening it must not squeeze the score columns or enlarge unrelated text.
+
+Keep item search, location selection and Result prominent. Put Model and Method in an accessible More filters disclosure with its active-filter count; place page size/order by the results. Give search a clear action, expose applied filters with individual removal, and distinguish an empty dataset from no matching results. Embedded quality search, reset, chips and paging retain the Forecasts workspace and selected quality tab; standalone quality links remain supported.
+
+Location suggestions show code and localized name and submit the existing exact code. Readiness suggestions contain active locations; historical-quality selection also supports inactive and saved codes no longer present in the catalog. Every suggestion comes from the session's organization/branch-scoped query. Do not replace this with a privileged or unbounded catalog download.
+
+Recent-run search has a flexible-width control row, a clear button, status/type filters and a visible **Latest 20 only** scope with a matching count. It searches only the loaded, authorized recent runs. Do not imply it searches the complete archive. Keep mobile input text at 16px and interactive targets at least 44px; layout changes must not shrink the shared type scale.
+
 ## Implementation and review
 
 `apps/web/src/app/globals.css` defines the semantic type tokens. Reuse them in app-owned components and styles. Generated `src/components/ui` primitives stay untouched. Additions or changes to the scale require an explicit design-rule update approved by the owner; do not create one-off pixel sizes in a feature stylesheet.

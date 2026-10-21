@@ -1,4 +1,22 @@
 {
+  "ForecastSearch": {
+    "scope": "Latest 20 only",
+    "placeholder": "Location, run type or run ID…",
+    "clear": "Clear run search",
+    "type": "Run type",
+    "allTypes": "All run types",
+    "count": "{matched, number} of {total, number} recent runs"
+  },
+  "LocationLookup": {
+    "placeholder": "Search location code or name",
+    "loading": "Searching locations…",
+    "empty": "No matching locations. You can enter a location code.",
+    "error": "Locations could not be loaded. Enter a code or try again.",
+    "clear": "Clear location",
+    "invalidCode": "Choose a suggested location or enter a valid location code.",
+    "listLabel": "Matching locations",
+    "inactive": "Inactive"
+  },
   "ExternalDrivers": {
     "methodDetails": "Method and assumptions",
     "title": "External drivers",
@@ -2380,6 +2398,20 @@
     "simulations": "Policy simulations"
   },
   "ForecastQuality": {
+    "searchPlaceholder": "Search part code or name…",
+    "clearSearch": "Clear item search",
+    "allLocations": "All locations",
+    "locationPlaceholder": "Search location code or name",
+    "searchScope": "Searches all saved quality results. Choose a location by code or name.",
+    "moreFilters": "More filters",
+    "activeFilters": "{count, number} active",
+    "removeFilter": "Remove {filter} filter",
+    "noMatches": "No saved results match these filters.",
+    "noMatchesHint": "Try another item or clear a filter.",
+    "emptyHint": "Saved model-selection results will appear here after a forecast completes.",
+    "displaySettings": "Result display",
+    "updateDisplay": "Update display",
+    "hideEvidence": "Hide evidence for {item}",
     "title": "Saved forecast quality",
     "dashboard": "Dashboard",
     "planning": "Planning runs",
@@ -2429,7 +2461,7 @@
       "driver-v1": "Captured external driver",
       "multi-driver-v1": "Captured external drivers"
     },
-    "empty": "No saved forecast results match these filters.",
+    "empty": "No saved forecast results yet.",
     "pagination": "Forecast quality pagination",
     "previous": "Previous",
     "next": "Next",

@@ -119,7 +119,7 @@ with psycopg.connect(dsn) as db:
     await signInWithPassword(branchPage, branchEmail, password)
     await branchPage.goto('/forecasts/quality?location=KPI-1')
     await expect(
-      branchPage.getByText('No saved forecast results match these filters.', { exact: true }),
+      branchPage.getByText('No saved results match these filters.', { exact: true }),
     ).toBeVisible()
     await branchPage.goto('/dashboard?day=2026-10-10')
     await expect(

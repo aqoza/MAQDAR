@@ -2,8 +2,9 @@
 
 import { useActionState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapPin, Play, RotateCw } from 'lucide-react'
+import { Play, RotateCw } from 'lucide-react'
 import { enqueueRun, cancelRun } from '@/app/(app)/forecasts/actions'
+import { LocationCodeInput } from '@/components/master-data/location-code-input'
 import { idleState } from '@/lib/forms'
 import styles from '@/components/forecast-workspace.module.css'
 
@@ -41,19 +42,15 @@ export function PlanningForm({
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="request_id" value={requestId} />
       <div className={styles.toolbar}>
-        <label className={`${styles.field} ${styles.locationField}`}>
-          {labels.location}
-          <span className={styles.locationInput}>
-            <MapPin aria-hidden="true" />
-            <input
-              name="location_code"
-              required
-              maxLength={64}
-              defaultValue={state.values?.location_code ?? ''}
-              placeholder={labels.locationPlaceholder}
-            />
-          </span>
-        </label>
+        <div className={`${styles.field} ${styles.locationField}`}>
+          <label htmlFor="readiness-location">{labels.location}</label>
+          <LocationCodeInput
+            id="readiness-location"
+            name="location_code"
+            required
+            defaultValue={state.values?.location_code ?? ''}
+          />
+        </div>
         <label className={styles.field}>
           {labels.from}
           <input

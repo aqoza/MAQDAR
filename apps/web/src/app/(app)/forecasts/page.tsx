@@ -8,7 +8,8 @@ import { PolicyWorkbench } from '@/components/forecast-section-workbench'
 import { ClassifyPage } from '@/components/forecast-section-classify'
 import { NewForecastPage } from '@/components/forecast-section-new'
 import { PreparePage } from '@/components/forecast-section-prepare'
-import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
+import { NextIntlClientProvider } from 'next-intl'
+import { getFormatter, getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import { CancelPlanningRun, PlanningForm } from '@/components/planning-controls'
 import { ForecastRunBrowser } from '@/components/forecast-run-browser'
@@ -19,16 +20,23 @@ import { isEditorRole } from '@/lib/auth/roles'
 import { createClient } from '@/lib/supabase/server'
 import { reportingDay } from '@/lib/dashboard'
 import { isActiveRun, readinessSchema } from '@/lib/planning'
+import { firstParam, type RawSearchParams } from '@/lib/master-data/list-params'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Forecasts')
   return { title: t('title') }
 }
 
-export default async function ForecastsPage() {
+export default async function ForecastsPage({
+  searchParams,
+}: {
+  searchParams: Promise<RawSearchParams>
+}) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const organization = context.active
+  const rawParams = await searchParams
+  const initialTab = firstParam(rawParams.tab) ?? 'readiness'
   const [t, db, locale, format] = await Promise.all([
     getTranslations('Planning'),
     createClient(),
@@ -93,7 +101,12 @@ export default async function ForecastsPage() {
       id: run.id,
       location,
       code: run.locations?.code ?? run.location_id,
+      searchText: [run.locations?.name_en, run.locations?.name_ar].filter(Boolean).join(' '),
       kind,
+      kindKey:
+        run.kind === 'forecast' && (method === 'driver-v1' || method === 'multi-driver-v1')
+          ? `forecast:${method}`
+          : run.kind,
       status: run.status,
       statusLabel: t(
         `status.${run.status as 'queued' | 'running' | 'succeeded' | 'failed' | 'canceled'}`,
@@ -192,6 +205,8 @@ export default async function ForecastsPage() {
   return (
     <div className={styles.workspace} data-forecast-workspace>
       <ForecastTabs
+        initialTab={initialTab}
+        navigationKey={JSON.stringify(rawParams)}
         header={
           <>
             <PageHeaderArt pattern="forecasts" />
@@ -257,30 +272,38 @@ export default async function ForecastsPage() {
                 </div>
               </section>
             )}
-            <ForecastRunBrowser
-              key={`history-${organization.id}`}
-              runs={runs}
-              active={active}
-              statuses={statuses}
-              labels={{
-                recent: t('recent'),
-                details: t('workspace.details'),
-                search: t('workspace.search'),
-                status: t('workspace.status'),
-                allStatuses: t('workspace.allStatuses'),
-                location: t('workspace.locationRun'),
-                window: t('workspace.window'),
-                requested: t('workspace.requested'),
-                empty: t('empty'),
-                noMatch: t('workspace.noMatch'),
-                reset: t('workspace.reset'),
-                selectRun: t('workspace.selectRun'),
-                refresh: t('refresh'),
-                historyNote: t('workspace.historyNote'),
-              }}
-            />
+            <NextIntlClientProvider
+              messages={{ ForecastSearch: (await getMessages()).ForecastSearch }}
+            >
+              <ForecastRunBrowser
+                key={`history-${organization.id}`}
+                runs={runs}
+                active={active}
+                statuses={statuses}
+                labels={{
+                  recent: t('recent'),
+                  details: t('workspace.details'),
+                  search: t('workspace.search'),
+                  status: t('workspace.status'),
+                  allStatuses: t('workspace.allStatuses'),
+                  location: t('workspace.locationRun'),
+                  window: t('workspace.window'),
+                  requested: t('workspace.requested'),
+                  empty: t('empty'),
+                  noMatch: t('workspace.noMatch'),
+                  reset: t('workspace.reset'),
+                  selectRun: t('workspace.selectRun'),
+                  refresh: t('refresh'),
+                  historyNote: t('workspace.historyNote'),
+                }}
+              />
+            </NextIntlClientProvider>
           </div>,
-          <ForecastQuality key="quality" embedded searchParams={Promise.resolve({})} />,
+          <ForecastQuality
+            key="quality"
+            embedded
+            searchParams={Promise.resolve(initialTab === 'quality' ? rawParams : {})}
+          />,
           <PolicyWorkbench key="workbench" embedded searchParams={Promise.resolve({})} />,
           editor ? (
             <ClassifyPage key="classify" embedded />
