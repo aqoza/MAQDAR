@@ -40,6 +40,99 @@ function database(count: number, error: unknown = null) {
 }
 
 describe('bounded dashboard location reads', () => {
+  const organization = '00000000-0000-4000-8000-000000000001'
+  const location = { code: 'L-0', name_en: 'Location 0', name_ar: null }
+  function projection() {
+    return {
+      location_preview: {
+        organization_id: organization,
+        day: summary.day,
+        location_code: null,
+        suggestions: [location],
+        rows: [
+          {
+            location,
+            summary: { available_pairs: 1, observed_pairs: 2, unobserved_pairs: 1, stale_pairs: 0 },
+          },
+        ],
+        limited: false,
+      },
+    }
+  }
+  it('uses the same-response projection without another catalog query or KPI fan-out', async () => {
+    const { client, rpc } = database(1)
+    const result = await loadDashboardLocations(client, organization, summary, projection())
+    expect(result.rows[0].summary).toEqual({
+      available_pairs: 1,
+      observed_pairs: 2,
+      unobserved_pairs: 1,
+      stale_pairs: 0,
+    })
+    expect(client.from).not.toHaveBeenCalled()
+    expect(rpc).not.toHaveBeenCalled()
+  })
+  it('retains zero observations as known missing coverage in the projection', async () => {
+    const { client, rpc } = database(1)
+    const raw = projection()
+    raw.location_preview.rows[0].summary = {
+      available_pairs: 0,
+      observed_pairs: 0,
+      unobserved_pairs: 3,
+      stale_pairs: 0,
+    }
+    const result = await loadDashboardLocations(client, organization, summary, raw)
+    expect(result.rows[0].summary?.observed_pairs).toBe(0)
+    expect(result.rows[0].summary?.unobserved_pairs).toBe(3)
+    expect(rpc).not.toHaveBeenCalled()
+  })
+  it.each(['organization_id', 'day', 'location_code'] as const)(
+    'falls back for a mismatched %s',
+    async (field) => {
+      const { client, rpc } = database(1)
+      const raw = projection()
+      const mismatched = {
+        ...raw.location_preview,
+        [field]:
+          field === 'organization_id'
+            ? '00000000-0000-4000-8000-000000000002'
+            : field === 'day'
+              ? '2026-10-16'
+              : 'HIDDEN',
+      }
+      await loadDashboardLocations(client, organization, summary, { location_preview: mismatched })
+      expect(rpc).toHaveBeenCalledTimes(1)
+    },
+  )
+  it('falls back for oversized or inconsistent projected location sets', async () => {
+    for (const raw of [
+      {
+        location_preview: {
+          ...projection().location_preview,
+          suggestions: Array.from({ length: 51 }, () => location),
+        },
+      },
+      { location_preview: { ...projection().location_preview, rows: [] } },
+    ]) {
+      const { client, rpc } = database(1)
+      await loadDashboardLocations(client, organization, summary, raw)
+      expect(rpc).toHaveBeenCalledTimes(1)
+    }
+  })
+  it('accepts a selected location beyond the bounded suggestion page', async () => {
+    const { client, rpc } = database(1)
+    const raw = projection()
+    const selected = { ...summary, location_code: 'Z-999' }
+    const projected = {
+      ...raw.location_preview,
+      location_code: 'Z-999',
+      rows: [{ ...raw.location_preview.rows[0], location: { ...location, code: 'Z-999' } }],
+    }
+    const result = await loadDashboardLocations(client, organization, selected, {
+      location_preview: projected,
+    })
+    expect(result.rows[0].location.code).toBe('Z-999')
+    expect(rpc).not.toHaveBeenCalled()
+  })
   it('scopes active suggestions to the tenant, caps payloads and makes at most five summary calls', async () => {
     const { client, query, rpc } = database(51)
     const result = await loadDashboardLocations(client, 'active-org', summary)

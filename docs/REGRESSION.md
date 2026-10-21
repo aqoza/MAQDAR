@@ -16,6 +16,8 @@
 
 ## Dashboard metrics
 
+- `DASHBOARD-PERF-001`: reuse the same-response location projection only when tenant/day/location and bounded row identities match. Older functions retain the authenticated legacy reads and unavailable states. Keep the five-row cap, exact decimals and strict two-second opt-in `DASHBOARD_SCALE=1` production-build gate, including populated location evidence inside the timer. Run `dashboard.spec.ts`, `dashboard-reference.spec.ts` and `dashboard-isolation.spec.ts` with local fixtures. Hidden/foreign location filters must return actual HTTP 404 before streaming; retain the complete dashboard response without an ancestor loading boundary. See [dashboard-read-scheduling.md](dashboard-read-scheduling.md).
+
 - Downstream consumers: the Dashboard metric strip and its currency disclosure. Other pages do not use these classes; shared type tokens and headers are unchanged.
 - Dependency evidence: `rg -n 'dashboard-metric|dashboard-currencies' apps/web/src` and `rg -n "dashboard.css" apps/web/src/app/globals.css` identify the stylesheet, DashboardMetrics and DashboardValuation.
 - Acceptance commands: `pnpm --filter web test`, `pnpm lint`, `pnpm typecheck`, `pnpm check:logical`, `pnpm --filter web build`, and `pnpm --filter web test:e2e dashboard-reference.spec.ts responsive-planning.spec.ts`. Existing browser suites run sequentially against local fixtures or CI, never hosted tenants.

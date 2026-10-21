@@ -60,7 +60,7 @@ export default async function DashboardPage({
   const qualityHref = summary.location_code
     ? `/forecasts/quality?${new URLSearchParams({ location: summary.location_code })}`
     : '/forecasts/quality'
-  const locations = await loadDashboardLocations(supabase, context.active.id, summary)
+  const locations = await loadDashboardLocations(supabase, context.active.id, summary, data)
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
   const date = new Intl.DateTimeFormat(locale, {
     month: 'short',
@@ -74,18 +74,18 @@ export default async function DashboardPage({
   return (
     <div data-dashboard className="dashboard-workspace">
       <div className="dashboard-actions">
-        <Link href={qualityHref}>
+        <Link href={qualityHref} prefetch={false}>
           <ChartNoAxesColumnIncreasing aria-hidden="true" />
           {t('quality')}
         </Link>
         {context.role && isEditorRole(context.role) && (
-          <Link href="/imports">
+          <Link href="/imports" prefetch={false}>
             <Upload aria-hidden="true" />
             {t('importData')}
           </Link>
         )}
         {context.role && isAdminRole(context.role) && (
-          <Link href="/audit">
+          <Link href="/audit" prefetch={false}>
             <FileText aria-hidden="true" />
             {t('audit')}
           </Link>
@@ -114,7 +114,12 @@ export default async function DashboardPage({
           {t('taglineLine3')}
         </p>
       </div>
-      <Form action="/dashboard" key={`${day}:${location}`} className="dashboard-filters">
+      <Form
+        action="/dashboard"
+        prefetch={false}
+        key={`${day}:${location}`}
+        className="dashboard-filters"
+      >
         <label>
           <span>{t('reportingDate')}</span>
           <span className="dashboard-field">
@@ -156,7 +161,7 @@ export default async function DashboardPage({
           <ListFilter aria-hidden="true" />
           {t('filter')}
         </button>
-        <Link href="/dashboard" className="dashboard-reset">
+        <Link href="/dashboard" prefetch={false} className="dashboard-reset">
           {t('reset')}
         </Link>
       </Form>

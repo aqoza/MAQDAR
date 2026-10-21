@@ -97,6 +97,17 @@ test('dashboard loads below two seconds with 50,000 items and 40 locations', asy
       ).toBeVisible()
       await expect(page.getByRole('img', { name: 'Demand over 30 days' })).toBeVisible()
       await expect(page.locator('svg.recharts-surface[role="application"]')).toBeVisible()
+      const locations = page.getByRole('table', {
+        name: 'Up to 5 visible locations, ordered by code. Availability uses observed pairs.',
+        exact: true,
+      })
+      await expect(locations.locator('tbody tr')).toHaveCount(5)
+      await expect(
+        locations.getByRole('row').filter({ hasText: 'L-0 – Location 0' }),
+      ).toContainText('0 / 1,250')
+      await expect(
+        locations.getByRole('row').filter({ hasText: 'L-1 – Location 1' }),
+      ).toContainText('1,250 / 1,250')
       const elapsed = Date.now() - start
       console.log(
         `[dashboard-scale] 50,000 items, 40 locations, 50,000 stock rows, 50,000 demand rows: ${elapsed} ms`,
@@ -114,6 +125,7 @@ test('dashboard loads below two seconds with 50,000 items and 40 locations', asy
     await expect(
       page.getByRole('heading', { name: 'Observed stock availability', exact: true }).locator('..'),
     ).toContainText('100%')
+    await expect(page.locator('.dashboard-location-table tbody tr')).toHaveCount(1)
     const filteredElapsed = Date.now() - filteredStart
     console.log(`[dashboard-scale] location-filtered navigation: ${filteredElapsed} ms`)
     expect(filteredElapsed).toBeLessThan(2000)

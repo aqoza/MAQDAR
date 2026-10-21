@@ -42,7 +42,12 @@ export async function DashboardLocationPanel({
           <MapPin aria-hidden="true" />
           {t('byLocation')}
         </h2>
-        <Link href="/locations" title={t('locationCatalog')} aria-label={t('locationCatalog')}>
+        <Link
+          href="/locations"
+          prefetch={false}
+          title={t('locationCatalog')}
+          aria-label={t('locationCatalog')}
+        >
           {t('locationsLink')}
           <ArrowRight aria-hidden="true" />
         </Link>
@@ -164,7 +169,7 @@ export async function DashboardRiskPanel() {
                   </span>
                   <strong>{t('riskUnavailable')}</strong>
                   <p>{t('riskDependency')}</p>
-                  <Link href="/forecasts/workbench">
+                  <Link href="/forecasts/workbench" prefetch={false}>
                     {t('reviewPolicies')}
                     <ArrowRight aria-hidden="true" />
                   </Link>
@@ -223,7 +228,7 @@ export async function DashboardInsights({ summary }: { summary: DashboardKpis })
           <Sparkles aria-hidden="true" />
           {t('insights')}
         </h2>
-        <Link href="/forecasts">
+        <Link href="/forecasts" prefetch={false}>
           {t('planningLink')}
           <ArrowRight aria-hidden="true" />
         </Link>
@@ -251,7 +256,7 @@ export async function DashboardInsights({ summary }: { summary: DashboardKpis })
 export async function DashboardInformation({ qualityHref }: { qualityHref: string }) {
   const t = await getTranslations('Dashboard')
   return (
-    <Link className="dashboard-information" href={qualityHref}>
+    <Link className="dashboard-information" href={qualityHref} prefetch={false}>
       <DashboardArt className="dashboard-information-art" />
       <span className="dashboard-icon dashboard-icon-green">
         <Rocket aria-hidden="true" />
