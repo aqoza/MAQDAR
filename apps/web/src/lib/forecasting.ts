@@ -1,6 +1,11 @@
 import { z } from 'zod'
 import { unitProvenanceSchema } from './stock-comparison'
-import { capturedDriverSchema, driverCheckSchema, driverModelSchema } from './driver-forecast'
+import {
+  capturedDriverSchema,
+  driverCheckSchema,
+  driverModelSchema,
+  multiDriverPredictorSchema,
+} from './driver-forecast'
 import {
   calendarModelSchema,
   preparedSourceSchema,
@@ -19,7 +24,11 @@ export const FORECAST_MODELS = [
   'auto_arima',
   'calendar',
 ] as const
-export const ALL_FORECAST_MODELS = [...FORECAST_MODELS, 'driver_weekday'] as const
+export const ALL_FORECAST_MODELS = [
+  ...FORECAST_MODELS,
+  'driver_weekday',
+  'multi_driver_weekday',
+] as const
 export const FORECAST_STATUSES = [
   'selected',
   'insufficient',
@@ -123,14 +132,19 @@ export const forecastReadSummarySchema = forecastSummarySchema.extend({
 })
 export const forecastReadEvidenceSchema = forecastEvidenceSchema.extend({
   driver: capturedDriverSchema.optional(),
+  drivers: z.array(capturedDriverSchema).min(2).max(5).optional(),
   original_forecast: z
     .object({ id: z.guid(), run_id: z.guid(), method: z.string(), summary: forecastSummarySchema })
     .optional(),
   output: forecastEvidenceSchema.shape.output.extend({
     ...forecastReadSummarySchema.shape,
     model: z.enum(ALL_FORECAST_MODELS).nullable(),
-    driver_checks: z.array(driverCheckSchema).optional(),
-    driver_model: driverModelSchema.optional(),
+    driver_checks: z
+      .array(driverCheckSchema.extend({ dataset_id: z.guid().optional() }))
+      .optional(),
+    driver_model: driverModelSchema
+      .extend({ predictors: z.array(multiDriverPredictorSchema).min(2).max(5).optional() })
+      .optional(),
     unavailable_models: z
       .array(
         z.object({
@@ -149,7 +163,9 @@ export const forecastReadEvidenceSchema = forecastEvidenceSchema.extend({
       .unwrap()
       .extend({
         model: z.enum(ALL_FORECAST_MODELS).optional(),
-        driver_checks: z.array(driverCheckSchema).optional(),
+        driver_checks: z
+          .array(driverCheckSchema.extend({ dataset_id: z.guid().optional() }))
+          .optional(),
       })
       .optional(),
   }),

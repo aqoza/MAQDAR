@@ -6,7 +6,13 @@ import {
 } from './forecasting'
 import { parseListParams, type RawSearchParams, type ListSpec } from './master-data/list-params'
 
-export const FORECAST_METHODS = ['baseline-v1', 'expanded-v1', 'regional-v1', 'driver-v1'] as const
+export const FORECAST_METHODS = [
+  'baseline-v1',
+  'expanded-v1',
+  'regional-v1',
+  'driver-v1',
+  'multi-driver-v1',
+] as const
 export const qualitySpec: ListSpec = {
   sorts: ['finished_at'],
   defaultSort: 'finished_at',

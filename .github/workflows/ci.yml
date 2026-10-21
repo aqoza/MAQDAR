@@ -100,6 +100,7 @@ jobs:
           path: |
             apps/web/test-results/**/drivers-*.png
             apps/web/test-results/**/driver-forecast-*.png
+            apps/web/test-results/**/multi-driver-forecast-*.png
           retention-days: 7
       - name: Stop local Supabase
         if: always()

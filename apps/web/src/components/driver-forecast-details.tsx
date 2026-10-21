@@ -12,8 +12,13 @@ export async function DriverForecastDetails({
 }: {
   detail: z.infer<typeof forecastEvidenceSchema>
 }) {
-  if (!detail.driver) return null
-  const [t, messages] = await Promise.all([getTranslations('DriverForecast'), getMessages()])
+  const drivers = detail.drivers ?? (detail.driver ? [detail.driver] : [])
+  if (!drivers.length) return null
+  const multi = !!detail.drivers
+  const [t, messages] = await Promise.all([
+    getTranslations(multi ? 'MultiDriverForecast' : 'DriverForecast'),
+    getMessages(),
+  ])
   const fit = detail.output.driver_model
   const sets = [
     { label: t('selectionChecks'), checks: detail.output.driver_checks },
@@ -27,13 +32,17 @@ export async function DriverForecastDetails({
         <p>{t('availabilityNote')}</p>
         <p>{t('uncertainty')}</p>
       </HelpDisclosure>
-      <p className="break-words text-sm">
-        {t('importedAt')} <bdi>{detail.driver.imported_at}</bdi>
-      </p>
       <div className="flex flex-wrap gap-4 text-sm">
-        <Link className="underline" href={`/forecasts/drivers/${detail.driver.id}`}>
-          {t('dataset')}
-        </Link>
+        {drivers.map((d) => (
+          <div key={d.id} className="min-w-0 break-words">
+            <Link className="underline" href={`/forecasts/drivers/${d.id}`}>
+              {d.report.input.driver_name} · {t('dataset')}
+            </Link>
+            <p>
+              {t('importedAt')} <bdi>{d.imported_at}</bdi>
+            </p>
+          </div>
+        ))}
         {detail.original_forecast && (
           <Link
             className="underline"
@@ -55,6 +64,7 @@ export async function DriverForecastDetails({
                       {t(k)}
                     </th>
                   ))}
+                  {multi && <th className="p-2 text-start">{t('dataset')}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +80,13 @@ export async function DriverForecastDetails({
                       <bdi>{c.date ?? '—'}</bdi>
                     </td>
                     <td className="p-2">{c.phase ? t(c.phase) : '—'}</td>
+                    {multi && (
+                      <td className="p-2">
+                        {c.dataset_id
+                          ? drivers.find((d) => d.id === c.dataset_id)?.report.input.driver_name
+                          : t('allSelected')}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -80,7 +97,7 @@ export async function DriverForecastDetails({
       {!!detail.output.unavailable_models?.length && (
         <ul className="list-disc space-y-1 ps-5 text-sm">
           {detail.output.unavailable_models
-            .filter((m) => m.model === 'driver_weekday')
+            .filter((m) => m.model === (multi ? 'multi_driver_weekday' : 'driver_weekday'))
             .map((m) => (
               <li key={m.model}>{t(m.reason)}</li>
             ))}
@@ -90,16 +107,49 @@ export async function DriverForecastDetails({
         <details className="workspace-panel text-sm">
           <summary className="cursor-pointer">{t('coefficients')}</summary>
           <p className="my-3">{t('formula')}</p>
-          <dl className="grid gap-3 sm:grid-cols-2">
-            {(['slope', 'penalty', 'training_min', 'training_max'] as const).map((k) => (
-              <div key={k} className="min-w-0">
-                <dt className="text-xs text-muted-foreground">{t(k)}</dt>
-                <dd className="break-all">
-                  <bdi>{fit[k]}</bdi>
-                </dd>
-              </div>
-            ))}
-          </dl>
+          {!multi && (
+            <dl className="grid gap-3 sm:grid-cols-2">
+              {(['slope', 'penalty', 'training_min', 'training_max'] as const).map((k) => (
+                <div key={k} className="min-w-0">
+                  <dt className="text-xs text-muted-foreground">{t(k)}</dt>
+                  <dd className="break-all">
+                    <bdi>{fit[k]}</bdi>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
+          {multi && (
+            <>
+              <p>
+                {t('penalty')}: <bdi>{fit.penalty}</bdi>
+              </p>
+              {fit.predictors?.map((p) => (
+                <div key={p.dataset_id} className="my-3 rounded-md border p-3">
+                  <h4 className="font-medium">
+                    {drivers.find((d) => d.id === p.dataset_id)?.report.input.driver_name}
+                  </h4>
+                  <dl className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {(['slope', 'center', 'scale', 'training_min', 'training_max'] as const).map(
+                      (k) => (
+                        <div key={k} className="min-w-0">
+                          <dt className="text-xs text-muted-foreground">{t(k)}</dt>
+                          <dd className="break-all">
+                            <bdi>{p[k]}</bdi>
+                          </dd>
+                        </div>
+                      ),
+                    )}
+                  </dl>
+                  {!!p.extrapolated_dates.length && (
+                    <p className="mt-2 break-words">
+                      {t('extrapolation')} <bdi>{p.extrapolated_dates.join(', ')}</bdi>
+                    </p>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
           <ol className="mt-3 list-inside list-decimal break-all">
             {fit.weekday_intercepts?.map((value, i) => (
               <li key={i}>
@@ -114,12 +164,17 @@ export async function DriverForecastDetails({
           )}
         </details>
       )}
-      <details className="workspace-panel text-sm">
-        <summary className="cursor-pointer">{t('capturedDataset')}</summary>
-        <NextIntlClientProvider messages={{ ExternalDrivers: messages.ExternalDrivers }}>
-          <ExternalDriverReport report={detail.driver.report} />
-        </NextIntlClientProvider>
-      </details>
+      {drivers.map((d) => (
+        <details key={d.id} className="workspace-panel text-sm">
+          <summary className="cursor-pointer">
+            {t('capturedDataset')}
+            {multi ? ` · ${d.report.input.driver_name}` : ''}
+          </summary>
+          <NextIntlClientProvider messages={{ ExternalDrivers: messages.ExternalDrivers }}>
+            <ExternalDriverReport report={d.report} />
+          </NextIntlClientProvider>
+        </details>
+      ))}
     </section>
   )
 }
