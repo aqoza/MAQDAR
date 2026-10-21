@@ -161,7 +161,7 @@ site_url = "http://localhost:3000"
 # The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
 # external_url = ""
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["http://localhost:3000/**", "http://127.0.0.1:3000/**", "http://ote.localhost:3000/auth/email/dashboard", "http://ote.localhost:3000/auth/email/invitations/*", "http://acme.localhost:3000/auth/email/dashboard", "http://acme.localhost:3000/auth/email/invitations/*"]
+additional_redirect_urls = ["http://localhost:3000/**", "http://127.0.0.1:3000/**", "http://ote.localhost:3000/auth/recover", "http://acme.localhost:3000/auth/recover", "http://ote.localhost:3000/auth/email/dashboard", "http://ote.localhost:3000/auth/email/invitations/*", "http://acme.localhost:3000/auth/email/dashboard", "http://acme.localhost:3000/auth/email/invitations/*"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # JWT issuer URL. If not set, defaults to auth.external_url.
@@ -263,8 +263,13 @@ content_path = "./supabase/templates/invite.html"
 # subject = "Your password has been changed"
 # content_path = "./supabase/templates/password_changed_notification.html"
 
-# Local sign-in emails link to /auth/confirm with a token hash (works for magic links and
-# first-time sign-ups). Mirror these templates into the hosted Dashboard by hand.
+# Recovery GET renders a confirmation; a POST consumes the token. Mirror the template and
+# exact workspace /auth/recover allowlist entries into hosted Auth before deployment.
+[auth.email.template.recovery]
+subject = "Reset your ZeeSpare password"
+content_path = "./supabase/templates/recovery.html"
+
+# Preserve previously issued email sign-in and invitation callback compatibility.
 [auth.email.template.magic_link]
 subject = "Sign in to ZeeSpare"
 content_path = "./supabase/templates/sign-in-link.html"

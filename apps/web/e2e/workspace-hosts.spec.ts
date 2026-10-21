@@ -66,7 +66,7 @@ test('OTE hostname hides unrelated memberships and recovers a mismatched active 
 }) => {
   const origin = baseURL!.replace('localhost', 'ote.localhost')
   await page.goto(`${origin}/login`)
-  await page.getByLabel('Email', { exact: true }).fill(email)
+  await page.getByLabel('Work email', { exact: true }).fill(email)
   await page.getByLabel('Password', { exact: true }).fill(password)
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
   await expect(page).toHaveURL(`${origin}/organizations`)
@@ -92,7 +92,7 @@ test('a nonmember sees no other organizations or invitations on the tenant host'
 }) => {
   const origin = baseURL!.replace('localhost', 'ote.localhost')
   await page.goto(`${origin}/login`)
-  await page.getByLabel('Email', { exact: true }).fill(memberEmail)
+  await page.getByLabel('Work email', { exact: true }).fill(memberEmail)
   await page.getByLabel('Password', { exact: true }).fill(password)
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
   await expect(page.getByText('Access to OTEGROUP is required')).toBeVisible()
@@ -221,15 +221,16 @@ test('the actual invite template survives GET and joins only the bound organizat
   )
 })
 
-test('tenant login keeps both options visible on the smallest supported phone', async ({
+test('tenant login keeps sign-in and password reset visible on the smallest supported phone', async ({
   page,
   baseURL,
 }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 568 })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto(`${baseURL!.replace('localhost', 'ote.localhost')}/login`)
-  for (const name of ['Sign in', 'Email me a sign-in link']) {
-    await expect(page.getByRole('button', { name, exact: true })).toBeInViewport({ ratio: 1 })
-  }
+  await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeInViewport({
+    ratio: 1,
+  })
+  await expect(page.getByRole('link', { name: 'Forgot password?' })).toBeInViewport({ ratio: 1 })
   await page.screenshot({ path: testInfo.outputPath('ote-login-320x568.png') })
 })

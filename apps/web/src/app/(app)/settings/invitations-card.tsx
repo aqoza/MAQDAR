@@ -12,6 +12,9 @@ import { idleState, type ActionState } from '@/lib/forms'
 import { resendInvitation, revokeInvitation } from './actions'
 import { InviteForm } from './invite-form'
 import { ActiveOrganizationField } from '@/components/active-organization'
+import { DirectoryControls, type DirectoryPage } from './directory-controls'
+import { BulkInvitations } from './bulk-invitations'
+import type { OnboardingStatus } from '@/lib/organizations/onboarding'
 
 export type InvitationRow = Pick<
   Database['public']['Tables']['organization_invitations']['Row'],
@@ -19,12 +22,19 @@ export type InvitationRow = Pick<
 >
 
 export type InvitationsCardProps = {
+  directory?: DirectoryPage
+  onboarding?: OnboardingStatus
   invitations: InvitationRow[]
   roles: Role[]
 }
 
 /** Admin-only: send invitations and manage the ones still pending. */
-export function InvitationsCard({ invitations, roles }: InvitationsCardProps) {
+export function InvitationsCard({
+  invitations,
+  roles,
+  directory,
+  onboarding,
+}: InvitationsCardProps) {
   const t = useTranslations('InviteMembers')
 
   return (
@@ -35,11 +45,13 @@ export function InvitationsCard({ invitations, roles }: InvitationsCardProps) {
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <InviteForm roles={roles} />
+        {onboarding ? <BulkInvitations status={onboarding} roles={roles} /> : null}
         <Separator />
         <section className="flex flex-col gap-3" aria-labelledby="pending-invitations-heading">
           <h3 id="pending-invitations-heading" className="text-subsection-title">
             {t('pending')}
           </h3>
+          {directory ? <DirectoryControls section="invitations" directory={directory} /> : null}
           {invitations.length === 0 ? (
             <p className="text-muted-foreground text-sm">{t('none')}</p>
           ) : (

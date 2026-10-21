@@ -198,3 +198,27 @@ def test_parallel_first_invitations_to_one_address_serialise(fixture: Fixture) -
             (org, email),
         ).fetchone()[0]
     assert pending == 1
+
+
+@pytest.mark.parametrize("boundary", ["actor", "organization"])
+def test_parallel_different_addresses_cannot_exceed_invitation_quota(fixture: Fixture, boundary: str) -> None:
+    """The final quota slot is shared even when the emails differ."""
+    with psycopg.connect(fixture.dsn, autocommit=True) as admin:
+        actor = _user(fixture, admin)
+        org = _organization(fixture, admin, [actor])
+        if boundary == "organization":
+            admin.execute(
+                "insert into onboarding.policies values (%s, 100, 2000, now()+interval '1 day', 'Synthetic concurrency allowance')",
+                (org,),
+            )
+    with _session(fixture.dsn, actor) as seed:
+        for number in range(49 if boundary == "actor" else 99):
+            seed.execute("select * from public.invite_member(%s, %s, 'viewer')", (org, f"quota-{number}@test.local"))
+    first, second = _session(fixture.dsn, actor), _session(fixture.dsn, actor)
+    try:
+        waiter = _race(first, second, "select * from public.invite_member(%s, %s, 'viewer')",
+                       (org, "last-slot@test.local"), (org, "over-limit@test.local"))
+    finally:
+        first.close()
+        second.close()
+    assert waiter.sqlstate == "MQ429"

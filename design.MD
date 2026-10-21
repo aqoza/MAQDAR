@@ -22,9 +22,13 @@ The owner approved the smaller shared standard on 2026-10-19: page titles are 16
 
 Sizes are expressed in rem in the implementation so browser text scaling is respected. Page-title tracking is `-0.025em`; body and navigation keep normal tracking. Font stacks come from `--font-sans`: Inter first for English and the configured Arabic font first for RTL. Never set a different page-specific font family.
 
-The login brand-panel headline is a display-type exception requested by the owner on 2026-10-19: 32–56px (`clamp(2rem, 3.3vw, 3.5rem)`), line-height 1.08, weight 600, and tracking -0.055em. The owner also requested a larger sign-in heading: 32–40px (`clamp(2rem, 2.5vw, 2.5rem)`), line-height 1.12, weight 600, and tracking -0.045em; mobile uses 32px. These exceptions apply only to the two login headings. Form labels, inputs and buttons, authenticated page titles, navigation, and all other shared type roles retain the scale above.
+The Industrial Studio login approved on 2026-10-21 uses a 32–56px brand-panel display headline (line-height 1.08, weight 600). Its **sign-in and recovery headings are always 24px/32px, weight 600** (1.5rem/2rem), including mobile. This supersedes the earlier 32–40px sign-in exception. Form text retains the shared scale; inputs use 16px/24px to avoid mobile zoom. Authenticated page titles stay 16px/24px.
 
-Below 768px, the login brand panel becomes a compact logo-and-tagline bar so both sign-in options fit in the initial portrait viewport at 320×568 and larger. Keep 16px input text and 56px controls; viewports at most 700px tall use 48px controls and tighter spacing, retaining the 44px password toggle. Allow normal vertical scrolling for guidance, errors, browser text enlargement, and the on-screen keyboard. The desktop/tablet layout at 768px and above stays unchanged.
+Use the supplied Precision ZS outlined logo at its natural aspect ratio. The Industrial Studio panel uses the website parts photograph, forest #103F33, ivory #F8F8F0 and lime #BEFF69. Artwork is decorative; the Latin logo stays unmirrored in RTL. Keep these styles scoped to the auth shell.
+
+Login presents email/password and a **Forgot password?** link. Do not restore email sign-in controls, the separator or invitation notice. Existing invitation and previously issued sign-in callbacks remain compatible. Recovery pages share the shell and compact heading.
+
+Below 768px, collapse the photograph and display copy to a compact logo bar. Keep workspace selection, credential inputs, password recovery and submit visible at 320×568. Inputs/buttons are 52px high (48px on short phones); links and the password toggle retain 44px targets. Allow normal scrolling for translations, errors, text enlargement and the keyboard.
 
 ## Shared application shell
 
@@ -70,7 +74,7 @@ The header contract test rejects omitted section patterns, bare authenticated pa
 
 ## ZeeSpare identity
 
-The public name is **ZeeSpare**, with this capitalization in both locales. The precision-Z mark lives in `src/components/zeespare-mark.tsx`; master SVG/PNG assets and the printable brand guide live in `docs/brand/zeespare`. Use the same mark in login, onboarding, sidebar and favicon. The wordmark is an identity exception: login uses 22px/24px, weight 650 and -0.045em tracking. Application text roles remain unchanged. Keep the Latin wordmark LTR inside RTL layouts; never mirror the Z.
+The public name is **ZeeSpare**, with this capitalization in both locales. The precision-Z mark in `src/components/zeespare-mark.tsx` remains in onboarding, the sidebar and favicon; its master assets live in `docs/brand/zeespare`. The approved Industrial Studio auth shell uses the supplied outlined Precision ZS SVG in `public/images/auth/zeespare-precision-reversed.svg`, preserving its natural aspect ratio. Do not rebuild that wordmark with text or apply the former login wordmark font rule. Application text roles remain unchanged. Keep Latin wordmarks LTR inside RTL layouts and never mirror either mark.
 
 Forest #103E31, emerald #155C46, signal lime #C2F970 and warm paper #F7F8F2 form the brand palette. Lime is decorative and must not be used for small text on white. Do not change shared semantic status colors to brand colors.
 

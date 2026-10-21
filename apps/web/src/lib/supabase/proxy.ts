@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { describeRejectedClaims, parseClaims } from '@/lib/auth/claims'
 import { isDocumentNavigation } from '@/lib/auth/document-request'
 import { env } from '@/lib/env'
+import { trustedAuthFetch } from './auth-forwarding'
 
 const PUBLIC_PREFIXES = ['/login', '/auth']
 
@@ -23,6 +24,7 @@ export async function updateSession(request: NextRequest) {
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
+      global: { fetch: trustedAuthFetch(request.headers) },
       cookies: {
         getAll() {
           return request.cookies.getAll()

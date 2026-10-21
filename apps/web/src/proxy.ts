@@ -49,7 +49,10 @@ export async function proxy(request: NextRequest) {
   const response = await updateSession(request)
   response.headers.set('Cache-Control', 'private, no-store')
   response.headers.set('X-Robots-Tag', 'noindex, nofollow')
-  response.headers.set('Referrer-Policy', 'same-origin')
+  response.headers.set(
+    'Referrer-Policy',
+    request.nextUrl.pathname === '/auth/recover' ? 'no-referrer' : 'same-origin',
+  )
   return response
 }
 

@@ -16,7 +16,7 @@ test('anonymous visitors are sent to the login page', async ({ page }) => {
   await expect(page).toHaveURL(/\/login(?:[?#].*)?$/)
   await expect(page.getByRole('heading', { name: 'Sign in to ZeeSpare' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Email me a sign-in link' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Forgot password?' })).toBeVisible()
 })
 
 test('a seeded user creates an organization, uses the shell and mirrors for Arabic', async ({
