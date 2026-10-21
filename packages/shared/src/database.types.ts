@@ -1960,6 +1960,26 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"regional_stock_assessments": {
+                  Row: {
+                    "as_of": string,"assessment_name": string,"created_at": string,"id": string,"item_code": string,"item_id": string,"location_codes": (string)[],"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"submitted_by": string,"unit": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "as_of": string,"assessment_name": string,"created_at"?: string,"id"?: string,"item_code": string,"item_id": string,"location_codes": (string)[],"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"submitted_by": string,"unit": string
+                  }
+                  Update: {
+                    "as_of"?: string,"assessment_name"?: string,"created_at"?: string,"id"?: string,"item_code"?: string,"item_id"?: string,"location_codes"?: (string)[],"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"required_location_ids"?: (string)[],"submitted_by"?: string,"unit"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "regional_stock_assessments_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"replenishment_drafts": {
                   Row: {
                     "created_at": string,"id": string,"location_id": string,"organization_id": string,"policy_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
@@ -3907,6 +3927,12 @@ isOneToOne: false
                            },
 "redistribution_save":
 { Args: { "p_backorders"?: string,"p_basis": string,"p_commitments_confirmed"?: boolean,"p_draft_id": string,"p_fingerprint"?: string,"p_lane_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_request_id"?: string,"p_source_policy_id": string }; Returns: string
+                           },
+"regional_stock_preview":
+{ Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
+                           },
+"regional_stock_save":
+{ Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined

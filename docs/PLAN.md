@@ -212,7 +212,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 23c  | **Multi-driver forecasts:** 2–5 captured predictors, joint fixed-ridge/weekday candidate, per-fit availability, canonical retries and scoped immutable evidence.                                                            | Merged — PR #135                                    |
 | 24   | **Installed-base foundation:** immutable equipment populations, exact fitted-part quantities, known/unknown ages, source availability and scoped history.                                                                   | Merged — PR #136                                    |
 | 24b  | **Installed-base demand scenarios:** explicit group replacement rates, exact conditional expectations and immutable scoped evidence.                                                                                        | Merged — PR #137                                    |
-| 24c  | **Installed-base evaluations:** completed recorded-sales comparisons, exact daily evidence, MAE/RMSE/bias and immutable scoped history.                                                                                     | Implemented — review pending                        |
+| 24c  | **Installed-base evaluations:** completed recorded-sales comparisons, exact daily evidence, MAE/RMSE/bias and immutable scoped history.                                                                                     | Merged — PR #139                                    |
+| 25   | **Regional stock assessments:** exact-item observed stock across 2–20 locations, complete matching-unit evidence, exact totals and immutable all-location history.                                                          | Implemented — review pending                        |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -723,3 +724,16 @@ retrospective sales comparisons, not measured failures or verified out-of-sample
 accuracy. Keep compact green UI at five widths plus Arabic RTL. Rate fitting,
 policy integration and operational changes remain separate. See
 [installed-base-evaluations.md](installed-base-evaluations.md).
+
+### Step 25 — approved 2026-10-22
+
+PR #139 is merged. The owner approved regional stock assessments for one exact
+item, supplied unit, as-of date and 2–20 active locations. Use the latest snapshot
+on/before the date, no more than seven days old, with matching supplied units.
+Sum on-hand, allocations and their difference exactly, keeping negative balances.
+Every line must be comparable before saving; incomplete totals stay unavailable.
+Editors confirm distinct holdings and save; all-location access applies to previews,
+search, detail and retries. Changed evidence requires a refreshed preview. Captures
+remain immutable with canonical retries and organization/location deletion rules.
+No inbound, substitutes, reservations, policies or transfers. Reusable regions,
+dealer sharing and allocation follow separately. See [regional-stock-assessments.md](regional-stock-assessments.md).

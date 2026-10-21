@@ -49,6 +49,7 @@ insert into rpc_only_tables values ('network_transfer_proposals');
 insert into rpc_only_tables values ('network_handoff_batches');
 insert into rpc_only_tables values ('network_handoff_acknowledgements');
 insert into rpc_only_tables values ('external_driver_datasets');
+insert into rpc_only_tables values ('regional_stock_assessments');
 create temporary table secret_columns on commit drop as
 select * from (values ('api_keys', 'key_hash')) as s (table_name, column_name);
 

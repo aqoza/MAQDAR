@@ -126,3 +126,15 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
   after source deletion; never add an ancestor streaming loading boundary.
 - Retain form/detail/history screenshots at 375, 768, 1024, 1440 and 1920px in
   English and Arabic RTL. Preserve shared 16px page titles and keyboard ledger scrolling.
+
+## Regional stock assessments (Step 25)
+
+- Run `regional-stock.spec.ts` against a production build and the local stack.
+- Check exact negative totals, confirmation, unavailable units, stale-preview recovery,
+  bounded selection, search/pagination and immutable captures after source deletion.
+- Viewer creation and partial-location details must return HTTP 404; location filters
+  must not expose an assessment when another included location is hidden.
+- Retain form/detail/history screenshots at all five widths in English and Arabic RTL;
+  verify shared 16px headings and keyboard-scrolling within the evidence table.
+- Run `0102_regional_stock.test.sql`, tenant/ACL invariants and
+  `test_regional_stock_db.py`; keep database and browser fixtures sequential.

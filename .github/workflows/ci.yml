@@ -109,6 +109,13 @@ jobs:
           name: installed-base-visuals
           path: apps/web/test-results/**/installed-base-*.png
           retention-days: 7
+      - name: Retain regional-stock visual evidence
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: regional-stock-visuals
+          path: apps/web/test-results/**/regional-stock-*.png
+          retention-days: 7
       - name: Stop local Supabase
         if: always()
         run: pnpm exec supabase stop --no-backup
