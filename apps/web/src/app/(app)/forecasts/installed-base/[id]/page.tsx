@@ -45,10 +45,18 @@ export default async function PopulationDataset({ params }: { params: Promise<{ 
         actions={
           <>
             {isEditorRole(context.role) && (
-              <Link href="/forecasts/installed-base/new" className="underline">
-                {t('new')}
-              </Link>
+              <>
+                <Link href={`/forecasts/installed-base/${id}/demand`} className="underline">
+                  {t('createDemand')}
+                </Link>
+                <Link href="/forecasts/installed-base/new" className="underline">
+                  {t('new')}
+                </Link>
+              </>
             )}
+            <Link href="/forecasts/installed-base/demand" className="underline">
+              {t('demandHistory')}
+            </Link>
             <HelpDisclosure label={t('methodDetails')}>
               <p>{t('method')}</p>
               <p>{t('limits')}</p>

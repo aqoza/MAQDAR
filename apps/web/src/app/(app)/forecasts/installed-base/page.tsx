@@ -64,6 +64,9 @@ export default async function PopulationHistory({
         }
         actions={
           <>
+            <Link href="/forecasts/installed-base/demand" className="underline">
+              {t('demandHistory')}
+            </Link>
             {isEditorRole(context.role) && (
               <Link href="/forecasts/installed-base/new" className="underline">
                 {t('new')}
