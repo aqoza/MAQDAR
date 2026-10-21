@@ -149,7 +149,9 @@ with psycopg.connect(sys.argv[1]) as db:
     ).toBeVisible()
     await expect(region.getByText('-0.123456', { exact: true })).toBeVisible()
     for (const locale of ['en', 'ar']) {
-      await page.context().addCookies([{ name: 'locale', value: locale, url: savedUrl }])
+      await page
+        .context()
+        .addCookies([{ name: 'locale', value: locale, url: new URL(savedUrl).origin }])
       await page.reload()
       await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr')
       for (const width of [375, 768, 1024, 1440, 1920]) {
@@ -194,14 +196,18 @@ with psycopg.connect(sys.argv[1]) as db:
         fullPage: true,
       })
     }
-    await page.context().addCookies([{ name: 'locale', value: 'en', url: savedUrl }])
+    await page
+      .context()
+      .addCookies([{ name: 'locale', value: 'en', url: new URL(savedUrl).origin }])
     await page.goto('/forecasts/drivers')
     await page.getByLabel('Driver name', { exact: true }).fill('temperature')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
     await expect(page).toHaveURL(/q=temperature/)
     await expect(page.getByRole('link', { name: 'Daily temperature', exact: true })).toBeVisible()
     for (const locale of ['en', 'ar']) {
-      await page.context().addCookies([{ name: 'locale', value: locale, url: savedUrl }])
+      await page
+        .context()
+        .addCookies([{ name: 'locale', value: locale, url: new URL(savedUrl).origin }])
       await page.reload()
       await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr')
       await expect(page.getByRole('link', { name: 'Daily temperature', exact: true })).toBeVisible()
@@ -217,7 +223,9 @@ with psycopg.connect(sys.argv[1]) as db:
         })
       }
     }
-    await page.context().addCookies([{ name: 'locale', value: 'en', url: savedUrl }])
+    await page
+      .context()
+      .addCookies([{ name: 'locale', value: 'en', url: new URL(savedUrl).origin }])
     await page.reload()
     await page.getByLabel('Location code', { exact: true }).fill('OTHER-L')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
