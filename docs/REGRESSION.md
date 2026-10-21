@@ -129,3 +129,13 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
   `test_installed_base_demand_db.py`. Include maximum/tiny decimal oracles, 1,000
   groups, concurrent retries and revoked authority/evidence changes during both
   advisory and source-row waits. Keep shared database and browser suites sequential.
+
+## Installed-base evaluations (Step 24c)
+
+- Run `installed-base-evaluation.spec.ts` with production build and the local stack.
+- Check confirmed complete history, matching known units, stale-preview recovery,
+  exact daily differences, separate lost sales and copied scenario evidence.
+- Verify search/pagination, viewer/branch HTTP 404 boundaries and retained captures
+  after source deletion; never add an ancestor streaming loading boundary.
+- Retain form/detail/history screenshots at 375, 768, 1024, 1440 and 1920px in
+  English and Arabic RTL. Preserve shared 16px page titles and keyboard ledger scrolling.

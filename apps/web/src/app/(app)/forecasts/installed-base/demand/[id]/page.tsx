@@ -35,6 +35,7 @@ export default async function InstalledDemandScenario({
   if (error) throw new Error('Demand scenario unavailable')
   if (!data) notFound()
   const report = installedDemandReportSchema.parse(data.report)
+  const evaluationT = await getTranslations('InstalledBaseEvaluation')
   const source = await db
     .from('installed_base_datasets')
     .select('id')
@@ -55,6 +56,14 @@ export default async function InstalledDemandScenario({
         }
         actions={
           <>
+            {isEditorRole(context.role) && (
+              <Link href={`/forecasts/installed-base/demand/${id}/evaluate`} className="underline">
+                {evaluationT('new')}
+              </Link>
+            )}
+            <Link href="/forecasts/installed-base/evaluations" className="underline">
+              {evaluationT('title')}
+            </Link>
             {source.data && (
               <Link href={`/forecasts/installed-base/${data.dataset_id}`} className="underline">
                 {t('population')}
