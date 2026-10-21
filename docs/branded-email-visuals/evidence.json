@@ -1,0 +1,70 @@
+{
+  "contract": "docs/branded-emails.md: 600px fluid email shell, Precision logo, brand palette, 24/32px title, 14/22px body, preserved token links and disabled optional notices.",
+  "targetViewports": ["1440x900", "390x844", "320x568"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Semantic h1, presentation tables, logo alt text, keyboard-focused primary link and 50px action target verified in Chromium. Body contrast 9.18:1, primary action 9.73:1, supporting text at least 5.18:1. Essential content survives image blocking. Native mail-client/assistive-technology certification is not claimed."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "All 12 unique templates rendered at every target width without horizontal overflow. Long security headings and an eight-digit code remain readable at 320px. Images-blocked/CSS-stripped fallback inspected at 320px."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "not-applicable",
+      "reason": "Messages are fully rendered by Auth before delivery; there is no asynchronous email UI."
+    },
+    "empty": {
+      "status": "not-applicable",
+      "reason": "Transactional templates always contain an event description and security guidance; no empty dataset is rendered."
+    },
+    "error": {
+      "status": "not-applicable",
+      "reason": "Invalid or expired token errors render in the application, not the email. Existing recovery/browser regressions cover those destinations."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "Blocked-image preview retains ZeeSpare alt text, live heading, action and password-safety guidance even with media queries removed."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Action-required, verification-code and completed-change notices are rendered in the retained screenshots. Local Auth delivery verified new code and email-change templates."
+    },
+    "permission": {
+      "status": "not-applicable",
+      "reason": "Email branding introduces no permissions or new sending endpoints. Auth and existing invitation guards continue to determine delivery and token acceptance."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1440x900",
+      "artifact": "sign-in-desktop.png",
+      "observation": "Centered 600px card; compact sign-in title, Precision logo, lime action and mint security panel."
+    },
+    {
+      "viewport": "1440x900",
+      "artifact": "invitation-desktop.png",
+      "observation": "Invitation uses the same shell and retains one-hour link/seven-day invitation guidance."
+    },
+    {
+      "viewport": "1440x900",
+      "artifact": "security-desktop.png",
+      "observation": "Password-change notification has clear incident guidance without an unnecessary action button."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "recovery-mobile.png",
+      "observation": "Readable one-line heading, full-width action and security guidance; no horizontal scrolling."
+    },
+    {
+      "viewport": "320x568",
+      "artifact": "code-narrow.png",
+      "observation": "Full-page capture at 320x568: eight-digit fixture fits and the footer wraps naturally below the viewport."
+    },
+    {
+      "viewport": "320x568",
+      "artifact": "blocked-images.png",
+      "observation": "Full-page capture with logo blocked, media queries removed and dark browser preference; all action/security text remains readable."
+    }
+  ]
+}

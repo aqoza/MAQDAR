@@ -257,12 +257,6 @@ otp_expiry = 3600
 subject = "You are invited to ZeeSpare"
 content_path = "./supabase/templates/invite.html"
 
-# Uncomment to customize notification email template
-# [auth.email.notification.password_changed]
-# enabled = true
-# subject = "Your password has been changed"
-# content_path = "./supabase/templates/password_changed_notification.html"
-
 # Recovery GET renders a confirmation; a POST consumes the token. Mirror the template and
 # exact workspace /auth/recover allowlist entries into hosted Auth before deployment.
 [auth.email.template.recovery]
@@ -277,6 +271,53 @@ content_path = "./supabase/templates/sign-in-link.html"
 [auth.email.template.confirmation]
 subject = "Sign in to ZeeSpare"
 content_path = "./supabase/templates/sign-in-link.html"
+
+# Shared brand shell: pnpm emails:generate. Hosted rollout remains owner-run;
+# see docs/branded-emails.md. Preserve all existing token and confirmation policies.
+[auth.email.template.email_change]
+subject = "Confirm your ZeeSpare email change"
+content_path = "./supabase/templates/email-change.html"
+
+[auth.email.template.reauthentication]
+subject = "Your ZeeSpare verification code"
+content_path = "./supabase/templates/reauthentication.html"
+
+# Prepared for parity with hosted security notices; delivery stays disabled locally.
+# Enabling notifications is a separate owner decision, not part of the visual change.
+[auth.email.notification.password_changed]
+enabled = false
+subject = "Your ZeeSpare password was changed"
+content_path = "./supabase/templates/password-changed.html"
+
+[auth.email.notification.email_changed]
+enabled = false
+subject = "Your ZeeSpare email address was changed"
+content_path = "./supabase/templates/email-changed.html"
+
+[auth.email.notification.phone_changed]
+enabled = false
+subject = "Your ZeeSpare phone number was changed"
+content_path = "./supabase/templates/phone-changed.html"
+
+[auth.email.notification.identity_linked]
+enabled = false
+subject = "A sign-in method was added to ZeeSpare"
+content_path = "./supabase/templates/identity-linked.html"
+
+[auth.email.notification.identity_unlinked]
+enabled = false
+subject = "A sign-in method was removed from ZeeSpare"
+content_path = "./supabase/templates/identity-unlinked.html"
+
+[auth.email.notification.mfa_factor_enrolled]
+enabled = false
+subject = "A verification method was added to ZeeSpare"
+content_path = "./supabase/templates/mfa-factor-enrolled.html"
+
+[auth.email.notification.mfa_factor_unenrolled]
+enabled = false
+subject = "A verification method was removed from ZeeSpare"
+content_path = "./supabase/templates/mfa-factor-unenrolled.html"
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.

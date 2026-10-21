@@ -81,3 +81,11 @@ Forest #103E31, emerald #155C46, signal lime #C2F970 and warm paper #F7F8F2 form
 ## Public website exception
 
 The public product homepage and workspace finder use an editorial display scale scoped to `public.module.css`: responsive 44–77px hero, 28–40px section titles and 36px finder title. Use the existing ZeeSpare palette, mark and planning illustration, logical CSS, visible focus and 44px targets. This does not change authenticated application typography or the approved login design.
+
+## Transactional emails
+
+All Supabase Auth emails use the shared shell in `scripts/render-email-templates.mjs` and copy in `supabase/templates/content.en.json`. Run `pnpm emails:generate` after edits; never restyle a generated template independently. Keep the original Precision logo as a PNG at its natural ratio, forest masthead, lime action, mint security panel and warm-paper background. See [branded-emails.md](docs/branded-emails.md) for coverage and owner-run rollout.
+
+Email-specific type roles are 24px/32px event heading, 14px/22px body, 14px/20px action, 12px/18px supporting text and 28px/36px verification code. These inline pixel sizes and Arial/Helvetica fallbacks are for email-client compatibility only; they do not change app typography. Use a fluid 600px presentation table and a minimum 48px action target. Text, actions and security guidance must remain understandable with images blocked and media queries stripped. Keep one primary action, descriptive links and a text code; no scripts, web fonts, tracking pixels or tokens in image URLs.
+
+Preserve callback URLs, token types, expiry, confirmation requirements and notification enablement. Native templates remain English until a separately reviewed localized-delivery implementation exists. Do not infer organization identity or locale from untrusted Auth user metadata. Verify desktop and narrow/mobile HTML previews plus real local Auth/Mailpit delivery. Record email-client testing limits honestly; Chromium screenshots alone do not certify Outlook or Gmail rendering.
