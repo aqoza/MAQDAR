@@ -148,7 +148,7 @@ test('network workbench keeps whole-package reports, all-branch access and retai
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
       ).toBe(true)
       await expectPageTitle(page.getByRole('heading', { level: 1 }))
-      await expect(page.locator('input[name="system"]')).toHaveCSS(
+      await expect(page.locator('input[name="system"]:visible')).toHaveCSS(
         'font-size',
         width < 768 ? '16px' : '14px',
       )
