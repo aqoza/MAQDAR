@@ -88,7 +88,7 @@ export async function deliverInvitations({
           ? 'sent'
           : response.status === 429
             ? 'retry'
-            : response.status >= 500
+            : (response.status >= 300 && response.status < 400) || response.status >= 500
               ? 'uncertain'
               : 'failed'
         if (!response.bodyUsed) await response.body?.cancel()
