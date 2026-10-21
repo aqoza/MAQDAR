@@ -27,7 +27,8 @@ export async function deliverInvitations({
       method: 'POST',
       headers,
       body: JSON.stringify(body),
-      redirect: 'error',
+      // Workers supports manual redirects; never forward credentials to a redirect destination.
+      redirect: 'manual',
       signal: AbortSignal.timeout(15000),
     })
   }
