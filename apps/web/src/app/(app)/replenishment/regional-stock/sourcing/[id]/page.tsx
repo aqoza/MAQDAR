@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getFormatter, getMessages, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
+import { isEditorRole } from '@/lib/auth/roles'
 import { PageHeader } from '@/components/page-header'
 import { RegionalSourcingReport } from '@/components/regional-sourcing-report'
 import { getActiveContext } from '@/lib/organizations/context'
@@ -17,11 +18,12 @@ export default async function RegionalSourcingDetail({
   if (!z.guid().safeParse(id).success) notFound()
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
-  const [db, t, messages, format] = await Promise.all([
+  const [db, t, messages, format, dates] = await Promise.all([
     createClient(),
     getTranslations('RegionalSourcing'),
     getMessages(),
     getFormatter(),
+    getTranslations('RegionalDates'),
   ])
   const { data, error } = await db
     .from('regional_sourcing_scenarios')
@@ -38,6 +40,24 @@ export default async function RegionalSourcingDetail({
         pattern="replenishment"
         title={t('detail')}
         description={t('description')}
+        actions={
+          <>
+            {isEditorRole(context.role) && (
+              <Link
+                className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+                href={`${regionalSourcingPath}/dates/new?sourcing=${id}`}
+              >
+                {dates('new')}
+              </Link>
+            )}
+            <Link
+              className="rounded-md border px-3 py-2"
+              href={`${regionalSourcingPath}/dates?sourcing=${id}`}
+            >
+              {dates('dateHistory')}
+            </Link>
+          </>
+        }
         back={
           <Link className="underline" href={regionalSourcingPath}>
             {t('title')}

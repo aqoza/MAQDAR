@@ -215,7 +215,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 24c  | **Installed-base evaluations:** completed recorded-sales comparisons, exact daily evidence, MAE/RMSE/bias and immutable scoped history.                                                                                     | Merged — PR #139                                    |
 | 25   | **Regional stock assessments:** exact-item observed stock across 2–20 locations, complete matching-unit evidence, exact totals and immutable all-location history.                                                          | Merged — PR #141                                    |
 | 25b  | **Reusable stock regions:** fixed same-organization location sets, archive lifecycle, scoped history and copied membership in regional assessments.                                                                         | Merged in PR #142                                   |
-| 25c  | **Regional sourcing:** proportional policy-protected surplus from every other region member into one saved destination replenishment gap.                                                                                   | Implemented — PR review pending                     |
+| 25c  | **Regional sourcing:** proportional policy-protected surplus from every other region member into one saved destination replenishment gap.                                                                                   | Merged — PR #143                                    |
+| 25d  | **Regional transfer dates:** fixed source allocations with independent dispatch, typical/slow receipt dates, captured calendar evidence and immutable all-location history.                                                 | Implemented — PR review pending                     |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -767,3 +768,18 @@ member. Editors save; reject changed previews and newly archived regions. Preser
 copied region/source evidence, timing warnings, stable retries and immutable
 history. Keep compact green screens at all five widths plus Arabic RTL. Dates,
 freight, dealer sharing and execution follow separately. See [regional-sourcing.md](regional-sourcing.md).
+
+### Step 25d — approved 2026-10-22
+
+PR #143 is merged as `e5971cd` with all four CI checks passing. The owner approved
+saved regional transfer dates from one sourcing scenario. Keep quantities and
+commitments fixed; choose one requested date at least the cutoff, resolve each
+source working day independently, add saved p50/p90 calendar-day leads and shift
+receipts to known destination working days. Zero allocations need no transfer.
+Unknown required dates or a 90-day search exhaustion block a complete schedule.
+Require the original unarchived region, active locations, unchanged active lanes,
+calendar applicability and refreshed evidence. Preserve inbound warnings and flag
+receipts beyond cutoff plus the original destination policy lead. Editors save,
+all-member access applies even to zeros, and immutable history/retries survive later
+archive. Keep compact green screens at all five widths plus Arabic RTL. No freight,
+approvals, reservations or operational changes. See [regional-transfer-dates.md](regional-transfer-dates.md).

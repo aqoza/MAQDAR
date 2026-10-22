@@ -8,12 +8,14 @@ export async function CalendarEvidence({
   title,
   calendar,
   search,
+  namespace = 'DeliveryScenarios',
 }: {
   title: string
+  namespace?: 'DeliveryScenarios' | 'RegionalDates.calendar'
   calendar: z.infer<typeof calendarEvidenceSchema>
   search: z.infer<typeof calendarSearchSchema> | null
 }) {
-  const t = await getTranslations('DeliveryScenarios')
+  const t = await getTranslations(namespace)
   return (
     <details className="workspace-panel min-w-0 space-y-3 wrap-anywhere">
       <summary>{title}</summary>
