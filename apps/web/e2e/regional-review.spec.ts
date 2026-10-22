@@ -36,17 +36,17 @@ test('regional proposals retain independent decisions, archive-safe actions and 
   page.on('pageerror', (e) => errors.push(e.message))
   const sourcingRoot = '/replenishment/regional-stock/sourcing'
   const root = `${sourcingRoot}/review`
-  async function visual(kind: string, lang: string) {
-    await expect(page.locator('html')).toHaveAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr')
+  async function visual(kind: string, lang: string, screen = page) {
+    await expect(screen.locator('html')).toHaveAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr')
     for (const width of [375, 768, 1024, 1440, 1920]) {
-      await page.setViewportSize({ width, height: 1000 })
+      await screen.setViewportSize({ width, height: 1000 })
       expect(
-        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+        await screen.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       ).toBe(true)
-      await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
-      const value = page.locator('.text-evidence-value').first()
+      await expect(screen.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+      const value = screen.locator('.text-evidence-value').first()
       if (await value.count()) await expect(value).toHaveCSS('font-size', '14px')
-      await page.screenshot({
+      await screen.screenshot({
         path: testInfo.outputPath(`regional-review-${kind}-${lang}-${width}.png`),
         fullPage: true,
       })
@@ -101,6 +101,15 @@ with psycopg.connect(sys.argv[1]) as db:
     await locale('en')
     await signInWithPassword(reviewPage, viewerEmail, password)
     await reviewPage.goto(first)
+    for (const lang of ['en', 'ar']) {
+      await reviewerContext.addCookies([
+        { name: 'locale', value: lang, url: new URL(first).origin },
+      ])
+      await reviewPage.reload()
+      await visual('review', lang, reviewPage)
+    }
+    await reviewerContext.addCookies([{ name: 'locale', value: 'en', url: new URL(first).origin }])
+    await reviewPage.reload()
     const decision = reviewPage.getByRole('form', { name: 'Independent review', exact: true })
     await decision
       .getByLabel('Decision reason', { exact: true })
