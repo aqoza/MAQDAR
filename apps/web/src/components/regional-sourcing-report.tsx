@@ -94,7 +94,7 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
         return (
           <details
             key={line.location_id}
-            className="min-w-0 space-y-3 p-3 workspace-panel wrap-anywhere"
+            className="min-w-0 p-3! workspace-panel wrap-anywhere open:space-y-3"
           >
             <summary className="min-h-11 cursor-pointer py-2 text-sm">
               {t('sourceEvidence')} · <bdi>{line.location_code}</bdi>
@@ -174,7 +174,7 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           </details>
         )
       })}
-      <details className="min-w-0 space-y-3 p-3 workspace-panel wrap-anywhere">
+      <details className="min-w-0 p-3! workspace-panel wrap-anywhere open:space-y-3">
         <summary className="min-h-11 cursor-pointer py-2 text-sm">
           {t('destinationEvidence')}
         </summary>
@@ -203,7 +203,7 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           </bdi>
         </p>
         <p className="text-xs">
-          {t('policy')}: <bdi>{destination.policy.policy_id}</bdi> · {t('override')}:{' '}
+          {t('destinationPolicy')}: <bdi>{destination.policy.policy_id}</bdi> · {t('override')}:{' '}
           <bdi>{destination.policy.override_id ?? '—'}</bdi>
         </p>
         <p className="text-sm">{t('capturedInbound')}</p>
@@ -211,7 +211,7 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           <table className="w-full min-w-[40rem] text-sm">
             <thead>
               <tr>
-                {(['order', 'quantity', 'expected', 'warnings'] as const).map((k) => (
+                {(['order', 'orderQuantity', 'expected', 'warnings'] as const).map((k) => (
                   <th key={k} className="p-2 text-start text-xs font-medium">
                     {t(k)}
                   </th>
@@ -248,7 +248,7 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           {t('openDraft')}
         </Link>
       </details>
-      <details className="min-w-0 space-y-3 p-3 workspace-panel">
+      <details className="min-w-0 p-3! workspace-panel open:space-y-3">
         <summary className="min-h-11 cursor-pointer py-2 text-sm">{t('regionEvidence')}</summary>
         <StockRegionReport report={report.region.definition} />
         <p className="break-all text-xs">
@@ -257,7 +257,7 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           </bdi>
         </p>
       </details>
-      <details className="min-w-0 space-y-3 p-3 workspace-panel">
+      <details className="min-w-0 p-3! workspace-panel open:space-y-3">
         <summary className="min-h-11 cursor-pointer py-2 text-sm">{t('methodDetails')}</summary>
         <p className="text-sm">{t('method')}</p>
         <p className="text-sm">{t('limits')}</p>

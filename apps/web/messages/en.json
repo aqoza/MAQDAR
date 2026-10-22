@@ -5747,6 +5747,8 @@
     },
     "leadTimes": "Saved lane lead times: p50 {p50} days; p90 {p90} days.",
     "timingNotAssessed": "Lead times are captured evidence; transfer dates have not been assessed.",
-    "timingWarning": "The saved destination has overdue or late inbound. Review the captured timing concerns."
+    "timingWarning": "The saved destination has overdue or late inbound. Review the captured timing concerns.",
+    "destinationPolicy": "Destination policy",
+    "orderQuantity": "Remaining order quantity"
   }
 }
