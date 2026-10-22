@@ -214,7 +214,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 24b  | **Installed-base demand scenarios:** explicit group replacement rates, exact conditional expectations and immutable scoped evidence.                                                                                        | Merged — PR #137                                    |
 | 24c  | **Installed-base evaluations:** completed recorded-sales comparisons, exact daily evidence, MAE/RMSE/bias and immutable scoped history.                                                                                     | Merged — PR #139                                    |
 | 25   | **Regional stock assessments:** exact-item observed stock across 2–20 locations, complete matching-unit evidence, exact totals and immutable all-location history.                                                          | Merged — PR #141                                    |
-| 25b  | **Reusable stock regions:** fixed same-organization location sets, archive lifecycle, scoped history and copied membership in regional assessments.                                                                         | Implemented — PR review pending                     |
+| 25b  | **Reusable stock regions:** fixed same-organization location sets, archive lifecycle, scoped history and copied membership in regional assessments.                                                                         | Merged in PR #142                                   |
+| 25c  | **Regional sourcing:** proportional policy-protected surplus from every other region member into one saved destination replenishment gap.                                                                                   | Implemented — PR review pending                     |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -751,3 +752,18 @@ reject unavailable locations or changed previews. Editors create/archive; every
 included location remains required for creation, reuse and inspection. Preserve
 stable retries, audits and organization/location deletion rules. No extra access,
 dealer sharing, allocation or operational changes. See [stock-regions.md](stock-regions.md).
+
+### Step 25c — approved 2026-10-22
+
+PR #142 is merged as `8b79c4c`. The owner approved saved regional sourcing from
+every other member of an active named region into one saved individual-item
+replenishment draft. Explicitly select each source policy maximum and additional
+unallocated backorders. Exclude source inbound; keep destination commitments fixed.
+Distribute the smaller of the saved gap and usable total surplus proportionally
+using integer thousandths, largest remainders and location-ID tie-breaks. Leave
+smaller residuals unallocated. Require the same item/unit/cutoff, exact-cutoff stock,
+active directed lanes, applicability confirmations and access to every region
+member. Editors save; reject changed previews and newly archived regions. Preserve
+copied region/source evidence, timing warnings, stable retries and immutable
+history. Keep compact green screens at all five widths plus Arabic RTL. Dates,
+freight, dealer sharing and execution follow separately. See [regional-sourcing.md](regional-sourcing.md).

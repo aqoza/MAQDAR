@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 25c adds regional sourcing from every other member of one active named region into one saved destination draft. Preserve exact proportional thousandths, explicit source maxima/backorders, fixed destination evidence, all-location authority, archive/save serialization and immutable retries. No stock reservation or operational changes. See [regional-sourcing.md](docs/regional-sourcing.md).
+
 Step 25b adds reusable fixed stock regions and archive-only lifecycle. Preserve all-location access, canonical retries, location-identity resolution, archive/save serialization and copied assessment evidence. No region edits or extra access. See [stock-regions.md](docs/stock-regions.md).
 
 Step 25 adds saved regional stock assessments for one exact item and 2–20 active locations. Require latest matching-unit stock within seven days, exact totals preserving negative balances, explicit distinct-holdings confirmation and access to every location. Changed previews cannot save; retries retain copied evidence and recheck authority. Observed totals are not transferable surplus. See [regional-stock-assessments.md](docs/regional-stock-assessments.md).

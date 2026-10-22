@@ -46,12 +46,20 @@ export default async function StockRegionDetail({ params }: { params: Promise<{ 
         }
         actions={
           isEditorRole(context.role) && !data.archived_at ? (
-            <Link
-              href={`/replenishment/regional-stock/new?region=${data.id}`}
-              className="underline"
-            >
-              {t('use')}
-            </Link>
+            <>
+              <Link
+                href={`/replenishment/regional-stock/sourcing/new?region=${data.id}`}
+                className="underline"
+              >
+                {t('sourcing')}
+              </Link>
+              <Link
+                href={`/replenishment/regional-stock/new?region=${data.id}`}
+                className="underline"
+              >
+                {t('use')}
+              </Link>
+            </>
           ) : undefined
         }
       />
