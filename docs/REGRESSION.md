@@ -199,3 +199,7 @@ Run the new pgTAP, database, web action/schema and browser tests listed in `regi
 ## Regional transfer handoffs
 
 `regional-handoffs.spec.ts` exercises keyboard creation/download, immutable CSV/JSON, historical selection after archive, saved-label filtering/reset, real hidden-record 404 and signed-out 401 responses, and zero-source all-location access. Retain `regional-handoffs-*.png` at 375, 768, 1024, 1440 and 1920px in English and Arabic RTL. `test_regional_handoffs_db.py` covers selection/evidence gates, archive/retry lifecycle, roles, concurrent decisions/exports and audited cascades. `0108_regional_handoffs.test.sql` plus shared tenant/ACL invariants covers grants and scoped read/write boundaries.
+
+## Regional handoff batches — Step 25h
+
+Run `test_regional_batches_db.py`, `0109_regional_batches.test.sql`, serializer/download/action tests and `regional-batches.spec.ts`. Retain `regional-batches-*.png` for selection, preview, detail, history and missing-source context at 375/768/1024/1440/1920 in EN/AR. Verify keyboard selection/save/download, scoped hidden-record 404, anonymous 401, exact original downloads after deletion, visible overlap and historical/unavailable context. No operational records may change.

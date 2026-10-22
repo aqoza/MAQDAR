@@ -58,6 +58,11 @@ export default async function RegionalHandoffDetail({
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
         pattern="replenishment"
+        actions={
+          <Link className="underline" href="/replenishment/regional-stock/sourcing/batches">
+            {(await getTranslations('RegionalBatches'))('title')}
+          </Link>
+        }
         back={
           <Link className="underline" href="/replenishment/regional-stock/sourcing/handoffs">
             {t('back')}

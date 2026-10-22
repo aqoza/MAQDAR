@@ -1,0 +1,315 @@
+import { PageHeader } from '@/components/page-header'
+import { TableScrollRegion } from '@/components/table-scroll-region'
+import Form from 'next/form'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
+import { z } from 'zod'
+import { getActiveContext } from '@/lib/organizations/context'
+import { isEditorRole } from '@/lib/auth/roles'
+import { createClient } from '@/lib/supabase/server'
+import { batchInputSchema, batchSelection, batchSelectionHref } from '@/lib/regional-batches'
+import { handoffListParams, handoffListSpec, handoffRowSchema } from '@/lib/regional-handoffs'
+import {
+  lastPage,
+  listHref,
+  nearestRange,
+  toRange,
+  type RawSearchParams,
+} from '@/lib/master-data/list-params'
+import { searchPatterns } from '@/lib/master-data/search'
+import { formatPurchaseCost, formatCostDecimal } from '@/lib/purchase-costs'
+import { formatDateOnly } from '@/lib/format'
+import { RegionalBatchOverlap } from '@/components/regional-batch-overlap'
+
+const rowSchema = handoffRowSchema.extend({
+  requested_date: z.iso.date(),
+  batch_count: z.number().int(),
+})
+export default async function BatchSelection({
+  searchParams,
+}: {
+  searchParams: Promise<RawSearchParams>
+}) {
+  const context = await getActiveContext()
+  if (!context?.active) redirect('/organizations')
+  if (!isEditorRole(context.role)) redirect('/replenishment/regional-stock/sourcing/batches')
+  const [t, db, locale, format, raw] = await Promise.all([
+    getTranslations('RegionalBatches'),
+    createClient(),
+    getLocale(),
+    getFormatter(),
+    searchParams,
+  ])
+  const ids = batchSelection(raw)
+  if (ids.length && !batchInputSchema.safeParse(ids).success)
+    return (
+      <div className="space-y-3">
+        <PageHeader pattern="replenishment" title={t('choose')} />
+        <p role="alert">{t('invalidSelection')}</p>
+        <Link className="underline" href="/replenishment/regional-stock/sourcing/batches/new">
+          {t('clear')}
+        </Link>
+      </div>
+    )
+  const params = handoffListParams(raw)
+  const date = z.iso.date().safeParse(raw.requested_date)
+  const dispatchDate = date.success ? date.data : ''
+  const selected = ids.length
+    ? await db
+        .from('regional_handoff_batch_candidates')
+        .select('*')
+        .eq('organization_id', context.active.id)
+        .in('id', ids)
+        .order('id')
+    : { data: [], error: null }
+  if (selected.error) throw new Error('Batch selection unavailable')
+  const chosen = (selected.data ?? []).map((row) => rowSchema.parse(row))
+  const query = (head: boolean) => {
+    let q = db
+      .from('regional_handoff_batch_candidates')
+      .select('*', { count: 'exact', head })
+      .eq('organization_id', context.active!.id)
+      .eq('selected', true)
+    for (const pattern of searchPatterns(params.q)) q = q.like('search_text', pattern)
+    if (params.filters.destination) q = q.eq('destination_code', params.filters.destination)
+    if (dispatchDate) q = q.eq('requested_date', dispatchDate)
+    if (ids.length) q = q.not('id', 'in', `(${ids.join(',')})`)
+    return q
+  }
+  const count = await query(true)
+  if (count.error) throw new Error('Batch candidates unavailable')
+  const total = count.count ?? 0
+  const pages = lastPage(total, params.size)
+  const pageHref = (page: number) => {
+    const href = listHref(
+      '/replenishment/regional-stock/sourcing/batches/new',
+      handoffListSpec,
+      params,
+      {
+        page,
+      },
+    )
+    const url = new URL(href, 'http://localhost')
+    ids.forEach((id) => url.searchParams.append('handoff', id))
+    if (dispatchDate) url.searchParams.set('requested_date', dispatchDate)
+    return url.pathname + url.search
+  }
+  if (params.page > pages) redirect(pageHref(pages))
+  const { from, to } = toRange(params.page, params.size)
+  const range = nearestRange(from, to, total)
+  const result = await query(false)
+    .order('created_at', { ascending: range.reversed })
+    .order('id', { ascending: !range.reversed })
+    .range(range.from, range.to)
+  if (result.error?.code === 'PGRST103') redirect(pageHref(1))
+  if (result.error) throw new Error('Batch candidates unavailable')
+  const rows = (range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])).map(
+    (row) => rowSchema.parse(row),
+  )
+  return (
+    <div className="min-w-0 space-y-4 wrap-anywhere">
+      <PageHeader
+        pattern="replenishment"
+        back={
+          <Link className="underline" href="/replenishment/regional-stock/sourcing/batches">
+            {t('back')}
+          </Link>
+        }
+        title={t('choose')}
+      />
+      <p>{t('grouping')}</p>
+
+      <section aria-label={t('selection')} className="space-y-3 workspace-panel">
+        <h2 className="text-section-title">{t('selectedCount', { total: ids.length })}</h2>
+        {chosen.length !== ids.length && <p role="alert">{t('sourceInvalid')}</p>}
+        <ul className="space-y-2">
+          {ids.map((id) => {
+            const row = chosen.find((item) => item.id === id)
+            return (
+              <li key={id} className="flex flex-wrap gap-3">
+                <span>{row?.item_code ?? t('unavailable')}</span>
+                {row && (
+                  <span>
+                    {row.destination_code} · {formatDateOnly(format, row.requested_date)} ·{' '}
+                    {t('branchCount', { total: row.source_count })}
+                  </span>
+                )}
+                <Link
+                  prefetch={false}
+                  className="underline"
+                  href={batchSelectionHref(ids.filter((value) => value !== id))}
+                >
+                  {t('removeLine', { item: row?.item_code ?? t('unavailable') })}
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+        <div className="flex flex-wrap gap-4">
+          <Link className="underline" href="/replenishment/regional-stock/sourcing/batches/new">
+            {t('clear')}
+          </Link>
+          {ids.length > 0 && chosen.length === ids.length && (
+            <Link
+              className="underline"
+              href={batchSelectionHref(
+                ids,
+                '/replenishment/regional-stock/sourcing/batches/preview',
+              )}
+            >
+              {t('preview')}
+            </Link>
+          )}
+        </div>
+      </section>
+      <Form
+        action="/replenishment/regional-stock/sourcing/batches/new"
+        className="workspace-toolbar flex flex-wrap items-end gap-3"
+        key={JSON.stringify(params)}
+      >
+        {ids.map((id) => (
+          <input key={id} type="hidden" name="handoff" value={id} />
+        ))}
+        <label className="grid min-w-0 gap-1">
+          {t('search')}
+          <input
+            name="q"
+            defaultValue={params.q}
+            maxLength={100}
+            className="w-full min-w-0 rounded-md border bg-background p-2"
+          />
+        </label>
+        <label className="grid min-w-0 gap-1">
+          {t('destination')}
+          <input
+            name="destination"
+            defaultValue={params.filters.destination ?? ''}
+            maxLength={64}
+            className="w-full min-w-0 rounded-md border bg-background p-2"
+          />
+        </label>
+        <label className="grid min-w-0 gap-1">
+          {t('dispatchDate')}
+          <input
+            type="date"
+            name="requested_date"
+            defaultValue={dispatchDate}
+            className="w-full min-w-0 rounded-md border bg-background p-2"
+          />
+        </label>
+        <button className="rounded-md bg-primary px-4 py-2 text-primary-foreground">
+          {t('filter')}
+        </button>
+      </Form>
+      <p>{t('candidateNote')}</p>
+      <Form
+        action="/replenishment/regional-stock/sourcing/batches/new"
+        className="space-y-3"
+        key={pageHref(params.page)}
+      >
+        {ids.map((id) => (
+          <input key={id} type="hidden" name="handoff" value={id} />
+        ))}
+        <input type="hidden" name="q" value={params.q} />
+        <input type="hidden" name="destination" value={params.filters.destination ?? ''} />
+        <input type="hidden" name="requested_date" value={dispatchDate} />
+        <TableScrollRegion label={t('title')}>
+          <table className="w-full min-w-[60rem] text-sm">
+            <caption className="sr-only">{t('candidates')}</caption>
+            <thead>
+              <tr>
+                {(
+                  [
+                    'select',
+                    'item',
+                    'region',
+                    'destination',
+                    'branches',
+                    'dispatchDate',
+                    'quantity',
+                    'lineSubtotal',
+                    'reuse',
+                  ] as const
+                ).map((key) => (
+                  <th key={key} className="p-2 text-start whitespace-nowrap">
+                    {t(key)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id} className="border-t">
+                  <td className="p-2">
+                    <input
+                      type="checkbox"
+                      name="handoff"
+                      value={row.id}
+                      disabled={ids.length >= 50}
+                      aria-label={t('selectLine', { item: row.item_code })}
+                    />
+                  </td>
+                  <th className="min-w-24 max-w-48 p-2 text-start wrap-anywhere">
+                    <Link
+                      prefetch={false}
+                      className="underline"
+                      href={`/replenishment/regional-stock/sourcing/handoffs/${row.id}`}
+                    >
+                      {row.item_code}
+                    </Link>
+                  </th>
+                  <td className="min-w-48 max-w-64 p-2 wrap-anywhere">
+                    {locale.startsWith('ar')
+                      ? row.region_name_ar || row.region_name
+                      : row.region_name}
+                  </td>
+                  <td className="p-2">{row.destination_code}</td>
+                  <td className="p-2">{row.source_count}</td>
+                  <td className="p-2">{formatDateOnly(format, row.requested_date)}</td>
+                  <td className="p-2">
+                    {formatCostDecimal(row.quantity, locale)} {row.unit}
+                  </td>
+                  <td className="p-2">
+                    {row.totals.map((total) => (
+                      <div key={total.currency}>
+                        {formatPurchaseCost(
+                          total.subtotal,
+                          total.currency,
+                          total.minor_units,
+                          locale,
+                        )}
+                      </div>
+                    ))}
+                  </td>
+                  <td className="p-2">{t('reuseCount', { total: row.batch_count })}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableScrollRegion>
+        {!rows.length && <p>{t('noCandidates')}</p>}
+        <button
+          disabled={!rows.length || ids.length >= 50}
+          className="rounded-md bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
+        >
+          {t('add')}
+        </button>
+      </Form>
+      <nav aria-label={t('pagination')} className="flex gap-4">
+        {params.page > 1 && (
+          <Link className="underline" href={pageHref(params.page - 1)}>
+            {t('previous')}
+          </Link>
+        )}
+        <span>{t('page', { page: params.page, pages })}</span>
+        {params.page < pages && (
+          <Link className="underline" href={pageHref(params.page + 1)}>
+            {t('next')}
+          </Link>
+        )}
+      </nav>
+      <RegionalBatchOverlap organizationId={context.active.id} handoffIds={ids} />
+    </div>
+  )
+}

@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 25h adds retained regional handoff batches. Preserve original-item identity verification, same-region/receiver/requested-date grouping, all-location authority, exact per-source currency totals and canonical retries. See [regional-handoff-batches.md](docs/regional-handoff-batches.md).
+
 Step 25g adds regional proposal handoffs. Preserve all-location authority, current first-save region/lane/freight/timing checks, per-source dates, exact currency evidence and immutable retries after archive. See [regional-transfer-handoffs.md](docs/regional-transfer-handoffs.md).
 
 Step 25e adds regional freight estimates with fixed per-source dates/quantities, per-source fees and currency-separated totals. Preserve all-member access, per-source rate effectivity, archive/save serialization and immutable retries. See [regional-freight-estimates.md](docs/regional-freight-estimates.md).
