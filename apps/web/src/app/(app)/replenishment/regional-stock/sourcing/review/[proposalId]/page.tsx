@@ -68,8 +68,9 @@ export default async function RegionalReviewDetail({
       freightMatches = parsed.status === 'available' && parsed.fingerprint === report.fingerprint
     }
   }
+  const isolate = (value: string) => `\u2068${value}\u2069`
   const actor = (id: string | null) =>
-    id === context.userId ? t('you') : t('member', { id: id ?? '—' })
+    id === context.userId ? t('you') : t('member', { id: isolate(id ?? '—') })
   const withdrawal = proposal.submitted_by === context.userId
   const reviewer = ['owner', 'admin', 'approver'].includes(context.role ?? '')
   return (
@@ -96,8 +97,8 @@ export default async function RegionalReviewDetail({
       {row.status === 'approved' && !row.selected && <p>{t('historicalApproval')}</p>}
       <p>
         {t('submitted', {
-          actor: actor(proposal.submitted_by),
-          time: format.dateTime(new Date(proposal.created_at), 'long'),
+          actor: isolate(actor(proposal.submitted_by)),
+          time: isolate(format.dateTime(new Date(proposal.created_at), 'long')),
         })}
       </p>
       <p className="whitespace-pre-wrap break-words">
@@ -107,8 +108,8 @@ export default async function RegionalReviewDetail({
         <>
           <p>
             {t('decided', {
-              actor: actor(proposal.decided_by),
-              time: format.dateTime(new Date(proposal.decided_at), 'long'),
+              actor: isolate(actor(proposal.decided_by)),
+              time: isolate(format.dateTime(new Date(proposal.decided_at), 'long')),
             })}
           </p>
           <p className="whitespace-pre-wrap break-words">

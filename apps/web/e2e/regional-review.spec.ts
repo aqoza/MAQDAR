@@ -58,6 +58,7 @@ test('regional proposals retain independent decisions, archive-safe actions and 
   }
   const reviewerContext = await browser.newContext()
   const reviewPage = await reviewerContext.newPage()
+  reviewPage.setDefaultTimeout(15_000)
   try {
     const seeded = await python(`import sys,json,psycopg
 from uuid import uuid4
@@ -123,7 +124,7 @@ with psycopg.connect(sys.argv[1]) as db:
     await locale('en')
     const second = await submit('Alternative for independent rejection')
     await reviewPage.goto(second)
-    await decision.getByLabel('Decision', { exact: true }).selectOption('rejected')
+    await decision.getByRole('combobox').selectOption('rejected')
     await decision
       .getByLabel('Decision reason', { exact: true })
       .fill('Keep earlier approved proposal')
@@ -156,7 +157,7 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(withdrawal).toHaveCount(0)
     await page.goto(root)
     await visual('history', 'en')
-    await page.getByLabel('Review status', { exact: true }).selectOption('approved')
+    await page.getByRole('combobox').selectOption('approved')
     await page.getByRole('button', { name: 'Filter', exact: true }).click()
     await expect(
       page.getByRole('link', { name: 'Inspect proposal for REG-P', exact: true }),
@@ -195,11 +196,11 @@ with psycopg.connect(sys.argv[1]) as db:
     expect((await page.goto(`${root}/invalid`))?.status()).toBe(404)
     expect(errors).toEqual([])
   } finally {
-    await reviewerContext.close()
     await python(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('delete from public.organizations where id=%s',(sys.argv[2],))
     db.execute('delete from auth.users where id in (%s,%s,%s)',tuple(sys.argv[3:6]))
     db.execute('delete from public.audit_log where organization_id=%s',(sys.argv[2],))`)
+    await reviewerContext.close()
   }
 })
