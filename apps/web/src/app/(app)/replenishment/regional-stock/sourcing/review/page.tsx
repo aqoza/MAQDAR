@@ -69,6 +69,7 @@ export default async function RegionalReview({
   const rows = (range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])).map(
     (row) => workbenchRowSchema.parse(row),
   )
+  const th = await getTranslations('RegionalHandoffs')
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
@@ -77,6 +78,9 @@ export default async function RegionalReview({
         title={t('title')}
         actions={
           <>
+            <Link href="/replenishment/regional-stock/sourcing/handoffs" className="underline">
+              {th('title')}
+            </Link>
             <Link href="/replenishment/regional-stock/sourcing/freight" className="underline">
               {t('chooseEstimate')}
             </Link>

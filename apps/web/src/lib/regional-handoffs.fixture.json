@@ -1,0 +1,690 @@
+{
+  "notice": "As-of whole-regional planning evidence. Zero sources need no transfer. No stock reservation, transfer order, inbound update or arrival guarantee.",
+  "purpose": "planning_only",
+  "estimate": {
+    "lines": [
+      {
+        "terms": {
+          "id": "af993a2e-8458-4f6a-858f-090bbcf8db9a",
+          "rate": "1.235",
+          "unit": "EA",
+          "basis": "per_unit",
+          "active": true,
+          "currency": "SAR",
+          "raw_rate": "1.235",
+          "updated_at": "2026-10-22T20:09:34.186093+00:00",
+          "valid_from": "2026-10-12",
+          "minor_units": 2,
+          "to_location_id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+          "from_location_id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+          "lead_time_days_p50": 2,
+          "lead_time_days_p90": 4
+        },
+        "sender": {
+          "id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+          "code": "SOURCE-A",
+          "name": "SOURCE-A",
+          "active": true,
+          "updated_at": "2026-10-22T20:09:34.186093+00:00"
+        },
+        "status": "available",
+        "quantity": "4.667",
+        "subtotal": "5.76",
+        "location_id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+        "dispatch_date": "2026-10-12",
+        "exact_product": "5.763745",
+        "location_code": "SOURCE-A",
+        "shipment_count": null
+      },
+      {
+        "terms": {
+          "id": "da95163a-0632-48fd-99d1-4a87a75c160b",
+          "rate": "2.345",
+          "unit": "EA",
+          "basis": "per_shipment",
+          "active": true,
+          "currency": "KWD",
+          "raw_rate": "2.345",
+          "updated_at": "2026-10-22T20:09:34.186093+00:00",
+          "valid_from": "2026-10-11",
+          "minor_units": 3,
+          "to_location_id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+          "from_location_id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+          "lead_time_days_p50": 2,
+          "lead_time_days_p90": 4
+        },
+        "sender": {
+          "id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+          "code": "SOURCE-B",
+          "name": "SOURCE-B",
+          "active": true,
+          "updated_at": "2026-10-22T20:09:34.186093+00:00"
+        },
+        "status": "available",
+        "quantity": "9.333",
+        "subtotal": "2.345",
+        "location_id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+        "dispatch_date": "2026-10-11",
+        "exact_product": "2.345",
+        "location_code": "SOURCE-B",
+        "shipment_count": 1
+      }
+    ],
+    "method": "regional-freight-v1",
+    "source": {
+      "lines": [
+        {
+          "lane": {
+            "id": "af993a2e-8458-4f6a-858f-090bbcf8db9a",
+            "active": true,
+            "updated_at": "2026-10-22T20:09:34.186093+00:00",
+            "to_location_id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+            "from_location_id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+            "lead_time_days_p50": 2,
+            "lead_time_days_p90": 4
+          },
+          "sender": {
+            "id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+            "code": "SOURCE-A",
+            "name": "SOURCE-A",
+            "active": true,
+            "updated_at": "2026-10-22T20:09:34.186093+00:00"
+          },
+          "status": "available",
+          "dispatch": {
+            "date": "2026-10-12",
+            "days": [
+              {
+                "date": "2026-10-10",
+                "reason": "weekend",
+                "holiday": null,
+                "weekend": true,
+                "working": false,
+                "verified": false,
+                "override_id": null
+              },
+              {
+                "date": "2026-10-11",
+                "reason": "weekend",
+                "holiday": null,
+                "weekend": true,
+                "working": false,
+                "verified": false,
+                "override_id": null
+              },
+              {
+                "date": "2026-10-12",
+                "reason": "weekly_pattern",
+                "holiday": null,
+                "weekend": false,
+                "working": true,
+                "verified": false,
+                "override_id": null
+              }
+            ],
+            "status": "resolved"
+          },
+          "quantity": "4.667",
+          "receipts": {
+            "p50": {
+              "search": {
+                "date": "2026-10-15",
+                "days": [
+                  {
+                    "date": "2026-10-14",
+                    "reason": "weekend",
+                    "holiday": null,
+                    "weekend": true,
+                    "working": false,
+                    "verified": false,
+                    "override_id": null
+                  },
+                  {
+                    "date": "2026-10-15",
+                    "reason": "weekly_pattern",
+                    "holiday": null,
+                    "weekend": false,
+                    "working": true,
+                    "verified": false,
+                    "override_id": null
+                  }
+                ],
+                "status": "resolved"
+              },
+              "calendar": {
+                "active": true,
+                "country": "SA",
+                "holidays": [],
+                "overrides": [],
+                "calendar_id": "2bbf944b-032a-41f3-bfa2-696731f8ba43",
+                "coverage_to": "2026-09-30",
+                "weekend_days": [3, 5],
+                "calendar_code": "DEST",
+                "coverage_from": "2023-10-01",
+                "calendar_updated_at": "2026-10-22T20:09:34.186093+00:00",
+                "observe_public_holidays": false
+              },
+              "lead_time": 2,
+              "nominal_date": "2026-10-14",
+              "timing_review_required": false
+            },
+            "p90": {
+              "search": {
+                "date": "2026-10-17",
+                "days": [
+                  {
+                    "date": "2026-10-16",
+                    "reason": "weekend",
+                    "holiday": null,
+                    "weekend": true,
+                    "working": false,
+                    "verified": false,
+                    "override_id": null
+                  },
+                  {
+                    "date": "2026-10-17",
+                    "reason": "weekly_pattern",
+                    "holiday": null,
+                    "weekend": false,
+                    "working": true,
+                    "verified": false,
+                    "override_id": null
+                  }
+                ],
+                "status": "resolved"
+              },
+              "calendar": {
+                "active": true,
+                "country": "SA",
+                "holidays": [],
+                "overrides": [],
+                "calendar_id": "2bbf944b-032a-41f3-bfa2-696731f8ba43",
+                "coverage_to": "2026-09-30",
+                "weekend_days": [3, 5],
+                "calendar_code": "DEST",
+                "coverage_from": "2023-10-01",
+                "calendar_updated_at": "2026-10-22T20:09:34.186093+00:00",
+                "observe_public_holidays": false
+              },
+              "lead_time": 4,
+              "nominal_date": "2026-10-16",
+              "timing_review_required": false
+            }
+          },
+          "location_id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+          "location_code": "SOURCE-A",
+          "source_calendar": {
+            "active": true,
+            "country": "SA",
+            "holidays": [],
+            "overrides": [],
+            "calendar_id": "6fb60027-5546-4243-915b-2e70c9eeef4c",
+            "coverage_to": "2026-09-30",
+            "weekend_days": [6, 7],
+            "calendar_code": "SOURCE-A",
+            "coverage_from": "2023-10-01",
+            "calendar_updated_at": "2026-10-22T20:09:34.186093+00:00",
+            "observe_public_holidays": false
+          }
+        },
+        {
+          "lane": {
+            "id": "da95163a-0632-48fd-99d1-4a87a75c160b",
+            "active": true,
+            "updated_at": "2026-10-22T20:09:34.186093+00:00",
+            "to_location_id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+            "from_location_id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+            "lead_time_days_p50": 2,
+            "lead_time_days_p90": 4
+          },
+          "sender": {
+            "id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+            "code": "SOURCE-B",
+            "name": "SOURCE-B",
+            "active": true,
+            "updated_at": "2026-10-22T20:09:34.186093+00:00"
+          },
+          "status": "available",
+          "dispatch": {
+            "date": "2026-10-11",
+            "days": [
+              {
+                "date": "2026-10-10",
+                "reason": "weekend",
+                "holiday": null,
+                "weekend": true,
+                "working": false,
+                "verified": false,
+                "override_id": null
+              },
+              {
+                "date": "2026-10-11",
+                "reason": "weekly_pattern",
+                "holiday": null,
+                "weekend": false,
+                "working": true,
+                "verified": false,
+                "override_id": null
+              }
+            ],
+            "status": "resolved"
+          },
+          "quantity": "9.333",
+          "receipts": {
+            "p50": {
+              "search": {
+                "date": "2026-10-13",
+                "days": [
+                  {
+                    "date": "2026-10-13",
+                    "reason": "weekly_pattern",
+                    "holiday": null,
+                    "weekend": false,
+                    "working": true,
+                    "verified": false,
+                    "override_id": null
+                  }
+                ],
+                "status": "resolved"
+              },
+              "calendar": {
+                "active": true,
+                "country": "SA",
+                "holidays": [],
+                "overrides": [],
+                "calendar_id": "2bbf944b-032a-41f3-bfa2-696731f8ba43",
+                "coverage_to": "2026-09-30",
+                "weekend_days": [3, 5],
+                "calendar_code": "DEST",
+                "coverage_from": "2023-10-01",
+                "calendar_updated_at": "2026-10-22T20:09:34.186093+00:00",
+                "observe_public_holidays": false
+              },
+              "lead_time": 2,
+              "nominal_date": "2026-10-13",
+              "timing_review_required": false
+            },
+            "p90": {
+              "search": {
+                "date": "2026-10-15",
+                "days": [
+                  {
+                    "date": "2026-10-15",
+                    "reason": "weekly_pattern",
+                    "holiday": null,
+                    "weekend": false,
+                    "working": true,
+                    "verified": false,
+                    "override_id": null
+                  }
+                ],
+                "status": "resolved"
+              },
+              "calendar": {
+                "active": true,
+                "country": "SA",
+                "holidays": [],
+                "overrides": [],
+                "calendar_id": "2bbf944b-032a-41f3-bfa2-696731f8ba43",
+                "coverage_to": "2026-09-30",
+                "weekend_days": [3, 5],
+                "calendar_code": "DEST",
+                "coverage_from": "2023-10-01",
+                "calendar_updated_at": "2026-10-22T20:09:34.186093+00:00",
+                "observe_public_holidays": false
+              },
+              "lead_time": 4,
+              "nominal_date": "2026-10-15",
+              "timing_review_required": false
+            }
+          },
+          "location_id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+          "location_code": "SOURCE-B",
+          "source_calendar": {
+            "active": true,
+            "country": "SA",
+            "holidays": [],
+            "overrides": [],
+            "calendar_id": "82973980-9983-45c5-bf08-f8a7054c0a4a",
+            "coverage_to": "2026-09-30",
+            "weekend_days": [5, 6],
+            "calendar_code": "SOURCE-B",
+            "coverage_from": "2023-10-01",
+            "calendar_updated_at": "2026-10-22T20:09:34.186093+00:00",
+            "observe_public_holidays": false
+          }
+        }
+      ],
+      "method": "regional-dates-v1",
+      "source": {
+        "input": {
+          "sources": [
+            {
+              "maximum": "calculated",
+              "policy_id": "b86c3ac5-c4fb-4c1e-8f65-421921dbf5d1",
+              "backorders": "0.000",
+              "location_id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4"
+            },
+            {
+              "maximum": "calculated",
+              "policy_id": "881f7b1a-f9d0-4a42-adde-14ef9046db02",
+              "backorders": "0.000",
+              "location_id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20"
+            }
+          ],
+          "draft_id": "bd68e32c-c8a1-48bd-9eab-a2392bc83c7b",
+          "region_id": "f4063bb8-0382-4753-99e9-08bb128e189a",
+          "lanes_confirmed": true,
+          "commitments_confirmed": true
+        },
+        "lines": [
+          {
+            "lane": {
+              "id": "af993a2e-8458-4f6a-858f-090bbcf8db9a",
+              "active": true,
+              "currency": null,
+              "updated_at": "2026-10-22T20:09:34.186093+00:00",
+              "freight_cost": null,
+              "freight_basis": "none",
+              "to_location_id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+              "from_location_id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+              "lead_time_days_p50": 2,
+              "lead_time_days_p90": 4
+            },
+            "status": "available",
+            "surplus": "10.000",
+            "quantity": "4.667",
+            "backorders": "0.000",
+            "location_id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+            "location_code": "SOURCE-A",
+            "source_policy": {
+              "day": "2026-10-10",
+              "unit": "EA",
+              "basis": "calculated",
+              "cutoff": "2026-10-10",
+              "run_id": "1411b242-4a7b-488d-a9cb-124f3c6ac192",
+              "status": "available",
+              "maximum": "20.000",
+              "revision": null,
+              "snapshot": {
+                "id": "fe56bcef-ecfe-4e64-9f56-284d42e376c8",
+                "age": 0,
+                "date": "2026-10-10",
+                "unit": "EA",
+                "currency": "SAR",
+                "quantity": "32.000",
+                "allocated": "2.000",
+                "available": "30.000",
+                "unit_cost": "1.000",
+                "updated_at": "2026-10-22T20:09:34.186093+00:00"
+              },
+              "item_code": "REG-P",
+              "policy_id": "b86c3ac5-c4fb-4c1e-8f65-421921dbf5d1",
+              "forecast_id": "3daadef0-bdcf-4adf-8f19-75edac94a94d",
+              "override_id": null,
+              "value_above": "10.000000",
+              "location_code": "SOURCE-A",
+              "quantity_above": "10.000",
+              "unit_provenance": {
+                "rows": 1,
+                "unit": "EA",
+                "units": ["EA"],
+                "method": "source-units-v1",
+                "status": "consistent",
+                "unknown_rows": 0
+              }
+            },
+            "remaining_surplus": "5.333",
+            "retained_available": "25.333"
+          },
+          {
+            "lane": {
+              "id": "da95163a-0632-48fd-99d1-4a87a75c160b",
+              "active": true,
+              "currency": null,
+              "updated_at": "2026-10-22T20:09:34.186093+00:00",
+              "freight_cost": null,
+              "freight_basis": "none",
+              "to_location_id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+              "from_location_id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+              "lead_time_days_p50": 2,
+              "lead_time_days_p90": 4
+            },
+            "status": "available",
+            "surplus": "20.000",
+            "quantity": "9.333",
+            "backorders": "0.000",
+            "location_id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+            "location_code": "SOURCE-B",
+            "source_policy": {
+              "day": "2026-10-10",
+              "unit": "EA",
+              "basis": "calculated",
+              "cutoff": "2026-10-10",
+              "run_id": "7366ef2d-0a8e-4e1d-882a-eedc0660a26d",
+              "status": "available",
+              "maximum": "20.000",
+              "revision": null,
+              "snapshot": {
+                "id": "72cfcb6a-dbe4-45fe-847e-e42b0c9ff298",
+                "age": 0,
+                "date": "2026-10-10",
+                "unit": "EA",
+                "currency": "SAR",
+                "quantity": "42.000",
+                "allocated": "2.000",
+                "available": "40.000",
+                "unit_cost": "1.000",
+                "updated_at": "2026-10-22T20:09:34.186093+00:00"
+              },
+              "item_code": "REG-P",
+              "policy_id": "881f7b1a-f9d0-4a42-adde-14ef9046db02",
+              "forecast_id": "e927616b-57dc-4eca-9f58-0f05ed2813ba",
+              "override_id": null,
+              "value_above": "20.000000",
+              "location_code": "SOURCE-B",
+              "quantity_above": "20.000",
+              "unit_provenance": {
+                "rows": 1,
+                "unit": "EA",
+                "units": ["EA"],
+                "method": "source-units-v1",
+                "status": "consistent",
+                "unknown_rows": 0
+              }
+            },
+            "remaining_surplus": "10.667",
+            "retained_available": "30.667"
+          }
+        ],
+        "method": "regional-sourcing-v1",
+        "region": {
+          "id": "f4063bb8-0382-4753-99e9-08bb128e189a",
+          "name_ar": "منطقة التوريد الشمالية",
+          "name_en": "Northern sourcing region",
+          "created_at": "2026-10-22T20:09:34.471444+00:00",
+          "definition": {
+            "input": {
+              "name_ar": "منطقة التوريد الشمالية",
+              "name_en": "Northern sourcing region",
+              "confirmed": true,
+              "location_codes": ["DEST", "SOURCE-A", "SOURCE-B"]
+            },
+            "method": "stock-region-v1",
+            "locations": [
+              {
+                "id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+                "code": "DEST",
+                "name_ar": "موقع إقليمي",
+                "name_en": "DEST",
+                "updated_at": "2026-10-22T20:09:34.186093+00:00",
+                "location_type": "branch"
+              },
+              {
+                "id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+                "code": "SOURCE-A",
+                "name_ar": "موقع إقليمي",
+                "name_en": "SOURCE-A",
+                "updated_at": "2026-10-22T20:09:34.186093+00:00",
+                "location_type": "branch"
+              },
+              {
+                "id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+                "code": "SOURCE-B",
+                "name_ar": "موقع إقليمي",
+                "name_en": "SOURCE-B",
+                "updated_at": "2026-10-22T20:09:34.186093+00:00",
+                "location_type": "branch"
+              }
+            ],
+            "fingerprint": "155608c5e7f35198ee2959c7de1910f4c6fe9f43a7a8060e7ee7c96d38bb70f9"
+          }
+        },
+        "status": "available",
+        "allocated": "14.000",
+        "locations": [
+          {
+            "id": "be38e396-c9e1-47d0-9f70-8a6950cc96c4",
+            "code": "SOURCE-A",
+            "name_ar": "موقع إقليمي",
+            "name_en": "SOURCE-A",
+            "updated_at": "2026-10-22T20:09:34.186093+00:00",
+            "location_type": "branch"
+          },
+          {
+            "id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+            "code": "DEST",
+            "name_ar": "موقع إقليمي",
+            "name_en": "DEST",
+            "updated_at": "2026-10-22T20:09:34.186093+00:00",
+            "location_type": "branch"
+          },
+          {
+            "id": "f15a1af7-a165-4f6b-a848-06bf4cc08e20",
+            "code": "SOURCE-B",
+            "name_ar": "موقع إقليمي",
+            "name_en": "SOURCE-B",
+            "updated_at": "2026-10-22T20:09:34.186093+00:00",
+            "location_type": "branch"
+          }
+        ],
+        "destination": {
+          "gap": "14.000",
+          "method": "replenishment-gap-v1",
+          "orders": [],
+          "policy": {
+            "day": "2026-10-10",
+            "unit": "EA",
+            "basis": "calculated",
+            "cutoff": "2026-10-10",
+            "run_id": "1468a9ea-ff1e-44c9-ba6c-01ae644cd001",
+            "status": "available",
+            "maximum": "20.000",
+            "revision": null,
+            "snapshot": {
+              "id": "ca7abd9d-6af5-4e7b-afc3-ffed86b95650",
+              "age": 0,
+              "date": "2026-10-10",
+              "unit": "EA",
+              "currency": "SAR",
+              "quantity": "12.000",
+              "allocated": "2.000",
+              "available": "10.000",
+              "unit_cost": "1.000",
+              "updated_at": "2026-10-22T20:09:34.186093+00:00"
+            },
+            "item_code": "REG-P",
+            "policy_id": "73a459d0-1b85-4d34-b095-d4de201632e1",
+            "forecast_id": "2f1963ee-6cbe-40dc-8f6b-16c7b7b4829d",
+            "override_id": null,
+            "value_above": "0.000",
+            "location_code": "DEST",
+            "quantity_above": "0",
+            "unit_provenance": {
+              "rows": 1,
+              "unit": "EA",
+              "units": ["EA"],
+              "method": "source-units-v1",
+              "status": "consistent",
+              "unknown_rows": 0
+            }
+          },
+          "status": "available",
+          "backorders": "4.000",
+          "fingerprint": "6a1dbc062dc7c41d9ce9640bf135ed4a909206c93537194a0ec3eb934cd67620",
+          "location_id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+          "protection_end": "2026-10-24",
+          "inbound_quantity": "0",
+          "orders_confirmed": true,
+          "orders_truncated": false,
+          "inventory_position": "6.000"
+        },
+        "fingerprint": "1f194014f76d74e28f36f0feb23fe1feb8bd40d847827286499eb97945c9efd5",
+        "remaining_gap": "0.000",
+        "total_surplus": "30.000",
+        "destination_location_id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d"
+      },
+      "status": "available",
+      "receiver": {
+        "id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+        "code": "DEST",
+        "name": "DEST",
+        "active": true,
+        "updated_at": "2026-10-22T20:09:34.186093+00:00"
+      },
+      "fingerprint": "f36dbfadc5a70163c1f1e0fba78963e8643f0573b91da043996c141b74b62020",
+      "sourcing_id": "c89b947c-da7e-483d-bdc6-02d9be9fb6e1",
+      "requested_date": "2026-10-10",
+      "policy_reference": {
+        "id": "73a459d0-1b85-4d34-b095-d4de201632e1",
+        "unit": "EA",
+        "cutoff": "2026-10-10",
+        "lead_time": 10,
+        "review_interval": 4
+      },
+      "calendars_confirmed": true,
+      "timing_reference_date": "2026-10-20"
+    },
+    "status": "available",
+    "totals": [
+      {
+        "currency": "KWD",
+        "subtotal": "2.345",
+        "minor_units": 3
+      },
+      {
+        "currency": "SAR",
+        "subtotal": "5.76",
+        "minor_units": 2
+      }
+    ],
+    "receiver": {
+      "id": "d322e581-7e14-4cf2-bcb1-30ae3500b16d",
+      "code": "DEST",
+      "name": "DEST",
+      "active": true,
+      "updated_at": "2026-10-22T20:09:34.186093+00:00"
+    },
+    "rounding": "half-up-currency-minor-units",
+    "fingerprint": "85b4924ddb75f357ef02a92e12490775665fa86d148b0a3592169d714d3c1d86",
+    "scenario_id": "bb86a32f-eef9-4315-ace7-760afcb4fde2",
+    "terms_confirmed": true
+  },
+  "proposal": {
+    "id": "74b8b36f-8d7d-4d30-b2e1-9216c6ec17b4",
+    "reason": "Synthetic proposal",
+    "revision": 1,
+    "approved_at": "2026-10-22T20:09:34.872728+00:00",
+    "approved_by": "7b8dad99-62eb-4c5a-b260-56179707519a",
+    "estimate_id": "ddeb125c-1599-423d-934c-f211a9429bb7",
+    "sourcing_id": "c89b947c-da7e-483d-bdc6-02d9be9fb6e1",
+    "submitted_at": "2026-10-22T20:09:34.829266+00:00",
+    "submitted_by": "a04f4b4b-aee8-4a98-be1c-bd972cb549bc",
+    "approval_reason": "Synthetic independent approval"
+  },
+  "created_at": "2026-10-22T20:09:34.889401Z",
+  "created_by": "a04f4b4b-aee8-4a98-be1c-bd972cb549bc",
+  "handoff_id": "98d1c65a-3421-445a-a551-940cf5da0b7b",
+  "schema_version": "regional-transfer-handoff-v1",
+  "organization_id": "9c05c1b3-e382-41ea-a26a-5b9810cb82cf"
+}

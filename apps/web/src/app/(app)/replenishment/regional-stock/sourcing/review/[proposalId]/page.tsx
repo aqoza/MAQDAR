@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getFormatter, getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
+import { RegionalHandoffForm } from '@/components/regional-handoff-form'
 import { RegionalDecisionForm } from '@/components/regional-review-forms'
 import { RegionalFreightReport } from '@/components/regional-freight-report'
 import { getActiveContext } from '@/lib/organizations/context'
@@ -68,6 +69,15 @@ export default async function RegionalReviewDetail({
       freightMatches = parsed.status === 'available' && parsed.fingerprint === report.fingerprint
     }
   }
+  const th = await getTranslations('RegionalHandoffs')
+  const handoff = await db
+    .from('regional_transfer_handoffs')
+    .select('id')
+    .eq('organization_id', context.active.id)
+    .eq('proposal_id', proposal.id)
+    .maybeSingle()
+  if (handoff.error) throw new Error('Regional handoff unavailable')
+  const editor = ['owner', 'admin', 'planner'].includes(context.role ?? '')
   const isolate = (value: string) => `\u2068${value}\u2069`
   const actor = (id: string | null) =>
     id === context.userId ? t('you') : t('member', { id: isolate(id ?? '—') })
@@ -154,6 +164,18 @@ export default async function RegionalReviewDetail({
           )}
         </>
       )}
+      {handoff.data ? (
+        <Link
+          className="inline-flex min-h-11 items-center underline"
+          href={`/replenishment/regional-stock/sourcing/handoffs/${handoff.data.id}`}
+        >
+          {th('open')}
+        </Link>
+      ) : row.selected && editor ? (
+        <NextIntlClientProvider messages={{ RegionalHandoffs: messages.RegionalHandoffs }}>
+          <RegionalHandoffForm organizationId={context.active.id} proposalId={proposal.id} />
+        </NextIntlClientProvider>
+      ) : null}
       <RegionalFreightReport report={report} locale={locale} />
     </div>
   )
