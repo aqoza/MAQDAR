@@ -85,6 +85,9 @@ with psycopg.connect(sys.argv[1]) as db:
       await page
         .getByRole('button', { name: ar ? 'معاينة المنطقة' : 'Preview region', exact: true })
         .click()
+      await expect(
+        page.getByRole('button', { name: ar ? 'حفظ المنطقة' : 'Save region', exact: true }),
+      ).toBeVisible()
     }
     await page.goto(`${regions}/new`)
     await expect(page.getByRole('button', { name: 'Preview region', exact: true })).toBeDisabled()

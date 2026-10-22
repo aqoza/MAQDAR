@@ -214,7 +214,7 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 24b  | **Installed-base demand scenarios:** explicit group replacement rates, exact conditional expectations and immutable scoped evidence.                                                                                        | Merged — PR #137                                    |
 | 24c  | **Installed-base evaluations:** completed recorded-sales comparisons, exact daily evidence, MAE/RMSE/bias and immutable scoped history.                                                                                     | Merged — PR #139                                    |
 | 25   | **Regional stock assessments:** exact-item observed stock across 2–20 locations, complete matching-unit evidence, exact totals and immutable all-location history.                                                          | Merged — PR #141                                    |
-| 25b  | **Reusable stock regions:** fixed same-organization location sets, archive lifecycle, scoped history and copied membership in regional assessments.                                                                         | Implemented — verification pending                  |
+| 25b  | **Reusable stock regions:** fixed same-organization location sets, archive lifecycle, scoped history and copied membership in regional assessments.                                                                         | Implemented — PR review pending                     |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
