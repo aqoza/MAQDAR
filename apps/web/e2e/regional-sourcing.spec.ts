@@ -67,7 +67,8 @@ test('regional sourcing preserves allocation evidence, pagination, permissions a
       await expect(report).not.toContainText('Redistribution quantity available')
     }
     await visual('evidence', lang)
-    for (const summary of await summaries.all()) await summary.click()
+    // Close nested disclosures before their parents hide them.
+    for (const summary of (await summaries.all()).reverse()) await summary.click()
   }
   try {
     const seed = await python(`import sys,json,psycopg
