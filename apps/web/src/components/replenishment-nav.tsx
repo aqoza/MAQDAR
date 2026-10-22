@@ -19,6 +19,7 @@ export async function ReplenishmentNav({
     | 'integrations'
     | 'redistribution'
     | 'locator'
+    | 'regionalStock'
 }) {
   const t = await getTranslations('PurchasingNav')
   const links = [
@@ -26,6 +27,7 @@ export async function ReplenishmentNav({
     ['redistribution', '/replenishment/redistribution'],
     ['network', '/replenishment/network'],
     ['locator', '/replenishment/stock-locator'],
+    ['regionalStock', '/replenishment/regional-stock'],
     ['excess', '/replenishment/excess'],
     ['review', '/replenishment/review'],
     ['eventReview', '/replenishment/events/review'],
