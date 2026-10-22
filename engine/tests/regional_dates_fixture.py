@@ -4,8 +4,8 @@ from psycopg.types.json import Jsonb
 from regional_sourcing_fixture import seed_regional_sourcing
 
 
-def seed_regional_dates(db, org, user):
-    inputs, sourcing = seed_regional_sourcing(db, org, user)
+def seed_regional_dates(db, org, user, **options):
+    inputs, sourcing = seed_regional_sourcing(db, org, user, **options)
     db.execute("set local role authenticated")
     parent = db.execute("select public.regional_sourcing_save(%s,%s,%s,%s)",
                         (org, Jsonb(inputs), uuid4(), sourcing['fingerprint'])).fetchone()[0]

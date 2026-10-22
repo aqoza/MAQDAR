@@ -1,7 +1,10 @@
+import { NextIntlClientProvider } from 'next-intl'
+import { RegionalProposalForm } from '@/components/regional-review-forms'
+import { hasPositiveAllocation } from '@/lib/regional-review'
 import Link from 'next/link'
 import { isEditorRole } from '@/lib/auth/roles'
 import { notFound, redirect } from 'next/navigation'
-import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
+import { getFormatter, getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { PageHeader } from '@/components/page-header'
 import { RegionalFreightReport } from '@/components/regional-freight-report'
@@ -18,11 +21,13 @@ export default async function SavedRegionalFreight({
   if (!context?.active) redirect('/organizations')
   const { estimateId } = await params
   if (!z.guid().safeParse(estimateId).success) notFound()
-  const [db, t, locale, format] = await Promise.all([
+  const [db, t, locale, format, messages, tr] = await Promise.all([
     createClient(),
     getTranslations('RegionalFreight'),
     getLocale(),
     getFormatter(),
+    getMessages(),
+    getTranslations('RegionalReview'),
   ])
   const result = await db
     .from('regional_freight_estimates')
@@ -51,6 +56,23 @@ export default async function SavedRegionalFreight({
       <p className="text-sm text-muted-foreground">
         {t('savedAt', { time: format.dateTime(new Date(result.data.created_at), 'long') })}
       </p>
+      <Link
+        className="inline-block underline"
+        href={`/replenishment/regional-stock/sourcing/review?sourcing=${report.source.sourcing_id}`}
+      >
+        {tr('sourcingHistory')}
+      </Link>
+      {isEditorRole(context.role) &&
+        report.status === 'available' &&
+        hasPositiveAllocation(report) && (
+          <NextIntlClientProvider messages={{ RegionalReview: messages.RegionalReview }}>
+            <RegionalProposalForm
+              organizationId={context.active.id}
+              estimateId={estimateId}
+              requestId={crypto.randomUUID()}
+            />
+          </NextIntlClientProvider>
+        )}
       <RegionalFreightReport report={report} locale={locale} />
       {isEditorRole(context.role) && (
         <Link

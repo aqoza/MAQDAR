@@ -120,6 +120,7 @@ jobs:
             apps/web/test-results/**/regional-sourcing-*.png
             apps/web/test-results/**/regional-dates-*.png
             apps/web/test-results/**/regional-freight-*.png
+            apps/web/test-results/**/regional-review-*.png
           retention-days: 7
       - name: Stop local Supabase
         if: always()

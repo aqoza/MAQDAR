@@ -26,6 +26,7 @@ export default async function RegionalFreightHistory({
 }: {
   searchParams: Promise<RawSearchParams>
 }) {
+  const tr = await getTranslations('RegionalReview')
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const locale = await getLocale()
@@ -74,6 +75,9 @@ export default async function RegionalFreightHistory({
         }
         actions={
           <>
+            <Link className="underline" href="/replenishment/regional-stock/sourcing/review">
+              {tr('title')}
+            </Link>
             <Link
               className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
               href="/replenishment/regional-stock/sourcing/dates"

@@ -21,6 +21,7 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 ## Repository map
 
 Step 25e adds regional freight estimates with fixed per-source dates/quantities, per-source fees and currency-separated totals. Preserve all-member access, per-source rate effectivity, archive/save serialization and immutable retries. See [regional-freight-estimates.md](docs/regional-freight-estimates.md).
+Step 25f adds whole regional proposal review with independent decisions, all-member access, archive-safe rejection/withdrawal and immutable selection history. See [regional-transfer-review.md](docs/regional-transfer-review.md).
 
 Step 25d adds regional transfer dates with fixed sourcing allocations, independent source calendars, destination receipt shifts and captured timing references. Preserve all-member access, archive/save serialization, complete schedules and immutable retries. See [regional-transfer-dates.md](docs/regional-transfer-dates.md).
 
