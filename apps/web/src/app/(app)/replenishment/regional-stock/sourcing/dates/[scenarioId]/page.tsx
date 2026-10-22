@@ -1,3 +1,4 @@
+import { isEditorRole } from '@/lib/auth/roles'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
@@ -31,11 +32,30 @@ export default async function SavedRegionalDates({
   if (result.error) throw new Error('Regional sourcing unavailable')
   if (!result.data) notFound()
   const report = regionalDateReportSchema.parse(result.data.report)
+  const freight = await getTranslations('RegionalFreight')
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
         pattern="replenishment"
         title={t('saved')}
+        actions={
+          <>
+            <Link
+              className="underline"
+              href={`/replenishment/regional-stock/sourcing/freight?scenario=${scenarioId}`}
+            >
+              {freight('title')}
+            </Link>
+            {isEditorRole(context.role) && (
+              <Link
+                className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
+                href={`/replenishment/regional-stock/sourcing/freight/new?scenario=${scenarioId}`}
+              >
+                {freight('new')}
+              </Link>
+            )}
+          </>
+        }
         description={`${report.source.destination.policy?.item_code} · ${report.source.destination.policy.location_code} · ${report.source.destination.policy?.cutoff}`}
         back={
           <Link

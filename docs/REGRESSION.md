@@ -187,3 +187,7 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
 - Verify viewer/partial-region HTTP 404s, all-location grant/revocation, search/reset and keyboard table access. Keep calendar and source evidence expandable.
 - Retain preview/detail/evidence/history screenshots at 375, 768, 1024, 1440 and 1920px in English and Arabic RTL under `regional-dates-*.png`; assert shared 16px headings, 14px values and contained overflow.
 - Pair with `0105_regional_dates.test.sql`, tenant/ACL invariants and independent-session `test_regional_dates_db.py`. Run database/browser fixtures sequentially.
+
+## Regional freight (Step 25e)
+
+From saved regional dates, confirm freight applicability, inspect each source's own dispatch/rate evidence, refresh after changed terms and save a complete estimate. Verify per-line half-up rounding then currency totals, fixed quantities/receipt warnings, zero lines, unknown terms blocking complete save, history search and immutable retries after archiving. Verify viewer read-only behavior, tenant and all-member access including zero allocations, real HTTP 404 for forbidden/missing/new-on-archived sources and parent deletion. Run `test_regional_freight_db.py`, `0106_regional_freight.test.sql`, and `regional-freight.spec.ts`; inspect preview/detail/evidence/history screenshots at 375/768/1024/1440/1920px in English and Arabic RTL, with keyboard-accessible disclosures/tables and shared typography.

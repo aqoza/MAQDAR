@@ -60,6 +60,7 @@ export default async function RegionalDateHistory({
   if (result.error?.code === 'PGRST103') redirect(href(1))
   if (result.error) throw new Error('Transfer date history unavailable')
   const rows = range.reversed ? (result.data ?? []).toReversed() : (result.data ?? [])
+  const freight = await getTranslations('RegionalFreight')
   return (
     <div className="min-w-0 space-y-4 wrap-anywhere">
       <PageHeader
@@ -75,6 +76,9 @@ export default async function RegionalDateHistory({
         }
         actions={
           <>
+            <Link className="underline" href="/replenishment/regional-stock/sourcing/freight">
+              {freight('title')}
+            </Link>
             <Link
               className="rounded-md bg-primary px-3 py-2 text-primary-foreground"
               href="/replenishment/regional-stock/sourcing"
