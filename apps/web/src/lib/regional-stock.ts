@@ -1,21 +1,20 @@
 import { z } from 'zod'
+import { capturedStockRegionSchema, locationSetSchema } from './stock-regions'
 import { codeSchema, dateSchema, ITEM_STATUSES, UNITS_OF_MEASURE } from './master-data/schemas'
 
 export const REGIONAL_INPUT_BYTES = 8192
 export const regionalStockPath = '/replenishment/regional-stock'
-export const regionalStockInputSchema = z.object({
-  assessment_name: z.string().trim().min(1).max(200),
-  item_code: codeSchema({ allowSlash: true }),
-  unit: z.enum(UNITS_OF_MEASURE),
-  as_of: dateSchema.refine((day) => day >= '0001-01-01'),
-  location_codes: z
-    .array(codeSchema())
-    .min(2)
-    .max(20)
-    .refine((codes) => new Set(codes).size === codes.length)
-    .transform((codes) => [...codes].sort()),
-  confirmed: z.literal(true),
-})
+export const regionalStockInputSchema = z
+  .object({
+    assessment_name: z.string().trim().min(1).max(200),
+    item_code: codeSchema({ allowSlash: true }),
+    unit: z.enum(UNITS_OF_MEASURE),
+    as_of: dateSchema.refine((day) => day >= '0001-01-01'),
+    location_codes: locationSetSchema.optional(),
+    region_id: z.guid().optional(),
+    confirmed: z.literal(true),
+  })
+  .refine((input) => (input.region_id !== undefined) !== (input.location_codes !== undefined))
 const quantity = z.string().regex(/^\d{1,18}(\.\d{1,3})?$/)
 const signedQuantity = z.string().regex(/^-?\d{1,18}(\.\d{1,3})?$/)
 const identity = z.object({
@@ -27,6 +26,7 @@ const identity = z.object({
 export const regionalStockReportSchema = z.object({
   method: z.literal('regional-stock-v1'),
   input: regionalStockInputSchema,
+  region: capturedStockRegionSchema.optional(),
   status: z.enum(['available', 'unavailable']),
   item: identity.extend({
     id: z.guid(),

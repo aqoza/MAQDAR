@@ -52,6 +52,7 @@ export default async function RegionalStockDetail({ params }: { params: Promise<
       />
       <NextIntlClientProvider
         messages={{
+          StockRegion: messages.StockRegion,
           RegionalStock: messages.RegionalStock,
         }}
       >

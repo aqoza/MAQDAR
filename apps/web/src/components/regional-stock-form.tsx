@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 import { startTransition, useActionState, useState, useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 import {
@@ -7,9 +8,10 @@ import {
   type RegionalStockPreviewState,
 } from '@/app/(app)/replenishment/regional-stock/actions'
 import { regionalStockInputSchema } from '@/lib/regional-stock'
-import { UNITS_OF_MEASURE, codeSchema } from '@/lib/master-data/schemas'
+import { UNITS_OF_MEASURE } from '@/lib/master-data/schemas'
 import { idleState } from '@/lib/forms'
 import { ItemCodeInput } from './master-data/item-code-input'
+import { LocationSetInput } from './location-set-input'
 import { RegionalStockReport } from './regional-stock-report'
 const subscribe = () => () => {}
 const field = 'min-w-0 w-full rounded-md border bg-background px-3 py-2'
@@ -20,11 +22,15 @@ export function RegionalStockForm({
   requestId,
   today,
   locations,
+  regions,
+  initialRegionId,
 }: {
   organizationId: string
   requestId: string
   today: string
   locations: { code: string; name: string }[]
+  regions: { id: string; name: string; codes: string[] }[]
+  initialRegionId: string
 }) {
   const t = useTranslations('RegionalStock')
   const hydrated = useSyncExternalStore(
@@ -32,12 +38,12 @@ export function RegionalStockForm({
     () => true,
     () => false,
   )
+  const [regionId, setRegionId] = useState(initialRegionId)
   const [name, setName] = useState(''),
     [item, setItem] = useState(''),
     [unit, setUnit] = useState('EA'),
     [day, setDay] = useState(today)
   const [codes, setCodes] = useState<string[]>([]),
-    [candidate, setCandidate] = useState(''),
     [confirmed, setConfirmed] = useState(false)
   const [state, preview, pending] = useActionState(
     previewRegionalStock,
@@ -50,14 +56,13 @@ export function RegionalStockForm({
     item_code: item,
     unit,
     as_of: day,
-    location_codes: codes,
+    ...(regionId ? { region_id: regionId } : { location_codes: codes }),
     confirmed,
   }
   const parsed = regionalStockInputSchema.safeParse(input)
   const current =
     parsed.success && state.input && JSON.stringify(parsed.data) === JSON.stringify(state.input)
   const disabled = !hydrated || pending || saving
-  const validCode = codeSchema().safeParse(candidate)
   return (
     <div className="min-w-0 space-y-4">
       <form
@@ -112,64 +117,44 @@ export function RegionalStockForm({
             />
           </label>
         </fieldset>
-        <div className="flex flex-wrap items-end gap-3">
-          <label className="grid min-w-0 flex-1 gap-1 text-sm">
-            {t('location_code')}
-            <input
-              className={field}
-              list="regional-locations"
-              value={candidate}
-              maxLength={64}
-              disabled={disabled || codes.length === 20}
-              onChange={(e) => setCandidate(e.target.value)}
-            />
-          </label>
-          <datalist id="regional-locations">
-            {locations.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.name}
+        <label className="grid min-w-0 gap-1 text-sm">
+          {t('region')}
+          <select
+            className={field}
+            value={regionId}
+            disabled={disabled}
+            onChange={(e) => setRegionId(e.target.value)}
+          >
+            <option value="">{t('manualLocations')}</option>
+            {regions.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.name}
               </option>
             ))}
-          </datalist>
-          <button
-            type="button"
-            className={button}
-            disabled={
-              disabled ||
-              !validCode.success ||
-              codes.includes(candidate.trim()) ||
-              codes.length === 20
-            }
-            onClick={() => {
-              setCodes([...codes, candidate.trim()])
-              setCandidate('')
-            }}
+          </select>
+        </label>
+        <p className="text-xs text-muted-foreground">
+          {t('regionSuggestions')}{' '}
+          <Link
+            className="inline-flex min-h-11 items-center underline"
+            href="/replenishment/regional-stock/regions"
           >
-            {t('add')}
-          </button>
-        </div>
-        <p className="text-xs text-muted-foreground" role="status">
-          {t('count', { count: codes.length })}
+            {t('browseRegions')}
+          </Link>
         </p>
-        <ul className="flex flex-wrap gap-2">
-          {codes.map((code) => (
-            <li
-              key={code}
-              className="flex max-w-full items-center gap-2 rounded-md border ps-3 text-sm"
-            >
-              <bdi className="break-all">{code}</bdi>
-              <button
-                type="button"
-                disabled={disabled}
-                onClick={() => setCodes(codes.filter((c) => c !== code))}
-                aria-label={t('remove', { code })}
-                className="min-h-11 px-3 underline"
-              >
-                {t('removeShort')}
-              </button>
-            </li>
-          ))}
-        </ul>
+        {regionId ? (
+          <p className="break-words text-sm">
+            <bdi>{regions.find((r) => r.id === regionId)?.codes.join(' · ')}</bdi> ·{' '}
+            {t('fixedRegion')}
+          </p>
+        ) : (
+          <LocationSetInput
+            codes={codes}
+            setCodes={setCodes}
+            locations={locations}
+            disabled={disabled}
+          />
+        )}
         <label className="flex min-h-11 items-start gap-2 text-sm">
           <input
             type="checkbox"

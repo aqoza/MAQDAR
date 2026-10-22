@@ -153,3 +153,16 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
   verify shared 16px headings and keyboard-scrolling within the evidence table.
 - Run `0102_regional_stock.test.sql`, tenant/ACL invariants and
   `test_regional_stock_db.py`; keep database and browser fixtures sequential.
+
+## Reusable stock regions (Step 25b)
+
+- Run `stock-regions.spec.ts` and existing `regional-stock.spec.ts` against the
+  production build and local stack. Check fixed membership, stale previews,
+  archive versus pending assessment saves, retained copied evidence and filters.
+- Region creation is editor-only; detail/history and counts require every location,
+  even after archive. Preserve HTTP 404 and verify access grant/revocation.
+- Capture form/detail/history and assessment reuse at all five widths and Arabic
+  RTL. Check 16px headings, 14px evidence, local scrolling and keyboard controls.
+- Run `0103_stock_regions.test.sql`, tenant/ACL invariants and
+  `test_stock_regions_db.py`; retain existing manual-assessment and concurrency
+  checks. Keep all shared-database fixtures sequential.

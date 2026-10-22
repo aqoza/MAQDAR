@@ -2024,6 +2024,26 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"stock_regions": {
+                  Row: {
+                    "archived_at": string | null,"archived_by": string | null,"created_at": string,"id": string,"location_codes": (string)[],"name_ar": string | null,"name_en": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "archived_at"?: string | null,"archived_by"?: string | null,"created_at"?: string,"id"?: string,"location_codes": (string)[],"name_ar"?: string | null,"name_en": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"submitted_by": string
+                  }
+                  Update: {
+                    "archived_at"?: string | null,"archived_by"?: string | null,"created_at"?: string,"id"?: string,"location_codes"?: (string)[],"name_ar"?: string | null,"name_en"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"required_location_ids"?: (string)[],"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "stock_regions_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"stock_snapshots": {
                   Row: {
                     "allocated_quantity": number,"created_at": string,"currency": string,"id": string,"item_id": string,"location_id": string,"organization_id": string,"quantity": number,"snapshot_date": string,"unit_cost": number,"unit_of_measure": string | null,"updated_at": string
@@ -3978,6 +3998,15 @@ isOneToOne: false
                            },
 "stock_locator":
 { Args: { "p_day": string,"p_filters"?: Json,"p_item_code": string,"p_organization_id": string,"p_page"?: number,"p_receiving_code": string,"p_size"?: number,"p_unit": string }; Returns: Json
+                           },
+"stock_region_archive":
+{ Args: { "p_organization_id": string,"p_region_id": string }; Returns: string
+                           },
+"stock_region_preview":
+{ Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
+                           },
+"stock_region_save":
+{ Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
                            },
 "supplier_scenario_preview":
 { Args: { "p_draft_id": string,"p_organization_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: Json
