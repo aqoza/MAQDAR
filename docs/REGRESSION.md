@@ -166,3 +166,16 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
 - Run `0103_stock_regions.test.sql`, tenant/ACL invariants and
   `test_stock_regions_db.py`; retain existing manual-assessment and concurrency
   checks. Keep all shared-database fixtures sequential.
+
+## Regional sourcing (Step 25c)
+
+- Run `regional-sourcing.spec.ts` against the production build and local stack.
+  Verify proportional shares, explicit choices, policy/override pagination,
+  preview invalidation, stale evidence recovery and archive of a held preview.
+- Viewer creation and partial-location detail must return HTTP 404. Test history
+  and counts after granting/revoking any region member, including zero sources.
+- Capture preview/detail/history at 375, 768, 1024, 1440 and 1920px in English and
+  Arabic RTL; verify shared typography and keyboard scrolling within tables.
+- Run `0104_regional_sourcing.test.sql`, tenant/ACL invariants and
+  `test_regional_sourcing_db.py`. Verify canonical retries, archive/save ordering,
+  current authority after waits and copied evidence after source deletion.

@@ -1960,6 +1960,26 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"regional_sourcing_scenarios": {
+                  Row: {
+                    "created_at": string,"id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"required_location_ids"?: (string)[],"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "regional_sourcing_scenarios_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"regional_stock_assessments": {
                   Row: {
                     "as_of": string,"assessment_name": string,"created_at": string,"id": string,"item_code": string,"item_id": string,"location_codes": (string)[],"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"submitted_by": string,"unit": string
@@ -3271,6 +3291,26 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"regional_sourcing_list": {
+                  Row: {
+                    "allocated": string | null,"created_at": string | null,"cutoff": string | null,"destination_code": string | null,"id": string | null,"item_code": string | null,"organization_id": string | null,"region_name": string | null,"region_name_ar": string | null,"remaining_gap": string | null,"search_text": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "allocated"?: never,"created_at"?: string | null,"cutoff"?: never,"destination_code"?: never,"id"?: string | null,"item_code"?: never,"organization_id"?: string | null,"region_name"?: never,"region_name_ar"?: never,"remaining_gap"?: never,"search_text"?: never,"unit"?: never
+                         }
+                        Update: {
+                           "allocated"?: never,"created_at"?: string | null,"cutoff"?: never,"destination_code"?: never,"id"?: string | null,"item_code"?: never,"organization_id"?: string | null,"region_name"?: never,"region_name_ar"?: never,"remaining_gap"?: never,"search_text"?: never,"unit"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "regional_sourcing_scenarios_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"replenishment_draft_list": {
                   Row: {
                     "basis": string | null,"created_at": string | null,"cutoff": string | null,"gap": string | null,"id": string | null,"item_code": string | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"policy_id": string | null,"search_text": string | null,"status": string | null,"submitted_by": string | null,"unit": string | null
@@ -3947,6 +3987,12 @@ isOneToOne: false
                            },
 "redistribution_save":
 { Args: { "p_backorders"?: string,"p_basis": string,"p_commitments_confirmed"?: boolean,"p_draft_id": string,"p_fingerprint"?: string,"p_lane_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_request_id"?: string,"p_source_policy_id": string }; Returns: string
+                           },
+"regional_sourcing_preview":
+{ Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
+                           },
+"regional_sourcing_save":
+{ Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
                            },
 "regional_stock_preview":
 { Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
