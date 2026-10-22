@@ -195,3 +195,7 @@ From saved regional dates, confirm freight applicability, inspect each source's 
 ## Regional proposal review (Step 25f)
 
 Run the new pgTAP, database, web action/schema and browser tests listed in `regional-transfer-review.md`. Verify full-estimate review, independent roles, one pending/selected proposal per original sourcing, current evidence and positive-source timing gates, retries after archive, all-location access including zeros and real detail 404s. Inspect green submit/review/history screens at all five widths in English and Arabic RTL, keyboard table/disclosure use, archive-safe rejection/withdrawal and absence of operational changes.
+
+## Regional transfer handoffs
+
+`regional-handoffs.spec.ts` exercises keyboard creation/download, immutable CSV/JSON, historical selection after archive, saved-label filtering/reset, real hidden-record 404 and signed-out 401 responses, and zero-source all-location access. Retain `regional-handoffs-*.png` at 375, 768, 1024, 1440 and 1920px in English and Arabic RTL. `test_regional_handoffs_db.py` covers selection/evidence gates, archive/retry lifecycle, roles, concurrent decisions/exports and audited cascades. `0108_regional_handoffs.test.sql` plus shared tenant/ACL invariants covers grants and scoped read/write boundaries.

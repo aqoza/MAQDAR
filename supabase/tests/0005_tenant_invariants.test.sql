@@ -52,7 +52,7 @@ insert into rpc_only_tables values ('external_driver_datasets');
 insert into rpc_only_tables values ('regional_stock_assessments');
 insert into rpc_only_tables values ('stock_regions');
 insert into rpc_only_tables values ('regional_sourcing_scenarios');
-insert into rpc_only_tables values ('regional_date_scenarios'), ('regional_freight_estimates'), ('regional_transfer_proposals');
+insert into rpc_only_tables values ('regional_date_scenarios'), ('regional_freight_estimates'), ('regional_transfer_proposals'), ('regional_transfer_handoffs');
 create temporary table secret_columns on commit drop as
 select * from (values ('api_keys', 'key_hash')) as s (table_name, column_name);
 

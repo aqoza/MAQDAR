@@ -2064,6 +2064,38 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"regional_transfer_handoffs": {
+                  Row: {
+                    "created_at": string,"created_by": string,"destination_location_id": string,"id": string,"organization_id": string,"payload": NonNullable<Json>,"proposal_id": string,"required_location_ids": (string)[]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"destination_location_id": string,"id"?: string,"organization_id": string,"payload": NonNullable<Json>,"proposal_id": string,"required_location_ids": (string)[]
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"destination_location_id"?: string,"id"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"proposal_id"?: string,"required_location_ids"?: (string)[]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "regional_transfer_handoffs_organization_id_destination_loc_fkey"
+      columns: ["organization_id","destination_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "regional_transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "regional_review_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "regional_transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "regional_transfer_proposals"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"regional_transfer_proposals": {
                   Row: {
                     "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"decision_request_id": string | null,"estimate_id": string,"id": string,"organization_id": string,"reason": string,"request_id": string,"required_location_ids": (string)[],"revision": number,"sourcing_id": string,"status": string,"submitted_by": string
@@ -3457,6 +3489,32 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"regional_handoff_list": {
+                  Row: {
+                    "created_at": string | null,"destination_code": string | null,"destination_location_id": string | null,"id": string | null,"item_code": string | null,"organization_id": string | null,"proposal_id": string | null,"quantity": string | null,"region_name": string | null,"region_name_ar": string | null,"requested_date": string | null,"search_text": string | null,"selected": boolean | null,"source_count": number | null,"totals": Json | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "regional_transfer_handoffs_organization_id_destination_loc_fkey"
+      columns: ["organization_id","destination_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "regional_transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "regional_review_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "regional_transfer_handoffs_organization_id_proposal_id_fkey"
+      columns: ["organization_id","proposal_id"]
+isOneToOne: true
+      referencedRelation: "regional_transfer_proposals"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"regional_review_list": {
                   Row: {
                     "created_at": string | null,"cutoff": string | null,"destination_code": string | null,"estimate_id": string | null,"id": string | null,"item_code": string | null,"organization_id": string | null,"region_name": string | null,"region_name_ar": string | null,"revision": number | null,"search_text": string | null,"selected": boolean | null,"source_count": number | null,"sourcing_id": string | null,"status": string | null
@@ -4197,6 +4255,9 @@ isOneToOne: false
                            },
 "regional_freight_save":
 { Args: { "p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_scenario_id": string,"p_terms_confirmed": boolean }; Returns: string
+                           },
+"regional_handoff_create":
+{ Args: { "p_organization_id": string,"p_proposal_id": string }; Returns: string
                            },
 "regional_sourcing_preview":
 { Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
