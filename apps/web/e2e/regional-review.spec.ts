@@ -141,10 +141,11 @@ with psycopg.connect(sys.argv[1]) as db:
     await reviewPage.goto(third)
     await expect(
       decision.getByRole('option', { name: 'Approve complete proposal', exact: true }),
-    ).toBeDisabled()
+    ).toHaveJSProperty('disabled', true)
     await expect(
       decision.getByRole('option', { name: 'Reject complete proposal', exact: true }),
-    ).toBeEnabled()
+    ).toHaveJSProperty('disabled', false)
+    await expect(decision.getByRole('combobox')).toHaveValue('rejected')
     await visual('archived', 'en')
     await locale('ar')
     await visual('archived', 'ar')
@@ -166,6 +167,10 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.getByRole('button', { name: 'Filter', exact: true }).click()
     await expect(page.getByText('No regional proposals match.', { exact: true })).toBeVisible()
     await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await page.waitForURL(new RegExp(`${root}$`))
+    await expect(
+      page.getByRole('link', { name: 'Inspect proposal for REG-P', exact: true }),
+    ).toHaveCount(3)
     await locale('ar')
     await visual('history', 'ar')
     await locale('en')

@@ -165,7 +165,7 @@ export default async function RegionalReview({
             {rows.map((row) => (
               <tr key={row.id} className="border-t">
                 <th className="p-2 text-start whitespace-nowrap">{row.item_code}</th>
-                <td className="p-2">
+                <td className="min-w-48 max-w-64 p-2">
                   {locale.startsWith('ar')
                     ? row.region_name_ar || row.region_name
                     : row.region_name}
