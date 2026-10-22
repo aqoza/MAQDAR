@@ -17,12 +17,13 @@ export default async function RegionalSourcingHistory({
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
-  const [db, t, locale, format, raw] = await Promise.all([
+  const [db, t, locale, format, raw, dates] = await Promise.all([
     createClient(),
     getTranslations('RegionalSourcing'),
     getLocale(),
     getFormatter(),
     searchParams,
+    getTranslations('RegionalDates'),
   ])
   const q = (firstParam(raw.q) ?? '').trim().slice(0, 100)
   const base = () => {
@@ -62,6 +63,9 @@ export default async function RegionalSourcingHistory({
                 {t('new')}
               </Link>
             )}
+            <Link className="underline" href={`${regionalSourcingPath}/dates`}>
+              {dates('dateHistory')}
+            </Link>
             <HelpDisclosure label={t('methodDetails')}>
               <p>{t('method')}</p>
               <p>{t('limits')}</p>

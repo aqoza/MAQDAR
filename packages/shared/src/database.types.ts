@@ -1960,6 +1960,38 @@ isOneToOne: false
       referencedColumns: ["organization_id","id","location_id"]
     }
                   ]
+                },"regional_date_scenarios": {
+                  Row: {
+                    "created_at": string,"id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"sourcing_id": string,"submitted_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"sourcing_id": string,"submitted_by": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"required_location_ids"?: (string)[],"sourcing_id"?: string,"submitted_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "regional_date_scenarios_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "regional_date_scenarios_organization_id_sourcing_id_fkey"
+      columns: ["organization_id","sourcing_id"]
+isOneToOne: false
+      referencedRelation: "regional_sourcing_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "regional_date_scenarios_organization_id_sourcing_id_fkey"
+      columns: ["organization_id","sourcing_id"]
+isOneToOne: false
+      referencedRelation: "regional_sourcing_scenarios"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"regional_sourcing_scenarios": {
                   Row: {
                     "created_at": string,"id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"required_location_ids": (string)[],"submitted_by": string
@@ -3291,6 +3323,38 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"regional_date_list": {
+                  Row: {
+                    "allocated": string | null,"created_at": string | null,"cutoff": string | null,"destination_code": string | null,"id": string | null,"item_code": string | null,"organization_id": string | null,"region_name": string | null,"region_name_ar": string | null,"requested_date": string | null,"search_text": string | null,"sourcing_id": string | null,"status": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "allocated"?: never,"created_at"?: string | null,"cutoff"?: never,"destination_code"?: never,"id"?: string | null,"item_code"?: never,"organization_id"?: string | null,"region_name"?: never,"region_name_ar"?: never,"requested_date"?: never,"search_text"?: never,"sourcing_id"?: string | null,"status"?: never,"unit"?: never
+                         }
+                        Update: {
+                           "allocated"?: never,"created_at"?: string | null,"cutoff"?: never,"destination_code"?: never,"id"?: string | null,"item_code"?: never,"organization_id"?: string | null,"region_name"?: never,"region_name_ar"?: never,"requested_date"?: never,"search_text"?: never,"sourcing_id"?: string | null,"status"?: never,"unit"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "regional_date_scenarios_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "regional_date_scenarios_organization_id_sourcing_id_fkey"
+      columns: ["organization_id","sourcing_id"]
+isOneToOne: false
+      referencedRelation: "regional_sourcing_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "regional_date_scenarios_organization_id_sourcing_id_fkey"
+      columns: ["organization_id","sourcing_id"]
+isOneToOne: false
+      referencedRelation: "regional_sourcing_scenarios"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"regional_sourcing_list": {
                   Row: {
                     "allocated": string | null,"created_at": string | null,"cutoff": string | null,"destination_code": string | null,"id": string | null,"item_code": string | null,"organization_id": string | null,"region_name": string | null,"region_name_ar": string | null,"remaining_gap": string | null,"search_text": string | null,"unit": string | null
@@ -3987,6 +4051,12 @@ isOneToOne: false
                            },
 "redistribution_save":
 { Args: { "p_backorders"?: string,"p_basis": string,"p_commitments_confirmed"?: boolean,"p_draft_id": string,"p_fingerprint"?: string,"p_lane_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_request_id"?: string,"p_source_policy_id": string }; Returns: string
+                           },
+"regional_date_preview":
+{ Args: { "p_calendars_confirmed": boolean,"p_organization_id": string,"p_requested_date": string,"p_sourcing_id": string }; Returns: Json
+                           },
+"regional_date_save":
+{ Args: { "p_calendars_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string,"p_request_id": string,"p_requested_date": string,"p_sourcing_id": string }; Returns: string
                            },
 "regional_sourcing_preview":
 { Args: { "p_input": Json,"p_organization_id": string }; Returns: Json

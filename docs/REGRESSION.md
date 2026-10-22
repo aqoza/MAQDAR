@@ -179,3 +179,11 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
 - Run `0104_regional_sourcing.test.sql`, tenant/ACL invariants and
   `test_regional_sourcing_db.py`. Verify canonical retries, archive/save ordering,
   current authority after waits and copied evidence after source deletion.
+
+## Regional transfer dates — Step 25d
+
+- Run `regional-dates.spec.ts` after changing sourcing/date navigation, calendars, access or evidence rendering.
+- Preserve fixed per-source quantities, separate dispatch/p50/p90 dates, explicit confirmation and no save for incomplete schedules. Stale previews and region archive must block new saves; saved history stays readable.
+- Verify viewer/partial-region HTTP 404s, all-location grant/revocation, search/reset and keyboard table access. Keep calendar and source evidence expandable.
+- Retain preview/detail/evidence/history screenshots at 375, 768, 1024, 1440 and 1920px in English and Arabic RTL under `regional-dates-*.png`; assert shared 16px headings, 14px values and contained overflow.
+- Pair with `0105_regional_dates.test.sql`, tenant/ACL invariants and independent-session `test_regional_dates_db.py`. Run database/browser fixtures sequentially.
