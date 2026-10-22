@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 25b adds reusable fixed stock regions and archive-only lifecycle. Preserve all-location access, canonical retries, location-identity resolution, archive/save serialization and copied assessment evidence. No region edits or extra access. See [stock-regions.md](docs/stock-regions.md).
+
 Step 25 adds saved regional stock assessments for one exact item and 2–20 active locations. Require latest matching-unit stock within seven days, exact totals preserving negative balances, explicit distinct-holdings confirmation and access to every location. Changed previews cannot save; retries retain copied evidence and recheck authority. Observed totals are not transferable surplus. See [regional-stock-assessments.md](docs/regional-stock-assessments.md).
 
 Step 24c adds retrospective installed-base evaluations against a completed recorded-sales window. Preserve confirmed missing-day zeros, known matching units, exact error sums, copied evidence, stable retries and current editor/location access. Never label sales as failures or claim verified historical availability. See [installed-base-evaluations.md](docs/installed-base-evaluations.md).

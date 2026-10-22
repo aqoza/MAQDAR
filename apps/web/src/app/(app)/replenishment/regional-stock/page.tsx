@@ -60,6 +60,9 @@ export default async function RegionalStockHistory({
         description={t('description')}
         actions={
           <>
+            <Link href="/replenishment/regional-stock/regions" className="underline">
+              {t('browseRegions')}
+            </Link>
             {isEditorRole(context.role) && (
               <Link href="/replenishment/regional-stock/new" className="underline">
                 {t('new')}

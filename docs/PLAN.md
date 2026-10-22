@@ -213,7 +213,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 24   | **Installed-base foundation:** immutable equipment populations, exact fitted-part quantities, known/unknown ages, source availability and scoped history.                                                                   | Merged — PR #136                                    |
 | 24b  | **Installed-base demand scenarios:** explicit group replacement rates, exact conditional expectations and immutable scoped evidence.                                                                                        | Merged — PR #137                                    |
 | 24c  | **Installed-base evaluations:** completed recorded-sales comparisons, exact daily evidence, MAE/RMSE/bias and immutable scoped history.                                                                                     | Merged — PR #139                                    |
-| 25   | **Regional stock assessments:** exact-item observed stock across 2–20 locations, complete matching-unit evidence, exact totals and immutable all-location history.                                                          | Implemented — review pending                        |
+| 25   | **Regional stock assessments:** exact-item observed stock across 2–20 locations, complete matching-unit evidence, exact totals and immutable all-location history.                                                          | Merged — PR #141                                    |
+| 25b  | **Reusable stock regions:** fixed same-organization location sets, archive lifecycle, scoped history and copied membership in regional assessments.                                                                         | Implemented — PR review pending                     |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -737,3 +738,16 @@ search, detail and retries. Changed evidence requires a refreshed preview. Captu
 remain immutable with canonical retries and organization/location deletion rules.
 No inbound, substitutes, reservations, policies or transfers. Reusable regions,
 dealer sharing and allocation follow separately. See [regional-stock-assessments.md](regional-stock-assessments.md).
+
+### Step 25b — approved 2026-10-22
+
+PR #141 is merged as `2038d00`. The owner approved reusable named regions with
+2–20 active locations in one organization, manual or region-based assessment
+selection, searchable history and compact green screens at all five widths plus
+Arabic RTL. Membership stays fixed; corrections create a new definition and
+archiving blocks new use without rewriting saved assessments. Copy exact region
+and location identities, keep existing stock calculations and confirmations, and
+reject unavailable locations or changed previews. Editors create/archive; every
+included location remains required for creation, reuse and inspection. Preserve
+stable retries, audits and organization/location deletion rules. No extra access,
+dealer sharing, allocation or operational changes. See [stock-regions.md](stock-regions.md).

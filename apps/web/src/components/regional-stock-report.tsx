@@ -1,5 +1,6 @@
 'use client'
 import { useLocale, useTranslations } from 'next-intl'
+import { StockRegionReport } from './stock-region-report'
 import type { RegionalStockReport as Report } from '@/lib/regional-stock'
 import { TableScrollRegion } from './table-scroll-region'
 export function RegionalStockReport({ report }: { report: Report }) {
@@ -36,6 +37,22 @@ export function RegionalStockReport({ report }: { report: Report }) {
           </p>
         )}
       </section>
+      {report.region && (
+        <details className="min-w-0 workspace-panel text-sm">
+          <summary className="min-h-11 cursor-pointer py-3">
+            {t('capturedRegion')}:{' '}
+            {locale.startsWith('ar') && report.region.name_ar
+              ? report.region.name_ar
+              : report.region.name_en}
+          </summary>
+          <p className="my-3 break-all text-xs">
+            <bdi>
+              {report.region.id} · {report.region.created_at}
+            </bdi>
+          </p>
+          <StockRegionReport report={report.region.definition} />
+        </details>
+      )}
       <TableScrollRegion label={t('lines')}>
         <table className="w-full min-w-[60rem] text-sm">
           <thead>

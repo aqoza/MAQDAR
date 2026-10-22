@@ -168,7 +168,12 @@ test('replenishment policy selection keeps the forecast banner, filters and back
   await expect(page.locator('[data-page-banner="forecasts"]')).toHaveCount(1)
   const search = page.getByLabel('Search item code', { exact: true })
   await search.fill('BRAKE')
-  await page.getByLabel('Location code', { exact: true }).fill('DXB')
+  const location = page.getByRole('combobox', { name: 'Location code', exact: true })
+  await location.fill('DXB')
+  // Manual historical codes have no suggestion to select; dismiss the popup before submitting.
+  await location.press('Escape')
+  await expect(location).toHaveAttribute('aria-expanded', 'false')
+  await expect(location).toHaveValue('DXB')
   await page.getByRole('button', { name: 'Apply filters', exact: true }).click()
   await expect(page).toHaveURL(
     (url) => url.searchParams.get('location') === 'DXB' && url.searchParams.get('q') === 'BRAKE',
