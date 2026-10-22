@@ -24,7 +24,7 @@ export function ExternalDriverReport({ report }: { report: DriverReport }) {
       <div className="grid min-w-0 gap-3 lg:grid-cols-2">
         {(['history', 'forecast'] as const).map((period) => (
           <section key={period} className="min-w-0 workspace-panel" aria-label={t(period)}>
-            <h2 className="text-section-title">{t(period)}</h2>
+            <h2 className="text-subsection-title">{t(period)}</h2>
             <p className="mt-1 text-xs" dir="ltr">
               {period === 'history'
                 ? `${report.input.history_from} – ${report.input.cutoff}`
@@ -50,7 +50,7 @@ export function ExternalDriverReport({ report }: { report: DriverReport }) {
             <tr>
               {(['date', 'period', 'value', 'kind', 'available_on', 'availability'] as const).map(
                 (key) => (
-                  <th key={key} className="p-2 text-start">
+                  <th key={key} className="p-2 text-start text-xs font-medium">
                     {t(key)}
                   </th>
                 ),

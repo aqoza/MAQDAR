@@ -58,7 +58,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
       <p>
         {data.item_code} · {run.locations?.code} · {data.unit ?? t('itemUnits')}
       </p>
-      <p>{t('asOf', { date: forecast.to_date })}</p>
+      <p className="text-xs">{t('asOf', { date: forecast.to_date })}</p>
       <p>
         {t('inputs', {
           lead: options.lead_time,
@@ -67,9 +67,9 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
         })}
       </p>
       <HelpDisclosure>
-        <p>{t('assumptions')}</p>
-        <p>{t('rulesNote')}</p>
-        {forecast.method === 'regional-v1' && <p>{t('groupNote')}</p>}
+        <p className="text-xs">{t('assumptions')}</p>
+        <p className="text-xs">{t('rulesNote')}</p>
+        {forecast.method === 'regional-v1' && <p className="text-xs">{t('groupNote')}</p>}
       </HelpDisclosure>
       {forecast.method !== 'regional-v1' && (
         <DemandUnitEvidence evidence={forecast.source?.unit_provenance} />
@@ -79,7 +79,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
         <div className="workspace-table overflow-x-auto">
           <table className="w-full text-sm">
             <caption className="text-start font-semibold">{t('thresholds')}</caption>
-            <thead>
+            <thead className="text-xs [&_th]:font-medium">
               <tr>
                 {(['period', 'days', 'forecast', 'quantile', 'safetyStock', 'target'] as const).map(
                   (key) => (
@@ -110,7 +110,7 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
           </table>
         </div>
       )}
-      <p>
+      <p className="text-xs">
         {t('evidenceCounts', {
           residuals: output.residual_count,
           positive: output.positive_days,
@@ -124,10 +124,10 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
         {t('sourceLink')}
       </Link>
       <details>
-        <summary className="cursor-pointer">{t('points')}</summary>
+        <summary className="min-h-11 cursor-pointer md:min-h-0">{t('points')}</summary>
         <table className="w-full text-sm">
           <caption className="sr-only">{t('points')}</caption>
-          <thead>
+          <thead className="text-xs [&_th]:font-medium">
             <tr>
               <th className="p-2 text-start">{t('date')}</th>
               <th className="p-2 text-start">{t('forecast')}</th>
@@ -145,12 +145,12 @@ export default async function PolicyResult({ params }: { params: Promise<{ runId
       </details>
       {!!output.calibration.length && (
         <details>
-          <summary className="cursor-pointer">{t('calibration')}</summary>
-          <p>{t('calibrationNote')}</p>
+          <summary className="min-h-11 cursor-pointer md:min-h-0">{t('calibration')}</summary>
+          <p className="text-xs">{t('calibrationNote')}</p>
           <div className="workspace-table overflow-x-auto">
             <table className="w-full text-sm">
               <caption className="sr-only">{t('calibration')}</caption>
-              <thead>
+              <thead className="text-xs [&_th]:font-medium">
                 <tr>
                   {(['date', 'trainTo', 'actual', 'prediction', 'error'] as const).map((k) => (
                     <th className="p-2 text-start" key={k}>

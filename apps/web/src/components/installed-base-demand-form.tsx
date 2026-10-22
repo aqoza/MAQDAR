@@ -141,7 +141,7 @@ export function InstalledBaseDemandForm({
             ))}
           </div>
           <details className="rounded-md border p-3">
-            <summary className="cursor-pointer text-sm">{t('csvHelp')}</summary>
+            <summary className="min-h-11 cursor-pointer text-sm md:min-h-0">{t('csvHelp')}</summary>
             <label className="mt-3 grid gap-1 text-sm">
               {t('csv')}
               <input

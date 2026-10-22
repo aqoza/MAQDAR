@@ -28,7 +28,7 @@ export function PlannedEventReport({ report }: { report: EventReport }) {
       <TableScrollRegion label={t('daily')} className="max-h-96">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('daily')}</caption>
-          <thead>
+          <thead className="text-xs [&_th]:font-medium">
             <tr>
               {(['date', 'baseline', 'addition', 'adjusted'] as const).map((key) => (
                 <th key={key} className="p-3 text-start">
@@ -54,14 +54,14 @@ export function PlannedEventReport({ report }: { report: EventReport }) {
         </table>
       </TableScrollRegion>
       <HelpDisclosure label={t('baselineEvidence')}>
-        <p>{t('baselineNote')}</p>
+        <p className="text-xs">{t('baselineNote')}</p>
         <p>
           {t('model')}: <bdi>{report.source.model}</bdi>
         </p>
         <TableScrollRegion label={t('modelScores')}>
           <table className="w-full text-sm">
             <caption className="sr-only">{t('modelScores')}</caption>
-            <thead>
+            <thead className="text-xs [&_th]:font-medium">
               <tr>
                 {(['model', 'rmse', 'mae', 'bias'] as const).map((key) => (
                   <th key={key} className="p-2 text-start">
@@ -90,8 +90,8 @@ export function PlannedEventReport({ report }: { report: EventReport }) {
         evidence.uncertainty.bands.length === report.daily.length ? (
           <TableScrollRegion label={t('baselineBands')}>
             <table className="w-full text-sm">
-              <caption>{t('baselineBands')}</caption>
-              <thead>
+              <caption className="text-xs">{t('baselineBands')}</caption>
+              <thead className="text-xs [&_th]:font-medium">
                 <tr>
                   {(['date', 'lower80', 'upper80', 'lower95', 'upper95'] as const).map((key) => (
                     <th key={key} className="p-2 text-start">

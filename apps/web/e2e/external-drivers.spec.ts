@@ -37,6 +37,8 @@ test('driver CSV evidence stays exact, scoped and responsive in both languages',
 with psycopg.connect(sys.argv[1]) as db:
     org=sys.argv[2]
     db.execute("insert into public.locations(organization_id,code,name_en,location_type,country_code,timezone) values(%s,'DRIVER-L','Driver location','branch','SA','Asia/Riyadh'),(%s,'OTHER-L','Other location','branch','SA','Asia/Riyadh')",(org,org))
+    db.execute("insert into public.locations(organization_id,code,name_en,name_ar,location_type,country_code,timezone,is_active) values(%s,'CLOSED-L','Closed service location','موقع خدمة مغلق','branch','SA','Asia/Riyadh',false)",(org,))
+    db.execute("update public.locations set name_ar='موقع الخدمة' where organization_id=%s and code='DRIVER-L'",(org,))
     db.execute("insert into public.items(organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency) values(%s,'DRIVER-P','Driver part','Test','EA',1,'SAR')",(org,))
     for user,role in [(sys.argv[4],'viewer'),(sys.argv[5],'branch_user')]:
         db.execute('insert into public.memberships(organization_id,user_id,role) values(%s,%s,%s)',(org,user,role))
@@ -46,6 +48,12 @@ with psycopg.connect(sys.argv[1]) as db:
     page.on('pageerror', (error) => errors.push(error.message))
     await page.goto('/forecasts')
     await page.getByRole('link', { name: 'External drivers', exact: true }).click()
+    await expect(page).toHaveURL(/\/forecasts\/drivers$/)
+    await expect(
+      page
+        .locator('p[role="status"]:visible')
+        .filter({ hasText: /^No driver datasets saved yet\.$/ }),
+    ).toHaveText('No driver datasets saved yet.')
     await page.getByRole('link', { name: 'Import driver dataset', exact: true }).click()
     await expect(page).toHaveURL(/\/forecasts\/drivers\/new$/)
     await expect(
@@ -67,7 +75,33 @@ with psycopg.connect(sys.argv[1]) as db:
           : page.getByLabel(label, { exact: true })
       await field.fill(value)
       await expect(field).toHaveValue(value)
+      if (label === 'Location code') {
+        await expect(field).toHaveAttribute('aria-expanded', 'true')
+        await field.press('Escape')
+        await expect(field).toHaveAttribute('aria-expanded', 'false')
+      }
     }
+    const location = page.getByRole('combobox', { name: 'Location code', exact: true })
+    const activeLookup = page.waitForResponse((response) => {
+      const url = new URL(response.url())
+      return (
+        url.pathname === '/api/lookup/locations' &&
+        url.searchParams.get('q') === 'Closed service' &&
+        !url.searchParams.has('include_inactive')
+      )
+    })
+    await location.fill('Closed service')
+    expect((await (await activeLookup).json()).locations).toEqual([])
+    await location.fill('Driver location')
+    await expect(page.getByRole('option').filter({ hasText: 'DRIVER-L' })).toBeVisible()
+    await expect(page.getByRole('option').filter({ hasText: 'CLOSED-L' })).toHaveCount(0)
+    await location.press('ArrowDown')
+    await location.press('Enter')
+    await expect(location).toHaveAttribute('aria-expanded', 'false')
+    await expect(location).toHaveValue('DRIVER-L')
+    expect(
+      JSON.parse(await page.locator('input[name="input"]').first().inputValue()).location_code,
+    ).toBe('DRIVER-L')
     const header = 'date,value,kind,available_on\n'
     const first = '2026-01-01,-0.123456,observed,2026-01-01\n'
     const file = (text: string) => ({
@@ -89,12 +123,14 @@ with psycopg.connect(sys.argv[1]) as db:
             '2026-01-03,999999999999.999999,observed,2026-01-04\n2026-01-04,0,planned,2026-01-01\n',
         ),
       )
-    await expect(page.getByRole('status')).toContainText('3 daily values')
+    await expect(page.locator('p[role="status"]')).toContainText('3 daily values')
     await expect(page.getByLabel('Item code', { exact: true })).toHaveValue('DRIVER-P')
     await expect(page.getByLabel('Location code', { exact: true })).toHaveValue('DRIVER-L')
     await expect(page.getByLabel('Driver name', { exact: true })).toHaveValue('Daily temperature')
     await page.getByRole('button', { name: 'Preview coverage', exact: true }).click()
     const region = page.getByRole('region', { name: 'Daily driver evidence', exact: true })
+    await expect(region.getByRole('columnheader').first()).toHaveCSS('font-size', '12px')
+    await expect(region.getByRole('columnheader').first()).toHaveCSS('font-weight', '500')
     await expect(region.getByText('999999999999.999999', { exact: true })).toBeVisible()
     await expect(page.getByLabel('Item code', { exact: true })).toHaveValue('DRIVER-P')
     await expect(region.getByRole('row').filter({ hasText: '2026-01-02' })).toContainText(
@@ -112,6 +148,17 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(
       page.getByRole('button', { name: 'Save driver dataset', exact: true }),
     ).toBeVisible()
+    await location.fill('OTHER-L')
+    await expect(location).toHaveAttribute('aria-expanded', 'true')
+    await location.press('Escape')
+    await expect(location).toHaveAttribute('aria-expanded', 'false')
+    await expect(
+      page.getByRole('button', { name: 'Save driver dataset', exact: true }),
+    ).toHaveCount(0)
+    await location.fill('DRIVER-L')
+    await expect(location).toHaveAttribute('aria-expanded', 'true')
+    await location.press('Escape')
+    await expect(location).toHaveAttribute('aria-expanded', 'false')
     await page.getByLabel('Driver unit', { exact: true }).fill('Kelvin')
     await expect(
       page.getByRole('button', { name: 'Save driver dataset', exact: true }),
@@ -123,6 +170,8 @@ with psycopg.connect(sys.argv[1]) as db:
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       ).toBe(true)
       await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+      await expect(page.locator('dd.text-evidence-value').first()).toHaveCSS('font-size', '14px')
+      await expect(page.getByRole('columnheader').first()).toHaveCSS('font-size', '12px')
       await expect(page.getByLabel('Item code', { exact: true })).toHaveCSS(
         'font-size',
         width < 768 ? '16px' : '14px',
@@ -160,6 +209,9 @@ with psycopg.connect(sys.argv[1]) as db:
           await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
         ).toBe(true)
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+        await expect(page.locator('h2').first()).toHaveCSS('font-size', '14px')
+        await expect(page.locator('dd.text-evidence-value').first()).toHaveCSS('font-size', '14px')
+        await expect(page.getByRole('columnheader').first()).toHaveCSS('font-size', '12px')
         const table = page.getByRole('region', {
           name: locale === 'ar' ? 'الأدلة اليومية للعامل' : 'Daily driver evidence',
           exact: true,
@@ -186,6 +238,13 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(
       page.getByRole('heading', { name: 'استيراد بيانات عامل خارجي', exact: true }),
     ).toBeVisible()
+    const arabicLocation = page.getByRole('combobox')
+    await arabicLocation.fill('موقع الخدمة')
+    await expect(page.getByRole('option').filter({ hasText: 'DRIVER-L' })).toBeVisible()
+    await arabicLocation.press('ArrowDown')
+    await arabicLocation.press('Enter')
+    await expect(arabicLocation).toHaveAttribute('aria-expanded', 'false')
+    await expect(arabicLocation).toHaveValue('DRIVER-L')
     for (const width of [375, 768, 1024, 1440, 1920]) {
       await page.setViewportSize({ width, height: 1000 })
       expect(
@@ -200,6 +259,28 @@ with psycopg.connect(sys.argv[1]) as db:
       .context()
       .addCookies([{ name: 'locale', value: 'en', url: new URL(savedUrl).origin }])
     await page.goto('/forecasts/drivers')
+    const historySearch = page.getByRole('textbox', { name: 'Driver name', exact: true })
+    const unsavedLocation = page.getByRole('combobox', { name: 'Location code', exact: true })
+    const unfilteredHistoryUrl = page.url()
+    await historySearch.fill('Unsaved search')
+    await unsavedLocation.fill('HISTORICAL-L')
+    await expect(unsavedLocation).toHaveAttribute('aria-expanded', 'true')
+    await unsavedLocation.press('Escape')
+    await expect(unsavedLocation).toHaveAttribute('aria-expanded', 'false')
+    await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await expect(page).toHaveURL(unfilteredHistoryUrl)
+    await expect(historySearch).toHaveValue('')
+    await expect(unsavedLocation).toHaveValue('')
+    await page.goto('/forecasts/drivers?item=DRIVER-P')
+    const appliedItem = page.getByRole('textbox', { name: 'Item code', exact: true })
+    await expect(appliedItem).toHaveValue('DRIVER-P')
+    await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await expect(page).toHaveURL(/\/forecasts\/drivers$/)
+    await expect(appliedItem).toHaveValue('')
+    await historySearch.fill('Temporary search')
+    await page.getByRole('button', { name: 'Clear search', exact: true }).click()
+    await expect(historySearch).toHaveValue('')
+    await expect(historySearch).toBeFocused()
     await page.getByLabel('Driver name', { exact: true }).fill('temperature')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
     await expect(page).toHaveURL(/q=temperature/)
@@ -227,10 +308,31 @@ with psycopg.connect(sys.argv[1]) as db:
       .context()
       .addCookies([{ name: 'locale', value: 'en', url: new URL(savedUrl).origin }])
     await page.reload()
-    await page.getByLabel('Location code', { exact: true }).fill('OTHER-L')
+    const historicalLocation = page.getByRole('combobox', { name: 'Location code', exact: true })
+    const historicalLookup = page.waitForResponse((response) => {
+      const url = new URL(response.url())
+      return (
+        url.pathname === '/api/lookup/locations' &&
+        url.searchParams.get('q') === 'Closed service' &&
+        url.searchParams.get('include_inactive') === 'true'
+      )
+    })
+    await historicalLocation.fill('Closed service')
+    await historicalLookup
+    await expect(page.getByRole('option').filter({ hasText: 'CLOSED-L' })).toBeVisible()
+    await historicalLocation.press('ArrowDown')
+    await historicalLocation.press('Enter')
+    await expect(historicalLocation).toHaveAttribute('aria-expanded', 'false')
+    await expect(historicalLocation).toHaveValue('CLOSED-L')
+    await historicalLocation.fill('OTHER-L')
+    await expect(historicalLocation).toHaveAttribute('aria-expanded', 'true')
+    await historicalLocation.press('Escape')
+    await expect(historicalLocation).toHaveAttribute('aria-expanded', 'false')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
     await expect(page).toHaveURL(/location=OTHER-L/)
-    await expect(page.getByRole('status')).toHaveText('No driver datasets match these filters.')
+    await expect(page.locator('p[role="status"]')).toHaveText(
+      'No driver datasets match these filters.',
+    )
     const paged = await python(`import sys,json,psycopg
 from uuid import uuid4
 from psycopg.types.json import Jsonb

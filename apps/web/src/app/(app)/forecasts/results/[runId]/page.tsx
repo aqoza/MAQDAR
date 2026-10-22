@@ -116,7 +116,7 @@ export default async function ForecastResults({
       <div className="workspace-table overflow-x-auto">
         <table className="w-full text-sm">
           <caption className="sr-only">{t('results')}</caption>
-          <thead>
+          <thead className="text-xs [&_th]:font-medium">
             <tr>
               {(
                 ['item', 'status', 'model', 'total', 'rmse', 'mae', 'bias', 'details'] as const
@@ -196,7 +196,9 @@ export default async function ForecastResults({
               </Link>
             </div>
           )}
-          <p>{t('observed', { from: detail.source.start_day, to: detail.source.end_day })}</p>
+          <p className="text-xs">
+            {t('observed', { from: detail.source.start_day, to: detail.source.end_day })}
+          </p>
           {driver && <DriverForecastDetails detail={detail} />}
           {!detail.source.preparation && (
             <DemandUnitEvidence evidence={detail.source.unit_provenance} />
@@ -204,7 +206,7 @@ export default async function ForecastResults({
           {detail.source.preparation ? (
             <PreparedForecastDetails detail={detail} locale={locale} />
           ) : (
-            <p>
+            <p className="text-xs">
               {t('lifecycle', {
                 from: detail.source.introduced_on ?? '—',
                 to: detail.source.discontinued_on ?? '—',
@@ -230,12 +232,12 @@ export default async function ForecastResults({
               )}
               <h3 className="text-subsection-title">{t('comparison')}</h3>
               <HelpDisclosure>
-                <p>{t('scoreNote')}</p>
+                <p className="text-xs">{t('scoreNote')}</p>
               </HelpDisclosure>
               <div className="workspace-table overflow-x-auto">
                 <table className="w-full text-sm">
                   <caption className="sr-only">{t('comparison')}</caption>
-                  <thead>
+                  <thead className="text-xs [&_th]:font-medium">
                     <tr>
                       {(['model', 'rmse', 'mae', 'bias'] as const).map((k) => (
                         <th key={k} className="p-2 text-start">
@@ -262,10 +264,10 @@ export default async function ForecastResults({
                 </table>
               </div>
               <details>
-                <summary className="cursor-pointer">{t('folds')}</summary>
+                <summary className="min-h-11 cursor-pointer md:min-h-0">{t('folds')}</summary>
                 {detail.output.folds.map((fold, i) => (
                   <div key={fold.test_from} className="my-3 space-y-1 rounded-md border p-3">
-                    <p>
+                    <p className="text-xs">
                       {t('foldWindow', {
                         number: i + 1,
                         trainFrom: fold.train_from,
@@ -289,11 +291,11 @@ export default async function ForecastResults({
                 <div className="space-y-2">
                   <h3 className="text-subsection-title">{t('uncertainty')}</h3>
                   <HelpDisclosure>
-                    <p>{t('uncertaintyNote')}</p>
+                    <p className="text-xs">{t('uncertaintyNote')}</p>
                   </HelpDisclosure>
                   <p>{t(`uncertaintyStatuses.${detail.output.uncertainty.status}`)}</p>
                   {detail.output.uncertainty.residual_count !== undefined && (
-                    <p>
+                    <p className="text-xs">
                       {t('calibrationCount', { count: detail.output.uncertainty.residual_count })}
                     </p>
                   )}
@@ -302,7 +304,7 @@ export default async function ForecastResults({
               <TableScrollRegion label={t('daily')}>
                 <table className="w-full text-sm">
                   <caption className="sr-only">{t('daily')}</caption>
-                  <thead>
+                  <thead className="text-xs [&_th]:font-medium">
                     <tr>
                       <th className="p-2 text-start">{t('date')}</th>
                       <th className="p-2 text-start">{t('quantity')}</th>
@@ -336,13 +338,13 @@ export default async function ForecastResults({
                 <section className="space-y-2" aria-label={t('coverage')}>
                   <h3 className="text-subsection-title">{t('coverage')}</h3>
                   <HelpDisclosure>
-                    <p>{t('coverageNote')}</p>
+                    <p className="text-xs">{t('coverageNote')}</p>
                   </HelpDisclosure>
                   <p>{t(`evaluationStatuses.${detail.output.evaluation.status}`)}</p>
                   {detail.output.evaluation.status === 'available' &&
                     detail.output.evaluation.model && (
                       <>
-                        <p>
+                        <p className="text-xs">
                           {t('coverageWindow', {
                             model: t(`models.${detail.output.evaluation.model}`),
                             train: detail.output.evaluation.train_to ?? '',
@@ -365,12 +367,12 @@ export default async function ForecastResults({
             </>
           )}
           <details>
-            <summary className="cursor-pointer">{t('source')}</summary>
-            <p className="my-2 text-sm">{regional ? prepared('sourceNote') : t('sourceNote')}</p>
+            <summary className="min-h-11 cursor-pointer md:min-h-0">{t('source')}</summary>
+            <p className="my-2 text-xs">{regional ? prepared('sourceNote') : t('sourceNote')}</p>
             <TableScrollRegion label={t('source')}>
               <table className="w-full text-sm">
                 <caption className="sr-only">{t('source')}</caption>
-                <thead>
+                <thead className="text-xs [&_th]:font-medium">
                   <tr>
                     {(['date', 'sold', 'lost'] as const).map((k) => (
                       <th key={k} className="p-2 text-start">

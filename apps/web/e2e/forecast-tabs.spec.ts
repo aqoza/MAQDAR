@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test'
-import { createConfirmedUser, signInWithPassword } from './helpers/auth'
+import {
+  createConfirmedUser,
+  organizationIdBySlug,
+  seedRows,
+  signInWithPassword,
+} from './helpers/auth'
 import { createOrganization } from './helpers/organizations'
 
 const labels = [
@@ -21,7 +26,22 @@ for (const width of [375, 1440]) {
     const password = `Tabs-pass-${run}`
     await createConfirmedUser(email, password)
     await signInWithPassword(page, email, password)
-    await createOrganization(page, { name: `Tabs ${run}`, slug: `tabs-${run}` })
+    const slug = `tabs-${run}`
+    await createOrganization(page, { name: `Tabs ${run}`, slug })
+    const organization = await organizationIdBySlug(slug)
+    await seedRows(
+      'locations',
+      [
+        { code: 'ACTIVE', name_en: 'Current workflow branch', is_active: true },
+        { code: 'ARCHIVE', name_en: 'Retired workflow branch', is_active: false },
+      ].map((location) => ({
+        ...location,
+        organization_id: organization,
+        location_type: 'branch',
+        country_code: 'SA',
+        timezone: 'Asia/Riyadh',
+      })),
+    )
     await page.goto('/forecasts')
     const url = page.url()
     const originalDocument = await page.evaluateHandle(() => document)
@@ -46,19 +66,33 @@ for (const width of [375, 1440]) {
           ).toBeVisible()
         }
       }
-      if (index === 0 || index >= 3) {
-        await panel.getByLabel('Location code', { exact: true }).fill(`TEST-${index}`)
-        if (index === 0) {
-          const location = panel.getByRole('combobox', { name: 'Location code', exact: true })
-          await expect(location).toHaveAttribute('aria-expanded', 'true')
-          await location.press('Escape')
-          await expect(location).toHaveAttribute('aria-expanded', 'false')
+      if (index === 0 || index >= 2) {
+        const location = panel.getByRole('combobox', { name: 'Location code', exact: true })
+        await expect(location).toHaveAttribute('placeholder', 'Search location code or name')
+        await expect(location).toHaveCSS('font-size', width < 768 ? '16px' : '14px')
+        await location.fill('workflow branch')
+        await expect(
+          page.getByRole('option', { name: /ACTIVE.*Current workflow branch/ }),
+        ).toBeVisible()
+        if (index === 2) {
+          await expect(
+            page.getByRole('option', { name: /ARCHIVE.*Retired workflow branch/ }),
+          ).toBeVisible()
+        } else {
+          await expect(page.getByRole('option', { name: /ARCHIVE/ })).toHaveCount(0)
         }
+        await location.press('ArrowDown')
+        await location.press('Enter')
+        await expect(location).toHaveValue('ACTIVE')
+        await location.fill(`TEST-${index}`)
+        await expect(location).toHaveAttribute('aria-expanded', 'true')
+        await location.press('Escape')
+        await expect(location).toHaveAttribute('aria-expanded', 'false')
       }
       expect(page.url()).toBe(url)
       expect(await originalDocument.evaluate((original) => original === document)).toBe(true)
     }
-    for (const index of [0, 3, 4, 5]) {
+    for (const index of [0, 2, 3, 4, 5]) {
       await tabs.nth(index).click()
       await expect(
         page.getByRole('tabpanel').getByLabel('Location code', { exact: true }),

@@ -18,11 +18,11 @@ export async function StockPoolReport({
   return (
     <section className="space-y-4" aria-label={t('pool.members')}>
       <h3 className="text-subsection-title">{t('pool.members')}</h3>
-      <p>{t('pool.description')}</p>
+      <p className="text-xs">{t('pool.description')}</p>
       <p>{t('pool.available', { value: amount(pool.available), unit: unit ?? '—' })}</p>
       <div className="overflow-x-auto rounded-xl border">
         <table className="w-full text-start text-sm" aria-label={t('pool.members')}>
-          <thead>
+          <thead className="text-xs [&_th]:font-medium">
             <tr className="border-b">
               {(
                 [
@@ -47,10 +47,12 @@ export async function StockPoolReport({
                 <th scope="row" className="p-3 text-start font-normal">
                   <strong>{member.item_code}</strong>
                   <details className="mt-2">
-                    <summary>{t('identity')}</summary>
-                    <p className="break-all">{t('pool.itemId', { id: member.item_id })}</p>
+                    <summary className="min-h-11 cursor-pointer md:min-h-0">
+                      {t('identity')}
+                    </summary>
+                    <p className="break-all text-xs">{t('pool.itemId', { id: member.item_id })}</p>
                     {member.snapshot && (
-                      <p className="break-all">
+                      <p className="break-all text-xs">
                         {t('snapshotId', {
                           id: member.snapshot.id,
                           time: member.snapshot.updated_at,
@@ -63,7 +65,7 @@ export async function StockPoolReport({
                 <td className="min-w-52 p-3">
                   <p>{t(`memberStatuses.${member.status}`)}</p>
                   {member.snapshot && (
-                    <p>
+                    <p className="text-xs">
                       {t('snapshot', {
                         date: member.snapshot.date,
                         age: member.snapshot.age,
@@ -87,13 +89,13 @@ export async function StockPoolReport({
           </tbody>
         </table>
       </div>
-      <p>{t('pool.valuation')}</p>
+      <p className="text-xs">{t('pool.valuation')}</p>
       {pool.inventory_values.length > 0 && (
         <dl className="flex flex-wrap gap-4 workspace-panel" aria-label={t('pool.values')}>
           {pool.inventory_values.map((value) => (
             <div key={value.currency}>
-              <dt>{value.currency}</dt>
-              <dd className="tabular-nums">{amount(value.value)}</dd>
+              <dt className="text-xs">{value.currency}</dt>
+              <dd className="text-evidence-value tabular-nums">{amount(value.value)}</dd>
             </div>
           ))}
         </dl>

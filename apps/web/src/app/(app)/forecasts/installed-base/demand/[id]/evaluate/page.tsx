@@ -67,7 +67,7 @@ export default async function CreateInstalledEvaluation({
           </>
         }
       />
-      <p className="workspace-panel text-sm">
+      <p className="workspace-panel text-evidence-value">
         <bdi>
           {scenario.source.population.input.item_code} ·{' '}
           {scenario.source.population.input.location_code} · {scenario.source.population.input.unit}{' '}

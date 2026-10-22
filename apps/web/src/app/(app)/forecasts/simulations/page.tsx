@@ -58,7 +58,7 @@ export default async function Simulations({
       ) : (
         <TableScrollRegion label={t('history')}>
           <table className="w-full min-w-[32rem] text-sm">
-            <thead>
+            <thead className="text-xs [&_th]:font-medium">
               <tr>
                 {(['location', 'window', 'status', 'inspect'] as const).map((key) => (
                   <th className="p-3 text-start" key={key}>

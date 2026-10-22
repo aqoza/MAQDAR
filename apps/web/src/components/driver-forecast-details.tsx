@@ -38,7 +38,7 @@ export async function DriverForecastDetails({
             <Link className="underline" href={`/forecasts/drivers/${d.id}`}>
               {d.report.input.driver_name} · {t('dataset')}
             </Link>
-            <p>
+            <p className="text-xs">
               {t('importedAt')} <bdi>{d.imported_at}</bdi>
             </p>
           </div>
@@ -56,15 +56,15 @@ export async function DriverForecastDetails({
         checks?.length ? (
           <TableScrollRegion key={label} label={label}>
             <table className="w-full min-w-[36rem] text-sm">
-              <caption className="p-2 text-start font-medium">{label}</caption>
+              <caption className="p-2 text-start text-xs font-medium">{label}</caption>
               <thead>
                 <tr>
                   {(['cutoff', 'stage', 'status', 'reason', 'date', 'phase'] as const).map((k) => (
-                    <th key={k} className="p-2 text-start">
+                    <th key={k} className="p-2 text-start text-xs font-medium">
                       {t(k)}
                     </th>
                   ))}
-                  {multi && <th className="p-2 text-start">{t('dataset')}</th>}
+                  {multi && <th className="p-2 text-start text-xs font-medium">{t('dataset')}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -105,8 +105,8 @@ export async function DriverForecastDetails({
       )}
       {fit?.status === 'available' && (
         <details className="workspace-panel text-sm">
-          <summary className="cursor-pointer">{t('coefficients')}</summary>
-          <p className="my-3">{t('formula')}</p>
+          <summary className="min-h-11 cursor-pointer md:min-h-0">{t('coefficients')}</summary>
+          <p className="my-3 text-xs">{t('formula')}</p>
           {!multi && (
             <dl className="grid gap-3 sm:grid-cols-2">
               {(['slope', 'penalty', 'training_min', 'training_max'] as const).map((k) => (
@@ -126,7 +126,7 @@ export async function DriverForecastDetails({
               </p>
               {fit.predictors?.map((p) => (
                 <div key={p.dataset_id} className="my-3 rounded-md border p-3">
-                  <h4 className="font-medium">
+                  <h4 className="text-subsection-title">
                     {drivers.find((d) => d.id === p.dataset_id)?.report.input.driver_name}
                   </h4>
                   <dl className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -142,7 +142,7 @@ export async function DriverForecastDetails({
                     )}
                   </dl>
                   {!!p.extrapolated_dates.length && (
-                    <p className="mt-2 break-words">
+                    <p className="mt-2 break-words text-xs">
                       {t('extrapolation')} <bdi>{p.extrapolated_dates.join(', ')}</bdi>
                     </p>
                   )}
@@ -158,7 +158,7 @@ export async function DriverForecastDetails({
             ))}
           </ol>
           {!!fit.extrapolated_dates?.length && (
-            <p className="mt-3">
+            <p className="mt-3 text-xs">
               {t('extrapolation')} <bdi>{fit.extrapolated_dates.join(', ')}</bdi>
             </p>
           )}
@@ -166,7 +166,7 @@ export async function DriverForecastDetails({
       )}
       {drivers.map((d) => (
         <details key={d.id} className="workspace-panel text-sm">
-          <summary className="cursor-pointer">
+          <summary className="min-h-11 cursor-pointer md:min-h-0">
             {t('capturedDataset')}
             {multi ? ` · ${d.report.input.driver_name}` : ''}
           </summary>

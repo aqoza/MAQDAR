@@ -18,7 +18,7 @@ export function EventPolicyReport({ report }: { report: Report }) {
           const period = report.periods[key]
           return (
             <div key={key} className="min-w-0 space-y-3 workspace-panel">
-              <h2 className="text-section-title">{t(key)}</h2>
+              <h2 className="text-subsection-title">{t(key)}</h2>
               <p className="text-xs text-muted-foreground">
                 {t('period', { start: report.event.source.cutoff, days: period.baseline.days })}
               </p>
@@ -49,7 +49,7 @@ export function EventPolicyReport({ report }: { report: Report }) {
       </div>
       <p className="text-sm text-muted-foreground">{t('assumptions')}</p>
       <HelpDisclosure label={t('evidence')}>
-        <p>
+        <p className="text-xs">
           {t('parameters', {
             lead: options.lead_time,
             review: options.review_interval,
@@ -59,8 +59,10 @@ export function EventPolicyReport({ report }: { report: Report }) {
             }).format(options.service_level as unknown as number),
           })}
         </p>
-        <p>{t('outside', { quantity: format(report.outside_addition), unit })}</p>
-        <p>{t('baselineNote')}</p>
+        <p className="text-xs">
+          {t('outside', { quantity: format(report.outside_addition), unit })}
+        </p>
+        <p className="text-xs">{t('baselineNote')}</p>
         <div className="flex flex-wrap gap-4">
           <Link className="underline" href={`/forecasts/events/${report.input.event_id}`}>
             {t('eventSource')}
@@ -72,7 +74,7 @@ export function EventPolicyReport({ report }: { report: Report }) {
         <TableScrollRegion label={t('daily')} className="max-h-96">
           <table className="w-full text-sm">
             <caption className="sr-only">{t('daily')}</caption>
-            <thead>
+            <thead className="text-xs [&_th]:font-medium">
               <tr>
                 {(['date', 'addition', 'leadWindow', 'protectionWindow'] as const).map((key) => (
                   <th key={key} className="p-3 text-start">

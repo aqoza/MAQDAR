@@ -42,6 +42,21 @@ test('installed-base demand preserves explicit rates, exact expectations and sco
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       ).toBe(true)
       await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+      for (const heading of await page.locator('h2').all()) {
+        await expect(heading).toHaveCSS('font-size', '14px')
+      }
+      for (const heading of await page.locator('th').all()) {
+        await expect(heading).toHaveCSS('font-size', '12px')
+        await expect(heading).toHaveCSS('font-weight', '500')
+      }
+      if (kind !== 'history' && (await page.locator('dd.text-evidence-value').count())) {
+        await expect(page.locator('dd.text-evidence-value').first()).toHaveCSS('font-size', '14px')
+      }
+      if (width === 375) {
+        for (const summary of await page.locator('summary:visible').all()) {
+          expect((await summary.boundingBox())!.height).toBeGreaterThanOrEqual(44)
+        }
+      }
       await page.screenshot({
         path: testInfo.outputPath(`installed-base-demand-${kind}-${locale}-${width}.png`),
         fullPage: true,
@@ -73,6 +88,8 @@ with psycopg.connect(sys.argv[1]) as db:
     const dataset = seeded.stdout.trim(),
       sourceUrl = `/forecasts/installed-base/${dataset}`,
       createUrl = `${sourceUrl}/demand`
+    await page.goto('/forecasts/installed-base/demand')
+    await expect(page.locator('p[role="status"]')).toHaveText('No saved demand scenarios yet.')
     await page.goto(sourceUrl)
     await page.getByRole('link', { name: 'Create demand scenario', exact: true }).click()
     await expect(page).toHaveURL(new RegExp(`${dataset}/demand$`))
@@ -144,7 +161,7 @@ with psycopg.connect(sys.argv[1]) as db:
             'C,0,Explicit zero,2026-01-03\nB,0.000000001,"Assumption, not learned",2026-01-02\nA,0.01,Assumption A,2026-01-03\n',
         ),
       )
-    await expect(page.getByRole('status')).toContainText('3 of 3 groups')
+    await expect(page.locator('p[role="status"]')).toContainText('3 of 3 groups')
     await preview.click()
     await expect(table.getByText('0.000000000003', { exact: true })).toBeVisible()
     await visual('form', 'en')
@@ -182,7 +199,12 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.goto(createUrl)
     await visual('form', 'ar')
     await locale('en')
-    await page.goto('/forecasts/installed-base/demand')
+    await page.goto('/forecasts/installed-base/demand?item=BASE-P')
+    const appliedItem = page.getByRole('textbox', { name: 'Part code', exact: true })
+    await expect(appliedItem).toHaveValue('BASE-P')
+    await page.getByRole('link', { name: 'Reset', exact: true }).click()
+    await expect(page).toHaveURL(/\/forecasts\/installed-base\/demand$/)
+    await expect(appliedItem).toHaveValue('')
     await page.getByLabel('Scenario name', { exact: true }).fill('replacement')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
     await expect(page).toHaveURL(/q=replacement/)
@@ -194,9 +216,16 @@ with psycopg.connect(sys.argv[1]) as db:
       await visual('history', lang)
     }
     await locale('en')
-    await page.getByLabel('Service location code', { exact: true }).fill('OTHER-L')
+    const historyLocation = page.getByRole('combobox', {
+      name: 'Service location code',
+      exact: true,
+    })
+    await historyLocation.fill('OTHER-L')
+    await expect(historyLocation).toHaveAttribute('aria-expanded', 'true')
+    await historyLocation.press('Escape')
+    await expect(historyLocation).toHaveAttribute('aria-expanded', 'false')
     await page.getByRole('button', { name: 'Search', exact: true }).click()
-    await expect(page.getByRole('status')).toHaveText(
+    await expect(page.locator('p[role="status"]')).toHaveText(
       'No saved demand scenarios match these filters.',
     )
     const many = await python(`import sys,json,psycopg

@@ -114,7 +114,8 @@ export default async function NewMultiDriverForecast({
           datasetId={id}
           datasets={(candidates ?? []).map((d) => ({
             id: d.id,
-            label: `${d.driver_name} · ${d.driver_unit} · ${d.created_at} · ${d.id}`,
+            label: d.driver_name,
+            metadata: `${d.driver_unit} · ${d.created_at} · ${d.id}`,
           }))}
           requestId={crypto.randomUUID()}
           forecasts={(rows ?? []).map((r) => ({

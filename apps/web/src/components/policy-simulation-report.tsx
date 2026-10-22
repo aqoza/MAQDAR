@@ -19,10 +19,10 @@ export async function PolicySimulationReport({ evidence }: { evidence: Simulatio
         })}
       </p>
       <HelpDisclosure>
-        <p>{t('interpretation')}</p>
-        <p>{t('method')}</p>
-        <p>{t('ratios')}</p>
-        <p>
+        <p className="text-xs">{t('interpretation')}</p>
+        <p className="text-xs">{t('method')}</p>
+        <p className="text-xs">{t('ratios')}</p>
+        <p className="text-xs">
           {t('captured', {
             time: evidence.computed_at,
             recorded: evidence.demand.filter((day) => day.recorded).length,
@@ -33,7 +33,7 @@ export async function PolicySimulationReport({ evidence }: { evidence: Simulatio
       <TableScrollRegion label={t('comparison')}>
         <table className="w-full min-w-[32rem] text-sm">
           <caption className="p-3 text-start text-section-title">{t('comparison')}</caption>
-          <thead>
+          <thead className="text-xs [&_th]:font-medium">
             <tr>
               <th className="p-3 text-start">{t('metric')}</th>
               {evidence.output.variants.map((v) => (

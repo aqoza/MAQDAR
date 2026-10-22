@@ -20,7 +20,7 @@ export async function PreparedForecastDetails({
   return (
     <div className="space-y-4 workspace-panel">
       <p>{t('units', { unit: source.unit })}</p>
-      <p className="text-sm">
+      <p className="text-xs">
         {t('window', {
           from: source.original_from,
           used: detail.source.start_day,
@@ -36,11 +36,11 @@ export async function PreparedForecastDetails({
       {model && (
         <>
           <h3 className="text-subsection-title">{t('effectsTitle')}</h3>
-          <p className="text-sm">{t('effectsNote')}</p>
+          <p className="text-xs">{t('effectsNote')}</p>
           <p>
             {t(detail.output.model === 'calendar' ? 'candidateSelected' : 'candidateNotSelected')}
           </p>
-          <p>
+          <p className="text-xs">
             {t('unknownCounts', {
               history: model.unknown_training_days,
               future: model.unknown_future_days,
@@ -49,7 +49,7 @@ export async function PreparedForecastDetails({
           <div className="workspace-table overflow-x-auto">
             <table className="w-full text-sm">
               <caption className="sr-only">{t('effectsTitle')}</caption>
-              <thead>
+              <thead className="text-xs [&_th]:font-medium">
                 <tr>
                   {(['event', 'days', 'ordinaryDays', 'support', 'adjustment'] as const).map(
                     (key) => (
@@ -74,10 +74,10 @@ export async function PreparedForecastDetails({
             </table>
           </div>
           <details>
-            <summary className="cursor-pointer">{t('weekdays')}</summary>
+            <summary className="min-h-11 cursor-pointer md:min-h-0">{t('weekdays')}</summary>
             <table className="w-full text-sm">
               <caption className="sr-only">{t('weekdays')}</caption>
-              <thead>
+              <thead className="text-xs [&_th]:font-medium">
                 <tr>
                   {(['weekday', 'days', 'mean'] as const).map((key) => (
                     <th key={key} className="p-2 text-start">
@@ -101,11 +101,11 @@ export async function PreparedForecastDetails({
       )}
       {!!detail.output.future_calendar?.length && (
         <details>
-          <summary className="cursor-pointer">{t('futureCalendar')}</summary>
-          <p className="my-2 text-sm">{t('futureNote')}</p>
+          <summary className="min-h-11 cursor-pointer md:min-h-0">{t('futureCalendar')}</summary>
+          <p className="my-2 text-xs">{t('futureNote')}</p>
           <table className="w-full text-sm">
             <caption className="sr-only">{t('futureCalendar')}</caption>
-            <thead>
+            <thead className="text-xs [&_th]:font-medium">
               <tr>
                 {(['date', 'verified', 'holiday', 'ramadan', 'working'] as const).map((key) => (
                   <th key={key} className="p-2 text-start">

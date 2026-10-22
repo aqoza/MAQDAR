@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { enqueueClassification } from '@/app/(app)/forecasts/classify/actions'
 import { idleState } from '@/lib/forms'
 import { CLASSIFICATION_DEFAULTS, CLASSIFICATION_FIELDS } from '@/lib/classification'
+import { LocationCodeInput } from '@/components/master-data/location-code-input'
 
 export function ClassificationForm({
   organizationId,
@@ -25,16 +26,15 @@ export function ClassificationForm({
       <input type="hidden" name="organization_id" value={organizationId} />
       <input type="hidden" name="request_id" value={requestId} />
       <div className="grid gap-4 sm:grid-cols-3">
-        <label className="grid gap-1 text-sm">
-          {t('location')}
-          <input
+        <div className="grid min-w-0 gap-1 text-sm">
+          <label htmlFor="classification-location">{t('location')}</label>
+          <LocationCodeInput
+            id="classification-location"
             name="location_code"
             required
-            maxLength={64}
             defaultValue={state.values?.location_code ?? ''}
-            className={inputClass}
           />
-        </label>
+        </div>
         <label className="grid gap-1 text-sm">
           {t('from')}
           <input
@@ -57,7 +57,7 @@ export function ClassificationForm({
         </label>
       </div>
       <details>
-        <summary className="cursor-pointer">{t('thresholds')}</summary>
+        <summary className="min-h-11 cursor-pointer md:min-h-0">{t('thresholds')}</summary>
         <div className="mt-3 grid gap-4 sm:grid-cols-3">
           {CLASSIFICATION_FIELDS.map((key) => (
             <label key={key} className="grid gap-1 text-sm">
@@ -75,7 +75,7 @@ export function ClassificationForm({
             </label>
           ))}
         </div>
-        <p className="mt-2 text-sm text-muted-foreground">{t('thresholdNote')}</p>
+        <p className="mt-2 text-xs text-muted-foreground">{t('thresholdNote')}</p>
       </details>
       <label className="flex items-start gap-2 text-sm">
         <input name="history_complete" type="checkbox" required className="mt-1" />

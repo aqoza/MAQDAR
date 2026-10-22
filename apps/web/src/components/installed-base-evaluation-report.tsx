@@ -25,7 +25,7 @@ export function InstalledBaseEvaluationReport({ report }: { report: InstalledEva
   return (
     <div className="min-w-0 space-y-4">
       <section className="workspace-panel" aria-label={t('summary')}>
-        <h2 className="text-section-title">{t('summary')}</h2>
+        <h2 className="text-subsection-title">{t('summary')}</h2>
         <p className="mt-1 text-xs text-muted-foreground">{t('retrospective')}</p>
         <dl className="mt-3 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3">
           {Object.entries(summary).map(([key, value]) => (
@@ -54,7 +54,7 @@ export function InstalledBaseEvaluationReport({ report }: { report: InstalledEva
                   'supplied_unit',
                 ] as const
               ).map((key) => (
-                <th key={key} className="p-2 text-start">
+                <th key={key} className="p-2 text-start text-xs font-medium">
                   {t(key)}
                 </th>
               ))}
@@ -80,25 +80,29 @@ export function InstalledBaseEvaluationReport({ report }: { report: InstalledEva
         </table>
       </TableScrollRegion>
       <details className="min-w-0 workspace-panel text-sm">
-        <summary className="cursor-pointer">{t('calculationEvidence')}</summary>
-        <p className="mt-3">{t('method')}</p>
+        <summary className="min-h-11 cursor-pointer text-subsection-title md:min-h-0">
+          {t('calculationEvidence')}
+        </summary>
+        <p className="mt-3 text-xs">{t('method')}</p>
         <dl className="mt-3 grid gap-3 sm:grid-cols-2">
           {(['absolute_error', 'squared_error'] as const).map((key) => (
             <div key={key} className="min-w-0">
-              <dt>{t(key)}</dt>
-              <dd className="break-all">
+              <dt className="text-xs text-muted-foreground">{t(key)}</dt>
+              <dd className="break-all text-evidence-value">
                 <bdi>{report.totals[key]}</bdi>
               </dd>
             </div>
           ))}
         </dl>
-        <p className="mt-3">
+        <p className="mt-3 text-xs">
           {t('sourceTime')}: <bdi>{report.source.scenario_saved_at}</bdi>
         </p>
-        <p className="mt-2">{t('limits')}</p>
+        <p className="mt-2 text-xs">{t('limits')}</p>
       </details>
       <details className="min-w-0 workspace-panel text-sm">
-        <summary className="cursor-pointer">{t('copiedScenario')}</summary>
+        <summary className="min-h-11 cursor-pointer text-subsection-title md:min-h-0">
+          {t('copiedScenario')}
+        </summary>
         <div className="mt-3">
           <InstalledBaseDemandReport report={report.source.scenario} />
         </div>

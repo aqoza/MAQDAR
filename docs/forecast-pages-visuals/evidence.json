@@ -1,0 +1,248 @@
+{
+  "contract": "../forecast-pages-consistency.md acceptance contract; design.MD shared typography and Forecast search/evidence rules.",
+  "targetViewports": ["1366x768", "390x844"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Production Playwright checks exercised labeled controls, keyboard location selection/dismissal, focus after clearing search, tab draft retention, native disclosures and 44px mobile targets. This is bounded browser coverage, not a full accessibility certification."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "18 routes were checked at 1366x768 and 390x844 in English and Arabic RTL (72 samples), including computed type roles and document overflow. Dataset/evaluation suites add 375, 768, 1024, 1440 and 1920 widths. Wide evidence tables keep local horizontal scrolling."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "forecast-search-usability.spec.ts exercises delayed lookup feedback and cancellation of superseded location requests."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Dataset and evaluation histories distinguish an empty authorized dataset from no filter matches; reset and individual clear controls are exercised."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "The location lookup failure/recovery test preserves the typed code and checks manual-code guidance and retry."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "Saved driver/base/demand reports retain missing dates, unknown ages, source-declared availability and excluded/conditional evidence rather than inferring values."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Populated saved-evidence suites verify exact values, disclosures, explicit filter application and embedded workbench paging/history navigation."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Relevant suites retain tenant/location-scoped lookup, viewer mutation restrictions and hidden-record HTTP 404 assertions; local pgTAP also passed."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "375x900",
+      "artifact": "calendars-result-ar-375.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "1440x900",
+      "artifact": "calendars-result-en-1440.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "375x1000",
+      "artifact": "drivers-detail-ar-375.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "drivers-detail-en-1440.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "drivers-empty-ar-1366.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "drivers-empty-ar-390.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "drivers-empty-en-1366.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "drivers-empty-en-390.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "event-policy-ar-1366.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "event-policy-ar-390.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "event-policy-en-1366.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "event-policy-en-390.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-create-ar-1366.png",
+      "observation": "Actual creation form; labeled controls and responsive wrapping retain the shared typography."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "forecast-create-ar-390.png",
+      "observation": "Actual creation form; labeled controls and responsive wrapping retain the shared typography."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-create-en-1366.png",
+      "observation": "Actual creation form; labeled controls and responsive wrapping retain the shared typography."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "forecast-create-en-390.png",
+      "observation": "Actual creation form; labeled controls and responsive wrapping retain the shared typography."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-result-ar-1366.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "forecast-result-ar-390.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "forecast-result-en-1366.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "forecast-result-en-390.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "375x1000",
+      "artifact": "installed-base-demand-detail-ar-375.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "installed-base-demand-detail-en-1440.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "375x1000",
+      "artifact": "installed-base-detail-ar-375.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "installed-base-detail-en-1440.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "installed-base-evaluation-detail-ar-390x844.png",
+      "observation": "Actual populated evaluation history or saved report; compact role sizes, exact metrics, wrapped header actions and local table scrolling were checked."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "installed-base-evaluation-detail-en-1366x768.png",
+      "observation": "Actual populated evaluation history or saved report; compact role sizes, exact metrics, wrapped header actions and local table scrolling were checked."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "installed-base-evaluation-history-ar-390x844.png",
+      "observation": "Actual populated evaluation history or saved report; compact role sizes, exact metrics, wrapped header actions and local table scrolling were checked."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "installed-base-evaluation-history-en-1366x768.png",
+      "observation": "Actual populated evaluation history or saved report; compact role sizes, exact metrics, wrapped header actions and local table scrolling were checked."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "installed-empty-ar-1366.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "installed-empty-ar-390.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "installed-empty-en-1366.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "installed-empty-en-390.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "policy-detail-ar-1366.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "policy-detail-ar-390.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "policy-detail-en-1366.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "policy-detail-en-390.png",
+      "observation": "Actual saved evidence; primary values remain readable at the shared scale and all source precision is retained."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "workbench-ar-1366.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "workbench-ar-390.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "1366x768",
+      "artifact": "workbench-en-1366.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "workbench-en-390.png",
+      "observation": "Actual history/workbench; compact shared headings, labeled filters and truthful empty evidence remain visible."
+    }
+  ],
+  "limitations": [
+    "Chromium only; emulated CSS viewports, not physical-device certification.",
+    "No complete screen-reader or Safari/Firefox audit.",
+    "Existing untranslated copy uses the established English fallback; new labels have Arabic entries.",
+    "Full-page screenshot height can exceed the viewport.",
+    "Chromium native select line height reports normal; its font size, bounds and target height were checked separately.",
+    "No visual-similarity or test-coverage percentage is claimed."
+  ]
+}

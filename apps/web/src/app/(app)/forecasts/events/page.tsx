@@ -76,7 +76,7 @@ export default async function EventHistory({
             <Link className="min-w-0 break-words underline" href={`/forecasts/events/${row.id}`}>
               {row.name}
             </Link>
-            <span>
+            <span className="text-xs text-muted-foreground">
               {t(`types.${z.enum(eventTypes).parse(row.event_type)}`)} ·{' '}
               {format.dateTime(new Date(row.created_at), 'long')}
             </span>

@@ -80,9 +80,9 @@ export default async function CalendarSimulation({
         }
         help={
           <HelpDisclosure>
-            <p>{t('meaning')}</p>
-            <p>{t('scheduling')}</p>
-            <p>{t('captureMeaning')}</p>
+            <p className="text-xs">{t('meaning')}</p>
+            <p className="text-xs">{t('scheduling')}</p>
+            <p className="text-xs">{t('captureMeaning')}</p>
           </HelpDisclosure>
         }
       />

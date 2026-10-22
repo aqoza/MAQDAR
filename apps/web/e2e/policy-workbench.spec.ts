@@ -67,14 +67,81 @@ with psycopg.connect(dsn) as db:
   )
   await page.goto('/forecasts')
   await page.getByRole('tab', { name: 'Policy review workbench', exact: true }).click()
+  await page.getByRole('button', { name: 'Apply filters', exact: true }).click()
+  await expect(page).toHaveURL(
+    (url) => url.pathname === '/forecasts' && url.searchParams.get('tab') === 'workbench',
+  )
   const table = page.getByRole('table', { name: 'Policy review workbench', exact: true })
   await expect(table.getByRole('row')).toHaveCount(26)
+  await expect(table.getByRole('columnheader').first()).toHaveCSS('font-size', '12px')
+  await expect(table.getByRole('row').nth(1)).toHaveCSS('font-size', '14px')
   await page.getByRole('link', { name: 'Next', exact: true }).click()
+  await expect(page).toHaveURL(
+    (url) =>
+      url.pathname === '/forecasts' &&
+      url.searchParams.get('tab') === 'workbench' &&
+      url.searchParams.get('page') === '2',
+  )
   await expect(table.getByRole('row')).toHaveCount(4)
-  await page.getByLabel('Search item code', { exact: true }).fill('TARGET-01')
-  await page.getByLabel('Location code', { exact: true }).fill('REVIEW')
+  await page.goBack()
+  await expect(table.getByRole('row')).toHaveCount(26)
+  await page.goForward()
+  await expect(table.getByRole('row')).toHaveCount(4)
+  const panel = page.getByRole('tabpanel')
+  const search = panel.getByLabel('Search item code', { exact: true })
+  await search.fill('TARGET-01')
+  await panel.getByRole('button', { name: 'Clear search', exact: true }).click()
+  await expect(search).toHaveValue('')
+  await expect(search).toBeFocused()
+  await search.fill('TARGET-01')
+  const location = panel.getByRole('combobox', { name: 'Location code', exact: true })
+  await location.fill('Review')
+  await expect(page.getByRole('option', { name: /REVIEW.*Review/ })).toBeVisible()
+  await location.press('ArrowDown')
+  await location.press('Enter')
+  await expect(location).toHaveValue('REVIEW')
   await page.getByRole('button', { name: 'Apply filters', exact: true }).click()
+  await expect(page).toHaveURL(
+    (url) =>
+      url.pathname === '/forecasts' &&
+      url.searchParams.get('tab') === 'workbench' &&
+      !url.searchParams.has('page'),
+  )
   await expect(table.getByRole('row')).toHaveCount(2)
+  await page.getByRole('link', { name: 'Reset filters', exact: true }).click()
+  await expect(page).toHaveURL('/forecasts?tab=workbench')
+  await expect(table.getByRole('row')).toHaveCount(26)
+  await expect(search).toHaveValue('')
+  await expect(location).toHaveValue('')
+  // Seed after URL/history navigation to isolate sibling drafts during this same-URL reset.
+  await page.getByRole('tab', { name: 'Check demand data', exact: true }).click()
+  const readinessDraft = page
+    .getByRole('tabpanel')
+    .getByRole('combobox', { name: 'Location code', exact: true })
+  await readinessDraft.fill('UNSAVED-READINESS')
+  await expect(readinessDraft).toHaveAttribute('aria-expanded', 'true')
+  await readinessDraft.press('Escape')
+  await expect(readinessDraft).toHaveAttribute('aria-expanded', 'false')
+  await page.getByRole('tab', { name: 'Policy review workbench', exact: true }).click()
+  await search.fill('UNSAVED-SEARCH')
+  await location.fill('UNSAVED-LOCATION')
+  await expect(location).toHaveAttribute('aria-expanded', 'true')
+  await location.press('Escape')
+  await expect(location).toHaveAttribute('aria-expanded', 'false')
+  await page.getByRole('link', { name: 'Reset filters', exact: true }).click()
+  await expect(page).toHaveURL('/forecasts?tab=workbench')
+  await expect(search).toHaveValue('')
+  await expect(location).toHaveValue('')
+  await page.getByRole('tab', { name: 'Check demand data', exact: true }).click()
+  await expect(readinessDraft).toHaveValue('UNSAVED-READINESS')
+  await page.getByRole('tab', { name: 'Policy review workbench', exact: true }).click()
+  await page.goBack()
+  await expect(table.getByRole('row')).toHaveCount(2)
+  await expect(search).toHaveValue('TARGET-01')
+  await expect(location).toHaveValue('REVIEW')
+  await expect(
+    page.getByRole('tab', { name: 'Policy review workbench', exact: true }),
+  ).toHaveAttribute('aria-selected', 'true')
   await page.getByRole('link', { name: 'Review TARGET-01', exact: true }).click()
   await expect(page).toHaveURL(/\/forecasts\/workbench\/[0-9a-f-]+$/)
   const reviewUrl = page.url()
@@ -169,9 +236,14 @@ with psycopg.connect(dsn) as db:
   )
   await viewerContext.close()
   await page.getByRole('link', { name: 'Back to policy workbench', exact: true }).click()
+  await expect(page).toHaveURL('/forecasts/workbench')
   await page
     .getByRole('combobox', { name: 'Latest proposal', exact: true })
     .selectOption('approved')
   await page.getByRole('button', { name: 'Apply filters', exact: true }).click()
+  await expect(page).toHaveURL(
+    (url) =>
+      url.pathname === '/forecasts/workbench' && url.searchParams.get('review') === 'approved',
+  )
   await expect(table.getByRole('row')).toHaveCount(2)
 })

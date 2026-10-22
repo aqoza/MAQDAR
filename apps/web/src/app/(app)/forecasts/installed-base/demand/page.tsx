@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { getFormatter, getTranslations } from 'next-intl/server'
+import { NextIntlClientProvider } from 'next-intl'
+import { getFormatter, getMessages, getTranslations } from 'next-intl/server'
+import { ForecastFilterSearchInput } from '@/components/forecast-filter-search-input'
+import { ForecastFilterForm } from '@/components/forecast-filter-form'
+import { LocationCodeInput } from '@/components/master-data/location-code-input'
 import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { TableScrollRegion } from '@/components/table-scroll-region'
@@ -24,10 +28,12 @@ export default async function InstalledDemandHistory({
   const q = scalar(search.q).trim().slice(0, 200),
     item = scalar(search.item).trim().slice(0, 100),
     location = scalar(search.location).trim().slice(0, 100)
-  const [db, t, format] = await Promise.all([
+  const [db, t, format, messages, searchT] = await Promise.all([
     createClient(),
     getTranslations('InstalledBaseDemand'),
     getFormatter(),
+    getMessages(),
+    getTranslations('ForecastSearch'),
   ])
   const evaluationT = await getTranslations('InstalledBaseEvaluation')
   const base = () => {
@@ -77,39 +83,55 @@ export default async function InstalledDemandHistory({
           </>
         }
       />
-      <form
-        className="grid gap-3 workspace-panel sm:grid-cols-2 lg:grid-cols-4"
-        action="/forecasts/installed-base/demand"
-      >
-        {(
-          [
-            ['q', 'scenario_name', q],
-            ['item', 'item_code', item],
-            ['location', 'location_code', location],
-          ] as const
-        ).map(([name, label, value]) => (
-          <label key={name} className="grid min-w-0 gap-1 text-sm">
-            {t(label)}
+      <ForecastFilterForm>
+        <form
+          key={JSON.stringify({ q, item, location, page: current })}
+          className="workspace-panel grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1.5fr)_auto]"
+          action="/forecasts/installed-base/demand"
+        >
+          <ForecastFilterSearchInput
+            key={q}
+            name="q"
+            defaultValue={q}
+            label={t('scenario_name')}
+            clearLabel={searchT('clearSearch')}
+            maxLength={200}
+          />
+          <label className="grid min-w-0 gap-1 text-sm">
+            {t('item_code')}
             <input
-              name={name}
-              defaultValue={value}
-              maxLength={200}
+              name="item"
+              defaultValue={item}
+              maxLength={100}
               className="min-w-0 w-full rounded-md border bg-background px-3 py-2"
             />
           </label>
-        ))}
-        <div className="flex flex-wrap items-end gap-3">
-          <button className="min-h-11 rounded-md bg-primary px-4 text-sm text-primary-foreground">
-            {t('search')}
-          </button>
-          <Link
-            className="inline-flex min-h-11 items-center underline"
-            href="/forecasts/installed-base/demand"
-          >
-            {t('reset')}
-          </Link>
-        </div>
-      </form>
+          <div className="grid min-w-0 gap-1 text-sm">
+            <label htmlFor="history-location">{t('location_code')}</label>
+            <NextIntlClientProvider messages={{ LocationLookup: messages.LocationLookup }}>
+              <LocationCodeInput
+                key={location}
+                id="history-location"
+                name="location"
+                defaultValue={location}
+                includeInactive
+              />
+            </NextIntlClientProvider>
+          </div>
+          <div className="flex flex-wrap items-end gap-3">
+            <button className="min-h-11 rounded-md bg-primary px-4 text-sm text-primary-foreground">
+              {t('search')}
+            </button>
+            <Link
+              data-forecast-filter-reset
+              className="inline-flex min-h-11 items-center underline"
+              href="/forecasts/installed-base/demand"
+            >
+              {t('reset')}
+            </Link>
+          </div>
+        </form>
+      </ForecastFilterForm>
       {rows.data.length ? (
         <TableScrollRegion label={t('title')}>
           <table className="w-full min-w-[36rem] text-sm">
@@ -118,7 +140,7 @@ export default async function InstalledDemandHistory({
                 {(
                   ['scenario_name', 'item_code', 'location_code', 'cutoff', 'importTime'] as const
                 ).map((key) => (
-                  <th key={key} className="p-2 text-start">
+                  <th key={key} className="p-2 text-start text-xs font-medium">
                     {t(key)}
                   </th>
                 ))}
@@ -151,7 +173,7 @@ export default async function InstalledDemandHistory({
         </TableScrollRegion>
       ) : (
         <p role="status" className="workspace-panel">
-          {t('empty')}
+          {t(q || item || location ? 'empty' : 'emptyDataset')}
         </p>
       )}
       {pages > 1 && (

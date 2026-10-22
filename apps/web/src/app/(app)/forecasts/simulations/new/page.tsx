@@ -69,8 +69,8 @@ export default async function NewSimulation({
         }
         help={
           <HelpDisclosure>
-            <p>{t('method')}</p>
-            <p>{t('interpretation')}</p>
+            <p className="text-xs">{t('method')}</p>
+            <p className="text-xs">{t('interpretation')}</p>
           </HelpDisclosure>
         }
       />

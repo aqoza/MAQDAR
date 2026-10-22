@@ -92,6 +92,15 @@ with psycopg.connect(sys.argv[1]) as db:
           true,
         )
         await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '16px')
+        await expect(page.locator('p.text-evidence-value').first()).toHaveCSS('font-size', '14px')
+        await expect(page.locator('#driver-selection-help')).toHaveCSS('font-size', '12px')
+        await expect(
+          page
+            .locator('input[name=dataset_id][type=checkbox]')
+            .first()
+            .locator('..')
+            .locator('bdi'),
+        ).toHaveCSS('font-size', '12px')
         await page.screenshot({
           path: testInfo.outputPath(`multi-driver-forecast-form-${locale}-${width}.png`),
           fullPage: true,
@@ -139,6 +148,27 @@ with psycopg.connect(sys.argv[1]) as db:
       page.getByRole('link', { name: 'Create planned-event scenario', exact: true }),
     ).toHaveCount(0)
     await page.getByText('Inspect driver model coefficients', { exact: true }).click()
+    await expect(
+      page
+        .getByRole('region', {
+          name: 'Driver checks for model selection and final fit',
+          exact: true,
+        })
+        .getByRole('columnheader')
+        .first(),
+    ).toHaveCSS('font-size', '12px')
+    await expect(
+      page
+        .getByRole('region', {
+          name: 'Driver checks for model selection and final fit',
+          exact: true,
+        })
+        .locator('caption'),
+    ).toHaveCSS('font-size', '12px')
+    await expect(page.getByText('Server import time:', { exact: false }).first()).toHaveCSS(
+      'font-size',
+      '12px',
+    )
     await expect(page.getByText('Slope per supplied driver unit', { exact: true })).toHaveCount(2)
     await page
       .getByText('Inspect copied driver dataset · Synthetic signal 1', { exact: true })

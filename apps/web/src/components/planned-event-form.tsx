@@ -107,13 +107,13 @@ export function PlannedEventForm({
             </label>
           </div>
           <div className="min-w-0 space-y-3">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {t('entryNote', { unit: source.unit ?? '' })}
             </p>
             <TableScrollRegion label={t('dailyEntry')} className="max-h-96">
               <table className="w-full text-sm">
                 <caption className="sr-only">{t('dailyEntry')}</caption>
-                <thead>
+                <thead className="text-xs [&_th]:font-medium">
                   <tr>
                     {(['date', 'baseline', 'addition'] as const).map((key) => (
                       <th key={key} className="p-2 text-start">
