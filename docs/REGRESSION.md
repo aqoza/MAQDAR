@@ -191,3 +191,7 @@ Final exit codes and screenshot evidence for this audit are recorded in [header-
 ## Regional freight (Step 25e)
 
 From saved regional dates, confirm freight applicability, inspect each source's own dispatch/rate evidence, refresh after changed terms and save a complete estimate. Verify per-line half-up rounding then currency totals, fixed quantities/receipt warnings, zero lines, unknown terms blocking complete save, history search and immutable retries after archiving. Verify viewer read-only behavior, tenant and all-member access including zero allocations, real HTTP 404 for forbidden/missing/new-on-archived sources and parent deletion. Run `test_regional_freight_db.py`, `0106_regional_freight.test.sql`, and `regional-freight.spec.ts`; inspect preview/detail/evidence/history screenshots at 375/768/1024/1440/1920px in English and Arabic RTL, with keyboard-accessible disclosures/tables and shared typography.
+
+## Regional proposal review (Step 25f)
+
+Run the new pgTAP, database, web action/schema and browser tests listed in `regional-transfer-review.md`. Verify full-estimate review, independent roles, one pending/selected proposal per original sourcing, current evidence and positive-source timing gates, retries after archive, all-location access including zeros and real detail 404s. Inspect green submit/review/history screens at all five widths in English and Arabic RTL, keyboard table/disclosure use, archive-safe rejection/withdrawal and absence of operational changes.

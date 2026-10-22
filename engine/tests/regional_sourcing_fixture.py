@@ -4,12 +4,12 @@ from uuid import uuid4
 from psycopg.types.json import Jsonb
 
 
-def seed_regional_sourcing(db, org, user):
+def seed_regional_sourcing(db, org, user, *, policy_lead=3, source_a_quantity="32", source_b_quantity="42"):
     item = uuid4()
     db.execute("insert into public.items(id,organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency) values(%s,%s,'REG-P','Regional part','Test','EA',1,'SAR')", (item, org))
     locations, policies = [], []
-    evidence = {"options": {"lead_time": 3, "review_interval": 4}, "forecast": {"to_date": "2026-10-10", "method": "baseline-v1", "source": {"unit_provenance": {"method": "source-units-v1", "status": "consistent", "unit": "EA", "rows": 1, "unknown_rows": 0, "units": ["EA"]}}}}
-    for code, quantity in [("DEST", "12"), ("SOURCE-A", "32"), ("SOURCE-B", "42")]:
+    evidence = {"options": {"lead_time": policy_lead, "review_interval": 4}, "forecast": {"to_date": "2026-10-10", "method": "baseline-v1", "source": {"unit_provenance": {"method": "source-units-v1", "status": "consistent", "unit": "EA", "rows": 1, "unknown_rows": 0, "units": ["EA"]}}}}
+    for code, quantity in [("DEST", "12"), ("SOURCE-A", source_a_quantity), ("SOURCE-B", source_b_quantity)]:
         location, run, policy = [uuid4() for _ in range(3)]
         locations.append(location)
         policies.append(policy)
