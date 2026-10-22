@@ -216,7 +216,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 25   | **Regional stock assessments:** exact-item observed stock across 2–20 locations, complete matching-unit evidence, exact totals and immutable all-location history.                                                          | Merged — PR #141                                    |
 | 25b  | **Reusable stock regions:** fixed same-organization location sets, archive lifecycle, scoped history and copied membership in regional assessments.                                                                         | Merged in PR #142                                   |
 | 25c  | **Regional sourcing:** proportional policy-protected surplus from every other region member into one saved destination replenishment gap.                                                                                   | Merged — PR #143                                    |
-| 25d  | **Regional transfer dates:** fixed source allocations with independent dispatch, typical/slow receipt dates, captured calendar evidence and immutable all-location history.                                                 | Implemented — PR review pending                     |
+| 25d  | **Regional transfer dates:** fixed source allocations with independent dispatch, typical/slow receipt dates, captured calendar evidence and immutable all-location history.                                                 | Merged — PR #144                                    |
+| 25e  | **Regional freight estimates:** fixed source quantities/dates, per-source pricing, currency totals and immutable all-location history.                                                                                      | Implemented — PR review pending                     |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -783,3 +784,9 @@ receipts beyond cutoff plus the original destination policy lead. Editors save,
 all-member access applies even to zeros, and immutable history/retries survive later
 archive. Keep compact green screens at all five widths plus Arabic RTL. No freight,
 approvals, reservations or operational changes. See [regional-transfer-dates.md](regional-transfer-dates.md).
+
+### Step 25e — approved 2026-10-22
+
+Save freight estimates from one regional transfer-date scenario with quantities, each source's dispatch/receipts and commitments fixed. Price positive sources at quantity × per-unit rate or one fee per source shipment; round each line once half-up to currency precision before summing by currency. Explicit zero rates are valid; unconfigured or incompatible evidence blocks a complete estimate. Zero allocations need no freight but remain in all-location access and lane/location checks.
+
+New saves require the original unarchived region, active participating locations and original active lanes with unchanged leads. Positive lines require supplied effective dates no later than their own saved dispatch, matching per-unit units and applicability confirmation. Reject changed previews. Recheck editor and complete location access, including retries, and retain copied evidence after later archive/evidence changes. Actual parent, organization and included-location deletions follow existing cascades. No taxes, FX, consolidation, commitment refresh or operational changes. Compact green English/Arabic screens at 375, 768, 1024, 1440 and 1920px. See [regional-freight-estimates.md](regional-freight-estimates.md).
