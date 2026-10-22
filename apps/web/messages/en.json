@@ -5641,7 +5641,7 @@
     "search": "Search",
     "reset": "Reset",
     "page": "Page {page} of {pages}",
-    "methodDetails": "How regions work",
+    "methodDetails": "Method and limitations",
     "title": "Regional sourcing",
     "new": "New regional sourcing scenario",
     "detail": "Saved regional sourcing scenario",
@@ -5717,6 +5717,36 @@
     "item": "Item",
     "destination": "Destination",
     "cutoff": "Shared cutoff",
-    "savedAt": "Saved at"
+    "savedAt": "Saved at",
+    "sourceStatuses": {
+      "available": "Complete evidence",
+      "destination_unavailable": "Unavailable: choose a destination draft with a valid gap, known unit and exact-cutoff stock.",
+      "source_unavailable": "Unavailable: source stock or policy evidence is incomplete or incompatible.",
+      "prepared_group": "Unavailable: redistribution currently supports individual items only.",
+      "same_location": "Unavailable: source and destination must be different locations.",
+      "item_mismatch": "Unavailable: source and destination must refer to the same item.",
+      "cutoff_mismatch": "Unavailable: source and destination policies must share a cutoff.",
+      "unit_mismatch": "Unavailable: source and destination units must match.",
+      "stock_date_mismatch": "Unavailable: source stock must be dated exactly at the shared cutoff.",
+      "lane_missing": "Unavailable: no directed lane connects this source to the destination.",
+      "lane_inactive": "Unavailable: the directed lane is inactive.",
+      "commitments_unconfirmed": "Unavailable: confirm source commitments at the shared cutoff.",
+      "lane_unconfirmed": "Unavailable: confirm lane applicability at the shared cutoff."
+    },
+    "stockStatuses": {
+      "available": "Comparison available",
+      "policy_unavailable": "Unavailable: this policy has no usable maximum.",
+      "prepared_group": "Unavailable: this group lacks captured stock-pooling evidence. Create a new preparation, forecast and policy with labeled demand history.",
+      "group_not_interchangeable": "Unavailable: every saved member must be two-way interchangeable at 1:1 in the same unit. Supersession history conversion alone does not establish stock interchangeability.",
+      "date_mismatch": "Unavailable: choose the policy forecast cutoff as the comparison date.",
+      "policy_unit_unknown": "Unavailable: this policy has no consistent source-unit evidence.",
+      "stock_missing": "Unavailable: at least one item has no stock snapshot on or before this date.",
+      "stock_stale": "Unavailable: at least one latest snapshot is more than seven days old.",
+      "stock_unit_unknown": "Unavailable: at least one stock snapshot has no supplied unit.",
+      "unit_mismatch": "Unavailable: at least one snapshot unit differs from the policy unit."
+    },
+    "leadTimes": "Saved lane lead times: p50 {p50} days; p90 {p90} days.",
+    "timingNotAssessed": "Lead times are captured evidence; transfer dates have not been assessed.",
+    "timingWarning": "The saved destination has overdue or late inbound. Review the captured timing concerns."
   }
 }

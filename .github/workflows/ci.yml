@@ -117,6 +117,7 @@ jobs:
           path: |
             apps/web/test-results/**/regional-stock-*.png
             apps/web/test-results/**/stock-regions-*.png
+            apps/web/test-results/**/regional-sourcing-*.png
           retention-days: 7
       - name: Stop local Supabase
         if: always()

@@ -50,8 +50,6 @@ export default async function RegionalSourcingDetail({
       <NextIntlClientProvider
         messages={{
           RegionalSourcing: messages.RegionalSourcing,
-          Redistribution: messages.Redistribution,
-          StockComparison: messages.StockComparison,
           StockRegion: messages.StockRegion,
         }}
       >

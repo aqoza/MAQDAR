@@ -2978,7 +2978,7 @@
     "search": "بحث",
     "reset": "إعادة ضبط",
     "page": "الصفحة {page} من {pages}",
-    "methodDetails": "كيفية عمل المناطق",
+    "methodDetails": "المنهجية والقيود",
     "title": "التوريد الإقليمي",
     "new": "سيناريو توريد إقليمي جديد",
     "detail": "سيناريو توريد إقليمي محفوظ",
@@ -3054,6 +3054,36 @@
     "item": "الصنف",
     "destination": "الوجهة",
     "cutoff": "تاريخ القطع المشترك",
-    "savedAt": "وقت الحفظ"
+    "savedAt": "وقت الحفظ",
+    "sourceStatuses": {
+      "available": "أدلة مكتملة",
+      "destination_unavailable": "أدلة الوجهة غير متاحة",
+      "source_unavailable": "أدلة المصدر غير متاحة",
+      "prepared_group": "المجموعات المجمعة غير مدعومة",
+      "same_location": "يجب أن يختلف المصدر عن الوجهة",
+      "item_mismatch": "الصنف غير متطابق",
+      "cutoff_mismatch": "تاريخ القطع غير متطابق",
+      "unit_mismatch": "الوحدة غير متطابقة",
+      "stock_date_mismatch": "يلزم مخزون بتاريخ القطع نفسه",
+      "lane_missing": "لا يوجد مسار نقل مباشر",
+      "lane_inactive": "مسار النقل غير نشط",
+      "commitments_unconfirmed": "يلزم تأكيد الالتزامات",
+      "lane_unconfirmed": "يلزم تأكيد انطباق المسار"
+    },
+    "stockStatuses": {
+      "available": "أدلة مكتملة",
+      "policy_unavailable": "السياسة غير متاحة",
+      "prepared_group": "المجموعات المجمعة غير مدعومة",
+      "group_not_interchangeable": "المجموعة ليست قابلة للتبادل",
+      "date_mismatch": "تاريخ المقارنة غير متطابق",
+      "policy_unit_unknown": "وحدة السياسة غير معروفة",
+      "stock_missing": "لا توجد لقطة مخزون",
+      "stock_stale": "لقطة المخزون قديمة",
+      "stock_unit_unknown": "وحدة المخزون غير معروفة",
+      "unit_mismatch": "الوحدة غير متطابقة"
+    },
+    "leadTimes": "مدد النقل المحفوظة: p50 مقدارها {p50} يوم؛ وp90 مقدارها {p90} يوم.",
+    "timingNotAssessed": "مدد النقل أدلة محفوظة؛ لم تُقيّم تواريخ النقل بعد.",
+    "timingWarning": "تتضمن أدلة الوجهة المحفوظة واردًا متأخرًا أو بعد فترة الحماية. راجع ملاحظات التوقيت المحفوظة."
   }
 }

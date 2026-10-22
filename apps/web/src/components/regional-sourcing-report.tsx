@@ -7,8 +7,6 @@ import { StockRegionReport } from './stock-region-report'
 
 export function RegionalSourcingReport({ report }: { report: Report }) {
   const t = useTranslations('RegionalSourcing'),
-    r = useTranslations('Redistribution'),
-    stock = useTranslations('StockComparison'),
     locale = useLocale()
   const unit = report.destination.policy.unit ?? '—'
   const quantity = (v: string | null | undefined) => (
@@ -34,7 +32,7 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           role="alert"
           className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950"
         >
-          {r('timingWarning')}
+          {t('timingWarning')}
         </p>
       )}
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -68,13 +66,13 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           <tbody>
             {report.lines.map((line) => (
               <tr className="border-t" key={line.location_id}>
-                <th className="max-w-64 break-words p-3 text-start">
+                <th className="p-3 text-start whitespace-nowrap">
                   <bdi>{line.location_code}</bdi>
                 </th>
                 <td className="max-w-72 p-3">
-                  {r(`statuses.${line.status}`)}
+                  {t(`sourceStatuses.${line.status}`)}
                   {line.status === 'source_unavailable' && line.source_policy && (
-                    <p>{stock(`statuses.${line.source_policy.status}`)}</p>
+                    <p>{t(`stockStatuses.${line.source_policy.status}`)}</p>
                   )}
                 </td>
                 {[line.surplus, line.quantity, line.remaining_surplus, line.retained_available].map(
@@ -96,9 +94,9 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
         return (
           <details
             key={line.location_id}
-            className="min-w-0 space-y-3 workspace-panel wrap-anywhere"
+            className="min-w-0 space-y-3 p-3 workspace-panel wrap-anywhere"
           >
-            <summary className="min-h-11 cursor-pointer py-3 text-sm">
+            <summary className="min-h-11 cursor-pointer py-2 text-sm">
               {t('sourceEvidence')} · <bdi>{line.location_code}</bdi>
             </summary>
             {policy && (
@@ -152,12 +150,12 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
             {line.lane && (
               <div className="space-y-2 text-sm">
                 <p>
-                  {r('leadTimes', {
+                  {t('leadTimes', {
                     p50: line.lane.lead_time_days_p50,
                     p90: line.lane.lead_time_days_p90,
                   })}
                 </p>
-                <p>{r('timingNotAssessed')}</p>
+                <p>{t('timingNotAssessed')}</p>
                 <p className="text-xs">
                   <bdi>
                     {line.lane.id} · {line.lane.updated_at}
@@ -176,8 +174,8 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           </details>
         )
       })}
-      <details className="min-w-0 space-y-3 workspace-panel wrap-anywhere">
-        <summary className="min-h-11 cursor-pointer py-3 text-sm">
+      <details className="min-w-0 space-y-3 p-3 workspace-panel wrap-anywhere">
+        <summary className="min-h-11 cursor-pointer py-2 text-sm">
           {t('destinationEvidence')}
         </summary>
         <dl className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
@@ -250,8 +248,8 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           {t('openDraft')}
         </Link>
       </details>
-      <details className="min-w-0 space-y-3 workspace-panel">
-        <summary className="min-h-11 cursor-pointer py-3 text-sm">{t('regionEvidence')}</summary>
+      <details className="min-w-0 space-y-3 p-3 workspace-panel">
+        <summary className="min-h-11 cursor-pointer py-2 text-sm">{t('regionEvidence')}</summary>
         <StockRegionReport report={report.region.definition} />
         <p className="break-all text-xs">
           <bdi>
@@ -259,8 +257,8 @@ export function RegionalSourcingReport({ report }: { report: Report }) {
           </bdi>
         </p>
       </details>
-      <details className="min-w-0 space-y-3 workspace-panel">
-        <summary className="min-h-11 cursor-pointer py-3 text-sm">{t('methodDetails')}</summary>
+      <details className="min-w-0 space-y-3 p-3 workspace-panel">
+        <summary className="min-h-11 cursor-pointer py-2 text-sm">{t('methodDetails')}</summary>
         <p className="text-sm">{t('method')}</p>
         <p className="text-sm">{t('limits')}</p>
         <p className="text-sm">{t('commitments')}</p>

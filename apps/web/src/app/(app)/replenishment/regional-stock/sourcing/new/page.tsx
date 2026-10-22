@@ -91,8 +91,6 @@ export default async function NewRegionalSourcing({
         <NextIntlClientProvider
           messages={{
             RegionalSourcing: messages.RegionalSourcing,
-            Redistribution: messages.Redistribution,
-            StockComparison: messages.StockComparison,
             StockRegion: messages.StockRegion,
           }}
         >

@@ -11,6 +11,7 @@ test('regional sourcing preserves allocation evidence, pagination, permissions a
   browser,
 }, testInfo) => {
   test.setTimeout(300_000)
+  page.setDefaultTimeout(15_000)
   const key = randomUUID(),
     password = `Sourcing-${key}`,
     email = `sourcing-${key}@example.com`
@@ -54,6 +55,20 @@ test('regional sourcing preserves allocation evidence, pagination, permissions a
     await page.context().addCookies([{ name: 'locale', value, url: new URL(page.url()).origin }])
     await page.reload()
   }
+  async function expandedEvidence(lang: string) {
+    const report = page.getByRole('region', {
+      name: lang === 'ar' ? 'نتيجة التوريد' : 'Sourcing result',
+      exact: true,
+    })
+    const summaries = report.locator('details > summary')
+    for (const summary of await summaries.all()) await summary.click()
+    if (lang === 'ar') {
+      await expect(report).toContainText('مدد النقل المحفوظة')
+      await expect(report).not.toContainText('Redistribution quantity available')
+    }
+    await visual('evidence', lang)
+    for (const summary of await summaries.all()) await summary.click()
+  }
   try {
     const seed = await python(`import sys,json,psycopg
 sys.stdout.reconfigure(encoding='utf-8')
@@ -85,6 +100,7 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.getByRole('link', { name: 'New regional sourcing scenario', exact: true }).click()
     await page.getByRole('link', { name: 'Northern sourcing region', exact: true }).click()
     await page.getByRole('link', { name: /REG-P · DEST/ }).click()
+    await expect(page).toHaveURL(/sourcing\/new\?region=[0-9a-f-]{36}&draft=[0-9a-f-]{36}$/)
     const newUrl = page.url()
     const fill = async (ar = false) => {
       for (const [index, code] of ['SOURCE-A', 'SOURCE-B'].entries()) {
@@ -96,20 +112,24 @@ with psycopg.connect(sys.argv[1]) as db:
           ).toHaveCount(1)
         }
         await group
-          .getByLabel(ar ? 'سياسة المصدر' : 'Source policy', { exact: true })
+          .getByRole('combobox', { name: ar ? 'سياسة المصدر' : 'Source policy', exact: true })
           .selectOption(inputs.sources[index].policy_id)
         await expect(
-          group.getByLabel(ar ? 'الحد الأقصى المختار' : 'Selected maximum', { exact: true }),
+          group.getByRole('combobox', {
+            name: ar ? 'الحد الأقصى المختار' : 'Selected maximum',
+            exact: true,
+          }),
         ).toBeEnabled()
         if (index === 0) {
           await group
             .getByRole('button', { name: ar ? 'الحدود التالية' : 'Next maxima', exact: true })
             .click()
-          const maximum = group.getByLabel(ar ? 'الحد الأقصى المختار' : 'Selected maximum', {
+          const maximum = group.getByRole('combobox', {
+            name: ar ? 'الحد الأقصى المختار' : 'Selected maximum',
             exact: true,
           })
           await maximum.selectOption({
-            label: ar ? 'التعديل المعتمد 1 · 20' : 'Approved revision 1 · 20',
+            label: ar ? 'التعديل المعتمد 1 · 20.000' : 'Approved revision 1 · 20.000',
           })
           const selected = await maximum.inputValue()
           await group
@@ -118,7 +138,10 @@ with psycopg.connect(sys.argv[1]) as db:
           await expect(maximum).toHaveValue(selected)
         }
         await group
-          .getByLabel(ar ? 'الحد الأقصى المختار' : 'Selected maximum', { exact: true })
+          .getByRole('combobox', {
+            name: ar ? 'الحد الأقصى المختار' : 'Selected maximum',
+            exact: true,
+          })
           .selectOption('calculated')
         await group
           .getByLabel(ar ? 'طلبات متأخرة إضافية غير مخصصة' : 'Additional unallocated backorders', {
@@ -168,8 +191,10 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(page).toHaveURL(/sourcing\/[0-9a-f-]{36}$/)
     const savedUrl = page.url()
     await visual('detail', 'en')
+    await expandedEvidence('en')
     await locale('ar')
     await visual('detail', 'ar')
+    await expandedEvidence('ar')
     await page.goto(newUrl)
     await fill(true)
     await visual('preview', 'ar')
