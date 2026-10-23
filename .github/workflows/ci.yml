@@ -36,8 +36,8 @@ jobs:
   supabase:
     name: Supabase (pgTAP, build, Playwright)
     runs-on: ubuntu-latest
-    # The full sequential database/build/browser run exceeded 40m; retain every suite and packaging.
-    timeout-minutes: 60
+    # Full coverage passed near 60m in PR #152; leave room for stack startup and cleanup.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6

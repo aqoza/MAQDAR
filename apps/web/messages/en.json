@@ -6385,6 +6385,21 @@
     "next": "Next",
     "proposalTitle": "Supplier planning proposal",
     "immutable": "These are saved proposed values. Changes are published separately; this view does not confirm current stock or supplier acceptance.",
-    "publicationReference": "Publication reference"
+    "publicationReference": "Publication reference",
+    "publishBatchTitle": "Share supplier batch summary",
+    "backBatch": "Back to purchase batch",
+    "batchPublicationHelp": "Review all lines before sharing. Only the fields below will be visible to users with supplier access. Publishing this batch does not publish its individual handoffs.",
+    "batchSummary": "Batch summary",
+    "batchLines": "Batch lines",
+    "batchTotalHelp": "{count} separate lines. The total sums saved rounded line subtotals; quantities are not pooled.",
+    "batchProposalTitle": "Supplier batch planning proposal",
+    "packageKind": "Package",
+    "handoff": "Individual proposal",
+    "batch": "Batch proposal",
+    "lineCount": "{count} lines",
+    "perLine": "See each line",
+    "overlap": "Overlapping packages",
+    "overlapHelp": "{count} other published packages contain some of the same handoffs. These are overlapping planning proposals, not additional demand or separate orders.",
+    "overlapLimit": "Showing the 25 most recent overlapping publications."
   }
 }
