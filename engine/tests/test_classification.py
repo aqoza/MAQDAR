@@ -1,7 +1,7 @@
 from decimal import Decimal
 import pytest
 
-from maqdar_engine.classification import classify
+from zeespare_engine.classification import classify
 
 OPTIONS = dict(adi='1.32', cv2='0.49', abc_a='0.8', abc_b='0.95', xyz_x='0.5', xyz_y='1')
 

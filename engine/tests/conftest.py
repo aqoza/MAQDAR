@@ -6,8 +6,8 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from maqdar_engine.synth.generate import generate
-from maqdar_engine.synth.presets import PRESETS
+from zeespare_engine.synth.generate import generate
+from zeespare_engine.synth.presets import PRESETS
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -59,7 +59,7 @@ def medium(medium_bundle: Path) -> dict[str, pl.DataFrame]:
 
 @pytest.fixture(scope="session")
 def dsn() -> str:
-    value = os.environ.get("MAQDAR_TEST_DSN")
+    value = os.environ.get("ZEESPARE_TEST_DSN")
     if not value:
-        pytest.skip("set MAQDAR_TEST_DSN to the local stack DSN to run database tests")
+        pytest.skip("set ZEESPARE_TEST_DSN to the local stack DSN to run database tests")
     return value

@@ -1,6 +1,6 @@
 # Import format v1
 
-The files MAQDAR imports master data and transactions from. The synthetic data generator writes them as a bundle, the loader reads the bundle into the local stack, and the import wizard accepts the same entities from customers as CSV, TSV, TXT or XLSX files. The contract lives in code (`engine/src/maqdar_engine/importformat.py`); the column tables below are generated from it and a test fails when they drift. A machine-readable copy is in [`import-format.schema.json`](import-format.schema.json) (also exported to the web app as `@maqdar/shared/import-format.schema.json`), and the database's copy (`ingest.contract_entities` and `ingest.contract_columns`) is seeded from `uv run maqdar-synth format --sql`.
+The files ZeeSpare imports master data and transactions from. The synthetic data generator writes them as a bundle, the loader reads the bundle into the local stack, and the import wizard accepts the same entities from customers as CSV, TSV, TXT or XLSX files. The contract lives in code (`engine/src/zeespare_engine/importformat.py`); the column tables below are generated from it and a test fails when they drift. A machine-readable copy is in [`import-format.schema.json`](import-format.schema.json) (also exported to the web app as `@zeespare/shared/import-format.schema.json`), and the database's copy (`ingest.contract_entities` and `ingest.contract_columns`) is seeded from `uv run zeespare-synth format --sql`.
 
 Version 1 is frozen: later versions only add optional entities and optional trailing columns. Never rename, remove or reorder a column.
 
@@ -16,7 +16,7 @@ Version 1 is frozen: later versions only add optional entities and optional trai
 
 ## Dialect (bundles)
 
-The bundle the generator writes and `maqdar-synth validate` checks uses this strict dialect. The wizard accepts more (see below) and normalizes every value to it before validation.
+The bundle the generator writes and `zeespare-synth validate` checks uses this strict dialect. The wizard accepts more (see below) and normalizes every value to it before validation.
 
 - UTF-8 without a byte-order mark; LF line endings.
 - RFC 4180 quoting: fields containing commas, quotes or newlines are wrapped in double quotes, inner quotes doubled.

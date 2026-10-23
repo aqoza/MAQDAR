@@ -65,10 +65,13 @@ describe('safeDestination', () => {
 
   it('accepts an origin written with a trailing slash or a path', () => {
     expect(
-      safeDestination('https://app.maqdar.example/dashboard', 'https://app.maqdar.example/'),
+      safeDestination('https://app.zeespare.example/dashboard', 'https://app.zeespare.example/'),
     ).toBe('/dashboard')
     expect(
-      safeDestination('https://app.maqdar.example/dashboard', 'https://app.maqdar.example/login'),
+      safeDestination(
+        'https://app.zeespare.example/dashboard',
+        'https://app.zeespare.example/login',
+      ),
     ).toBe('/dashboard')
   })
 

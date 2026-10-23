@@ -61,7 +61,7 @@ def test_event_delivery_rechecks_after_wait(event_delivery, change, expected):
     source, scenario, report = event_delivery
     request = uuid4()
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.event-delivery:'||%s||':'||%s,0))", (str(source[1]), str(request)))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.event-delivery:'||%s||':'||%s,0))", (str(source[1]), str(request)))
         call = _Call(waiting, SAVE, (source[1], scenario, request, report['fingerprint']))
         call.start()
         time.sleep(1)

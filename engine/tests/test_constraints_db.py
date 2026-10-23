@@ -11,8 +11,8 @@ import pytest
 
 from test_planning_db import planning, worker
 from test_simulation_db import policy, enqueue as enqueue_original
-from maqdar_engine.worker import process_one
-from maqdar_engine.policy_constraints import calculate
+from zeespare_engine.worker import process_one
+from zeespare_engine.policy_constraints import calculate
 
 pytestmark = pytest.mark.db
 
@@ -131,7 +131,7 @@ def test_membership_revocation_during_request_lock_is_rechecked(planning, simula
             assert process_one(db)
     name = f'constraints-authority-{uuid4()}'
     with psycopg.connect(planning[0]) as lock:
-        lock.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.planning:'||%s,0))", (str(planning[1]),))
+        lock.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.planning:'||%s,0))", (str(planning[1]),))
         with ThreadPoolExecutor(max_workers=1) as pool:
             pending = pool.submit(enqueue, planning, simulation, request, None, name)
             try:
@@ -162,7 +162,7 @@ def test_fractional_and_large_constraint_rounding_publication(planning, simulati
 
 def test_conserving_but_unrounded_ledger_cannot_publish(planning, simulation):
     from decimal import Decimal, localcontext
-    from maqdar_engine.policy_constraints import replay
+    from zeespare_engine.policy_constraints import replay
     run=enqueue(planning,simulation,maxima=[config('6',1,2,'10','4')])
     with worker(planning[0]) as db:
         claim=db.execute('select * from app.planning_claim()').fetchone()

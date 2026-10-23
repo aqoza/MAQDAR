@@ -50,9 +50,9 @@ select is((select payload->'items'->0->'demand' from snapshot),'[["2026-10-02","
 select throws_ok($$select app.planning_execute(run_id,lease_token) from claimed$$,'MQ422',null,'old readiness worker cannot publish forecast');
 -- Transport fixture; numerical results and score integrity are verified in Python.
 create temp table output as select jsonb_agg(jsonb_build_object('item_id',i->>'item_id','status','insufficient','model',null,'forecast','[]'::jsonb,'scores','[]'::jsonb,'folds','[]'::jsonb,'total',null)) as rows from snapshot,jsonb_array_elements(payload->'items') i;
-grant select on claimed,output to maqdar_worker;
-grant usage on schema extensions to maqdar_worker;
-set local role maqdar_worker;
+grant select on claimed,output to zeespare_worker;
+grant usage on schema extensions to zeespare_worker;
+set local role zeespare_worker;
 select throws_ok($$select * from planning.forecast_inputs$$,'42501',null,'worker cannot read raw snapshots');
 select throws_ok($$select * from public.forecast_results$$,'42501',null,'worker cannot read raw results');
 select throws_ok($$select app.forecast_task(gen_random_uuid(),gen_random_uuid())$$,'42501',null,'worker uses guarded task dispatcher');

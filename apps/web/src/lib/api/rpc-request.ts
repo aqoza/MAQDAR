@@ -1,4 +1,4 @@
-import type { Database } from '@maqdar/shared/database.types'
+import type { Database } from '@zeespare/shared/database.types'
 import type { EntityName } from '../imports/contract'
 import type { RpcErrorLike } from '../rpc-errors'
 import type { KeyHash } from './keys'

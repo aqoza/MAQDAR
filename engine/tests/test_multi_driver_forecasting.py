@@ -5,9 +5,9 @@ from decimal import Decimal, localcontext
 import numpy as np
 import pytest
 
-from maqdar_engine import driver_forecasting as single
-from maqdar_engine import multi_driver_forecasting as joint
-from maqdar_engine.expanded_forecasting import predict as original_predict
+from zeespare_engine import driver_forecasting as single
+from zeespare_engine import multi_driver_forecasting as joint
+from zeespare_engine.expanded_forecasting import predict as original_predict
 from test_driver_forecasting import fixture as single_fixture
 
 

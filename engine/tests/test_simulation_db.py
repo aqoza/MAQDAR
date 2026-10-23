@@ -9,8 +9,8 @@ import pytest
 
 from test_planning_db import planning, worker
 from test_policy_db import saved_forecast, enqueue_policy
-from maqdar_engine.policy_simulation import calculate
-from maqdar_engine.worker import process_one
+from zeespare_engine.policy_simulation import calculate
+from zeespare_engine.worker import process_one
 
 pytestmark = pytest.mark.db
 

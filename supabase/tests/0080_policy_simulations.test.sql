@@ -124,8 +124,8 @@ select is(pg_temp.enqueue(),(select run from saved),'terminal retry remains stab
 reset role;
 select ok(not has_function_privilege('service_role','public.simulation_enqueue(uuid,uuid,uuid,date,text,text,boolean,boolean)','EXECUTE'),'service API role cannot enqueue');
 select ok(not has_function_privilege('authenticated','app.simulation_finish(uuid,uuid,jsonb)','EXECUTE'),'browser cannot publish');
-select ok(not has_table_privilege('maqdar_worker','public.policy_simulations','INSERT'),'worker has no direct result write');
-select ok(has_function_privilege('maqdar_worker','app.simulation_finish(uuid,uuid,jsonb)','EXECUTE'),'worker can use fenced publication');
+select ok(not has_table_privilege('zeespare_worker','public.policy_simulations','INSERT'),'worker has no direct result write');
+select ok(has_function_privilege('zeespare_worker','app.simulation_finish(uuid,uuid,jsonb)','EXECUTE'),'worker can use fenced publication');
 select is((select count(*)::integer from public.stock_snapshots where organization_id=pg_temp.id(1)),0,'no physical stock created');
 select is((select count(*)::integer from public.open_orders where organization_id=pg_temp.id(1)),0,'no operational inbound created');
 select * from finish();

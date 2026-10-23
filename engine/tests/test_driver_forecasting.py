@@ -3,8 +3,8 @@ from datetime import date, timedelta
 from decimal import Decimal
 import pytest
 
-from maqdar_engine import driver_forecasting as driver
-from maqdar_engine.expanded_forecasting import predict as original_predict
+from zeespare_engine import driver_forecasting as driver
+from zeespare_engine.expanded_forecasting import predict as original_predict
 
 
 def fixture(days=140, horizon=14):

@@ -34,7 +34,7 @@ def api(source):
 def key(source, scopes=None):
     digest = uuid4().bytes + uuid4().bytes
     with session(source) as db:
-        db.execute("select public.create_api_key(%s,'Regional reader',%s,30,%s,'maqdar_sk_test','test')",
+        db.execute("select public.create_api_key(%s,'Regional reader',%s,30,%s,'zeespare_sk_test','test')",
                    (source[1], scopes or [SCOPE], digest))
     return digest
 

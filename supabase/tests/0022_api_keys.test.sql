@@ -42,13 +42,13 @@ exception when others then
 end;
 $$;
 
--- A sample key named n (the Worker's format: maqdar_sk_ + 43 + 6 characters) and its SHA-256.
+-- A sample key named n (the Worker's format: zeespare_sk_ + 43 + 6 characters) and its SHA-256.
 create function pg_temp.h(n text)
 returns bytea
 language sql
 immutable
 as $$
-  select sha256(convert_to('maqdar_sk_' || rpad(n, 43, 'x') || 'Ab12Cd', 'UTF8'));
+  select sha256(convert_to('zeespare_sk_' || rpad(n, 43, 'x') || 'Ab12Cd', 'UTF8'));
 $$;
 
 -- The sqlstate alone (privilege errors carry a server-specific hint).
@@ -71,7 +71,7 @@ $$;
 
 -- create_api_key: 'ok' or "<sqlstate> <hint>".
 create function pg_temp.create_key(p_org uuid, p_name text, p_scopes text[], p_days integer, p_hash bytea,
-                                   p_prefix text default 'maqdar_sk_AbCd', p_last4 text default 'wxyz')
+                                   p_prefix text default 'zeespare_sk_AbCd', p_last4 text default 'wxyz')
 returns text
 language plpgsql
 as $$
@@ -142,7 +142,7 @@ values
 -- (transactions:read), revoked, expired (10 days ago), removed-creator, demoted-creator,
 -- no-creator (created_by null, as after the user is deleted). Key of B: b-owner.
 insert into public.api_keys (id, organization_id, name, display_prefix, last4, key_hash, scopes, created_by, created_at, expires_at)
-select v.id::uuid, v.org::uuid, v.name, 'maqdar_sk_Test', 'Ab12', pg_temp.h(v.name), v.scopes, v.creator::uuid,
+select v.id::uuid, v.org::uuid, v.name, 'zeespare_sk_Test', 'Ab12', pg_temp.h(v.name), v.scopes, v.creator::uuid,
        v.created, v.created + interval '90 days'
 from (values
   ('00000000-0000-4000-8000-a22c00000001', '00000000-0000-4000-8000-a22000000000', 'owner-all',
@@ -238,7 +238,7 @@ select is(
 select is(
   array[
     pg_temp.state($$insert into public.api_keys (organization_id, name, display_prefix, last4, key_hash, scopes, expires_at)
-                  values ('00000000-0000-4000-8000-a22000000000', 'x', 'maqdar_sk_AbCd', 'wxyz', sha256('x'::bytea),
+                  values ('00000000-0000-4000-8000-a22000000000', 'x', 'zeespare_sk_AbCd', 'wxyz', sha256('x'::bytea),
                           '{master_data:read}', now() + interval '1 day')$$),
     pg_temp.state($$update public.api_keys set revoked_at = now() where name = 'owner-all'$$),
     pg_temp.state($$delete from public.api_keys where name = 'owner-all'$$)],
@@ -283,20 +283,20 @@ select pg_temp.as_user('00000000-0000-4000-8000-a22000000001');
 select is(
   pg_temp.create_key('00000000-0000-4000-8000-a22000000000', '  CI sync  ',
                      array['transactions:write', 'master_data:read', 'master_data:read'], 30, pg_temp.h('created-1'),
-                     'maqdar_sk_Ci01', 'Zz99'),
+                     'zeespare_sk_Ci01', 'Zz99'),
   'ok',
   'the owner creates a key'
 );
 select is(
   (select format('%s|%s|%s|%s|%s|%s|%s|%s', k.name, k.scopes, k.display_prefix, k.last4, k.created_by,
                  k.expires_at = now() + interval '30 days', k.revoked_at is null, k.last_used_at is null)
-   from public.api_keys k where k.display_prefix = 'maqdar_sk_Ci01'),
-  'CI sync|{master_data:read,transactions:write}|maqdar_sk_Ci01|Zz99|00000000-0000-4000-8000-a22000000001|t|t|t',
+   from public.api_keys k where k.display_prefix = 'zeespare_sk_Ci01'),
+  'CI sync|{master_data:read,transactions:write}|zeespare_sk_Ci01|Zz99|00000000-0000-4000-8000-a22000000001|t|t|t',
   'the name is trimmed, scopes are stored sorted and distinct, the creator and the expiry are recorded'
 );
 reset role;
 select is(
-  (select k.key_hash from public.api_keys k where k.display_prefix = 'maqdar_sk_Ci01'),
+  (select k.key_hash from public.api_keys k where k.display_prefix = 'zeespare_sk_Ci01'),
   pg_temp.h('created-1'),
   'the hash is stored as sent (32 bytes)'
 );
@@ -305,12 +305,12 @@ set local role authenticated;
 select pg_temp.as_user('00000000-0000-4000-8000-a22000000002');
 select is(
   pg_temp.create_key('00000000-0000-4000-8000-a22000000000', repeat('n', 80), array['master_data:write'], 366,
-                     pg_temp.h('created-2'), 'maqdar_sk_Ad02', 'Zz98'),
+                     pg_temp.h('created-2'), 'zeespare_sk_Ad02', 'Zz98'),
   'ok',
   'an admin creates a key with an 80-character name that expires in 366 days'
 );
 select is(
-  (select format('%s %s', k.created_by, k.expires_at - k.created_at) from public.api_keys k where k.display_prefix = 'maqdar_sk_Ad02'),
+  (select format('%s %s', k.created_by, k.expires_at - k.created_at) from public.api_keys k where k.display_prefix = 'zeespare_sk_Ad02'),
   '00000000-0000-4000-8000-a22000000002 366 days',
   'its creator is the admin and it expires 366 days after creation'
 );
@@ -384,20 +384,20 @@ select is(
 );
 select is(
   array[
-    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'maqdar_sk_Abc', 'wxyz'),
-    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'maqdar_sk_Abcde', 'wxyz'),
-    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'maqdar_pk_Abcd', 'wxyz'),
-    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'maqdar_sk_Ab-d', 'wxyz'),
+    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'zeespare_sk_Abc', 'wxyz'),
+    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'zeespare_sk_Abcde', 'wxyz'),
+    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'zeespare_pk_Abcd', 'wxyz'),
+    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'zeespare_sk_Ab-d', 'wxyz'),
     pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), null, 'wxyz')],
   array['MQ422 display_prefix', 'MQ422 display_prefix', 'MQ422 display_prefix', 'MQ422 display_prefix', 'MQ422 display_prefix'],
   'MQ422 display_prefix: 3 or 5 characters, another prefix, a dash, null'
 );
 select is(
   array[
-    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'maqdar_sk_AbCd', 'wxy'),
-    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'maqdar_sk_AbCd', 'wxyz1'),
-    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'maqdar_sk_AbCd', 'wx_z'),
-    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'maqdar_sk_AbCd', null)],
+    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'zeespare_sk_AbCd', 'wxy'),
+    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'zeespare_sk_AbCd', 'wxyz1'),
+    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'zeespare_sk_AbCd', 'wx_z'),
+    pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'x', array['master_data:read'], 30, pg_temp.h('v'), 'zeespare_sk_AbCd', null)],
   array['MQ422 last4', 'MQ422 last4', 'MQ422 last4', 'MQ422 last4'],
   'MQ422 last4: 3 or 5 characters, an underscore, null'
 );
@@ -428,7 +428,7 @@ select is(
 set local role authenticated;
 select is(
   array(select distinct pg_temp.create_key('00000000-0000-4000-8000-a22000000000', 'bulk ' || i, array['master_data:read'], 30,
-                                           pg_temp.h('bulk-' || i), 'maqdar_sk_Bulk', lpad(i::text, 4, '0'))
+                                           pg_temp.h('bulk-' || i), 'zeespare_sk_Bulk', lpad(i::text, 4, '0'))
         from generate_series(1, 12) as i),
   array['ok'],
   '12 more keys reach 20 active keys'
@@ -492,18 +492,18 @@ select is(
 set local role authenticated;
 select pg_temp.as_user('00000000-0000-4000-8000-a22000000002');
 select is(
-  pg_temp.err($$select public.revoke_api_key((select k.id from public.api_keys k where k.display_prefix = 'maqdar_sk_Ci01'))$$),
+  pg_temp.err($$select public.revoke_api_key((select k.id from public.api_keys k where k.display_prefix = 'zeespare_sk_Ci01'))$$),
   'no error',
   'an admin of A revokes a key the owner created'
 );
 select pg_temp.as_user('00000000-0000-4000-8000-a22000000001');
 select is(
-  pg_temp.err($$select public.revoke_api_key((select k.id from public.api_keys k where k.display_prefix = 'maqdar_sk_Ci01'))$$),
+  pg_temp.err($$select public.revoke_api_key((select k.id from public.api_keys k where k.display_prefix = 'zeespare_sk_Ci01'))$$),
   'no error',
   'a repeat by the owner succeeds'
 );
 select is(
-  (select format('%s %s', k.revoked_at = now(), k.revoked_by) from public.api_keys k where k.display_prefix = 'maqdar_sk_Ci01'),
+  (select format('%s %s', k.revoked_at = now(), k.revoked_by) from public.api_keys k where k.display_prefix = 'zeespare_sk_Ci01'),
   't 00000000-0000-4000-8000-a22000000002',
   'and changes nothing: revoked_at and revoked_by (the admin) stay'
 );
@@ -522,7 +522,7 @@ select is(
 );
 select is(
   array[
-    pg_temp.org_call(sha256('maqdar_sk_unknown'::bytea)),
+    pg_temp.org_call(sha256('zeespare_sk_unknown'::bytea)),
     pg_temp.org_call(null),
     pg_temp.org_call(substring(pg_temp.h('owner-all') from 1 for 31)),
     pg_temp.org_call(pg_temp.h('owner-all') || '\x00'::bytea),
@@ -701,7 +701,7 @@ select is(
   array[
     pg_temp.state($$select app.api_authorize(pg_temp.h('owner-all'), null)$$),
     pg_temp.state($$select app.api_limits()$$),
-    pg_temp.state($$select public.create_api_key('00000000-0000-4000-8000-a22000000000', 'x', '{master_data:read}', 30, sha256('x'::bytea), 'maqdar_sk_AbCd', 'wxyz')$$),
+    pg_temp.state($$select public.create_api_key('00000000-0000-4000-8000-a22000000000', 'x', '{master_data:read}', 30, sha256('x'::bytea), 'zeespare_sk_AbCd', 'wxyz')$$),
     pg_temp.state($$select count(id) from public.api_keys$$)],
   array['42501', '42501', '42501', '42501'],
   'service_role gets 42501 for app.api_*, create_api_key and reading api_keys'
@@ -712,15 +712,15 @@ reset role;
 -- The SHA-256 vector shared with apps/web/src/lib/api/keys.test.ts
 ------------------------------------------------------------------------------------------------
 select is(
-  encode(sha256(convert_to('maqdar_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg27zRqD', 'UTF8')), 'hex'),
-  '57c5db9f1c461c47073a614bba4368a3902a3fa56525f94fa8fab6528f35efcb',
+  encode(sha256(convert_to('zeespare_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0QUuQI', 'UTF8')), 'hex'),
+  '5ce42b3eff9f75f4c38e409644e5813fce73de68bce8d108dfd5e117b42b1863',
   'SHA-256 of the shared key vector'
 );
 set local role authenticated;
 select pg_temp.as_user('00000000-0000-4000-8000-b22000000001');
 select is(
   pg_temp.create_key('00000000-0000-4000-8000-b22000000000', 'vector', array['master_data:read'], 30,
-                     decode('57c5db9f1c461c47073a614bba4368a3902a3fa56525f94fa8fab6528f35efcb', 'hex'), 'maqdar_sk_0123', 'zRqD'),
+                     decode('5ce42b3eff9f75f4c38e409644e5813fce73de68bce8d108dfd5e117b42b1863', 'hex'), 'zeespare_sk_0123', 'zRqD'),
   'ok',
   'a key created with the vector hash (as the Settings action sends it)'
 );
@@ -729,8 +729,8 @@ select pg_temp.as_user(null);
 set local role service_role;
 select is(
   (select r -> 'key' ->> 'display'
-   from public.api_organization('\x57c5db9f1c461c47073a614bba4368a3902a3fa56525f94fa8fab6528f35efcb') as r),
-  'maqdar_sk_0123…zRqD',
+   from public.api_organization('\x5ce42b3eff9f75f4c38e409644e5813fce73de68bce8d108dfd5e117b42b1863') as r),
+  'zeespare_sk_0123…zRqD',
   'is authorized by the bytea literal the Worker sends (''\x'' + 64 lower-case hex digits)'
 );
 reset role;

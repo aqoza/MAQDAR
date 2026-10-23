@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { leavesPage, type GuardClick, type GuardLink } from './navigation-guard'
 
-const HERE = 'https://maqdar.test/imports/new'
+const HERE = 'https://zeespare.test/imports/new'
 const click = (patch: Partial<GuardClick> = {}): GuardClick => ({
   button: 0,
   metaKey: false,
@@ -21,7 +21,7 @@ const link = (href: string, patch: Partial<GuardLink> = {}): GuardLink => ({
 describe('leavesPage', () => {
   it('guards a plain click on an in-app link to another page (sidebar, header, history)', () => {
     expect(leavesPage(click(), link('/items'), HERE)).toBe(true)
-    expect(leavesPage(click(), link('https://maqdar.test/imports'), HERE)).toBe(true)
+    expect(leavesPage(click(), link('https://zeespare.test/imports'), HERE)).toBe(true)
     expect(leavesPage(click(), link('/imports/new?entity=items'), HERE)).toBe(true)
   })
 

@@ -51,7 +51,7 @@ def test_event_cost_rechecks_after_wait(event_cost, change, expected):
     source, delivery, report = event_cost
     request = uuid4()
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.event-cost:'||%s||':'||%s,0))", (str(source[1]),str(request)))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.event-cost:'||%s||':'||%s,0))", (str(source[1]),str(request)))
         call = _Call(waiting, SAVE, (source[1], delivery, request, report['fingerprint']))
         call.start(); time.sleep(1)
         assert not call.finished

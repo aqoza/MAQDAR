@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 from statsforecast.models import AutoARIMA, AutoETS
 
-from maqdar_engine.forecasting import MODELS as BASELINES, MIN_TRAIN, accuracy, baseline, daily_series, decimal_text
+from zeespare_engine.forecasting import MODELS as BASELINES, MIN_TRAIN, accuracy, baseline, daily_series, decimal_text
 
 VERSION = 'expanded-v1'
 MODELS = (*BASELINES, 'auto_ets', 'auto_arima')

@@ -228,7 +228,7 @@ def test_waits_recheck_authority_and_evidence(package, lock, change, expected):
     source,ids,template = package
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
         if lock == "advisory":
-            admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.network-review:'||%s,0))",(str(source[1]),))
+            admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.network-review:'||%s,0))",(str(source[1]),))
         elif lock == "parent":
             admin.execute("select id from public.network_transfer_handoffs where id=%s for update",(ids[0],))
         else:

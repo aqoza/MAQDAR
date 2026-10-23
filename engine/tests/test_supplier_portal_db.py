@@ -39,7 +39,7 @@ def test_publish_rechecks_after_wait(publication,change,expected):
     with session(source) as db:
         newer=db.execute(SUBMIT,(source[1],purchase[2],uuid4(),'Alternative')).fetchone()[0]
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.purchase-review:'||%s,0))",(str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.purchase-review:'||%s,0))",(str(source[1]),))
         call=_Call(waiting,PUBLISH,(source[1],handoff,preview['fingerprint']))
         call.start();time.sleep(0.3);assert not call.finished
         if change=='price':admin.execute('update public.supplier_items set unit_price=99 where organization_id=%s',(source[1],))
@@ -62,7 +62,7 @@ def test_accept_rechecks_revocation_after_wait(publication):
         with session(source) as db:
             grant=db.execute('select public.supplier_portal_invite(%s,%s,%s)',(source[1],supplier,'supplier-race@test.local')).fetchone()[0]['id']
         with psycopg.connect(source[0]) as admin, psycopg.connect(source[0]) as waiting:
-            admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.supplier-portal:'||%s,0))",(str(source[1]),))
+            admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.supplier-portal:'||%s,0))",(str(source[1]),))
             waiting.execute('set local role authenticated')
             waiting.execute("select set_config('request.jwt.claims',json_build_object('sub',%s::text,'role','authenticated')::text,true)",(supplier_user,))
             call=_Call(waiting,'select public.supplier_portal_accept(%s)',(grant,))

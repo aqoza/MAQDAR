@@ -85,14 +85,14 @@ describe('buildRpcRequest (J9)', () => {
 
 describe('payloads', () => {
   it('serializes plain arguments', async () => {
-    const hash = await hashApiKey('maqdar_sk_x')
+    const hash = await hashApiKey('zeespare_sk_x')
     expect(JSON.parse(rpcPayload<'api_organization'>({ p_key_hash: hash }))).toEqual({
       p_key_hash: hash,
     })
   })
 
   it('splices the upsert body as sent, keeping every digit', async () => {
-    const hash = await hashApiKey('maqdar_sk_x')
+    const hash = await hashApiKey('zeespare_sk_x')
     const bodyText =
       '{"records":[{"from_currency":"USD","to_currency":"SAR","valid_from":"2026-01-01","rate":3.75000000000000000001}]}'
     const payload = upsertPayload({

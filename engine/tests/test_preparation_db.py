@@ -6,8 +6,8 @@ from psycopg.types.json import Jsonb
 import pytest
 
 from test_planning_db import planning,worker
-from maqdar_engine.worker import process_one
-from maqdar_engine.preparation import prepare
+from zeespare_engine.worker import process_one
+from zeespare_engine.preparation import prepare
 
 pytestmark=pytest.mark.db
 

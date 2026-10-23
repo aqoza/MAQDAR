@@ -5,9 +5,9 @@ import { tick, ContainerMonitor, type RuntimeConfig, type ContainerHandle } from
 const configured: RuntimeConfig = {
   ENABLED: 'true',
   MODE: 'probe',
-  MAQDAR_EXPECTED_ORGANIZATION: '00000000-0000-4000-8000-000000000001',
-  MAQDAR_WORKER_DSN: 'local-test-dsn',
-  MAQDAR_DATABASE_CA: 'local-test-ca',
+  ZEESPARE_EXPECTED_ORGANIZATION: '00000000-0000-4000-8000-000000000001',
+  ZEESPARE_WORKER_DSN: 'local-test-dsn',
+  ZEESPARE_DATABASE_CA: 'local-test-ca',
 }
 
 function fake(running = false) {
@@ -54,7 +54,7 @@ test('pause requests graceful termination of only this instance', async () => {
 
 test('missing configuration does not start a process', async () => {
   const { container, calls } = fake()
-  await assert.rejects(() => tick(container, { ...configured, MAQDAR_DATABASE_CA: '' }))
+  await assert.rejects(() => tick(container, { ...configured, ZEESPARE_DATABASE_CA: '' }))
   assert.deepEqual(calls, [])
 })
 

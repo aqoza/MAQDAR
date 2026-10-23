@@ -4,11 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from maqdar_engine import importformat
-from maqdar_engine.synth.loader import LoaderRefused, check_dsn, load_bundle, table_counts
-from maqdar_engine.synth.presets import PRESETS
-from maqdar_engine.synth.validate import validate_bundle
-from maqdar_engine.synth.writer import read_manifest
+from zeespare_engine import importformat
+from zeespare_engine.synth.loader import LoaderRefused, check_dsn, load_bundle, table_counts
+from zeespare_engine.synth.presets import PRESETS
+from zeespare_engine.synth.validate import validate_bundle
+from zeespare_engine.synth.writer import read_manifest
 
 from optional_bundle import CALENDAR, add_optional_entities, copy_bundle
 

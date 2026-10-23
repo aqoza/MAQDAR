@@ -256,10 +256,10 @@ select is((select count(*) from public.stock_snapshots where organization_id=pg_
 select is((select count(*) from public.purchase_handoff_batches where organization_id=pg_temp.id(1)),0::bigint,'ordinary batches independent');
 select ok(not has_table_privilege('anon','public.event_purchase_handoff_batches','SELECT'),'anon cannot read');
 select ok(not has_table_privilege('service_role','public.event_purchase_handoff_batches','SELECT'),'service cannot read');
-select ok(not has_table_privilege('maqdar_worker','public.event_purchase_handoff_batches','SELECT'),'worker cannot read');
+select ok(not has_table_privilege('zeespare_worker','public.event_purchase_handoff_batches','SELECT'),'worker cannot read');
 select ok(not has_function_privilege('anon','public.event_purchase_handoff_batch_create(uuid,uuid[])','EXECUTE'),'anon cannot create');
 select ok(not has_function_privilege('service_role','public.event_purchase_handoff_batch_create(uuid,uuid[])','EXECUTE'),'service cannot create');
-select ok(not has_function_privilege('maqdar_worker','public.event_purchase_handoff_batch_create(uuid,uuid[])','EXECUTE'),'worker cannot create');
+select ok(not has_function_privilege('zeespare_worker','public.event_purchase_handoff_batch_create(uuid,uuid[])','EXECUTE'),'worker cannot create');
 insert into lines(n,id) select n,pg_temp.line(n) from generate_series(10,59) n;
 set local role authenticated;
 set local statement_timeout='8s';

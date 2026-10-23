@@ -26,8 +26,8 @@ import { createOrganization } from './helpers/organizations'
  * fresh organization, then a demand file of 1,000,000 rows (three months of the large preset,
  * trimmed to the per-import cap). Phase timings and the request and unit durations are logged;
  * the bounds are generous on purpose. The bundle comes from engine/data/large, generated with
- * `uv run maqdar-synth generate --preset large --out data/large` when missing (never loaded with
- * maqdar-synth). Everything the spec imported is deleted afterwards.
+ * `uv run zeespare-synth generate --preset large --out data/large` when missing (never loaded with
+ * zeespare-synth). Everything the spec imported is deleted afterwards.
  */
 
 test.skip(process.env.SCALE !== '1', 'Local evidence only: run with SCALE=1')
@@ -64,7 +64,7 @@ function ensureBundle(): void {
   if (existsSync(path.join(BUNDLE, 'items.csv'))) return
   execFileSync(
     process.env.UV ?? 'uv',
-    ['run', 'maqdar-synth', 'generate', '--preset', 'large', '--out', 'data/large'],
+    ['run', 'zeespare-synth', 'generate', '--preset', 'large', '--out', 'data/large'],
     { cwd: ENGINE, stdio: 'inherit' },
   )
 }

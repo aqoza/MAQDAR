@@ -21,7 +21,7 @@ Get-ChildItem -LiteralPath (Join-Path $sourceRoot 'supabase/migrations') -File -
  Where-Object { ($_.Name -le '20261019180044_policy_simulations.sql' -and $_.Name -ne $excluded) -or $_.Name -in $required } |
  Copy-Item -Destination $migrationDirectory
 @'
-project_id = "maqdar-simulation-rollout-review"
+project_id = "zeespare-simulation-rollout-review"
 [db]
 major_version = 17
 [db.seed]

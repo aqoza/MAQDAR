@@ -3,9 +3,9 @@ from datetime import date
 import numpy as np
 import pytest
 
-from maqdar_engine.synth.calendar import Calendar, holidays, ramadan_windows
-from maqdar_engine.synth.network import countries, locations, product_groups
-from maqdar_engine.synth.presets import N_DAYS, WINDOW_END, WINDOW_START
+from zeespare_engine.synth.calendar import Calendar, holidays, ramadan_windows
+from zeespare_engine.synth.network import countries, locations, product_groups
+from zeespare_engine.synth.presets import N_DAYS, WINDOW_END, WINDOW_START
 
 
 @pytest.fixture(scope="module")

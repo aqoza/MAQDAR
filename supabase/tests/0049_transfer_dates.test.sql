@@ -186,7 +186,7 @@ select throws_ok($$select pg_temp.preview()$$,'42501',null,'anonymous has no cap
 set local role service_role;
 select throws_ok($$select pg_temp.preview()$$,'42501',null,'integration service has no capability');
 reset role;
-select ok(not has_function_privilege('maqdar_worker','public.transfer_date_preview(uuid,uuid,date,boolean)','EXECUTE'),'worker cannot preview');
-select ok(not has_function_privilege('maqdar_worker','public.transfer_date_save(uuid,uuid,date,boolean,uuid,text)','EXECUTE'),'worker cannot save');
+select ok(not has_function_privilege('zeespare_worker','public.transfer_date_preview(uuid,uuid,date,boolean)','EXECUTE'),'worker cannot preview');
+select ok(not has_function_privilege('zeespare_worker','public.transfer_date_save(uuid,uuid,date,boolean,uuid,text)','EXECUTE'),'worker cannot save');
 select * from finish();
 rollback;

@@ -80,7 +80,7 @@ def test_waiter_rechecks_authority(population, retry, change):
         with session(population) as db:
             db.execute(SAVE, call_args)
     with psycopg.connect(population[0]) as admin, session(population) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.installed-base-demand:'||%s||':'||%s,0))", (str(population[1]), str(call_args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.installed-base-demand:'||%s||':'||%s,0))", (str(population[1]), str(call_args[2])))
         call = _Call(waiting, SAVE, call_args)
         call.start()
         time.sleep(1)

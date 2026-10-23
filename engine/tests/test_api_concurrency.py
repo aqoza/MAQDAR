@@ -1,9 +1,9 @@
 """Concurrency checks for the Step 5b REST API RPCs that pgTAP cannot express (one session only).
 
 public.api_upsert runs one request in one transaction over the 5a pipeline. It takes the 5a import
-lock ``maqdar.import:<organization>`` with a try-lock (busy: MQ409 import_in_progress, no waiting),
+lock ``zeespare.import:<organization>`` with a try-lock (busy: MQ409 import_in_progress, no waiting),
 so API writes, wizard commit steps and the items/locations delete guard exclude each other per
-organization, and it sets ``maqdar.import_analyze = skip_locked`` for its call, so the 5a statistics
+organization, and it sets ``zeespare.import_analyze = skip_locked`` for its call, so the 5a statistics
 helpers never wait for another organization's ANALYZE.
 
 API calls run on connections with role service_role (what the route handlers' secret key maps to);
@@ -94,7 +94,7 @@ ANALYZE_LOCKS = (
 # The organization's import lock (a bigint advisory key: classid holds the high, objid the low 32 bits).
 IMPORT_LOCK_HELD = (
     "select exists (select 1 from pg_catalog.pg_locks l"
-    " cross join (select hashtextextended('maqdar.import:' || %s::text, 0) as k) h"
+    " cross join (select hashtextextended('zeespare.import:' || %s::text, 0) as k) h"
     " where l.pid = %s and l.locktype = 'advisory' and l.mode = 'ExclusiveLock' and l.granted"
     " and l.classid::bigint = (h.k >> 32) & 4294967295 and l.objid::bigint = h.k & 4294967295 and l.objsubid = 1)"
 )
@@ -116,14 +116,14 @@ class Org(Tenant):
 
 def _create_key(org: Org, name: str) -> ApiKey:
     """A 30-day key with every scope, created by the owner as Settings does; only its SHA-256 is stored."""
-    secret = "maqdar_sk_" + "".join(secrets.choice(BASE62) for _ in range(49))
+    secret = "zeespare_sk_" + "".join(secrets.choice(BASE62) for _ in range(49))
     key_hash = hashlib.sha256(secret.encode()).digest()
     conn = _editor(org, org.owner)
     try:
         key_id = _value(
             conn,
             "select public.create_api_key(%s, %s, %s::text[], 30, %s, %s, %s)",
-            (org.organization, name, SCOPES, key_hash, secret[:14], secret[-4:]),
+            (org.organization, name, SCOPES, key_hash, secret[: len("zeespare_sk_") + 4], secret[-4:]),
         )
         conn.commit()
     finally:
@@ -174,7 +174,7 @@ def orgs(dsn: str) -> Iterator[Callable[[], Org]]:
         with psycopg.connect(dsn) as conn:
             if organizations:
                 conn.execute("delete from public.demand_history where organization_id = any(%s)", (organizations,))
-                conn.execute("set local maqdar.demand_guard = 'off'")
+                conn.execute("set local zeespare.demand_guard = 'off'")
                 conn.execute("delete from public.organizations where id = any(%s)", (organizations,))
             if users:
                 conn.execute("delete from auth.users where id = any(%s)", (users,))
@@ -358,7 +358,7 @@ def test_api_writes_and_wizard_commits_exclude_each_other(orgs: Callable[[], Org
 def test_an_api_write_never_waits_for_another_organizations_analyze(orgs: Callable[[], Org]) -> None:
     a, b, filler = orgs(), orgs(), orgs()
     writer_a, writer_b = _api(a.dsn), _api(b.dsn)
-    control = psycopg.connect(a.dsn)  # postgres, like the definer helpers; no maqdar.import_analyze
+    control = psycopg.connect(a.dsn)  # postgres, like the definer helpers; no zeespare.import_analyze
     warnings: list[tuple[str | None, str | None]] = []
     writer_b.add_notice_handler(lambda diag: warnings.append((diag.sqlstate, diag.message_primary)))
     skipped = ("55P03", 'skipping analyze of "items" --- lock not available')
@@ -384,14 +384,14 @@ def test_an_api_write_never_waits_for_another_organizations_analyze(orgs: Callab
             assert skipped in warnings, warnings
 
             # Control: the same helper call on the same stale table; only the setting differs.
-            control.execute("select set_config('maqdar.import_analyze', 'skip_locked', true)")
+            control.execute("select set_config('zeespare.import_analyze', 'skip_locked', true)")
             started = time.perf_counter()
             assert _value(control, PREPARE_ITEMS, (uuid.uuid4(),)) == ["public.items"]
             assert time.perf_counter() - started < UNBLOCKED_SECONDS
             control.rollback()
 
             def prepare_without_setting(conn: psycopg.Connection) -> list[str]:
-                conn.execute("select set_config('maqdar.import_analyze', '', true)")
+                conn.execute("select set_config('zeespare.import_analyze', '', true)")
                 return _value(conn, PREPARE_ITEMS, (uuid.uuid4(),))
 
             waiting = _Background(control, prepare_without_setting)

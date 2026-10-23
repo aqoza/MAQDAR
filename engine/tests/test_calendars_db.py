@@ -12,8 +12,8 @@ import pytest
 from test_planning_db import planning, worker
 from test_simulation_db import policy
 from test_constraints_db import simulation, enqueue as constraints_enqueue, config
-from maqdar_engine.worker import process_one
-from maqdar_engine.policy_calendars import calculate
+from zeespare_engine.worker import process_one
+from zeespare_engine.policy_calendars import calculate
 
 pytestmark = pytest.mark.db
 
@@ -186,7 +186,7 @@ def test_membership_revoked_while_waiting_for_request_lock(planning, comparison,
             assert process_one(db)
     name = f"calendars-authority-{uuid4()}"
     with psycopg.connect(planning[0]) as lock:
-        lock.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.planning:'||%s,0))", (str(planning[1]),))
+        lock.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.planning:'||%s,0))", (str(planning[1]),))
         with ThreadPoolExecutor(max_workers=1) as pool:
             pending = pool.submit(call, planning, "simulation_calendars_enqueue",
                 (planning[1], *comparison, request, captured["fingerprint"], True), application_name=name)

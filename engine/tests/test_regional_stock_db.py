@@ -74,7 +74,7 @@ def test_waiter_rechecks_authority(regional, retry, change):
         with session(regional) as db:
             db.execute(SAVE, call_args)
     with psycopg.connect(regional[0]) as admin, session(regional) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.regional-stock:'||%s||':'||%s,0))", (str(regional[1]), str(call_args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.regional-stock:'||%s||':'||%s,0))", (str(regional[1]), str(call_args[2])))
         call = _Call(waiting, SAVE, call_args)
         call.start()
         time.sleep(1)
@@ -88,7 +88,7 @@ def test_waiter_rechecks_authority(regional, retry, change):
 def test_waiting_first_save_refreshes_changed_catalog(regional):
     call_args = args(regional)
     with psycopg.connect(regional[0]) as admin, session(regional) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.regional-stock:'||%s||':'||%s,0))", (str(regional[1]), str(call_args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.regional-stock:'||%s||':'||%s,0))", (str(regional[1]), str(call_args[2])))
         call = _Call(waiting, SAVE, call_args)
         call.start()
         time.sleep(1)
@@ -103,7 +103,7 @@ def test_waiting_first_save_refreshes_changed_catalog(regional):
 def test_changed_evidence_refreshed_after_request_lock(regional, table):
     call_args=args(regional)
     with psycopg.connect(regional[0]) as admin, session(regional) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.regional-stock:'||%s||':'||%s,0))",(str(regional[1]),str(call_args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.regional-stock:'||%s||':'||%s,0))",(str(regional[1]),str(call_args[2])))
         call=_Call(waiting,SAVE,call_args); call.start(); time.sleep(1)
         assert not call.finished
         column="quantity=11" if table=="stock_snapshots" else "name_en='Changed'"
@@ -149,7 +149,7 @@ def test_scope_revocation_during_retry_wait(regional,retry):
     if retry:
         with session(regional) as db: db.execute(SAVE,call_args)
     with psycopg.connect(regional[0]) as admin,session(regional) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.regional-stock:'||%s||':'||%s,0))",(str(regional[1]),str(call_args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.regional-stock:'||%s||':'||%s,0))",(str(regional[1]),str(call_args[2])))
         call=_Call(waiting,SAVE,call_args);call.start();time.sleep(1)
         assert not call.finished
         admin.execute("update public.memberships set role='branch_user' where organization_id=%s and user_id=%s",regional[1:])

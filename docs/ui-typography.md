@@ -1,6 +1,6 @@
 # Application typography and help
 
-Approved on 2026-10-17 after the PR #30 review and a rendered typography comparison. MAQDAR keeps Inter and Noto Sans Arabic and uses a compact operational hierarchy.
+Approved on 2026-10-17 after the PR #30 review and a rendered typography comparison. ZeeSpare keeps Inter and Noto Sans Arabic and uses a compact operational hierarchy.
 
 | Role                       | Size / line height | Weight  |
 | -------------------------- | ------------------ | ------- |
@@ -22,7 +22,7 @@ Keep errors, partial/unavailable results, stale-data notices, active-run feedbac
 
 ## Reference
 
-The [Syncron D2D product sheet](https://www.syncron.com/hubfs/Syncron_2025/Document/Syncron-Syncron-D2D-product-sheet.pdf), page 1, includes a compact “Dealer requests” interface with tabs and a table dominating the working area. That supports a quieter, task-first layout. D2D is a related product; the public [Service Parts Planning page](https://www.syncron.com/solutions/service-parts-planning) is marketing material, not an application type specification. No exact Syncron CSS tokens were verified. These are MAQDAR's approved sizes, not a claim of pixel-identical Syncron styling.
+The [Syncron D2D product sheet](https://www.syncron.com/hubfs/Syncron_2025/Document/Syncron-Syncron-D2D-product-sheet.pdf), page 1, includes a compact “Dealer requests” interface with tabs and a table dominating the working area. That supports a quieter, task-first layout. D2D is a related product; the public [Service Parts Planning page](https://www.syncron.com/solutions/service-parts-planning) is marketing material, not an application type specification. No exact Syncron CSS tokens were verified. These are ZeeSpare's approved sizes, not a claim of pixel-identical Syncron styling.
 
 ## Verification
 

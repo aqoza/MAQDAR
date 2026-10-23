@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '@maqdar/shared'
+import type { Database } from '@zeespare/shared'
 import { kpiSchema } from './dashboard'
 import { z } from 'zod'
 

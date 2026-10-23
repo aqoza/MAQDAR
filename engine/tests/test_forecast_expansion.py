@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import pytest
 
-from maqdar_engine.expanded_forecasting import forecast, bootstrap_bands, predict
+from zeespare_engine.expanded_forecasting import forecast, bootstrap_bands, predict
 from test_forecasting import task
 
 
@@ -63,7 +63,7 @@ def test_automatic_models_fit_trend_and_return_finite_nonnegative_values(model):
 
 
 def test_failed_automatic_candidate_is_reported_without_losing_baselines(monkeypatch):
-    from maqdar_engine import expanded_forecasting as module
+    from zeespare_engine import expanded_forecasting as module
     original = module.predict
     def fail(series, horizon, model):
         if model == 'auto_arima':
@@ -98,7 +98,7 @@ def test_short_or_ended_lifecycle_has_no_forecast_and_future_end_zeros_bands():
 
 
 def test_refit_failure_excludes_the_candidate_and_reselects(monkeypatch):
-    from maqdar_engine import expanded_forecasting as module
+    from zeespare_engine import expanded_forecasting as module
     original = module.predict
     def fail_refit(series, horizon, model):
         if model == 'auto_arima':
@@ -116,7 +116,7 @@ def test_refit_failure_excludes_the_candidate_and_reselects(monkeypatch):
 
 
 def test_nonfinite_automatic_predictions_are_rejected(monkeypatch):
-    from maqdar_engine import expanded_forecasting as module
+    from zeespare_engine import expanded_forecasting as module
     import numpy as np
     monkeypatch.setattr(module.AutoETS, 'forecast', lambda *args, **kwargs: {'mean':np.array([np.nan]*7)})
     with pytest.raises(ValueError):
@@ -126,26 +126,26 @@ def test_nonfinite_automatic_predictions_are_rejected(monkeypatch):
 
 
 def test_baseline_programming_errors_are_not_mislabeled_as_model_unavailability(monkeypatch):
-    from maqdar_engine import expanded_forecasting as module
+    from zeespare_engine import expanded_forecasting as module
     monkeypatch.setattr(module, 'predict', lambda *args: (_ for _ in ()).throw(ValueError('bad baseline')))
     with pytest.raises(ValueError,match='bad baseline'):
         forecast(expanded([1]*112))
 
 
 def test_compute_process_timeout_terminates_child():
-    from maqdar_engine.forecast_process import compute
+    from zeespare_engine.forecast_process import compute
     with pytest.raises(ValueError,match='timed out'):
         compute(expanded([1]*112),timeout=0)
 
 
 def test_compute_process_invalid_task_returns_generic_failure():
-    from maqdar_engine.forecast_process import compute
+    from zeespare_engine.forecast_process import compute
     with pytest.raises(ValueError,match='computation failed'):
         compute({'secret':'do not expose'})
 
 
 def test_baseline_refit_error_fails_attempt(monkeypatch):
-    from maqdar_engine import expanded_forecasting as module
+    from zeespare_engine import expanded_forecasting as module
     original = module.predict
     def fail(series, horizon, model):
         if len(series)==112 and model=='mean':
@@ -158,7 +158,7 @@ def test_baseline_refit_error_fails_attempt(monkeypatch):
 
 def test_child_transport_sends_results_or_generic_failure_and_closes():
     from unittest.mock import MagicMock
-    from maqdar_engine.forecast_process import _run
+    from zeespare_engine.forecast_process import _run
     sender=MagicMock()
     _run(sender,expanded([1]*10))
     assert sender.send.call_args.args[0][0]['status']=='insufficient'
@@ -171,7 +171,7 @@ def test_child_transport_sends_results_or_generic_failure_and_closes():
 
 def test_parent_reads_results_and_handles_child_crash(monkeypatch):
     from unittest.mock import MagicMock
-    from maqdar_engine import forecast_process
+    from zeespare_engine import forecast_process
     context=MagicMock()
     receiver,sender=MagicMock(),MagicMock()
     context.Pipe.return_value=receiver,sender

@@ -113,8 +113,8 @@ select is(public.regional_handoff_create(pg_temp.id(1),(select id from proposals
 reset role;
 select ok((select relrowsecurity from pg_class where oid='public.regional_transfer_handoffs'::regclass),'RLS');
 select ok((select reloptions @> array['security_invoker=true'] from pg_class where oid='public.regional_handoff_list'::regclass),'invoker history');
-select ok(not has_table_privilege(role,'public.regional_transfer_handoffs','INSERT,UPDATE,DELETE'),role||' cannot write') from unnest(array['anon','authenticated','service_role','maqdar_worker','maqdar_simulation_worker']) role;
-select ok(not has_function_privilege(role,'public.regional_handoff_create(uuid,uuid)','execute'),role||' cannot create') from unnest(array['anon','service_role','maqdar_worker','maqdar_simulation_worker']) role;
+select ok(not has_table_privilege(role,'public.regional_transfer_handoffs','INSERT,UPDATE,DELETE'),role||' cannot write') from unnest(array['anon','authenticated','service_role','zeespare_worker','zeespare_simulation_worker']) role;
+select ok(not has_function_privilege(role,'public.regional_handoff_create(uuid,uuid)','execute'),role||' cannot create') from unnest(array['anon','service_role','zeespare_worker','zeespare_simulation_worker']) role;
 select is((select count(*)::int from public.audit_log where record_id=(select id from exports)),1,'single insert audit');
 delete from public.regional_freight_estimates where id=(select id from freight);
 select is((select count(*)::int from public.regional_transfer_handoffs where organization_id=pg_temp.id(1)),0,'actual parent cascade');

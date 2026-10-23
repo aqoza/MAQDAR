@@ -4,13 +4,13 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from maqdar_engine import importformat
-from maqdar_engine.synth.calendar import Calendar
-from maqdar_engine.synth.generate import generate
-from maqdar_engine.synth.network import brands, countries
-from maqdar_engine.synth.presets import N_DAYS, PRESETS, WINDOW_END, WINDOW_START
-from maqdar_engine.synth.validate import entity_files, validate_bundle
-from maqdar_engine.synth.writer import read_manifest, sha256_of
+from zeespare_engine import importformat
+from zeespare_engine.synth.calendar import Calendar
+from zeespare_engine.synth.generate import generate
+from zeespare_engine.synth.network import brands, countries
+from zeespare_engine.synth.presets import N_DAYS, PRESETS, WINDOW_END, WINDOW_START
+from zeespare_engine.synth.validate import entity_files, validate_bundle
+from zeespare_engine.synth.writer import read_manifest, sha256_of
 
 
 def test_bundle_has_every_file_with_the_contract_header(tiny_bundle: Path):

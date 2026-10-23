@@ -38,7 +38,7 @@ def test_waiting_new_set_rechecks_evidence(handoff, change):
     source, _, saved = handoff
     dsn, org, _, _ = source['draft']
     with psycopg.connect(dsn) as blocker, session(source['draft']) as waiter:
-        blocker.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.excess-disposition:'||%s,0))", (str(org),))
+        blocker.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.excess-disposition:'||%s,0))", (str(org),))
         call = _Call(waiter, BATCH, (org, [saved]))
         call.start()
         time.sleep(1)
@@ -62,7 +62,7 @@ def test_waiting_create_and_replay_require_live_authority(handoff, replay, chang
         with session(source['draft']) as db:
             db.execute(BATCH, (org, [saved]))
     with psycopg.connect(dsn) as blocker, session(source['draft']) as waiter:
-        blocker.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.excess-disposition:'||%s,0))", (str(org),))
+        blocker.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.excess-disposition:'||%s,0))", (str(org),))
         call = _Call(waiter, BATCH, (org, [saved]))
         call.start()
         time.sleep(1)

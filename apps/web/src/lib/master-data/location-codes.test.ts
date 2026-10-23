@@ -1,4 +1,4 @@
-import type { Database } from '@maqdar/shared/database.types'
+import type { Database } from '@zeespare/shared/database.types'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { describe, expect, it, vi } from 'vitest'
 import { LOCATION_LOOKUP_LIMIT, lookupLocations } from './location-codes'

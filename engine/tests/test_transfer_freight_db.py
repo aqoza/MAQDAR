@@ -40,7 +40,7 @@ def test_parallel_retries_save_and_audit_once(freight):
 def test_waiting_save_rechecks_authority_and_evidence(freight, change):
     draft, inputs, preview = freight
     with psycopg.connect(draft[0]) as admin, session(draft) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.transfer-freight:'||%s,0))", (str(draft[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.transfer-freight:'||%s,0))", (str(draft[1]),))
         call = _Call(waiting, SAVE, (*inputs, uuid4(), preview['fingerprint']))
         call.start()
         time.sleep(0.3)

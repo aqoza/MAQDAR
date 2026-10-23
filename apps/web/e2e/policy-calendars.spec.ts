@@ -28,7 +28,7 @@ test('calendar comparisons capture evidence, reject stale previews and preserve 
   await createOrganization(page, { name: 'Calendar simulation test', slug })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local calendar test only')
   const python = (script: string) =>
@@ -41,8 +41,8 @@ test('calendar comparisons capture evidence, reject stale previews and preserve 
 from uuid import uuid4
 from datetime import date,timedelta
 from psycopg.types.json import Jsonb
-from maqdar_engine.policy_simulation import calculate as original
-from maqdar_engine.policy_constraints import calculate
+from zeespare_engine.policy_simulation import calculate as original
+from zeespare_engine.policy_constraints import calculate
 org=sys.argv[2]
 location,item,run,policy,policy_run,result,original_run,calendar=[uuid4() for _ in range(8)]
 source=dict(kind='simulation',method='periodic-replay-v1',computed_at='2026-10-20T00:00:00+00:00',from_date='2026-01-02',to_date='2026-01-05',
@@ -113,9 +113,9 @@ with psycopg.connect(sys.argv[1]) as db:
 with psycopg.connect(sys.argv[1]) as db:
  db.execute("update public.work_calendars set weekend_days=array[1,2] where id=%s",('${fixture.calendar}',))
  db.execute("delete from public.planning_runs where id=%s",('${fixture.run}',))`)
-    await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+    await promisify(execFile)('uv', ['run', 'zeespare-worker', '--once'], {
       cwd: resolve(process.cwd(), '../../engine'),
-      env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+      env: { ...process.env, ZEESPARE_WORKER_DSN: dsn },
       timeout: 100_000,
     })
     await page.getByRole('button', { name: 'Refresh runs' }).click()

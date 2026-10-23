@@ -38,7 +38,7 @@ def test_creation_rechecks_after_wait(approved, change, expected):
     with session(source) as db:
         newer = db.execute(SUBMIT, (source[1], purchase[2], uuid4(), 'Alternative')).fetchone()[0]
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.event-purchase-review:'||%s,0))", (str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.event-purchase-review:'||%s,0))", (str(source[1]),))
         call = _Call(waiting, HANDOFF, (source[1], proposal))
         call.start()
         time.sleep(1)

@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import pytest
 
-from maqdar_engine.forecasting import MODELS, baseline, forecast
+from zeespare_engine.forecasting import MODELS, baseline, forecast
 
 
 def task(values, horizon=7, **item_changes):

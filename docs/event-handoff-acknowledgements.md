@@ -14,7 +14,7 @@ Status: merged in PR #83 as `60aea87` on 2026-10-19 (Asia/Dubai), after review w
 
 ## Meaning and lifecycle
 
-These are statements supplied by an API key holder. `external_system` is a caller-supplied label, not a separately authenticated system identity. “Received” or “rejected” does not verify acceptance, prove that transmission happened, or mean a purchase order exists. `recorded_at` is MAQDAR's server recording time, not an externally asserted event time. No single delivery status is inferred across different systems.
+These are statements supplied by an API key holder. `external_system` is a caller-supplied label, not a separately authenticated system identity. “Received” or “rejected” does not verify acceptance, prove that transmission happened, or mean a purchase order exists. `recorded_at` is ZeeSpare's server recording time, not an externally asserted event time. No single delivery status is inferred across different systems.
 
 A report concerns the complete saved package, including its full event-adjusted selection. Baseline quantities and costs remain comparison evidence. Reports never select a proposal, refresh commitments, recalculate a policy, transmit a package, reserve stock, create an order or update inbound. Individual, batch and overlapping-batch histories remain independent.
 

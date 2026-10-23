@@ -10,8 +10,8 @@ from psycopg.conninfo import conninfo_to_dict, make_conninfo
 from psycopg.types.json import Jsonb
 import pytest
 
-from maqdar_engine.policy_simulation import calculate
-from maqdar_engine.scoped_worker import process_one
+from zeespare_engine.policy_simulation import calculate
+from zeespare_engine.scoped_worker import process_one
 from test_policy_simulation import task
 
 pytestmark = pytest.mark.db
@@ -28,7 +28,7 @@ def scoped(dsn):
                        (organization, 'scope-' + str(organization), 'Synthetic worker scope'))
             db.execute("insert into public.locations(id,organization_id,code,name_en,location_type,country_code,timezone) values(%s,%s,'TEST','Test','branch','SA','Asia/Riyadh')", (loc, organization))
         db.execute(sql.SQL('create role {} login password {} nosuperuser nocreatedb nocreaterole noinherit nobypassrls').format(sql.Identifier(role), sql.Literal(password)))
-        db.execute(sql.SQL('grant maqdar_simulation_worker to {}').format(sql.Identifier(role)))
+        db.execute(sql.SQL('grant zeespare_simulation_worker to {}').format(sql.Identifier(role)))
         db.execute('insert into planning.simulation_worker_scopes(login_oid,login_name,organization_id) select oid,rolname,%s from pg_roles where rolname=%s', (org, role))
     runtime = make_conninfo(dsn, user=role, password=password)
     yield dict(dsn=dsn, runtime=runtime, org=org, foreign=foreign, location=location, other_location=other_location, role=role)
@@ -45,7 +45,7 @@ def scoped(dsn):
 @contextmanager
 def runtime(fixture):
     with psycopg.connect(fixture['runtime'], autocommit=True) as db:
-        db.execute('set role maqdar_simulation_worker')
+        db.execute('set role zeespare_simulation_worker')
         yield db
 
 
@@ -95,7 +95,7 @@ def test_shared_worker_cannot_claim_scoped_simulations(scoped):
     foreign = queued(scoped, foreign=True, kind='readiness')
     before = transport(scoped, scoped['org'])
     with psycopg.connect(scoped['dsn'], autocommit=True) as db:
-        db.execute('set role maqdar_worker')
+        db.execute('set role zeespare_worker')
         assert db.execute('select * from app.planning_claim()').fetchone()[0] == foreign
         assert db.execute('select * from app.planning_claim()').fetchone() is None
     assert transport(scoped, scoped['org']) == before
@@ -108,7 +108,7 @@ def test_scoped_login_has_no_global_or_raw_access(scoped):
         assert str(db.execute('select app.scoped_simulation_identity()').fetchone()[0]) == str(scoped['org'])
         for statement in ('select * from app.planning_claim()', 'select * from public.planning_runs',
                           'select * from planning.leases', 'select * from pgmq.q_planning',
-                          'select * from planning.simulation_worker_scopes', 'set role maqdar_worker'):
+                          'select * from planning.simulation_worker_scopes', 'set role zeespare_worker'):
             with pytest.raises(psycopg.Error) as error:
                 db.execute(statement)
             assert error.value.sqlstate == '42501'
@@ -119,7 +119,7 @@ def test_scoped_login_has_no_global_or_raw_access(scoped):
 def test_cross_tenant_and_wrong_kind_tokens_cannot_read_fail_or_finish(scoped):
     other = queued(scoped, foreign=True)
     with psycopg.connect(scoped['dsn'], autocommit=True) as admin:
-        admin.execute('set role maqdar_worker')
+        admin.execute('set role zeespare_worker')
         lease = admin.execute('select * from app.planning_claim()').fetchone()
     assert lease[0] == other
     before = transport(scoped, scoped['foreign'])
@@ -165,7 +165,7 @@ def test_disabled_scope_never_falls_back_to_global(scoped):
         assert error.value.sqlstate == '42501'
     # Disabled runtime remains routed away from the global consumer: pause is fail-closed.
     with psycopg.connect(scoped['dsn'], autocommit=True) as db:
-        db.execute('set role maqdar_worker')
+        db.execute('set role zeespare_worker')
         assert db.execute('select * from app.planning_claim()').fetchone() is None
     assert transport(scoped, scoped['org']) == before
 
@@ -267,7 +267,7 @@ def test_capability_membership_revocation_fails_closed(scoped):
     queued(scoped)
     with runtime(scoped) as db:
         with psycopg.connect(scoped['dsn'], autocommit=True) as admin:
-            admin.execute(sql.SQL('revoke maqdar_simulation_worker from {}').format(sql.Identifier(scoped['role'])))
+            admin.execute(sql.SQL('revoke zeespare_simulation_worker from {}').format(sql.Identifier(scoped['role'])))
         with pytest.raises(psycopg.Error) as error:
             db.execute('select * from app.scoped_simulation_claim()')
         assert error.value.sqlstate == '42501'
@@ -287,7 +287,7 @@ def test_dropped_recreated_login_does_not_inherit_old_scope(scoped):
     with psycopg.connect(scoped['dsn'], autocommit=True) as admin:
         admin.execute(sql.SQL('drop role {}').format(sql.Identifier(scoped['role'])))
         admin.execute(sql.SQL('create role {} login noinherit password {}').format(sql.Identifier(scoped['role']), sql.Literal(password)))
-        admin.execute(sql.SQL('grant maqdar_simulation_worker to {}').format(sql.Identifier(scoped['role'])))
+        admin.execute(sql.SQL('grant zeespare_simulation_worker to {}').format(sql.Identifier(scoped['role'])))
     with runtime(scoped) as db:
         with pytest.raises(psycopg.Error) as error:
             db.execute('select app.scoped_simulation_identity()')

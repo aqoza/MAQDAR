@@ -27,7 +27,7 @@ test('policy simulation freezes recorded sales, exposes two exact ledgers and pr
   await createOrganization(page, { name: 'Simulation test', slug })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local simulation test only')
   const python = (script: string) =>
@@ -116,9 +116,9 @@ print(json.dumps(dict(policy=str(policy),run=str(run),location=str(location))))`
     await python(`import sys,psycopg
 with psycopg.connect(sys.argv[1]) as db:
     db.execute('update public.demand_history set quantity=999 where organization_id=%s',(sys.argv[2],))`)
-    await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+    await promisify(execFile)('uv', ['run', 'zeespare-worker', '--once'], {
       cwd: resolve(process.cwd(), '../../engine'),
-      env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+      env: { ...process.env, ZEESPARE_WORKER_DSN: dsn },
       timeout: 100_000,
     })
     await page.getByRole('button', { name: 'Refresh runs' }).click()

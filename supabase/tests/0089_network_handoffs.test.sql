@@ -13,16 +13,16 @@ select ok(not has_table_privilege('service_role','public.network_transfer_handof
 select ok(not has_table_privilege('service_role','public.network_transfer_handoffs','DELETE'),'no service_role direct DELETE');
 select ok(not has_table_privilege('service_role','public.network_transfer_handoffs','SELECT'),'no service_role direct SELECT');
 select ok(not has_function_privilege('service_role','public.network_handoff_create(uuid,uuid)','EXECUTE'),'no service_role create');
-select ok(not has_table_privilege('maqdar_worker','public.network_transfer_handoffs','INSERT'),'no maqdar_worker direct INSERT');
-select ok(not has_table_privilege('maqdar_worker','public.network_transfer_handoffs','UPDATE'),'no maqdar_worker direct UPDATE');
-select ok(not has_table_privilege('maqdar_worker','public.network_transfer_handoffs','DELETE'),'no maqdar_worker direct DELETE');
-select ok(not has_table_privilege('maqdar_worker','public.network_transfer_handoffs','SELECT'),'no maqdar_worker direct SELECT');
-select ok(not has_function_privilege('maqdar_worker','public.network_handoff_create(uuid,uuid)','EXECUTE'),'no maqdar_worker create');
-select ok(not has_table_privilege('maqdar_simulation_worker','public.network_transfer_handoffs','INSERT'),'no maqdar_simulation_worker direct INSERT');
-select ok(not has_table_privilege('maqdar_simulation_worker','public.network_transfer_handoffs','UPDATE'),'no maqdar_simulation_worker direct UPDATE');
-select ok(not has_table_privilege('maqdar_simulation_worker','public.network_transfer_handoffs','DELETE'),'no maqdar_simulation_worker direct DELETE');
-select ok(not has_table_privilege('maqdar_simulation_worker','public.network_transfer_handoffs','SELECT'),'no maqdar_simulation_worker direct SELECT');
-select ok(not has_function_privilege('maqdar_simulation_worker','public.network_handoff_create(uuid,uuid)','EXECUTE'),'no maqdar_simulation_worker create');
+select ok(not has_table_privilege('zeespare_worker','public.network_transfer_handoffs','INSERT'),'no zeespare_worker direct INSERT');
+select ok(not has_table_privilege('zeespare_worker','public.network_transfer_handoffs','UPDATE'),'no zeespare_worker direct UPDATE');
+select ok(not has_table_privilege('zeespare_worker','public.network_transfer_handoffs','DELETE'),'no zeespare_worker direct DELETE');
+select ok(not has_table_privilege('zeespare_worker','public.network_transfer_handoffs','SELECT'),'no zeespare_worker direct SELECT');
+select ok(not has_function_privilege('zeespare_worker','public.network_handoff_create(uuid,uuid)','EXECUTE'),'no zeespare_worker create');
+select ok(not has_table_privilege('zeespare_simulation_worker','public.network_transfer_handoffs','INSERT'),'no zeespare_simulation_worker direct INSERT');
+select ok(not has_table_privilege('zeespare_simulation_worker','public.network_transfer_handoffs','UPDATE'),'no zeespare_simulation_worker direct UPDATE');
+select ok(not has_table_privilege('zeespare_simulation_worker','public.network_transfer_handoffs','DELETE'),'no zeespare_simulation_worker direct DELETE');
+select ok(not has_table_privilege('zeespare_simulation_worker','public.network_transfer_handoffs','SELECT'),'no zeespare_simulation_worker direct SELECT');
+select ok(not has_function_privilege('zeespare_simulation_worker','public.network_handoff_create(uuid,uuid)','EXECUTE'),'no zeespare_simulation_worker create');
 select ok((select relrowsecurity from pg_class where oid='public.network_transfer_handoffs'::regclass),'RLS enabled');
 select ok((select reloptions @> array['security_invoker=true'] from pg_class where oid='public.network_handoff_list'::regclass),'history preserves RLS');
 create function pg_temp.id(n integer) returns uuid language sql immutable as $$

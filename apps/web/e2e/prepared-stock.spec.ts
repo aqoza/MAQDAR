@@ -19,7 +19,7 @@ test('saved interchangeable group compares complete stock and diagnoses missing 
   await createOrganization(page, { name: `Pool ${key}`, slug })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local group fixture only')
   const runPython = (code: string) =>
@@ -31,7 +31,7 @@ test('saved interchangeable group compares complete stock and diagnoses missing 
   const { stdout } = await runPython(`
 import sys,json,psycopg
 from uuid import uuid4
-from maqdar_engine.worker import process_one
+from zeespare_engine.worker import process_one
 dsn,org,user=sys.argv[1:]
 location,a,b=[uuid4() for _ in range(3)]
 with psycopg.connect(dsn) as db:
@@ -49,7 +49,7 @@ def enqueue(sql,args):
         return db.execute(sql,args).fetchone()[0]
 def work():
     with psycopg.connect(dsn,autocommit=True) as db:
-        db.execute('set role maqdar_worker')
+        db.execute('set role zeespare_worker')
         assert process_one(db)
 run=enqueue("select public.preparation_enqueue(%s,'POOL','2026-07-01','2026-10-01',%s,true,array['POOL-A'])",(org,uuid4()))
 work()

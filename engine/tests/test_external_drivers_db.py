@@ -74,7 +74,7 @@ def test_waiter_rechecks_authority(driver, retry, change):
         with session(driver) as db:
             db.execute(SAVE, call_args)
     with psycopg.connect(driver[0]) as admin, session(driver) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.external-driver:'||%s||':'||%s,0))", (str(driver[1]), str(call_args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.external-driver:'||%s||':'||%s,0))", (str(driver[1]), str(call_args[2])))
         call = _Call(waiting, SAVE, call_args)
         call.start()
         time.sleep(1)
@@ -88,7 +88,7 @@ def test_waiter_rechecks_authority(driver, retry, change):
 def test_waiting_first_save_refreshes_changed_catalog(driver):
     call_args = args(driver)
     with psycopg.connect(driver[0]) as admin, session(driver) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.external-driver:'||%s||':'||%s,0))", (str(driver[1]), str(call_args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.external-driver:'||%s||':'||%s,0))", (str(driver[1]), str(call_args[2])))
         call = _Call(waiting, SAVE, call_args)
         call.start()
         time.sleep(1)

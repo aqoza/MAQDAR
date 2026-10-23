@@ -6,10 +6,10 @@ import numpy as np
 import polars as pl
 import pytest
 
-from maqdar_engine.synth.calendar import Calendar, ramadan_windows
-from maqdar_engine.synth.classify import classify
-from maqdar_engine.synth.network import locations, product_groups
-from maqdar_engine.synth.presets import N_DAYS, WINDOW_START
+from zeespare_engine.synth.calendar import Calendar, ramadan_windows
+from zeespare_engine.synth.classify import classify
+from zeespare_engine.synth.network import locations, product_groups
+from zeespare_engine.synth.presets import N_DAYS, WINDOW_START
 
 pytestmark = pytest.mark.statistical
 

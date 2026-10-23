@@ -215,10 +215,10 @@ select is((select count(*) from public.receipts where organization_id=pg_temp.id
 select is((select count(*) from public.stock_snapshots where organization_id=pg_temp.id(1)),4::bigint,'no stock written after fixtures');
 select ok(not has_table_privilege('anon','public.purchase_handoff_batches','SELECT'),'anonymous cannot read');
 select ok(not has_table_privilege('service_role','public.purchase_handoff_batches','SELECT'),'service role cannot read');
-select ok(not has_table_privilege('maqdar_worker','public.purchase_handoff_batches','SELECT'),'worker cannot read');
+select ok(not has_table_privilege('zeespare_worker','public.purchase_handoff_batches','SELECT'),'worker cannot read');
 select ok(not has_function_privilege('anon','public.purchase_handoff_batch_create(uuid,uuid[])','EXECUTE'),'anonymous cannot create');
 select ok(not has_function_privilege('service_role','public.purchase_handoff_batch_create(uuid,uuid[])','EXECUTE'),'service cannot create');
-select ok(not has_function_privilege('maqdar_worker','public.purchase_handoff_batch_create(uuid,uuid[])','EXECUTE'),'worker cannot create');
+select ok(not has_function_privilege('zeespare_worker','public.purchase_handoff_batch_create(uuid,uuid[])','EXECUTE'),'worker cannot create');
 -- The full 50-line batch must fit the authenticated statement budget. Fixture setup is privileged/local.
 insert into lines(n,id) select n,pg_temp.line(n) from generate_series(10,59) n;
 set local role authenticated;

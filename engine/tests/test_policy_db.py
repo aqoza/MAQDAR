@@ -7,8 +7,8 @@ import pytest
 
 from test_planning_db import planning, worker, enqueue_forecast
 from test_regional_db import enqueue as enqueue_regional
-from maqdar_engine.worker import process_one
-from maqdar_engine.inventory_policy import calculate
+from zeespare_engine.worker import process_one
+from zeespare_engine.inventory_policy import calculate
 
 pytestmark = pytest.mark.db
 

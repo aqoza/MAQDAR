@@ -59,7 +59,7 @@ def add_load_arguments(parser: argparse.ArgumentParser) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="maqdar-synth", description="MAQDAR synthetic data generator and local loader.")
+    parser = argparse.ArgumentParser(prog="zeespare-synth", description="ZeeSpare synthetic data generator and local loader.")
     sub = parser.add_subparsers(dest="command", required=True)
 
     gen = sub.add_parser("generate", help="write a CSV bundle")

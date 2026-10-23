@@ -216,7 +216,7 @@ def load_bundle(
                 # is gone, so the items/locations delete guard (Step 4) is switched off for this
                 # transaction: otherwise it would walk the dead demand index entries just deleted.
                 cur.execute("delete from public.demand_history where organization_id = %s", (organization_id,))
-                cur.execute("set local maqdar.demand_guard = 'off'")
+                cur.execute("set local zeespare.demand_guard = 'off'")
                 cur.execute("delete from public.organizations where id = %s", (organization_id,))
                 progress(f"replaced organization {org['slug']} (deleted in {time.perf_counter() - started:.1f}s)")
             cur.execute(

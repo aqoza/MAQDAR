@@ -4,7 +4,7 @@ from decimal import Decimal
 
 import pytest
 
-from maqdar_engine.inventory_policy import calculate, distribution
+from zeespare_engine.inventory_policy import calculate, distribution
 
 
 def task(horizon=7, days=100):
@@ -94,7 +94,7 @@ def test_unavailable_evidence_never_invents_values(case, status):
 
 
 def test_calibration_uses_training_prefix_and_reports_fit_failure(monkeypatch):
-    import maqdar_engine.inventory_policy as module
+    import zeespare_engine.inventory_policy as module
 
     seen = []
 
@@ -142,7 +142,7 @@ def test_fractional_threshold_rounds_up_and_safety_stock_reconciles():
 
 
 def test_prepared_calendar_model_and_lifecycle_are_saved_and_prefix_only(monkeypatch):
-    import maqdar_engine.inventory_policy as module
+    import zeespare_engine.inventory_policy as module
 
     data = task()
     saved = data["forecast"]
@@ -208,7 +208,7 @@ def test_invalid_saved_forecast_is_rejected(case):
 def test_ineligible_calendar_model_and_nonfinite_calibration_are_unavailable(
     monkeypatch,
 ):
-    import maqdar_engine.inventory_policy as module
+    import zeespare_engine.inventory_policy as module
 
     data = task()
     data["forecast"]["output"]["model"] = "calendar"
@@ -218,7 +218,7 @@ def test_ineligible_calendar_model_and_nonfinite_calibration_are_unavailable(
 
 
 def test_automatic_model_calibration_and_isolated_process():
-    from maqdar_engine.forecast_process import compute
+    from zeespare_engine.forecast_process import compute
 
     data = task()
     data["forecast"]["method"] = "expanded-v1"

@@ -22,7 +22,7 @@ test('KPI filters distinguish missing stock and expose saved forecast evidence w
   await createOrganization(page, { name: `KPI ${key}`, slug })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local KPI fixture only')
   await promisify(execFile)(

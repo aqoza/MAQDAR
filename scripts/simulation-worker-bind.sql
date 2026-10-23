@@ -4,20 +4,20 @@
 \set ON_ERROR_STOP on
 begin;
 set local lock_timeout='5s';
-select set_config('maqdar.reviewed_acme', :'acme_organization', true);
+select set_config('zeespare.reviewed_acme', :'acme_organization', true);
 do $$ begin
- if not exists(select 1 from public.organizations where id=current_setting('maqdar.reviewed_acme')::uuid
+ if not exists(select 1 from public.organizations where id=current_setting('zeespare.reviewed_acme')::uuid
   and upper(btrim(name))='ACME') then
   raise exception 'reviewed ACME organization not found';
  end if;
- if exists(select 1 from pg_roles where rolname='maqdar_acme_simulation') then
+ if exists(select 1 from pg_roles where rolname='zeespare_acme_simulation') then
   raise exception 'runtime login already exists; inspect before provisioning';
  end if;
 end; $$;
-create role maqdar_acme_simulation login noinherit nosuperuser nocreatedb nocreaterole nobypassrls connection limit 2;
-grant connect on database postgres to maqdar_acme_simulation;
-grant maqdar_simulation_worker to maqdar_acme_simulation;
+create role zeespare_acme_simulation login noinherit nosuperuser nocreatedb nocreaterole nobypassrls connection limit 2;
+grant connect on database postgres to zeespare_acme_simulation;
+grant zeespare_simulation_worker to zeespare_acme_simulation;
 insert into planning.simulation_worker_scopes(login_oid,login_name,organization_id,enabled)
- select oid,rolname,current_setting('maqdar.reviewed_acme')::uuid,false from pg_roles where rolname='maqdar_acme_simulation';
+ select oid,rolname,current_setting('zeespare.reviewed_acme')::uuid,false from pg_roles where rolname='zeespare_acme_simulation';
 commit;
-\password maqdar_acme_simulation
+\password zeespare_acme_simulation

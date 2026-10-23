@@ -2,7 +2,7 @@ begin;
 select no_plan();
 select set_eq(
  $$select p.proname::text collate "default" from pg_proc p join pg_namespace n on n.oid=p.pronamespace
-   where n.nspname='app' and p.prorettype<>'trigger'::regtype and has_function_privilege('maqdar_worker',p.oid,'EXECUTE')$$,
+   where n.nspname='app' and p.prorettype<>'trigger'::regtype and has_function_privilege('zeespare_worker',p.oid,'EXECUTE')$$,
  $$values ('planning_claim'),('planning_task'),('planning_execute'),('classification_finish'),('forecast_finish'),('preparation_finish'),('policy_finish'),('simulation_finish'),('planning_fail')$$,
  'worker has exactly nine reviewed capabilities');
 create function pg_temp.id(n integer) returns uuid language sql immutable as $$select ('92000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid$$;
@@ -43,9 +43,9 @@ select ok((select expires_at>clock_timestamp()+interval '890 seconds' from plann
 select is((select app.planning_task(run_id,lease_token)->'forecast'->>'id' from claimed),pg_temp.id(40)::text,'source identity frozen');
 create temp table output as select jsonb_build_array(jsonb_build_object('status','calibration_failed','lead_time',null,'protection',null,'calibration','[]'::jsonb,
  'residual_count',0,'positive_days',1,'samples',0,'seed',repeat('a',64),'method','iid-error-paths-v1')) rows;
-grant select on claimed,output to maqdar_worker;
-grant usage on schema extensions to maqdar_worker;
-set local role maqdar_worker;
+grant select on claimed,output to zeespare_worker;
+grant usage on schema extensions to zeespare_worker;
+set local role zeespare_worker;
 select throws_ok($$select * from planning.policy_inputs$$,'42501',null,'worker cannot read staging directly');
 select throws_ok($$select * from public.inventory_policies$$,'42501',null,'worker cannot read results directly');
 select throws_ok($$select app.policy_task(gen_random_uuid(),gen_random_uuid())$$,'42501',null,'worker cannot bypass dispatcher');

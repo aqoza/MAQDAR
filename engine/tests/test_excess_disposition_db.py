@@ -92,7 +92,7 @@ def test_waiting_operation_rechecks_selected_line_evidence(assessment, operation
     dsn, org, _, _ = assessment['draft']
     proposal = submit(assessment) if operation == 'approve' else None
     with psycopg.connect(dsn) as admin, (review_session(assessment) if proposal else session(assessment['draft'])) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.excess-disposition:'||%s,0))", (str(org),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.excess-disposition:'||%s,0))", (str(org),))
         args = (org, proposal, uuid4(), 'approved') if proposal else submit_args(assessment)
         call = _Call(waiting, DECIDE if proposal else SUBMIT, args)
         call.start()
@@ -117,7 +117,7 @@ def test_lock_wait_rechecks_live_authority(assessment, operation, change, code):
     proposal = submit(assessment) if operation != 'submit' else None
     actor = assessment['reviewer'] if operation == 'approve' else author
     with psycopg.connect(dsn) as admin, (review_session(assessment) if operation == 'approve' else session(assessment['draft'])) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.excess-disposition:'||%s,0))", (str(org),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.excess-disposition:'||%s,0))", (str(org),))
         args = (org, proposal, uuid4(), 'approved' if operation == 'approve' else 'withdrawn') if proposal else submit_args(assessment)
         call = _Call(waiting, DECIDE if proposal else SUBMIT, args)
         call.start()

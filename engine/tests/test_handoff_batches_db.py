@@ -38,7 +38,7 @@ def test_batch_rechecks_after_lock_wait(approved, change, expected):
         handoff = db.execute(HANDOFF, (source[1], proposal)).fetchone()[0]
         newer = db.execute(SUBMIT, (source[1], purchase[2], uuid4(), 'Alternative')).fetchone()[0]
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.purchase-review:'||%s,0))", (str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.purchase-review:'||%s,0))", (str(source[1]),))
         call = _Call(waiting, CREATE, (source[1], [handoff]))
         call.start()
         time.sleep(1)

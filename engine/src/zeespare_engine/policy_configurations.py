@@ -2,7 +2,7 @@
 from decimal import localcontext
 import re
 
-from maqdar_engine.policy_simulation import calculate as calculate_original, exact, quantity, replay
+from zeespare_engine.policy_simulation import calculate as calculate_original, exact, quantity, replay
 
 VERSION = "periodic-configurations-v1"
 

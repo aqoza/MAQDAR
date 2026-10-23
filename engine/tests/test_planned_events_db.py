@@ -50,7 +50,7 @@ def test_event_rechecks_after_lock(event, change, expected):
     source, report = event
     request = uuid4()
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.planned-event:'||%s||':'||%s,0))", (str(source[1]), str(request)))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.planned-event:'||%s||':'||%s,0))", (str(source[1]), str(request)))
         call = _Call(waiting, SAVE, (source[1], source[3], request, report['fingerprint']))
         call.start()
         time.sleep(1)

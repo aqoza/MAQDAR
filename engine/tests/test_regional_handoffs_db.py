@@ -132,7 +132,7 @@ def test_waits_recheck_authority_and_evidence(transfer, lock, change, expected):
     proposal = approve(transfer)
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
         if lock == 'advisory':
-            admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.regional-review:'||%s,0))", (str(source[1]),))
+            admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.regional-review:'||%s,0))", (str(source[1]),))
         else:
             # Evidence mutations take lane locks before saved-parent locks, as review does.
             if change == 'freight':

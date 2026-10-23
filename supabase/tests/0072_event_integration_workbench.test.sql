@@ -244,7 +244,7 @@ reset role;
 set local role service_role;
 select throws_ok($$select pg_temp.workbench()$$,'42501',null,'integration service role cannot use member RPC');
 reset role;
-select ok(not has_function_privilege('maqdar_worker','public.event_purchase_integration_workbench(uuid,jsonb,integer,integer)','EXECUTE'),'worker RPC denied');
+select ok(not has_function_privilege('zeespare_worker','public.event_purchase_integration_workbench(uuid,jsonb,integer,integer)','EXECUTE'),'worker RPC denied');
 select is((select jsonb_agg(to_jsonb(a) order by id) from public.event_purchase_handoff_acknowledgements a),(select events from before_reads),'read preserves events');
 select is((select count(*) from public.open_orders),(select orders from before_reads),'no order writes');
 select is((select count(*) from public.receipts),(select receipts from before_reads),'no receipt writes');

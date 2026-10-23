@@ -248,5 +248,5 @@ reset role;
 set local role service_role;
 select throws_ok($$select pg_temp.bs()$$,'42501',null,'service RPC denied');
 reset role;
-select ok(not has_table_privilege('maqdar_worker','public.transfer_handoff_batches','select'),'worker denied');
+select ok(not has_table_privilege('zeespare_worker','public.transfer_handoff_batches','select'),'worker denied');
 select * from finish(); rollback;

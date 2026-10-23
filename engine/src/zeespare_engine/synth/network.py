@@ -9,7 +9,7 @@ from importlib import resources
 
 
 def _rows(name: str) -> list[dict[str, str]]:
-    data_dir = resources.files("maqdar_engine.synth") / "data"
+    data_dir = resources.files("zeespare_engine.synth") / "data"
     with (data_dir / name).open("r", encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
 

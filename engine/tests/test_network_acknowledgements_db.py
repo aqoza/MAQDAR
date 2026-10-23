@@ -59,7 +59,7 @@ def test_live_authority_after_event_wait(report, change, replay):
         with api(source) as db:
             db.execute(ACK, (digest, resource, record, Jsonb(body)))
     with psycopg.connect(source[0]) as admin, api(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.network-handoff-ack:'||%s||':'||%s,0))", (str(source[1]), body['client_event_id']))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.network-handoff-ack:'||%s||':'||%s,0))", (str(source[1]), body['client_event_id']))
         call = _Call(waiting, ACK, (digest, resource, record, Jsonb(body)))
         call.start()
         wait_for_lock(admin, waiting, call)

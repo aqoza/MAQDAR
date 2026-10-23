@@ -34,7 +34,7 @@ test('direct substitutes preserve direction, separate stock and both-location ac
         'run',
         'python',
         resolve(process.cwd(), 'e2e/fixtures/stock-locator.py'),
-        process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres',
+        process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres',
         org,
         viewer,
         branch,

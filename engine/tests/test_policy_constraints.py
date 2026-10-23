@@ -2,8 +2,8 @@ from copy import deepcopy
 
 import pytest
 
-from maqdar_engine.policy_simulation import calculate as original_calculate
-from maqdar_engine.policy_constraints import calculate
+from zeespare_engine.policy_simulation import calculate as original_calculate
+from zeespare_engine.policy_constraints import calculate
 from test_policy_simulation import task as original_task
 
 
@@ -130,7 +130,7 @@ def test_constraints_reject_invalid_or_noncanonical_quantities(key,value):
 
 def test_exact_small_pack_with_large_quantity_and_large_moq():
     from decimal import Decimal, localcontext
-    from maqdar_engine.policy_constraints import rounded_order
+    from zeespare_engine.policy_constraints import rounded_order
     with localcontext() as context:
         context.prec=80
         assert rounded_order(Decimal('999999999999999.998'),Decimal(0),Decimal('0.007'))==Decimal('999999999999999.999')

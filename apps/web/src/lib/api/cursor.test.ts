@@ -218,7 +218,7 @@ describe('value checks', () => {
 
 describe('listRpcCall', () => {
   it('maps queries to the api_list and api_list_demand arguments', async () => {
-    const hash = await hashApiKey('maqdar_sk_x')
+    const hash = await hashApiKey('zeespare_sk_x')
     const master = parseListQuery('items', params('limit=2'))
     const demand = parseListQuery(
       'demand_history',

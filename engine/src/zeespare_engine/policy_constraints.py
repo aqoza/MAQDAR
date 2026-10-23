@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from decimal import Decimal, ROUND_CEILING, localcontext
 import re
 
-from maqdar_engine.policy_simulation import calculate as calculate_original, exact, quantity, ratio, ZERO
+from zeespare_engine.policy_simulation import calculate as calculate_original, exact, quantity, ratio, ZERO
 
 VERSION = "periodic-constraints-v1"
 

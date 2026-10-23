@@ -46,9 +46,9 @@ select is((select payload->'items'->1->>'days' from snapshot),'4','unknown lifec
 select is((select payload->'items'->1->>'positive_days' from snapshot),'0','missing days add no positive sales');
 -- A small valid transport fixture; arithmetic itself is tested through Python.
 create temp table output as select jsonb_agg(jsonb_build_object('item_id',i->>'item_id','pattern','insufficient','abc','A','xyz','U','adi','2','cv2',null,'daily_cv',null,'value','2.384129')) as rows from snapshot,jsonb_array_elements(payload->'items') i;
-grant select on claimed,output to maqdar_worker;
-grant usage on schema extensions to maqdar_worker;
-set local role maqdar_worker;
+grant select on claimed,output to zeespare_worker;
+grant usage on schema extensions to zeespare_worker;
+set local role zeespare_worker;
 select throws_ok($$select * from planning.classification_inputs$$,'42501',null,'worker cannot read private snapshots directly');
 select throws_ok($$select * from public.demand_classifications$$,'42501',null,'worker cannot read raw results');
 select is(app.classification_finish((select run_id from claimed),gen_random_uuid(),(select rows from output)),false,'wrong token cannot publish');
@@ -74,7 +74,7 @@ select pg_temp.login(12,2);
 select is((select count(*) from public.demand_classifications),0::bigint,'other tenant cannot read results');
 reset role;
 select ok(not has_function_privilege('service_role','app.classification_finish(uuid,uuid,jsonb)','EXECUTE'),'service role cannot publish');
-select ok(not has_function_privilege('maqdar_worker','app.planning_execute_readiness(uuid,uuid)','EXECUTE'),'worker cannot bypass kind dispatch');
+select ok(not has_function_privilege('zeespare_worker','app.planning_execute_readiness(uuid,uuid)','EXECUTE'),'worker cannot bypass kind dispatch');
 -- Capture then cancel: publication and input access are fenced, staging removed.
 set local role authenticated;
 select pg_temp.login(10,1);

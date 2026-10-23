@@ -1,5 +1,5 @@
 import { createBrowserClient } from '@supabase/ssr'
-import type { Database } from '@maqdar/shared/database.types'
+import type { Database } from '@zeespare/shared/database.types'
 import { env } from '@/lib/env'
 
 /** Supabase client for Client Components. */

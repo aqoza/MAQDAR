@@ -8,7 +8,7 @@ from typing import Callable
 
 import pytest
 
-from maqdar_engine.synth.validate import validate_bundle
+from zeespare_engine.synth.validate import validate_bundle
 
 from optional_bundle import add_optional_entities, copy_bundle, edit_rows, read_rows, refresh_manifest, write_rows
 

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import psycopg
 import pytest
 
-from maqdar_engine.worker import main, process_one, validate_dsn
+from zeespare_engine.worker import main, process_one, validate_dsn
 
 
 def test_empty_queue_does_no_work():
@@ -16,7 +16,7 @@ def test_empty_queue_does_no_work():
 @pytest.mark.parametrize('method', ['driver-v1','multi-driver-v1'])
 def test_driver_forecast_uses_bounded_process_and_existing_publication(monkeypatch,method):
     compute = MagicMock(return_value=[{'item_id': 'captured'}])
-    monkeypatch.setattr('maqdar_engine.forecast_process.compute', compute)
+    monkeypatch.setattr('zeespare_engine.forecast_process.compute', compute)
     connection = MagicMock()
     task = {'kind': 'forecast', 'method': method}
     connection.execute.return_value.fetchone.side_effect = [('run', 'token'), (task,), (True,)]
@@ -79,21 +79,21 @@ def test_unsupported_method_is_failed_without_publishing():
 
 
 def test_cli_refuses_invalid_connection_without_leaking_configuration(monkeypatch, capsys):
-    monkeypatch.setattr('sys.argv', ['maqdar-worker', '--once'])
-    monkeypatch.setenv('MAQDAR_WORKER_DSN', 'postgresql://user:private-password@remote.example/database')
+    monkeypatch.setattr('sys.argv', ['zeespare-worker', '--once'])
+    monkeypatch.setenv('ZEESPARE_WORKER_DSN', 'postgresql://user:private-password@remote.example/database')
     assert main() == 1
     assert 'private-password' not in capsys.readouterr().err
 
 
 def test_cli_once_drops_to_capability_role_and_bounds_queries(monkeypatch):
-    monkeypatch.setattr('sys.argv', ['maqdar-worker', '--once'])
-    monkeypatch.setenv('MAQDAR_WORKER_DSN', 'host=127.0.0.1')
+    monkeypatch.setattr('sys.argv', ['zeespare-worker', '--once'])
+    monkeypatch.setenv('ZEESPARE_WORKER_DSN', 'host=127.0.0.1')
     connection = MagicMock()
     connection.execute.return_value.fetchone.return_value = None
     connector = MagicMock()
     connector.return_value.__enter__.return_value = connection
-    monkeypatch.setattr('maqdar_engine.worker.psycopg.connect', connector)
+    monkeypatch.setattr('zeespare_engine.worker.psycopg.connect', connector)
     assert main() == 0
     statements = [call.args[0] for call in connection.execute.call_args_list]
-    assert statements[:3] == ['set role maqdar_worker', "set statement_timeout = '90s'", "set lock_timeout = '5s'"]
+    assert statements[:3] == ['set role zeespare_worker', "set statement_timeout = '90s'", "set lock_timeout = '5s'"]
     assert connector.call_args.kwargs['autocommit'] is True

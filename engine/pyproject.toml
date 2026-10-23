@@ -1,7 +1,7 @@
 [project]
-name = "maqdar-engine"
+name = "zeespare-engine"
 version = "0.1.0"
-description = "MAQDAR planning engine: demand classification, forecasting and inventory policy jobs."
+description = "ZeeSpare planning engine: demand classification, forecasting and inventory policy jobs."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -13,10 +13,10 @@ dependencies = [
 ]
 
 [project.scripts]
-maqdar-engine = "maqdar_engine:main"
-maqdar-worker = "maqdar_engine.worker:main"
-maqdar-simulation-worker = "maqdar_engine.scoped_worker:main"
-maqdar-synth = "maqdar_engine.synth.cli:main"
+zeespare-engine = "zeespare_engine:main"
+zeespare-worker = "zeespare_engine.worker:main"
+zeespare-simulation-worker = "zeespare_engine.scoped_worker:main"
+zeespare-synth = "zeespare_engine.synth.cli:main"
 
 [dependency-groups]
 dev = [
@@ -31,5 +31,5 @@ build-backend = "uv_build"
 testpaths = ["tests"]
 markers = [
     "statistical: slower statistical checks on the medium preset",
-    "db: needs the local Supabase stack (set MAQDAR_TEST_DSN); skipped otherwise",
+    "db: needs the local Supabase stack (set ZEESPARE_TEST_DSN); skipped otherwise",
 ]

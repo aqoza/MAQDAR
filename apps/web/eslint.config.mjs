@@ -27,13 +27,13 @@ export default defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    name: 'maqdar/api-client',
+    name: 'zeespare/api-client',
     files: ['**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}'],
     ignores: ['src/lib/api/**', 'src/app/api/v1/**', 'src/lib/supabase/api.ts'],
     rules: { 'no-restricted-imports': ['error', { patterns: [API_CLIENT] }] },
   },
   {
-    name: 'maqdar/secret-key',
+    name: 'zeespare/secret-key',
     files: TS_FILES,
     rules: {
       '@typescript-eslint/no-restricted-imports': [
@@ -43,7 +43,7 @@ export default defineConfig([
     },
   },
   {
-    name: 'maqdar/secret-key/invitation-actions',
+    name: 'zeespare/secret-key/invitation-actions',
     files: [
       'src/app/(app)/settings/actions.ts',
       'src/app/(app)/suppliers/portal-access/actions.ts',
@@ -51,7 +51,7 @@ export default defineConfig([
     rules: { '@typescript-eslint/no-restricted-imports': ['error', { patterns: [SERVER_ENV] }] },
   },
   {
-    name: 'maqdar/secret-key/clients',
+    name: 'zeespare/secret-key/clients',
     files: [
       'src/lib/supabase/admin.ts',
       'src/lib/supabase/api.ts',

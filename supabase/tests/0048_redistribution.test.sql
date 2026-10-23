@@ -171,7 +171,7 @@ select throws_ok($$select pg_temp.preview()$$,'42501',null,'anonymous has no pre
 set local role service_role;
 select throws_ok($$select pg_temp.preview()$$,'42501',null,'integration service has no preview capability');
 reset role;
-select ok(not has_function_privilege('maqdar_worker','public.redistribution_preview(uuid,uuid,uuid,text,uuid,text,boolean,boolean)','EXECUTE'),'worker has no preview capability');
-select ok(not has_function_privilege('maqdar_worker','public.redistribution_save(uuid,uuid,uuid,text,uuid,text,boolean,boolean,uuid,text)','EXECUTE'),'worker has no save capability');
+select ok(not has_function_privilege('zeespare_worker','public.redistribution_preview(uuid,uuid,uuid,text,uuid,text,boolean,boolean)','EXECUTE'),'worker has no preview capability');
+select ok(not has_function_privilege('zeespare_worker','public.redistribution_save(uuid,uuid,uuid,text,uuid,text,boolean,boolean,uuid,text)','EXECUTE'),'worker has no save capability');
 select * from finish();
 rollback;

@@ -12,7 +12,7 @@ from psycopg.types.json import Jsonb
 from test_external_drivers_db import driver, session  # shared isolated local tenant fixture
 from test_multi_driver_forecasting import fixture
 from test_tenancy_concurrency import _Call, _race
-from maqdar_engine.multi_driver_forecasting import forecast
+from zeespare_engine.multi_driver_forecasting import forecast
 
 pytestmark=pytest.mark.db
 ENQUEUE='select public.forecast_multi_driver_enqueue(%s,%s,%s,%s,%s)'
@@ -69,7 +69,7 @@ def test_editor_revocation_during_wait_applies_to_retry(sources,retry):
     if retry:
         with session(tenant) as db: db.execute(ENQUEUE,a)
     with psycopg.connect(tenant[0]) as admin,session(tenant) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.planning:'||%s,0))",(str(tenant[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.planning:'||%s,0))",(str(tenant[1]),))
         call=_Call(waiting,ENQUEUE,a); call.start(); time.sleep(1)
         assert not call.finished
         admin.execute("update public.memberships set role='viewer' where organization_id=%s and user_id=%s",(tenant[1],tenant[2]))
@@ -123,7 +123,7 @@ def test_real_numerical_output_is_validated_and_published_atomically(sources):
         token=uuid4()
         db.execute("update public.planning_runs set status='running',attempts=1 where id=%s",(run,))
         db.execute("update planning.leases set token=%s,expires_at=now()+interval '15 minutes' where run_id=%s",(token,run))
-        db.execute('set local role maqdar_worker')
+        db.execute('set local role zeespare_worker')
         assert db.execute('select app.planning_task(%s,%s)',(run,token)).fetchone()[0]==task
         assert not db.execute('select app.forecast_finish(%s,%s,%s)',(run,uuid4(),Jsonb(output))).fetchone()[0]
         assert db.execute('select app.forecast_finish(%s,%s,%s)',(run,token,Jsonb(output))).fetchone()[0]

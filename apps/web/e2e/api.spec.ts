@@ -23,7 +23,7 @@ async function createKeyInSettings(page: Page, name: string): Promise<string> {
   const dialog = page.getByRole('alertdialog')
   await expect(dialog).toBeVisible()
   const token = await dialog.getByLabel('API key', { exact: true }).inputValue()
-  expect(token).toMatch(/^maqdar_sk_[0-9A-Za-z]{49}$/)
+  expect(token).toMatch(/^zeespare_sk_[0-9A-Za-z]{49}$/)
   await dialog.getByRole('button', { name: 'Done', exact: true }).click()
   await expect(dialog).toBeHidden()
   await expect(page.getByLabel('API key', { exact: true })).toHaveCount(0)

@@ -4,12 +4,12 @@ select ok(not has_table_privilege('authenticated','public.network_freight_estima
 select ok(not has_table_privilege('authenticated','public.network_freight_estimates','UPDATE'),'no direct update');
 select ok(not has_table_privilege('authenticated','public.network_freight_estimates','DELETE'),'no direct delete');
 select ok(not has_table_privilege('service_role','public.network_freight_estimates','SELECT'),'no API data access');
-select ok(not has_table_privilege('maqdar_worker','public.network_freight_estimates','SELECT'),'no worker data access');
-select ok(not has_table_privilege('maqdar_simulation_worker','public.network_freight_estimates','SELECT'),'no scoped worker data access');
-select ok(not has_function_privilege('maqdar_simulation_worker','public.network_freight_save(uuid,uuid,boolean,uuid,text)','EXECUTE'),'no scoped worker save');
+select ok(not has_table_privilege('zeespare_worker','public.network_freight_estimates','SELECT'),'no worker data access');
+select ok(not has_table_privilege('zeespare_simulation_worker','public.network_freight_estimates','SELECT'),'no scoped worker data access');
+select ok(not has_function_privilege('zeespare_simulation_worker','public.network_freight_save(uuid,uuid,boolean,uuid,text)','EXECUTE'),'no scoped worker save');
 select ok(not has_function_privilege('anon','public.network_freight_preview(uuid,uuid,boolean)','EXECUTE'),'no anonymous preview');
 select ok(not has_function_privilege('service_role','public.network_freight_save(uuid,uuid,boolean,uuid,text)','EXECUTE'),'no API save');
-select ok(not has_function_privilege('maqdar_worker','public.network_freight_save(uuid,uuid,boolean,uuid,text)','EXECUTE'),'no worker save');
+select ok(not has_function_privilege('zeespare_worker','public.network_freight_save(uuid,uuid,boolean,uuid,text)','EXECUTE'),'no worker save');
 select ok((select relrowsecurity from pg_class where oid='public.network_freight_estimates'::regclass),'RLS enabled');
 select ok((select reloptions @> array['security_invoker=true'] from pg_class where oid='public.network_freight_list'::regclass),'list preserves RLS');
 

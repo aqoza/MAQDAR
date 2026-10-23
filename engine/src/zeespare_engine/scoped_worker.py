@@ -11,8 +11,8 @@ from uuid import UUID
 import psycopg
 from psycopg.types.json import Jsonb
 
-from maqdar_engine.worker import validate_dsn
-from maqdar_engine.worker_health import health_server
+from zeespare_engine.worker import validate_dsn
+from zeespare_engine.worker_health import health_server
 
 
 def failure_category(error: Exception) -> str:
@@ -42,15 +42,15 @@ def process_one(connection: psycopg.Connection) -> bool:
         if task.get('kind') != 'simulation':
             raise ValueError('Unsupported task')
         if task.get('method') == 'periodic-replay-v1':
-            from maqdar_engine.policy_simulation import calculate
+            from zeespare_engine.policy_simulation import calculate
         elif task.get('method') == 'periodic-sensitivity-v1':
-            from maqdar_engine.policy_sensitivity import calculate
+            from zeespare_engine.policy_sensitivity import calculate
         elif task.get('method') == 'periodic-configurations-v1':
-            from maqdar_engine.policy_configurations import calculate
+            from zeespare_engine.policy_configurations import calculate
         elif task.get('method') == 'periodic-constraints-v1':
-            from maqdar_engine.policy_constraints import calculate
+            from zeespare_engine.policy_constraints import calculate
         elif task.get('method') == 'periodic-calendars-v1':
-            from maqdar_engine.policy_calendars import calculate
+            from zeespare_engine.policy_calendars import calculate
         else:
             raise ValueError('Unsupported method')
         result = calculate(task)
@@ -74,14 +74,14 @@ def main() -> int:
         signal.signal(sig, lambda *_: stopped.set())
     stage = 'configuration'
     try:
-        dsn = os.environ.get('MAQDAR_WORKER_DSN', '')
+        dsn = os.environ.get('ZEESPARE_WORKER_DSN', '')
         validate_dsn(dsn)
-        expected = UUID(os.environ.get('MAQDAR_EXPECTED_ORGANIZATION', ''))
+        expected = UUID(os.environ.get('ZEESPARE_EXPECTED_ORGANIZATION', ''))
         stage = 'connection'
         with psycopg.connect(dsn, autocommit=True, connect_timeout=10,
-                             application_name='maqdar-simulation-worker') as connection:
+                             application_name='zeespare-simulation-worker') as connection:
             stage = 'session setup'
-            connection.execute('set role maqdar_simulation_worker')
+            connection.execute('set role zeespare_simulation_worker')
             connection.execute("set statement_timeout = '90s'")
             connection.execute("set lock_timeout = '5s'")
             stage = 'identity'
@@ -94,7 +94,7 @@ def main() -> int:
             if args.probe:
                 print('Simulation connection-only probe ready; consumption disabled.')
             stage = 'health listener'
-            with health_server(os.environ.get('MAQDAR_WORKER_HEALTH_PORT', '')) as health:
+            with health_server(os.environ.get('ZEESPARE_WORKER_HEALTH_PORT', '')) as health:
                 stage = 'probe' if args.probe else 'consume'
                 while not stopped.is_set():
                     health.touch()

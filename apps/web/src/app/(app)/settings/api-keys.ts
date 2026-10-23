@@ -129,7 +129,7 @@ export type MemberRecord = { user_id: string; email: string; role: string }
 export type ApiKeyRow = {
   id: string
   name: string
-  /** `maqdar_sk_AbCd…wxyz`. */
+  /** `zeespare_sk_AbCd…wxyz`. */
   display: string
   scopes: ScopeOption[]
   created_at: string

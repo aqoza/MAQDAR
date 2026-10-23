@@ -1,4 +1,4 @@
-import type { Database } from '@maqdar/shared/database.types'
+import type { Database } from '@zeespare/shared/database.types'
 import { cache } from 'react'
 import { requestSite } from '@/lib/workspaces/request'
 import { workspaceAllows, type Workspace } from '@/lib/workspaces/hosts'
@@ -10,7 +10,7 @@ import {
   isAppLocale,
   isNumberingSystem,
 } from '@/i18n/config'
-import type { MaqdarClaims } from '@/lib/auth/claims'
+import type { ZeeSpareClaims } from '@/lib/auth/claims'
 import { isRole, type Role } from '@/lib/auth/roles'
 import { getSessionClaims } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
@@ -38,7 +38,7 @@ export type ActiveContext = {
   workspace: Workspace | null
   userId: string
   email: string | null
-  claims: MaqdarClaims
+  claims: ZeeSpareClaims
   /** Every organization the user belongs to, with their role (from the database, never stale). */
   organizations: OrganizationSummary[]
   /** The organization named by the token's org_id claim, when the user is still a member of it. */

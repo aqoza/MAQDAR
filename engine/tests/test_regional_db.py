@@ -7,8 +7,8 @@ import pytest
 
 from test_planning_db import planning, worker
 from test_preparation_db import enqueue_preparation
-from maqdar_engine.worker import process_one
-from maqdar_engine.regional_forecasting import forecast
+from zeespare_engine.worker import process_one
+from zeespare_engine.regional_forecasting import forecast
 
 pytestmark = pytest.mark.db
 

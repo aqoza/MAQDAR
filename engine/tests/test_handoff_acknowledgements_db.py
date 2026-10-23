@@ -29,7 +29,7 @@ def acknowledgement(approved):
         db.execute("update public.memberships set role='owner' where organization_id=%s and user_id=%s", (source[1], source[2]))
     key_hash = secrets.token_bytes(32)
     with session(source) as db:
-        key = db.execute("select public.create_api_key(%s,'Acknowledgements',array['purchase_handoffs:acknowledge'],30,%s,'maqdar_sk_test','test')", (source[1], key_hash)).fetchone()[0]
+        key = db.execute("select public.create_api_key(%s,'Acknowledgements',array['purchase_handoffs:acknowledge'],30,%s,'zeespare_sk_test','test')", (source[1], key_hash)).fetchone()[0]
     body = dict(client_event_id=str(uuid4()), external_system='Test ERP', external_reference='00123', status='received')
     return source, handoff, key_hash, key, body
 
@@ -56,7 +56,7 @@ def test_concurrent_event_identity(acknowledgement, conflict):
 def test_authority_and_parent_rechecked_after_lock_wait(acknowledgement, change):
     source, handoff, key_hash, key, body = acknowledgement
     with psycopg.connect(source[0]) as admin, api_session(source[0]) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.handoff-ack:'||%s||':'||%s,0))", (str(source[1]), body['client_event_id']))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.handoff-ack:'||%s||':'||%s,0))", (str(source[1]), body['client_event_id']))
         call = _Call(waiting, ACK, (key_hash, handoff, Jsonb(body)))
         call.start()
         time.sleep(1)

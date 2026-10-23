@@ -28,7 +28,7 @@ def acknowledgement(approved, request):
         db.execute("update public.memberships set role='owner' where organization_id=%s and user_id=%s", (source[1], source[2]))
     key_hash = secrets.token_bytes(32)
     with session(source) as db:
-        key = db.execute("select public.create_api_key(%s,'Acknowledgements',array['excess_disposition_handoffs:acknowledge'],30,%s,'maqdar_sk_test','test')", (source[1], key_hash)).fetchone()[0]
+        key = db.execute("select public.create_api_key(%s,'Acknowledgements',array['excess_disposition_handoffs:acknowledge'],30,%s,'zeespare_sk_test','test')", (source[1], key_hash)).fetchone()[0]
     body = dict(client_event_id=str(uuid4()), external_system='Test ERP', external_reference='00123', status='received')
     return source, handoff, key_hash, key, body, request.param, purchase['assessment']
 
@@ -47,7 +47,7 @@ def test_concurrent_event_identity(acknowledgement, conflict, rotated):
     if rotated:
         second_hash = secrets.token_bytes(32)
         with session(source) as db:
-            db.execute("select public.create_api_key(%s,'Rotated acknowledgement key',array['excess_disposition_handoffs:acknowledge'],30,%s,'maqdar_sk_test','test')", (source[1], second_hash))
+            db.execute("select public.create_api_key(%s,'Rotated acknowledgement key',array['excess_disposition_handoffs:acknowledge'],30,%s,'zeespare_sk_test','test')", (source[1], second_hash))
     second_body = dict(body, status='rejected', reason='Unknown item') if conflict else body
     with api_session(source[0]) as first, api_session(source[0]) as second:
         call = _race(first, second, ACK, (key_hash, resource, handoff, Jsonb(body)), (second_hash, resource, handoff, Jsonb(second_body)))
@@ -65,7 +65,7 @@ def test_authority_and_parent_rechecked_after_lock_wait(acknowledgement, change,
         with api_session(source[0]) as original:
             original.execute(ACK, (key_hash, resource, handoff, Jsonb(body)))
     with psycopg.connect(source[0]) as admin, api_session(source[0]) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.excess-disposition-handoff-ack:'||%s||':'||%s,0))", (str(source[1]), body['client_event_id']))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.excess-disposition-handoff-ack:'||%s||':'||%s,0))", (str(source[1]), body['client_event_id']))
         call = _Call(waiting, ACK, (key_hash, resource, handoff, Jsonb(body)))
         call.start()
         time.sleep(1)

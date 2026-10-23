@@ -128,7 +128,7 @@ def test_retry_wait_rechecks_authority_and_capture(evaluation, retry, change, ex
         with session(evaluation) as db:
             db.execute(SAVE,call_args)
     with psycopg.connect(evaluation[0]) as admin, session(evaluation) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.installed-base-evaluation:'||%s||':'||%s,0))", (str(evaluation[1]),str(call_args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.installed-base-evaluation:'||%s||':'||%s,0))", (str(evaluation[1]),str(call_args[2])))
         call = _Call(waiting,SAVE,call_args); call.start(); time.sleep(1)
         assert not call.finished
         admin.execute(change,(evaluation[1],)); admin.commit(); call.join(timeout=15)

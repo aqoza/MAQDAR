@@ -1,4 +1,4 @@
-import type { Database } from '@maqdar/shared/database.types'
+import type { Database } from '@zeespare/shared/database.types'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { searchPatterns } from './search'
 

@@ -1,6 +1,6 @@
 # Synthetic data
 
-`maqdar-synth` generates a realistic service-parts network for the Gulf and loads it into the local Supabase stack. It exists so every later step (forecasting, replenishment, dashboards) can be built and benchmarked without customer data. The output is an import-format bundle (see [import-format.md](import-format.md)); the generator's hidden parameters are written to `_truth/` so Phase 2 can score its classifier against them.
+`zeespare-synth` generates a realistic service-parts network for the Gulf and loads it into the local Supabase stack. It exists so every later step (forecasting, replenishment, dashboards) can be built and benchmarked without customer data. The output is an import-format bundle (see [import-format.md](import-format.md)); the generator's hidden parameters are written to `_truth/` so Phase 2 can score its classifier against them.
 
 ## Running it
 
@@ -8,8 +8,8 @@
 pnpm db:start                                   # local stack with the migrations through Step 4
 pnpm synth:small                                # generate + validate + load 1,000 items
 pnpm synth:large                                # 50,000 items, ~13 M demand rows (about 13 minutes)
-cd engine && uv run maqdar-synth generate --preset medium --out data/medium
-cd engine && uv run maqdar-synth load data/medium --replace --member-email you@company.com
+cd engine && uv run zeespare-synth generate --preset medium --out data/medium
+cd engine && uv run zeespare-synth load data/medium --replace --member-email you@company.com
 ```
 
 `load` refuses any host that is not loopback, requires Postgres 17 with the migrations through Step 4 (it checks their versions) and a role that bypasses RLS (the local `postgres`), validates the bundle first, and writes everything in one transaction: codes are checked against the bundle's own parents before each `COPY`, each master-data table is analyzed right after its `COPY` so the next table's foreign-key checks plan against real row counts (partition statistics are left to autovacuum), and a set-based anti-join over distinct item-location pairs re-checks demand references (the table has no foreign keys) before the commit. `--replace` deletes the synthetic organization before reloading (its demand rows first, then the organization with the Step 4 delete guard on items and locations switched off for that transaction, since the demand it protects is already gone); `pnpm db:reset` is faster for the large preset. `--member-email` makes an existing user the owner of the synthetic organization so it appears in the organization switcher; sign-up is invitation-only, so create that user first with `pnpm db:user you@company.com` (or sign in once after being invited).
@@ -27,7 +27,7 @@ Options: `--seed`, `--months N` (keeps the window end, trims the start), `--dens
 
 ## The network
 
-40 locations from the package data (`engine/src/maqdar_engine/synth/data/locations.csv`): one central warehouse in Riyadh, regional hubs in Dubai, Doha, Kuwait City and Muscat, and 35 branches (KSA 14, UAE 8, Qatar 4, Kuwait 4, Oman 5) with real city coordinates. Branches replenish from their country hub (KSA branches from the central warehouse). Each location has a size factor and a region tag (`western` KSA sites see the Hajj effect, `eastern` ones more dust).
+40 locations from the package data (`engine/src/zeespare_engine/synth/data/locations.csv`): one central warehouse in Riyadh, regional hubs in Dubai, Doha, Kuwait City and Muscat, and 35 branches (KSA 14, UAE 8, Qatar 4, Kuwait 4, Oman 5) with real city coordinates. Branches replenish from their country hub (KSA branches from the central warehouse). Each location has a size factor and a region tag (`western` KSA sites see the Hajj effect, `eastern` ones more dust).
 
 The central warehouse stocks every item; hubs stock `hub_share` and branches `branch_share` of the catalogue, weighted towards fast movers. Demand exists only for stocked item-location pairs.
 
@@ -61,7 +61,7 @@ The magnitudes are modelling assumptions grounded in press reports (battery serv
 
 `public_holidays.csv` holds observed dates (not statutory rules) for 2023-10-01 to 2026-09-30 with a `source` column per row. Aggregator sites were wrong on a dozen dates in this window; the table follows the official announcements, for example: Oman's Accession Day 2026 was observed on 15 January (not the 11th), Kuwait observed Isra and Miraj 2025 on 30 January, Saudi Arabia's Eid al-Fitr 2024 holiday ran 8-11 April, the UAE's National Day 2025 holiday was 1-2 December, and Kuwait extended Eid al-Fitr 2026 to Monday 23 March for ministries. `ramadan_windows.csv` records each country's own Ramadan, Eid al-Fitr, Arafat and Eid al-Adha dates. The generator refuses windows outside the verified coverage recorded in `countries.csv`.
 
-The same files seed the `countries`, `currencies`, `ramadan_windows` and `public_holidays` tables through the reference-data migration (`maqdar-synth emit-reference-sql`); a test fails when the migration and the CSVs drift apart.
+The same files seed the `countries`, `currencies`, `ramadan_windows` and `public_holidays` tables through the reference-data migration (`zeespare-synth emit-reference-sql`); a test fails when the migration and the CSVs drift apart.
 
 ## Determinism
 

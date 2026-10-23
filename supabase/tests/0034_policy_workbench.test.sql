@@ -67,8 +67,8 @@ select throws_ok($$select public.policy_override_submit(pg_temp.id(1),pg_temp.id
 reset role;
 select is((select count(*) from public.audit_log where table_name='policy_overrides' and organization_id=pg_temp.id(1)),6::bigint,'submission and terminal decisions are audited once');
 select is((select count(*) from public.planning_runs where organization_id=pg_temp.id(1)),2::bigint,'review creates no planning run');
-select ok(not has_table_privilege('maqdar_worker','public.policy_overrides','SELECT'),'worker cannot read proposals');
-select ok(not has_function_privilege('maqdar_worker','public.policy_override_decide(uuid,uuid,uuid,text,text)','EXECUTE'),'worker cannot decide');
+select ok(not has_table_privilege('zeespare_worker','public.policy_overrides','SELECT'),'worker cannot read proposals');
+select ok(not has_function_privilege('zeespare_worker','public.policy_override_decide(uuid,uuid,uuid,text,text)','EXECUTE'),'worker cannot decide');
 select ok((select reloptions @> array['security_invoker=true'] from pg_class where oid='public.policy_workbench'::regclass),'workbench view uses invoker rights');
 select ok((select reloptions @> array['security_invoker=true'] from pg_class where oid='public.policy_override_history'::regclass),'history view uses invoker rights');
 select * from finish();

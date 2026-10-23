@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import psycopg
 import pytest
 
-from maqdar_engine.scoped_worker import main, process_one, failure_category
+from zeespare_engine.scoped_worker import main, process_one, failure_category
 from test_policy_simulation import task
 
 
@@ -14,7 +14,7 @@ from test_policy_simulation import task
 ])
 def test_newly_merged_methods_keep_scoped_publication(monkeypatch, method, module):
     calculator = MagicMock(return_value={'synthetic': True})
-    monkeypatch.setattr(f'maqdar_engine.{module}.calculate', calculator)
+    monkeypatch.setattr(f'zeespare_engine.{module}.calculate', calculator)
     payload = {'kind': 'simulation', 'method': method}
     db = MagicMock()
     db.execute.return_value.fetchone.side_effect = [('run', 'token'), (payload,), (True,)]
@@ -64,42 +64,42 @@ def test_lost_database_connection_exits_for_restart():
 
 
 def test_connection_only_check_never_claims(monkeypatch):
-    monkeypatch.setattr('sys.argv', ['maqdar-simulation-worker', '--check'])
-    monkeypatch.setenv('MAQDAR_WORKER_DSN', 'host=127.0.0.1')
-    monkeypatch.setenv('MAQDAR_EXPECTED_ORGANIZATION', '00000000-0000-4000-8000-000000000001')
+    monkeypatch.setattr('sys.argv', ['zeespare-simulation-worker', '--check'])
+    monkeypatch.setenv('ZEESPARE_WORKER_DSN', 'host=127.0.0.1')
+    monkeypatch.setenv('ZEESPARE_EXPECTED_ORGANIZATION', '00000000-0000-4000-8000-000000000001')
     connector = MagicMock()
     db = connector.return_value.__enter__.return_value
     db.execute.return_value.fetchone.return_value = ('00000000-0000-4000-8000-000000000001',)
-    monkeypatch.setattr('maqdar_engine.scoped_worker.psycopg.connect', connector)
+    monkeypatch.setattr('zeespare_engine.scoped_worker.psycopg.connect', connector)
     assert main() == 0
     statements = [c.args[0] for c in db.execute.call_args_list]
-    assert statements[0] == 'set role maqdar_simulation_worker'
+    assert statements[0] == 'set role zeespare_simulation_worker'
     assert not any('claim' in s for s in statements)
 
 
 def test_expected_organization_mismatch_fails_closed(monkeypatch):
-    monkeypatch.setattr('sys.argv', ['maqdar-simulation-worker', '--once'])
-    monkeypatch.setenv('MAQDAR_WORKER_DSN', 'host=127.0.0.1')
-    monkeypatch.setenv('MAQDAR_EXPECTED_ORGANIZATION', '00000000-0000-4000-8000-000000000001')
+    monkeypatch.setattr('sys.argv', ['zeespare-simulation-worker', '--once'])
+    monkeypatch.setenv('ZEESPARE_WORKER_DSN', 'host=127.0.0.1')
+    monkeypatch.setenv('ZEESPARE_EXPECTED_ORGANIZATION', '00000000-0000-4000-8000-000000000001')
     connector = MagicMock()
     db = connector.return_value.__enter__.return_value
     db.execute.return_value.fetchone.return_value = ('00000000-0000-4000-8000-000000000002',)
-    monkeypatch.setattr('maqdar_engine.scoped_worker.psycopg.connect', connector)
+    monkeypatch.setattr('zeespare_engine.scoped_worker.psycopg.connect', connector)
     assert main() == 1
     assert not any('claim' in c.args[0] for c in db.execute.call_args_list)
 
 
 def test_supervised_probe_exposes_health_but_never_claims(monkeypatch):
-    monkeypatch.setattr('sys.argv', ['maqdar-simulation-worker', '--probe'])
-    monkeypatch.setenv('MAQDAR_WORKER_DSN', 'host=127.0.0.1')
-    monkeypatch.setenv('MAQDAR_EXPECTED_ORGANIZATION', '00000000-0000-4000-8000-000000000001')
+    monkeypatch.setattr('sys.argv', ['zeespare-simulation-worker', '--probe'])
+    monkeypatch.setenv('ZEESPARE_WORKER_DSN', 'host=127.0.0.1')
+    monkeypatch.setenv('ZEESPARE_EXPECTED_ORGANIZATION', '00000000-0000-4000-8000-000000000001')
     connector = MagicMock()
     db = connector.return_value.__enter__.return_value
     db.execute.return_value.fetchone.return_value = ('00000000-0000-4000-8000-000000000001',)
-    monkeypatch.setattr('maqdar_engine.scoped_worker.psycopg.connect', connector)
+    monkeypatch.setattr('zeespare_engine.scoped_worker.psycopg.connect', connector)
     stopped = MagicMock()
     stopped.is_set.side_effect = [False, True]
-    monkeypatch.setattr('maqdar_engine.scoped_worker.threading.Event', lambda: stopped)
+    monkeypatch.setattr('zeespare_engine.scoped_worker.threading.Event', lambda: stopped)
     assert main() == 0
     assert not any('claim' in c.args[0] for c in db.execute.call_args_list)
 

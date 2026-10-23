@@ -25,7 +25,7 @@ test('event replenishment confirms independent demand, retains evidence and fits
   await createOrganization(page, { name: 'Event replenishment', slug, arabicEnabled: true })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local fixture only')
   const python = (code: string) =>

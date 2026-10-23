@@ -72,7 +72,7 @@ def test_supplier_scenario_rechecks_after_lock_wait(scenario, change, expected):
     report = preview(scenario)
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
         admin.execute(
-            "select pg_advisory_xact_lock(hashtextextended('maqdar.supplier-scenario:'||%s,0))",
+            "select pg_advisory_xact_lock(hashtextextended('zeespare.supplier-scenario:'||%s,0))",
             (str(source[1]),),
         )
         call = _Call(waiting, SAVE, (source[1], draft_id, uuid4(), report['fingerprint']))

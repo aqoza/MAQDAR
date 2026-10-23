@@ -2,8 +2,8 @@ from copy import deepcopy
 
 import pytest
 
-from maqdar_engine.policy_simulation import calculate as original_calculate
-from maqdar_engine.policy_sensitivity import calculate
+from zeespare_engine.policy_simulation import calculate as original_calculate
+from zeespare_engine.policy_sensitivity import calculate
 from test_policy_simulation import task as original_task
 
 

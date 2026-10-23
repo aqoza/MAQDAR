@@ -149,5 +149,5 @@ select is((select count(*)::int from public.regional_sourcing_scenarios),0,'any 
 select is((select count(*)::int from public.audit_log where organization_id=pg_temp.id(1) and table_name='regional_sourcing_scenarios' and operation='DELETE'),2,'location deletion audits copied scenario');
 select ok(not has_function_privilege('anon','public.regional_sourcing_preview(uuid,jsonb)','EXECUTE'),'anonymous has no preview grant');
 select ok(not has_function_privilege('service_role','public.regional_sourcing_save(uuid,jsonb,uuid,text)','EXECUTE'),'service has no save grant');
-select ok(not has_table_privilege('maqdar_worker','public.regional_sourcing_scenarios','SELECT'),'worker has no history grant');
+select ok(not has_table_privilege('zeespare_worker','public.regional_sourcing_scenarios','SELECT'),'worker has no history grant');
 select * from finish();rollback;

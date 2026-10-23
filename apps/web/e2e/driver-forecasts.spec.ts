@@ -25,7 +25,7 @@ test('captured driver forecasts queue, publish and retain scoped evidence in bot
   await createOrganization(page, { name: 'Driver forecasts', slug, arabicEnabled: true })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local fixtures only')
   const python = (code: string) =>
@@ -41,7 +41,7 @@ from uuid import uuid4
 from psycopg.types.json import Jsonb
 sys.path.insert(0,'tests')
 from test_driver_forecasting import fixture
-from maqdar_engine.forecasting import forecast
+from zeespare_engine.forecasting import forecast
 task=fixture(); item=task['items'][0]; org=sys.argv[2]; owner=sys.argv[3]
 with psycopg.connect(sys.argv[1]) as db:
     location=db.execute("insert into public.locations(organization_id,code,name_en,location_type,country_code,timezone) values(%s,'DF-L','Driver location','branch','SA','Asia/Riyadh') returning id",(org,)).fetchone()[0]
@@ -107,13 +107,13 @@ with psycopg.connect(sys.argv[1]) as db:
     const completed = await python(`import sys,json,psycopg
 from uuid import uuid4
 from psycopg.types.json import Jsonb
-from maqdar_engine.driver_forecasting import forecast
+from zeespare_engine.driver_forecasting import forecast
 with psycopg.connect(sys.argv[1]) as db:
     run=db.execute("select id from public.planning_runs where organization_id=%s and options->>'method'='driver-v1'",(sys.argv[2],)).fetchone()[0]
     token=uuid4()
     db.execute("update public.planning_runs set status='running',attempts=1 where id=%s",(run,))
     db.execute("update planning.leases set token=%s,expires_at=now()+interval '15 minutes' where run_id=%s",(token,run))
-    db.execute('set local role maqdar_worker')
+    db.execute('set local role zeespare_worker')
     task=db.execute('select app.planning_task(%s,%s)',(run,token)).fetchone()[0]
     result=forecast(task)
     assert db.execute('select app.forecast_finish(%s,%s,%s)',(run,token,Jsonb(result))).fetchone()[0]

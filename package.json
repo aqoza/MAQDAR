@@ -1,5 +1,5 @@
 {
-  "name": "maqdar",
+  "name": "zeespare",
   "private": true,
   "packageManager": "pnpm@12.10.1",
   "engines": {
@@ -26,9 +26,9 @@
     "db:env": "node scripts/write-env.mjs",
     "db:diff": "supabase db diff --schema public,app,ingest",
     "db:user": "node scripts/create-local-user.mjs",
-    "synth": "uv run --project engine maqdar-synth",
-    "synth:small": "uv run --project engine maqdar-synth all --preset small",
-    "synth:large": "uv run --project engine maqdar-synth all --preset large"
+    "synth": "uv run --project engine zeespare-synth",
+    "synth:small": "uv run --project engine zeespare-synth all --preset small",
+    "synth:large": "uv run --project engine zeespare-synth all --preset large"
   },
   "devDependencies": {
     "miniflare": "5.20261006.1-alpha",

@@ -17,7 +17,7 @@ All verification targets the local Supabase stack. The technical throttle is one
 
 ## Queue and worker
 
-The private `pgmq` queue contains only run IDs. `planning.leases` holds transport IDs, random lease tokens and expiration times. Neither is exposed through PostgREST. Public `planning_runs` has tenant and branch RLS, composite location foreign keys and no direct API writes. Nine private worker functions (`planning_claim`, `planning_task`, `planning_execute`, `classification_finish`, `forecast_finish`, `preparation_finish`, `policy_finish`, `simulation_finish`, `planning_fail`) are granted only to `maqdar_worker`, a NOLOGIN capability role. Public enqueue/cancel RPCs recheck live membership and the active-organization claim. See [policy simulations](policy-simulation.md) for the recorded-sales replay added in Step 21.
+The private `pgmq` queue contains only run IDs. `planning.leases` holds transport IDs, random lease tokens and expiration times. Neither is exposed through PostgREST. Public `planning_runs` has tenant and branch RLS, composite location foreign keys and no direct API writes. Nine private worker functions (`planning_claim`, `planning_task`, `planning_execute`, `classification_finish`, `forecast_finish`, `preparation_finish`, `policy_finish`, `simulation_finish`, `planning_fail`) are granted only to `zeespare_worker`, a NOLOGIN capability role. Public enqueue/cancel RPCs recheck live membership and the active-organization claim. See [policy simulations](policy-simulation.md) for the recorded-sales replay added in Step 21.
 
 The Python worker uses psycopg autocommit: claim commits before processing. Readiness aggregation, run completion and queue archive then commit in one transaction. Run row locks serialize cancellation and completion; an already committed completion wins a racing cancellation. Claim uses `SKIP LOCKED` on the run after reading the queue to avoid a lock-order deadlock. Leases last 120 seconds; the worker's statement timeout is 90 seconds and lock timeout five seconds. Long calculations time out and eventually fail visibly; they do not loop forever. Remote DSNs require `sslmode=verify-full` and a trusted CA.
 
@@ -28,11 +28,11 @@ The transport follows [pgmq's visibility-timeout and archive API](https://pgmq.g
 After applying migrations locally and installing the engine dependencies:
 
 ```powershell
-$env:MAQDAR_WORKER_DSN='postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+$env:ZEESPARE_WORKER_DSN='postgresql://postgres:postgres@127.0.0.1:54322/postgres'
 cd engine
-uv run maqdar-worker --once
+uv run zeespare-worker --once
 # Or process continuously until stopped:
-uv run maqdar-worker
+uv run zeespare-worker
 ```
 
 Use the web form to enqueue a check first. `--once` processes at most one available message; an empty/delayed queue exits successfully. A handled processing failure records retry state and exits successfully; an unavailable database exits nonzero. No DSN, lease token or raw database exception is logged.
@@ -42,8 +42,8 @@ Use the web form to enqueue a check first. `--once` processes at most one availa
 For an organization-bound simulation service, use the separate [scoped runtime rollout](acme-simulation-worker-deployment.md). Its login has five simulation-only RPCs and no global capability. The shared claim filters out bound organizations' simulation messages before visibility/read-count changes, including while a binding is paused. Existing lease/retry/fencing rules remain; the schema migration alone installs no organization binding or runtime credentials. The ordinary shared worker instructions below retain application-wide scope and must not be used for an ACME-only deployment.
 
 1. Review the migration and run `pnpm exec supabase db push` yourself. The agent does not apply hosted migrations. Enablement requires the hosted project's pgmq extension to be available.
-2. Deploy the web build using the existing process. Provision a dedicated database LOGIN with only membership in `maqdar_worker` and database CONNECT. The migration creates the NOLOGIN capability role, never a password. Keep the LOGIN password and `MAQDAR_WORKER_DSN` in your worker host's secret store; do not use a browser or API service key. The worker explicitly runs `SET ROLE maqdar_worker` on connection.
-3. Install the locked engine dependencies (`uv sync --locked`), configure a verified TLS database DSN for that login, and supervise `uv run maqdar-worker`. No hosted worker is started by this PR. Queue a small check and verify its completed result and attempt count in Forecasts.
+2. Deploy the web build using the existing process. Provision a dedicated database LOGIN with only membership in `zeespare_worker` and database CONNECT. The migration creates the NOLOGIN capability role, never a password. Keep the LOGIN password and `ZEESPARE_WORKER_DSN` in your worker host's secret store; do not use a browser or API service key. The worker explicitly runs `SET ROLE zeespare_worker` on connection.
+3. Install the locked engine dependencies (`uv sync --locked`), configure a verified TLS database DSN for that login, and supervise `uv run zeespare-worker`. No hosted worker is started by this PR. Queue a small check and verify its completed result and attempt count in Forecasts.
 4. For an application rollback, stop the worker and deploy the prior web version. Preserve the additive tables, queue and history. Cancel unwanted runs before rollback, or leave them for recovery. Schema removal or purging history requires a separate reviewed migration.
 
 Step 8 adds [demand classification](demand-classification.md) as an explicit run kind with versioned inputs/results. Step 9 adds [forecast baselines](forecast-baselines.md). This foundation intentionally has no automatic schedule, no ERP export and no forecasting-model choice.

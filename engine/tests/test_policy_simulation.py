@@ -4,7 +4,7 @@ from decimal import Decimal
 
 import pytest
 
-from maqdar_engine.policy_simulation import calculate
+from zeespare_engine.policy_simulation import calculate
 
 
 def task(sales=(4, 4, 4, 4), opening="2", maximum="6", alternative="8", lead=1, review=2):

@@ -105,7 +105,7 @@ create function pg_temp.operational_state() returns jsonb language sql as $$
 $$;
 create temporary table original_operational_state as select pg_temp.operational_state() as evidence;
 create function pg_temp.hash(n integer) returns bytea language sql immutable as $$select decode(lpad(n::text,64,'0'),'hex')$$;
-create function pg_temp.key(n integer,scopes text[],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Regional reporter',scopes,30,pg_temp.hash(n),'maqdar_sk_test','test')$$;
+create function pg_temp.key(n integer,scopes text[],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Regional reporter',scopes,30,pg_temp.hash(n),'zeespare_sk_test','test')$$;
 select pg_temp.login(10,1);
 set local role authenticated;
 select lives_ok($$select pg_temp.key(100,array['regional_handoffs:read','regional_handoffs:acknowledge'])$$,'owner explicitly issues report scope');
@@ -171,9 +171,9 @@ select pg_temp.login(13,2);
 select is((select count(*) from public.regional_handoff_acknowledgements),0::bigint,'other tenant cannot read history directly');
 reset role;
 select ok(not has_table_privilege(r,'public.regional_handoff_acknowledgements','INSERT,UPDATE,DELETE'),'no direct writes for '||r)
-from unnest(array['anon','authenticated','service_role','maqdar_worker','maqdar_simulation_worker']) r;
+from unnest(array['anon','authenticated','service_role','zeespare_worker','zeespare_simulation_worker']) r;
 select ok(has_function_privilege(r,'public.api_regional_handoff_acknowledge(bytea,text,uuid,jsonb)','execute')=(r='service_role'),'writer execute restricted for '||r)
-from unnest(array['anon','authenticated','service_role','maqdar_worker','maqdar_simulation_worker']) r;
+from unnest(array['anon','authenticated','service_role','zeespare_worker','zeespare_simulation_worker']) r;
 -- Deleting source ancestry removes single history, but retains the copied batch and its reports.
 select is(pg_temp.operational_state(),(select evidence from original_operational_state),'reports and retries leave stock, inbound, policies and planning runs unchanged');
 delete from public.regional_sourcing_scenarios where id=(select id from sourcing);

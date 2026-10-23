@@ -1,7 +1,7 @@
 """Concurrency checks for the Step 5a import RPCs that pgTAP cannot express (one session only).
 
 Every demand writer and the items/locations delete guard share the advisory lock
-``maqdar.import:<organization>``: commit steps take it with a try-lock (busy: MQ409
+``zeespare.import:<organization>``: commit steps take it with a try-lock (busy: MQ409
 import_in_progress, no waiting) and ``app.refuse_delete_with_demand()`` takes it shared before it
 probes for demand, so a delete waits for the running step and then sees the demand it committed.
 
@@ -28,7 +28,7 @@ import psycopg
 import pytest
 from psycopg.types.json import Jsonb
 
-from maqdar_engine import importformat
+from zeespare_engine import importformat
 
 pytestmark = pytest.mark.db
 
@@ -123,7 +123,7 @@ def tenant(dsn: str) -> Iterator[Tenant]:
         # demand_history has no foreign keys, so its rows go first; the rest (imports included) cascades.
         with psycopg.connect(dsn) as conn:
             conn.execute("delete from public.demand_history where organization_id = %s", (organization,))
-            conn.execute("set local maqdar.demand_guard = 'off'")
+            conn.execute("set local zeespare.demand_guard = 'off'")
             conn.execute("delete from public.organizations where id = %s", (organization,))
             conn.execute("delete from auth.users where id = any(%s)", (list(planners),))
 
@@ -250,7 +250,7 @@ def _refused(conn: psycopg.Connection, statement: str, params: tuple) -> tuple[s
 def _hold_import_lock(conn: psycopg.Connection, tenant: Tenant) -> None:
     """Takes the organization's import lock in an open transaction, as another writer's step would."""
     conn.execute(
-        "select pg_advisory_xact_lock(hashtextextended('maqdar.import:' || %s::text, 0))", (tenant.organization,)
+        "select pg_advisory_xact_lock(hashtextextended('zeespare.import:' || %s::text, 0))", (tenant.organization,)
     )
 
 

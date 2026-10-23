@@ -129,7 +129,7 @@ reset role;
 set local role service_role;
 select throws_ok($$select pg_temp.locator()$$,'42501',null,'API service execute denied');
 reset role;
-select ok(not has_function_privilege('maqdar_worker','public.stock_locator(uuid,text,text,text,date,jsonb,integer,integer)','EXECUTE'),'worker execute denied');
+select ok(not has_function_privilege('zeespare_worker','public.stock_locator(uuid,text,text,text,date,jsonb,integer,integer)','EXECUTE'),'worker execute denied');
 select is((select jsonb_agg(to_jsonb(s) order by id) from public.stock_snapshots s),(select stock from before_reads),'reads preserve all stock evidence');
 select is((select jsonb_agg(to_jsonb(o) order by id) from public.open_orders o),(select orders from before_reads),'reads preserve inbound');
 select is((select count(*) from public.receipts),(select receipts from before_reads),'reads add no receipts');
