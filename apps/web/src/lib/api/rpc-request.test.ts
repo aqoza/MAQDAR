@@ -52,6 +52,8 @@ describe('buildRpcRequest (J9)', () => {
       'api_network_handoff_acknowledgements',
       'api_network_handoff_list',
       'api_network_handoff_get',
+      'api_regional_handoff_list',
+      'api_regional_handoff_get',
       'api_excess_disposition_handoff_list',
       'api_excess_disposition_handoff_get',
       'api_event_purchase_handoff_acknowledge',

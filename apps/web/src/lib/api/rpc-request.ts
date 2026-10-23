@@ -8,6 +8,7 @@ import type {
   EventHandoffResource,
   DispositionHandoffResource,
   NetworkHandoffResource,
+  RegionalHandoffResource,
 } from './handoffs'
 import type { AcknowledgementInput } from './acknowledgements'
 
@@ -35,6 +36,18 @@ export type ApiRpcArgs = {
     p_limit: number
   }
 
+  api_regional_handoff_list: {
+    p_key_hash: KeyHash
+    p_resource: RegionalHandoffResource
+    p_after: string | null
+    p_limit: number
+    p_created_since: string | null
+  }
+  api_regional_handoff_get: {
+    p_key_hash: KeyHash
+    p_resource: RegionalHandoffResource
+    p_id: string
+  }
   api_network_handoff_list: {
     p_key_hash: KeyHash
     p_resource: NetworkHandoffResource
@@ -215,6 +228,8 @@ export const API_RPC_NAMES = [
   'api_network_handoff_acknowledgements',
   'api_network_handoff_list',
   'api_network_handoff_get',
+  'api_regional_handoff_list',
+  'api_regional_handoff_get',
   'api_excess_disposition_handoff_list',
   'api_excess_disposition_handoff_get',
   'api_event_purchase_handoff_acknowledge',

@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 25i adds explicit organization-wide `regional_handoffs:read`. Preserve complete saved regional handoff/batch JSON and independent live selection, including copied batches after source deletion. Other scopes gain no access; browser all-location RLS remains. No regional acknowledgement routes. See [regional-handoff-read-api.md](docs/regional-handoff-read-api.md).
+
 Step 25h adds retained regional handoff batches. Preserve original-item identity verification, same-region/receiver/requested-date grouping, all-location authority, exact per-source currency totals and canonical retries. See [regional-handoff-batches.md](docs/regional-handoff-batches.md).
 
 Step 25g adds regional proposal handoffs. Preserve all-location authority, current first-save region/lane/freight/timing checks, per-source dates, exact currency evidence and immutable retries after archive. See [regional-transfer-handoffs.md](docs/regional-transfer-handoffs.md).

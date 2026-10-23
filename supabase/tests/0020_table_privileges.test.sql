@@ -835,6 +835,8 @@ select set_eq(
     ('public.api_excess_disposition_handoff_get(bytea, text, uuid)', 'service_role'),
     ('public.api_network_handoff_list(bytea, text, text, integer, timestamp with time zone)', 'service_role'),
     ('public.api_network_handoff_get(bytea, text, uuid)', 'service_role'),
+    ('public.api_regional_handoff_list(bytea, text, text, integer, timestamp with time zone)', 'service_role'),
+    ('public.api_regional_handoff_get(bytea, text, uuid)', 'service_role'),
     ('public.api_list_demand(bytea, date, date, text, text, text, integer)', 'service_role'),
     ('public.api_organization(bytea)', 'service_role'),
     ('public.api_upsert(bytea, text, jsonb, uuid)', 'service_role'),

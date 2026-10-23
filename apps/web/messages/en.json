@@ -1090,6 +1090,11 @@
         "label": "Report network package receipt or rejection",
         "description": "Organization-wide reports for whole network handoffs and batches. No reservations or transfer execution.",
         "badge": "Network handoffs: acknowledge"
+      },
+      "regionalHandoffsRead": {
+        "label": "Read regional handoffs",
+        "description": "Read saved regional handoffs and batches across the whole organization, including every source and retained evidence after source deletion. Does not reserve stock or execute transfers.",
+        "badge": "Regional handoffs: read"
       }
     },
     "secret": {
