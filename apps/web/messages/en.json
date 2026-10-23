@@ -806,7 +806,8 @@
     "eventIntegrations": "Event integrations",
     "excess": "Excess stock",
     "network": "Network allocations",
-    "regionalStock": "Regional stock assessments"
+    "regionalStock": "Regional stock assessments",
+    "supplierResponses": "Supplier responses"
   },
   "Replenishment": {
     "help": {
@@ -6427,5 +6428,45 @@
     },
     "publicationTitle": "Supplier publication and responses",
     "notPublished": "No supplier publication has been saved."
+  },
+  "SupplierResponseWorkbench": {
+    "title": "Supplier responses",
+    "context": "Published purchase proposals and their latest supplier response.",
+    "meaning": "Received confirms receipt only, not acceptance or a supply commitment. No response means no recorded response; it does not imply failed delivery. Withdrawal is independent of the response history.",
+    "independence": "Each individual or batch publication has its own history, including overlapping packages. Retained batch summaries and responses remain available after source-handoff deletion. This workbench changes no approvals, orders or inbound.",
+    "searchHelp": "Search saved item, supplier and location codes, publication/package IDs, or the latest author, reference and reason. Code filters are exact. Location suggestions include up to 100 active permitted locations; historical codes may be entered manually.",
+    "search": "Search publications and latest responses",
+    "supplier": "Supplier code",
+    "location": "Receiving location code",
+    "kind": "Package kind",
+    "state": "Publication state",
+    "status": "Latest response",
+    "all": "All",
+    "handoff": "Individual handoff",
+    "batch": "Batch",
+    "published": "Published",
+    "withdrawn": "Withdrawn",
+    "received": "Received",
+    "declined": "Declined",
+    "no_response": "No response",
+    "size": "Rows",
+    "apply": "Apply filters",
+    "clear": "Clear filters",
+    "count": "{count, plural, one {# publication} other {# publications}}",
+    "results": "Supplier publication responses",
+    "package": "Package",
+    "supplierLocation": "Supplier / receiving location",
+    "evidence": "Evidence",
+    "lines": "{count, plural, one {# line} other {# lines}}",
+    "publicationDetails": "Publication details",
+    "reference": "Reference",
+    "declineReason": "Decline reason",
+    "note": "Response note",
+    "open": "Summary and history",
+    "empty": "No publications match these filters.",
+    "pagination": "Publication pages",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}"
   }
 }
