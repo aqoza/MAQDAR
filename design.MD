@@ -97,6 +97,14 @@ server-navigation behavior.
 
 Recent-run search has a flexible-width control row, a clear button, status/type filters and a visible **Latest 20 only** scope with a matching count. It searches only the loaded, authorized recent runs. Do not imply it searches the complete archive. Keep mobile input text at 16px and interactive targets at least 44px; layout changes must not shrink the shared type scale.
 
+## Planner Action Centre
+
+The approved Action Centre lives under Dashboard → Action centre. Its entry link uses the existing Dashboard action bar so the reference dashboard panels do not move down. The Action Centre uses the shared illustrated `PageHeader` with the replenishment motif and Overview / Action centre tabs, including its loading state. Keep the compact four-part summary strip, clearable item/location search, queue and selected evidence panel. Summary counts and evidence values use the 14px evidence role; page/panel headings stay 16px, nested headings 14px and metadata 12px. This introduces no typography exception.
+
+At laptop widths the detail panel sits beside the queue; below 768px it follows the queue, and selecting a row brings the detail panel into view with keyboard focus. Preserve 44px touch targets, 16px mobile inputs, logical spacing and Arabic RTL. Never clip long codes or replace evidence with made-up sample values.
+
+Identify the queue as a bounded view of recent authorized records, not a full-history or unread inbox. Counts, searches and location options cover only loaded records. Show failed sources explicitly rather than presenting a clean zero; disclose source limits and link to existing workbenches. Keep all decisions and mutations in their original workflows. See [Planner Action Centre](docs/planner-action-centre.md) for the source contract and verification.
+
 ## Implementation and review
 
 `apps/web/src/app/globals.css` defines the semantic type tokens. Reuse them in app-owned components and styles. Generated `src/components/ui` primitives stay untouched. Additions or changes to the scale require an explicit design-rule update approved by the owner; do not create one-off pixel sizes in a feature stylesheet.

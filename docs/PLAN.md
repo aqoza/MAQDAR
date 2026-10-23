@@ -1,5 +1,9 @@
 # MAQDAR roadmap
 
+## Planner Action Centre — approved 2026-10-23
+
+Implement the approved compact queue under Dashboard using real, session-authorized data: unavailable policy/stock comparisons, pending purchase and transfer proposals, selected forecast results and selected purchase approvals without saved handoffs. Reuse existing views, RPC outcomes and guarded source workflows; no new business rules, database changes, operational writes or fabricated freight alerts. Retain English/Arabic, laptop/mobile layouts, source-failure states and explicit recent-record limits. Verify screenshots and access isolation, then open a PR without merging or deploying. See [planner-action-centre.md](planner-action-centre.md).
+
 ## Industrial Studio login and password recovery — approved 2026-10-21
 
 Implement the selected Precision-logo parts-photography mockup with a 24px sign-in heading. Replace login magic-link controls with password recovery and remove the invitation notice. Preserve invitation callbacks, workspace boundaries and optional Arabic behavior. Verify desktop/mobile screenshots and recovery; open a PR without deployment. See [industrial-studio-login.md](industrial-studio-login.md).

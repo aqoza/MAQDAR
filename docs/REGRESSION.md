@@ -1,5 +1,10 @@
 # UI regression ledger
 
+## Planner Action Centre
+
+- `PLANNER-ACTIONS-001`: `planner-actions.spec.ts` uses local purchase/transfer approval chains and saved forecast records to verify queue membership, source links, search/reset, location filters, exact record destinations, signed-out redirects, tenant isolation and both-endpoint transfer access. Preserve bounded counts and no fabricated risk/freight alerts. Source utility tests cover partial/malformed failures, ten-policy RPC bounds and already-packaged approvals.
+- `PLANNER-ACTIONS-002`: capture the production page at 1366×768 and 390×844 in English and Arabic RTL. Assert 16px/24px titles, 14px evidence values, 14px desktop/16px mobile inputs, 44px mobile targets, no page overflow and focus transfer from a selected mobile row to its evidence panel. Run with Dashboard reference, shared page-header, mobile-sidebar and responsive-planning regressions; database and browser suites run sequentially. See [planner-action-centre.md](planner-action-centre.md).
+
 ## Forecast search and comparison evidence
 
 - `FORECAST-SEARCH-001`: `forecast-search-usability.spec.ts` verifies active-only readiness suggestions, inactive/manual historical quality codes, normalized code/name search, cancellation, visible loading/empty/error feedback, keyboard selection and tenant/branch isolation. Keep recent-run search explicitly scoped to the latest 20 authorized runs and use stable run-type codes across locales.

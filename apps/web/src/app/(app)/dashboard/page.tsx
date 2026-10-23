@@ -10,6 +10,7 @@ import {
   ChevronDown,
   FileText,
   ListFilter,
+  ListChecks,
   MapPin,
   Upload,
 } from 'lucide-react'
@@ -41,10 +42,11 @@ export default async function DashboardPage({
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
-  const [t, locale, supabase] = await Promise.all([
+  const [t, locale, supabase, actionsText] = await Promise.all([
     getTranslations('Dashboard'),
     getLocale(),
     createClient(),
+    getTranslations('PlannerActions'),
   ])
   const today = reportingDay(new Date(), context.active.effective_time_zone)
   const { day, location } = dashboardParams(await searchParams, today)
@@ -74,6 +76,10 @@ export default async function DashboardPage({
   return (
     <div data-dashboard className="dashboard-workspace">
       <div className="dashboard-actions">
+        <Link href="/dashboard/actions" prefetch={false}>
+          <ListChecks aria-hidden="true" />
+          {actionsText('navTitle')}
+        </Link>
         <Link href={qualityHref} prefetch={false}>
           <ChartNoAxesColumnIncreasing aria-hidden="true" />
           {t('quality')}
