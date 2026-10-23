@@ -76,6 +76,11 @@ insert into public.memberships(organization_id,user_id,role)
 select '00000000-0000-4000-8000-0000000000a0'::uuid,md5('large-directory-'||n)::uuid,'viewer' from generate_series(1,1001)n;
 insert into public.organization_invitations(organization_id,email,role,invited_by)
 select '00000000-0000-4000-8000-0000000000a0'::uuid,'pending'||lpad(n::text,4,'0')||'@test.local','viewer','00000000-0000-4000-8000-000000000001'::uuid from generate_series(1,1001)n;
+-- On a fresh stack, autovacuum after earlier rolled-back files can leave these tables at
+-- reltuples = 0 with pages allocated; the planner then treats them as empty and picks
+-- nested-loop sequential scans that make the 1,001 invitations below run for 20+ minutes.
+-- ANALYZE counts this transaction's own uncommitted rows (postgres holds MAINTAIN on auth.users).
+analyze auth.users, public.memberships, public.organization_invitations, onboarding.attempts;
 set local role authenticated;
 set local request.jwt.claims='{"sub":"00000000-0000-4000-8000-000000000001","role":"authenticated"}';
 select is((public.organization_members_page('00000000-0000-4000-8000-0000000000a0')->>'total')::integer,1003,'member count includes rows beyond 1000');
