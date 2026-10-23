@@ -22,7 +22,7 @@ test('supplier invitations, allowlisted publication, live withdrawal and revocat
   const owner = await createConfirmedUser(ownerEmail, password)
   await createConfirmedUser(existingEmail, password)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['127.0.0.1', 'localhost', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local fixtures only')
   const python = (code: string) =>

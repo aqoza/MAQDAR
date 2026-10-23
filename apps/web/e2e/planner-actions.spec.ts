@@ -19,7 +19,7 @@ async function workspace(page: Page, mode: 'purchase' | 'transfer') {
   await createOrganization(page, { name: 'Planner Action Centre QA', slug, arabicEnabled: true })
   const organization = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   const result = await promisify(execFile)(
     'uv',
     [

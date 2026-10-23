@@ -18,7 +18,7 @@ The domain cutover kept internal identifiers stable; the internal-name retiremen
 
 MAQDAR is retired as an internal name. Applied migrations keep their original text; everything else uses ZeeSpare. This is a breaking change for API integrators and worker deployments.
 
-- **Database** (`20261023100000_rename_zeespare.sql`, one transaction): roles `maqdar_worker` / `maqdar_simulation_worker` become `zeespare_worker` / `zeespare_simulation_worker` (same OIDs, so grants and login memberships stay); advisory-lock keys and custom settings move from `maqdar.*` to `zeespare.*` in every function at once; cron jobs become `zeespare-demand-partitions` and `zeespare-import-housekeeping`.
+- **Database** (`20261023130000_rename_zeespare.sql`, one transaction): roles `maqdar_worker` / `maqdar_simulation_worker` become `zeespare_worker` / `zeespare_simulation_worker` (same OIDs, so grants and login memberships stay); advisory-lock keys and custom settings move from `maqdar.*` to `zeespare.*` in every function at once; cron jobs become `zeespare-demand-partitions` and `zeespare-import-housekeeping`.
 - **REST API**: keys are `zeespare_sk_` + 43 + 6 characters (61 in all). The migration revokes every active `maqdar_sk_` key; old display prefixes stay valid for history only. OpenAPI extensions are `x-zeespare-*` and problem types `urn:zeespare:problem:*`.
 - **Engine**: the Python package is `zeespare-engine` (`zeespare_engine`), with commands `zeespare-worker`, `zeespare-simulation-worker` and `zeespare-synth`. The JavaScript workspace package is `@zeespare/shared`.
 - **Environment**: `ZEESPARE_WORKER_DSN`, `ZEESPARE_DATABASE_CA`, `ZEESPARE_EXPECTED_ORGANIZATION` and `ZEESPARE_TEST_DSN` replace the `MAQDAR_*` names, with no fallback.

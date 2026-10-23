@@ -1,7 +1,7 @@
 import 'server-only'
 import { z } from 'zod'
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '@maqdar/shared/database.types'
+import type { Database } from '@zeespare/shared/database.types'
 import { workbenchRowSchema as purchaseSchema } from './purchase-review'
 import { workbenchRowSchema as transferSchema } from './transfer-review'
 import { comparisonSchema } from './stock-comparison'
