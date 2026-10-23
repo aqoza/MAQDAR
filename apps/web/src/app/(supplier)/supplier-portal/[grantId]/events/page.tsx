@@ -6,7 +6,7 @@ import { TableScrollRegion } from '@/components/table-scroll-region'
 import { normalizeDecimal } from '@/lib/imports/normalize'
 import { requireSupplierPortal } from '@/lib/supplier-portal-context'
 import { createClient } from '@/lib/supabase/server'
-import { supplierEventPackagesSchema } from '@/lib/supplier-portal'
+import { supplierEventPublicationsSchema } from '@/lib/supplier-portal'
 import { responsePage } from '@/lib/supplier-responses'
 export default async function SupplierEventPackages({
   params,
@@ -20,7 +20,7 @@ export default async function SupplierEventPackages({
   if (!grant.accepted) redirect(`/supplier-portal/${grant.id}`)
   const [db, t] = await Promise.all([createClient(), getTranslations('SupplierPortal')])
   const page = responsePage((await searchParams).page)
-  const response = await db.rpc('supplier_portal_event_publications', {
+  const response = await db.rpc('supplier_portal_event_packages', {
     p_grant_id: grant.id,
     p_page: page,
   })
@@ -28,7 +28,7 @@ export default async function SupplierEventPackages({
     if (response.error.code === 'MQ404') notFound()
     throw new Error('Supplier event proposals unavailable')
   }
-  const result = supplierEventPackagesSchema.parse(response.data)
+  const result = supplierEventPublicationsSchema.parse(response.data)
   if (result.page !== page) redirect(`/supplier-portal/${grant.id}/events?page=${result.page}`)
   return (
     <div className="min-w-0 space-y-4">
@@ -50,6 +50,7 @@ export default async function SupplierEventPackages({
             <tr>
               {(
                 [
+                  'packageKind',
                   'item_code',
                   'location_code',
                   'quantity',
@@ -68,15 +69,24 @@ export default async function SupplierEventPackages({
           <tbody>
             {result.rows.map((row) => (
               <tr key={row.id} className="border-t align-top">
+                <td className="p-3">{t(row.kind)}</td>
                 <th scope="row" className="min-w-36 p-3 text-start font-normal">
-                  <bdi className="break-all">{row.summary.item_code}</bdi>
+                  <bdi className="break-all">
+                    {row.kind === 'handoff'
+                      ? row.summary.item_code
+                      : t('lineCount', { count: row.summary.lines.length })}
+                  </bdi>
                 </th>
                 <td className="p-3">
                   <bdi>{row.summary.location_code}</bdi>
                 </td>
-                <td className="p-3 whitespace-nowrap">{normalizeDecimal(row.summary.quantity)}</td>
-                <td className="p-3">{row.summary.unit}</td>
-                <td className="p-3 whitespace-nowrap">{row.summary.receipt_date}</td>
+                <td className="p-3 whitespace-nowrap">
+                  {row.kind === 'handoff' ? normalizeDecimal(row.summary.quantity) : t('perLine')}
+                </td>
+                <td className="p-3">{row.kind === 'handoff' ? row.summary.unit : t('perLine')}</td>
+                <td className="p-3 whitespace-nowrap">
+                  {row.kind === 'handoff' ? row.summary.receipt_date : t('perLine')}
+                </td>
                 <td className="p-3 whitespace-nowrap">
                   {row.summary.subtotal} {row.summary.currency}
                 </td>

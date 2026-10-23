@@ -6434,7 +6434,9 @@
     "ordinaryProposals": "Ordinary purchase proposals",
     "emptyEvents": "No event purchase proposals are currently shared.",
     "eventSelection": "The supplier summary uses the full event-adjusted quantity and cost. Baseline comparisons and event assumptions remain internal.",
-    "eventPublicationHelp": "Only the displayed summary is shared. Event names, daily additions, baseline forecasts, stock and approval reasons stay private. First publication requires a selected approval, current price evidence and clear saved timing gates. Withdrawal removes future portal access; viewed information cannot be recalled."
+    "eventPublicationHelp": "Only the displayed summary is shared. Event names, daily additions, baseline forecasts, stock and approval reasons stay private. First publication requires a selected approval, current price evidence and clear saved timing gates. Withdrawal removes future portal access; viewed information cannot be recalled.",
+    "eventBatchPublishTitle": "Publish event batch to supplier",
+    "eventBatchPublicationHelp": "Share the full adjusted selection for every line. Baseline comparisons and event assumptions remain internal. Every original member must still be selected with matching price and clear timing evidence. A publication records no acceptance or order."
   },
   "SupplierResponseWorkbench": {
     "title": "Supplier responses",

@@ -97,3 +97,11 @@ export const supplierEventPackagesSchema = z.strictObject({
     .array(z.strictObject({ id: z.guid(), created_at: z.string(), summary: supplierSummarySchema }))
     .max(100),
 })
+
+// Separate combined event feed; legacy event single-reader schema stays frozen.
+export const supplierEventPublicationsSchema = z.strictObject({
+  total: z.number().int().nonnegative(),
+  page: z.number().int().positive(),
+  size: z.union([z.literal(25), z.literal(50), z.literal(100)]),
+  rows: supplierPublicationsSchema.shape.rows,
+})

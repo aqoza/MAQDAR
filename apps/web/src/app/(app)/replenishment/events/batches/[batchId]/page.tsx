@@ -22,10 +22,11 @@ export default async function BatchDetail({
   if (!context?.active) redirect('/organizations')
   const { batchId } = await params
   if (!z.guid().safeParse(batchId).success) notFound()
-  const [db, t, format] = await Promise.all([
+  const [db, t, format, portal] = await Promise.all([
     createClient(),
     getTranslations('EventHandoffBatches'),
     getFormatter(),
+    getTranslations('SupplierPortal'),
   ])
   const [saved, current] = await Promise.all([
     db
@@ -56,6 +57,11 @@ export default async function BatchDetail({
           </Link>
         }
         help={<EventHandoffBatchesHelp />}
+        actions={
+          <Link className="underline" href={`/replenishment/events/batches/${batchId}/publish`}>
+            {portal('eventPublishLink')}
+          </Link>
+        }
       />
       <p className="break-all">{t('batchIdentity', { id: batchId })}</p>
       <p>{t('savedAt', { time: format.dateTime(new Date(payload.created_at), 'long') })}</p>
