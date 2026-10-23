@@ -94,6 +94,13 @@ jobs:
             apps/web/test-results/**/network-integrations-*.png
             apps/web/test-results/**/regional-integrations-*.png
           retention-days: 7
+      - name: Retain supplier portal visual evidence
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: supplier-portal-visuals
+          path: apps/web/test-results/**/supplier-portal-*.png
+          retention-days: 7
       - name: Retain external driver visual evidence
         uses: actions/upload-artifact@v7
         if: always()

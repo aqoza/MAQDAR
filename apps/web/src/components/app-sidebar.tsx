@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/sidebar'
 import { signOut } from '@/lib/auth/actions'
 import { isEditorRole, type Role } from '@/lib/auth/roles'
+import { SupplierPortalSidebar } from '@/components/supplier-portal-sidebar'
 import type { OrganizationSummary } from '@/lib/organizations/context'
 
 // `editorsOnly` items are hidden from approvers, branch users and viewers (the pages 404 for them).
@@ -58,7 +59,15 @@ export type AppSidebarProps = {
   pendingInvitationCount: number
 }
 
-export function AppSidebar({
+export function AppSidebar(props: AppSidebarProps | { portal: true; user: { email: string } }) {
+  return 'portal' in props ? (
+    <SupplierPortalSidebar email={props.user.email} />
+  ) : (
+    <OrganizationSidebar {...props} />
+  )
+}
+
+function OrganizationSidebar({
   user,
   organizations,
   active,

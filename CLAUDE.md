@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 26 adds supplier-only grants and explicitly published allowlisted summaries. Never grant staff membership or raw handoff access. Preserve verified-email acceptance, current grant/withdrawal checks, publication gates and workspace boundaries. See [supplier-portal.md](docs/supplier-portal.md).
+
 Step 25k adds a read-only regional integration workbench. Preserve saved region identity/search after archive/deletion, all-location access including zero sources, exact latest system reports and independent live context. See [regional-integration-workbench.md](docs/regional-integration-workbench.md).
 
 Step 25j adds explicit whole-package regional reports with `regional_handoffs:acknowledge`; history uses `regional_handoffs:read`. Preserve tenant-wide UUID retries across keys, post-lock authority, actual-parent audit/cascades, copied-batch retention and all-location browser access including zero sources. See [regional-handoff-acknowledgements.md](docs/regional-handoff-acknowledgements.md).
