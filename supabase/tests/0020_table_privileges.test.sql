@@ -652,6 +652,7 @@ select set_eq(
     ('public.supplier_response_submit(uuid, text, uuid, uuid, text, text, text)', 'authenticated'),
     ('public.supplier_response_history(uuid, text, uuid, integer)', 'authenticated'),
     ('public.supplier_response_history_internal(uuid, text, uuid, integer)', 'authenticated'),
+    ('public.supplier_response_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('app.supplier_summary(jsonb)', ''),
     ('public.supplier_portal_invite(uuid, uuid, text)', 'authenticated'),
     ('public.supplier_portal_revoke(uuid, uuid)', 'authenticated'),

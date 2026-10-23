@@ -26,6 +26,7 @@ export default async function Publication({
   const editor = isEditorRole(context.role)
   const db = await createClient()
   const t = await getTranslations('SupplierPortal')
+  const workbench = await getTranslations('SupplierResponseWorkbench')
   const source = await db
     .from('purchase_handoff_batches')
     .select('id')
@@ -73,6 +74,12 @@ export default async function Publication({
           </Link>
         }
       />
+      <Link
+        className="inline-flex min-h-11 items-center underline md:min-h-0"
+        href="/replenishment/supplier-responses"
+      >
+        {workbench('title')}
+      </Link>
       <p>{t('batchPublicationHelp')}</p>
       {saved.data ? (
         <>
