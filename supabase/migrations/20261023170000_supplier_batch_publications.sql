@@ -16,7 +16,7 @@ create index supplier_batch_publications_portal on public.supplier_batch_publica
 create index supplier_batch_publications_location on public.supplier_batch_publications(organization_id,location_id);
 create index supplier_batch_publications_members on public.supplier_batch_publications using gin(handoff_ids);
 alter table public.supplier_batch_publications enable row level security;
-revoke all on public.supplier_batch_publications from public,anon,authenticated,service_role,maqdar_worker,maqdar_simulation_worker;
+revoke all on public.supplier_batch_publications from public,anon,authenticated,service_role,zeespare_worker,zeespare_simulation_worker;
 grant select on public.supplier_batch_publications to authenticated;
 create policy "members read" on public.supplier_batch_publications for select to authenticated using(organization_id=any(array(select app.member_organizations())));
 create policy "branch scope" on public.supplier_batch_publications as restrictive for select to authenticated using(organization_id=any(array(select app.unscoped_organizations())) or location_id=any(array(select app.scoped_locations())));
@@ -69,7 +69,7 @@ declare b public.purchase_handoff_batches; result uuid; preview jsonb;
 begin
  perform app.require_role(p_organization_id,array['owner','admin','planner']);
  if p_confirmed is distinct from true then raise exception using errcode='MQ422',message='sharing confirmation required'; end if;
- perform pg_advisory_xact_lock(hashtextextended('maqdar.purchase-review:'||p_organization_id::text,0));
+ perform pg_advisory_xact_lock(hashtextextended('zeespare.purchase-review:'||p_organization_id::text,0));
  perform app.lock_memberships(p_organization_id);
  select * into b from public.purchase_handoff_batches where organization_id=p_organization_id and id=p_batch_id
   and (organization_id=any(array(select app.unscoped_organizations())) or location_id=any(array(select app.scoped_locations()))) for share;
@@ -132,6 +132,6 @@ begin
 end; $$;
 revoke all on function public.supplier_batch_publication_preview(uuid,uuid),public.supplier_batch_publication_publish(uuid,uuid,boolean,text),
  public.supplier_batch_publication_withdraw(uuid,uuid),public.supplier_portal_publications(uuid,integer,integer,uuid)
- from public,anon,authenticated,service_role,maqdar_worker,maqdar_simulation_worker;
+ from public,anon,authenticated,service_role,zeespare_worker,zeespare_simulation_worker;
 grant execute on function public.supplier_batch_publication_preview(uuid,uuid),public.supplier_batch_publication_publish(uuid,uuid,boolean,text),
  public.supplier_batch_publication_withdraw(uuid,uuid),public.supplier_portal_publications(uuid,integer,integer,uuid) to authenticated;
