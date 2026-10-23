@@ -3,7 +3,7 @@ import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
 
 // The Supabase secret key reaches three reviewed modules: src/lib/supabase/admin.ts (auth.admin calls
-// from the Settings actions) and src/lib/supabase/api.ts (the api_* RPCs of the /api/v1
+// from reviewed staff/supplier invitation actions) and src/lib/supabase/api.ts (the api_* RPCs of the /api/v1
 // handlers). The two restrictions use different rule names so their allow-lists do not override
 // each other. auth-forwarding.ts adds the key only to pinned ordinary Auth endpoints;
 // src/lib/api/isolation.test.ts scans the sources as a backstop.
@@ -14,7 +14,8 @@ const API_CLIENT = {
 }
 const ADMIN_CLIENT = {
   group: ['@/lib/supabase/admin', '**/lib/supabase/admin', '**/supabase/admin'],
-  message: 'The service-role admin client is only for auth.admin calls in the Settings actions.',
+  message:
+    'The service-role admin client is only for auth.admin calls in reviewed staff/supplier invitation actions.',
 }
 const SERVER_ENV = {
   group: ['@/lib/env.server', '**/lib/env.server'],
@@ -42,8 +43,11 @@ export default defineConfig([
     },
   },
   {
-    name: 'maqdar/secret-key/settings-actions',
-    files: ['src/app/(app)/settings/actions.ts'],
+    name: 'maqdar/secret-key/invitation-actions',
+    files: [
+      'src/app/(app)/settings/actions.ts',
+      'src/app/(app)/suppliers/portal-access/actions.ts',
+    ],
     rules: { '@typescript-eslint/no-restricted-imports': ['error', { patterns: [SERVER_ENV] }] },
   },
   {

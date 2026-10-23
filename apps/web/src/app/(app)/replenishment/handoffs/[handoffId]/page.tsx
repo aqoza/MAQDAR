@@ -1,3 +1,4 @@
+import { isEditorRole } from '@/lib/auth/roles'
 import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
@@ -66,6 +67,13 @@ export default async function HandoffDetail({
           <Link className="underline" href="/replenishment/handoffs">
             {t('back')}
           </Link>
+        }
+        actions={
+          isEditorRole(context.role) ? (
+            <Link href={`/replenishment/handoffs/${handoffId}/publish`} className="underline">
+              {(await getTranslations('SupplierPortal'))('publishTitle')}
+            </Link>
+          ) : null
         }
         title={t('detailTitle', { item: payload.estimate.source.item_code })}
       />

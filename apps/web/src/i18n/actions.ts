@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
+import { requireSupplierPortal } from '@/lib/supplier-portal-context'
 import { getActiveContext } from '@/lib/organizations/context'
 import { LOCALE_COOKIE, isAppLocale } from './config'
 import { resolveLocale } from './resolve'
@@ -9,17 +10,19 @@ const ONE_YEAR = 60 * 60 * 24 * 365
 
 /**
  * Sets the locale cookie. Next.js re-renders the current page and its layouts afterwards.
- * Arabic is refused (nothing is written) unless the active organization has it enabled; the
+ * Arabic requires the active organization or a currently accessible supplier grant to enable it; the
  * request config applies the same gate when it reads the cookie, so a stale cookie is harmless.
  */
-export async function setLocale(locale: string): Promise<void> {
+export async function setLocale(locale: string, portalGrantId?: string): Promise<void> {
   if (!isAppLocale(locale)) throw new Error(`Unsupported locale: ${locale}`)
 
   if (locale === 'ar') {
-    const context = await getActiveContext()
+    const preferences = portalGrantId
+      ? await requireSupplierPortal(portalGrantId)
+      : (await getActiveContext())?.active
     const allowed = resolveLocale({
       cookie: locale,
-      arabicEnabled: context?.active?.arabic_enabled ?? false,
+      arabicEnabled: preferences?.arabic_enabled ?? false,
     })
     if (allowed !== locale) return
   }
