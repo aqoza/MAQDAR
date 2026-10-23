@@ -69,11 +69,11 @@ export default async function HandoffDetail({
           </Link>
         }
         actions={
-          isEditorRole(context.role) ? (
-            <Link href={`/replenishment/handoffs/${handoffId}/publish`} className="underline">
-              {(await getTranslations('SupplierPortal'))('publishTitle')}
-            </Link>
-          ) : null
+          <Link href={`/replenishment/handoffs/${handoffId}/publish`} className="underline">
+            {(await getTranslations('SupplierPortal'))(
+              isEditorRole(context.role) ? 'publishTitle' : 'publicationTitle',
+            )}
+          </Link>
         }
         title={t('detailTitle', { item: payload.estimate.source.item_code })}
       />

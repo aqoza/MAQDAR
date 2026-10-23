@@ -49,7 +49,7 @@ insert into rpc_only_tables values ('network_transfer_proposals');
 insert into rpc_only_tables values ('network_handoff_batches');
 insert into rpc_only_tables values ('network_handoff_acknowledgements');
 insert into rpc_only_tables values ('regional_handoff_acknowledgements');
-insert into rpc_only_tables values ('supplier_portal_grants'), ('supplier_publications'), ('supplier_batch_publications');
+insert into rpc_only_tables values ('supplier_portal_grants'), ('supplier_publications'), ('supplier_batch_publications'), ('supplier_responses');
 insert into rpc_only_tables values ('external_driver_datasets');
 insert into rpc_only_tables values ('regional_stock_assessments');
 insert into rpc_only_tables values ('stock_regions');

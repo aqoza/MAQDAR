@@ -6400,6 +6400,32 @@
     "perLine": "See each line",
     "overlap": "Overlapping packages",
     "overlapHelp": "{count} other published packages contain some of the same handoffs. These are overlapping planning proposals, not additional demand or separate orders.",
-    "overlapLimit": "Showing the 25 most recent overlapping publications."
+    "overlapLimit": "Showing the 25 most recent overlapping publications.",
+    "responses": {
+      "respond": "Respond to this proposal",
+      "meaning": "Received confirms receipt only, without acceptance or a supply commitment. Declined applies to this whole planning proposal.",
+      "status": "Response",
+      "received": "Received",
+      "declined": "Declined",
+      "reference": "Your reference (optional)",
+      "reason": "Comment (optional)",
+      "requiredReason": "Reason for declining",
+      "working": "Saving…",
+      "submit": "Record response",
+      "history": "Supplier response history",
+      "count": "{count} responses",
+      "latest": "Latest: {status} — {author}",
+      "empty": "No supplier response recorded.",
+      "savedReference": "Reference: {reference}",
+      "eventReference": "Response reference",
+      "pagination": "Response history pages",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page}",
+      "historyHelp": "About these responses",
+      "independent": "Each report retains its author and time. Reports apply only to this publication, never its members or overlapping packages. They do not accept an order or change quantities, dates, approvals or inbound."
+    },
+    "publicationTitle": "Supplier publication and responses",
+    "notPublished": "No supplier publication has been saved."
   }
 }

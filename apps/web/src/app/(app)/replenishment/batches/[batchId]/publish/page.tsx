@@ -1,3 +1,5 @@
+import { SupplierResponses } from '@/components/supplier-responses'
+import { supplierResponseHistorySchema, responsePage } from '@/lib/supplier-responses'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -10,11 +12,18 @@ import { isEditorRole } from '@/lib/auth/roles'
 import { createClient } from '@/lib/supabase/server'
 import { supplierBatchPreviewSchema, supplierBatchSummarySchema } from '@/lib/supplier-portal'
 import { publishSupplierBatch, withdrawSupplierBatch } from './actions'
-export default async function Publication({ params }: { params: Promise<{ batchId: string }> }) {
+export default async function Publication({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ batchId: string }>
+  searchParams: Promise<{ response_page?: string | string[] }>
+}) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { batchId } = await params
-  if (!isEditorRole(context.role) || !z.guid().safeParse(batchId).success) notFound()
+  if (!z.guid().safeParse(batchId).success) notFound()
+  const editor = isEditorRole(context.role)
   const db = await createClient()
   const t = await getTranslations('SupplierPortal')
   const source = await db
@@ -32,18 +41,32 @@ export default async function Publication({ params }: { params: Promise<{ batchI
     .eq('batch_id', batchId)
     .maybeSingle()
   if (saved.error) throw new Error('Publication unavailable')
-  const preview = saved.data
-    ? null
-    : await db.rpc('supplier_batch_publication_preview', {
-        p_organization_id: context.active.id,
-        p_batch_id: batchId,
-      })
+  const preview =
+    saved.data || !editor
+      ? null
+      : await db.rpc('supplier_batch_publication_preview', {
+          p_organization_id: context.active.id,
+          p_batch_id: batchId,
+        })
   const report = preview && !preview.error ? supplierBatchPreviewSchema.parse(preview.data) : null
+  const response = saved.data
+    ? await db.rpc('supplier_response_history_internal', {
+        p_organization_id: context.active.id,
+        p_kind: 'batch',
+        p_publication_id: saved.data.id,
+        p_page: responsePage((await searchParams).response_page),
+      })
+    : null
+  if (response?.error) {
+    if (response.error.code === 'MQ404') notFound()
+    throw new Error('Supplier responses unavailable')
+  }
+  const history = response ? supplierResponseHistorySchema.parse(response.data) : null
   return (
     <div className="min-w-0 space-y-4">
       <PageHeader
         pattern="replenishment"
-        title={t('publishBatchTitle')}
+        title={t(editor ? 'publishBatchTitle' : 'publicationTitle')}
         back={
           <Link className="underline" href={`/replenishment/batches/${batchId}`}>
             {t('backBatch')}
@@ -55,7 +78,7 @@ export default async function Publication({ params }: { params: Promise<{ batchI
         <>
           <p role="status">{t(saved.data.withdrawn_at ? 'withdrawn' : 'published')}</p>
           <SupplierBatchSummary summary={supplierBatchSummarySchema.parse(saved.data.summary)} />
-          {!saved.data.withdrawn_at && (
+          {editor && !saved.data.withdrawn_at && (
             <SupplierPortalForm
               action={withdrawSupplierBatch}
               label="withdraw"
@@ -82,7 +105,10 @@ export default async function Publication({ params }: { params: Promise<{ batchI
           />
         </>
       ) : (
-        <p role="alert">{t('unavailable')}</p>
+        <p role="alert">{t(editor ? 'unavailable' : 'notPublished')}</p>
+      )}
+      {history && (
+        <SupplierResponses history={history} base={`/replenishment/batches/${batchId}/publish`} />
       )}
     </div>
   )
