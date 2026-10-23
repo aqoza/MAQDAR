@@ -1,5 +1,10 @@
 # UI regression ledger
 
+## Planner Action Centre
+
+- `PLANNER-ACTIONS-001`: `planner-actions.spec.ts` uses local purchase/transfer approval chains and saved forecast records to verify queue membership, source links, search/reset, location filters, exact record destinations, signed-out redirects, tenant isolation and both-endpoint transfer access. Preserve bounded counts and no fabricated risk/freight alerts. Source utility tests cover partial/malformed failures, ten-policy RPC bounds and already-packaged approvals.
+- `PLANNER-ACTIONS-002`: capture the production page at 1366×768 and 390×844 in English and Arabic RTL. Assert 16px/24px titles, 14px evidence values, 14px desktop/16px mobile inputs, 44px mobile targets, no page overflow and focus transfer from a selected mobile row to its evidence panel. Run with Dashboard reference, shared page-header, mobile-sidebar and responsive-planning regressions; database and browser suites run sequentially. See [planner-action-centre.md](planner-action-centre.md).
+
 ## Forecast search and comparison evidence
 
 - `FORECAST-SEARCH-001`: `forecast-search-usability.spec.ts` verifies active-only readiness suggestions, inactive/manual historical quality codes, normalized code/name search, cancellation, visible loading/empty/error feedback, keyboard selection and tenant/branch isolation. Keep recent-run search explicitly scoped to the latest 20 authorized runs and use stable run-type codes across locales.
@@ -220,3 +225,7 @@ Run `test_regional_batches_db.py`, `0109_regional_batches.test.sql`, serializer/
 ## Step 25k regional integration workbench
 
 Run `0112_regional_integration_workbench.test.sql`, the privilege inventory, regional integration URL/schema unit tests and `regional-integration-workbench.spec.ts`. Verify exact system labels, latest-before-filtering, missing reports, region/source filters, independent overlapping package histories, all-location access including zeros, retained batches after source deletion and unchanged copied files. Inspect all five widths in English and Arabic RTL; run existing network/shared integration coverage after shared screen changes.
+
+## Step 26 supplier portal
+
+Run `0113_supplier_portal.test.sql`, tenant/privilege invariants, `test_supplier_portal_db.py`, supplier schema/locale tests and `supplier-portal.spec.ts`. Verify separate verified-email grants without membership, owner/admin invitation limits, editor-only publication, exact shared field allowlist, current price/selection gates and lock-wait role revocation. Real local Auth/Mailpit must cover new and existing accounts. Assert supplier-to-supplier/tenant boundaries, hidden raw tables, source download denial, withdrawn/revoked HTTP 404s and immutable shared prices. Preserve compact headers, local table scrolling, mobile keyboard navigation and Arabic selection without staff membership. Retain access/publication/list/summary screenshots at 375, 768, 1024, 1440 and 1920px in English and Arabic RTL. Run database and browser fixtures sequentially; use a disposable stack if another checkout has newer migrations.

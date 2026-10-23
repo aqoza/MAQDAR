@@ -2344,6 +2344,70 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"supplier_portal_grants": {
+                  Row: {
+                    "accepted_at": string | null,"created_at": string,"created_by": string,"email": string,"expires_at": string,"id": string,"organization_id": string,"revoked_at": string | null,"revoked_by": string | null,"send_count": number,"sent_at": string,"supplier_id": string,"user_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "accepted_at"?: string | null,"created_at"?: string,"created_by": string,"email": string,"expires_at"?: string,"id"?: string,"organization_id": string,"revoked_at"?: string | null,"revoked_by"?: string | null,"send_count"?: number,"sent_at"?: string,"supplier_id": string,"user_id"?: string | null
+                  }
+                  Update: {
+                    "accepted_at"?: string | null,"created_at"?: string,"created_by"?: string,"email"?: string,"expires_at"?: string,"id"?: string,"organization_id"?: string,"revoked_at"?: string | null,"revoked_by"?: string | null,"send_count"?: number,"sent_at"?: string,"supplier_id"?: string,"user_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "supplier_portal_grants_organization_id_supplier_id_fkey"
+      columns: ["organization_id","supplier_id"]
+isOneToOne: false
+      referencedRelation: "suppliers"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"supplier_publications": {
+                  Row: {
+                    "created_at": string,"created_by": string,"handoff_id": string,"id": string,"location_id": string,"organization_id": string,"summary": NonNullable<Json>,"supplier_id": string,"withdrawn_at": string | null,"withdrawn_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"handoff_id": string,"id"?: string,"location_id": string,"organization_id": string,"summary": NonNullable<Json>,"supplier_id": string,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"handoff_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"summary"?: NonNullable<Json>,"supplier_id"?: string,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "supplier_publications_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: true
+      referencedRelation: "purchase_handoff_batch_candidates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_publications_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: true
+      referencedRelation: "purchase_handoff_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_publications_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: true
+      referencedRelation: "purchase_handoffs"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_publications_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_publications_organization_id_supplier_id_fkey"
+      columns: ["organization_id","supplier_id"]
+isOneToOne: false
+      referencedRelation: "suppliers"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"supplier_scenarios": {
                   Row: {
                     "created_at": string,"draft_id": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string
@@ -4259,6 +4323,9 @@ isOneToOne: false
               "arabic_enabled": boolean,"base_currency": string,"default_locale": string,"effective_time_zone": string,"home_country": string,"id": string,"is_active": boolean,"name": string,"numbering_system": string,"role": string,"slug": string,"time_zone": string
             }[]
                            },
+"my_supplier_portals":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "network_allocation_preview":
 { Args: { "p_backorders"?: string,"p_basis": string,"p_commitments_confirmed"?: boolean,"p_draft_ids": (string)[],"p_lanes_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_source_policy_id": string }; Returns: Json
                            },
@@ -4473,6 +4540,27 @@ isOneToOne: false
                            },
 "stock_region_save":
 { Args: { "p_fingerprint": string,"p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
+                           },
+"supplier_portal_accept":
+{ Args: { "p_grant_id": string }; Returns: undefined
+                           },
+"supplier_portal_invite":
+{ Args: { "p_email": string,"p_organization_id": string,"p_supplier_id": string }; Returns: Json
+                           },
+"supplier_portal_packages":
+{ Args: { "p_grant_id": string,"p_page"?: number,"p_publication_id"?: string,"p_size"?: number }; Returns: Json
+                           },
+"supplier_portal_revoke":
+{ Args: { "p_grant_id": string,"p_organization_id": string }; Returns: undefined
+                           },
+"supplier_publication_preview":
+{ Args: { "p_handoff_id": string,"p_organization_id": string }; Returns: Json
+                           },
+"supplier_publication_publish":
+{ Args: { "p_confirmed": boolean,"p_fingerprint": string,"p_handoff_id": string,"p_organization_id": string }; Returns: string
+                           },
+"supplier_publication_withdraw":
+{ Args: { "p_organization_id": string,"p_publication_id": string }; Returns: undefined
                            },
 "supplier_scenario_preview":
 { Args: { "p_draft_id": string,"p_organization_id": string,"p_supplier_code": string,"p_terms_confirmed": boolean }; Returns: Json

@@ -1,5 +1,9 @@
 # ZeeSpare roadmap
 
+## Planner Action Centre — approved 2026-10-23
+
+Implement the approved compact queue under Dashboard using real, session-authorized data: unavailable policy/stock comparisons, pending purchase and transfer proposals, selected forecast results and selected purchase approvals without saved handoffs. Reuse existing views, RPC outcomes and guarded source workflows; no new business rules, database changes, operational writes or fabricated freight alerts. Retain English/Arabic, laptop/mobile layouts, source-failure states and explicit recent-record limits. Verify screenshots and access isolation, then open a PR without merging or deploying. See [planner-action-centre.md](planner-action-centre.md).
+
 ## Industrial Studio login and password recovery — approved 2026-10-21
 
 Implement the selected Precision-logo parts-photography mockup with a 24px sign-in heading. Replace login magic-link controls with password recovery and remove the invitation notice. Preserve invitation callbacks, workspace boundaries and optional Arabic behavior. Verify desktop/mobile screenshots and recovery; open a PR without deployment. See [industrial-studio-login.md](industrial-studio-login.md).
@@ -222,7 +226,9 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 25g  | **Regional handoff exports:** complete selected-proposal CSV/JSON, exact per-source evidence, immutable retries and all-member history.                                                                                     | Merged — PR #147                                    |
 | 25h  | **Regional handoff batches:** complete multi-item packages with original identity checks, exact currency totals, retained files and all-location access.                                                                    | Merged — PR #148                                    |
 | 25i  | **Regional handoff read API:** explicit organization-wide scope, original complete JSON, bounded pagination and separate live context.                                                                                      | Merged — PR #149                                    |
-| 25j  | **Regional package acknowledgements:** explicit report scope, whole-package immutable events, scoped history and retained copied-batch lifecycle.                                                                           | Implemented — PR review pending                     |
+| 25j  | **Regional package acknowledgements:** explicit report scope, whole-package immutable events, scoped history and retained copied-batch lifecycle.                                                                           | Merged — PR #150                                    |
+| 25k  | **Regional integration workbench:** read-only exact latest reports, retained saved region evidence and all-location history.                                                                                                | Merged — PR #151                                    |
+| 26   | **Supplier portal:** separate supplier grants, explicit allowlisted ordinary purchase publication and scoped read-only access.                                                                                              | Ready for review                                    |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -820,3 +826,7 @@ PR #149 was merged by the owner as `ff3bf67` after all four CI jobs passed. The 
 ### Step 25k — approved 2026-10-23
 
 PR #150 was merged by the owner as `90def9d` after all four CI jobs passed. The owner approved a read-only regional integration workbench with saved-region, receiver, included-source, package-kind, live-context and latest-report filters. Require every included location including zero allocations; preserve exact system labels, independent package/member/overlap histories and absent-report semantics. Saved region evidence survives archive/deletion and copied batches survive source deletion. Retain the compact green design at all five widths plus Arabic RTL. No transmission or execution. See [regional-integration-workbench.md](regional-integration-workbench.md).
+
+### Step 26 — approved 2026-10-23
+
+PR #151 was reviewed without blocking findings, with all four CI jobs passing; the owner had already merged it as `a07a3a4`. The owner approved a read-only supplier portal for explicitly published ordinary purchase handoffs. Owner/admin-managed grants remain separate from staff memberships and scope each supplier account to one organization/supplier. Editors preview the exact shared fields, confirm publication and may withdraw it; current selected approval and matching price evidence are required for first publication. Immutable summaries contain only item/supplier/receiving codes, quantity/unit, order/receipt dates and unit price/currency/subtotal. Revocation applies on subsequent requests; changes require a new publication. No internal stock, forecasts, evidence, other suppliers, acceptance, orders or inbound are exposed or created. Keep compact green design at five widths and Arabic RTL. See [supplier-portal.md](supplier-portal.md).

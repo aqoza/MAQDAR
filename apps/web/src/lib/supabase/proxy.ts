@@ -18,6 +18,7 @@ function matchesPrefix(pathname: string, prefix: string): boolean {
  * getClaims(), and the response built by setAll is the one returned.
  */
 export async function updateSession(request: NextRequest) {
+  request.headers.set('x-zeespare-pathname', request.nextUrl.pathname)
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(

@@ -72,9 +72,12 @@ describe('secret-key clients', () => {
     expect(offenders).toEqual([])
   })
 
-  it('imports src/lib/supabase/admin only from the Settings actions', () => {
+  it('imports src/lib/supabase/admin only from reviewed staff/supplier invitation actions', () => {
     const offenders = importersOf('lib/supabase/admin').filter(
-      (path) => path !== 'app/(app)/settings/actions.ts',
+      (path) =>
+        !['app/(app)/settings/actions.ts', 'app/(app)/suppliers/portal-access/actions.ts'].includes(
+          path,
+        ),
     )
     expect(offenders).toEqual([])
   })

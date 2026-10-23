@@ -64,6 +64,7 @@ export const clientNamespaces = [
   'MasterDataClient',
   'DashboardState',
   'LocationLookup',
+  'SupplierPortal',
 ] as const satisfies ReadonlyArray<keyof Messages>
 
 /**
