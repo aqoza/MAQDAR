@@ -71,6 +71,10 @@ export default async function RegionalHandoffs({
         description={t('context')}
         actions={
           <>
+            <Link className="underline" href="/replenishment/regional-stock/sourcing/batches">
+              {(await getTranslations('RegionalBatches'))('title')}
+            </Link>
+
             <Link href="/replenishment/regional-stock/sourcing/review" className="underline">
               {t('review')}
             </Link>
