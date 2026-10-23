@@ -7,7 +7,7 @@ import { SupplierPortalForm } from '@/components/supplier-portal-form'
 import { TableScrollRegion } from '@/components/table-scroll-region'
 import { requireSupplierPortal } from '@/lib/supplier-portal-context'
 import { createClient } from '@/lib/supabase/server'
-import { supplierPackagesSchema } from '@/lib/supplier-portal'
+import { supplierPublicationsSchema } from '@/lib/supplier-portal'
 import { acceptSupplier } from '../actions'
 export default async function SupplierPackages({
   params,
@@ -46,7 +46,7 @@ export default async function SupplierPackages({
   const raw = await searchParams
   const page = Math.min(100000, Math.max(1, Math.trunc(Number(raw.page) || 1)))
   const db = await createClient()
-  const { data, error } = await db.rpc('supplier_portal_packages', {
+  const { data, error } = await db.rpc('supplier_portal_publications', {
     p_grant_id: grant.id,
     p_page: page,
   })
@@ -54,7 +54,7 @@ export default async function SupplierPackages({
     if (error.code === 'MQ404') notFound()
     throw new Error('Supplier proposals unavailable')
   }
-  const result = supplierPackagesSchema.parse(data)
+  const result = supplierPublicationsSchema.parse(data)
   if (result.page !== page) redirect(`/supplier-portal/${grant.id}?page=${result.page}`)
   return (
     <>
@@ -64,7 +64,16 @@ export default async function SupplierPackages({
           <thead>
             <tr>
               {(
-                ['item_code', 'quantity', 'unit', 'receipt_date', 'subtotal', 'actions'] as const
+                [
+                  'packageKind',
+                  'item_code',
+                  'quantity',
+                  'unit',
+                  'receipt_date',
+                  'subtotal',
+                  'overlap',
+                  'actions',
+                ] as const
               ).map((k) => (
                 <th className="p-3 text-start text-xs" key={k}>
                   {t(k)}
@@ -75,15 +84,25 @@ export default async function SupplierPackages({
           <tbody>
             {result.rows.map((p) => (
               <tr key={p.id} className="border-t">
+                <td className="p-3">{t(p.kind)}</td>
                 <td className="p-3">
-                  <bdi>{p.summary.item_code}</bdi>
+                  <bdi>
+                    {p.kind === 'handoff'
+                      ? p.summary.item_code
+                      : t('lineCount', { count: p.summary.lines.length })}
+                  </bdi>
                 </td>
-                <td className="p-3">{normalizeDecimal(p.summary.quantity)}</td>
-                <td className="p-3">{p.summary.unit}</td>
-                <td className="p-3 whitespace-nowrap">{p.summary.receipt_date}</td>
+                <td className="p-3">
+                  {p.kind === 'handoff' ? normalizeDecimal(p.summary.quantity) : '\u2014'}
+                </td>
+                <td className="p-3">{p.kind === 'handoff' ? p.summary.unit : '\u2014'}</td>
+                <td className="p-3 whitespace-nowrap">
+                  {p.kind === 'handoff' ? p.summary.receipt_date : t('perLine')}
+                </td>
                 <td className="p-3 whitespace-nowrap">
                   {p.summary.subtotal} {p.summary.currency}
                 </td>
+                <td className="p-3">{p.overlap_count}</td>
                 <td className="p-3">
                   <Link
                     className="inline-flex min-h-11 items-center underline"

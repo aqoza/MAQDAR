@@ -47,3 +47,43 @@ export function portalGrantFromPath(path: string | null) {
   const id = /^\/supplier-portal\/([0-9a-f-]{36})(?:\/|$)/i.exec(path ?? '')?.[1]
   return id && z.guid().safeParse(id).success ? id.toLowerCase() : null
 }
+
+export const supplierBatchSummarySchema = z.strictObject({
+  schema_version: z.literal('supplier-batch-proposal-v1'),
+  purpose: z.literal('planning_only'),
+  supplier_code: z.string(),
+  location_code: z.string(),
+  order_date: z.iso.date(),
+  currency: z.string().regex(/^[A-Z]{3}$/),
+  subtotal: decimal,
+  lines: z.array(supplierSummarySchema).min(1).max(50),
+})
+export type SupplierBatchSummary = z.infer<typeof supplierBatchSummarySchema>
+export const supplierBatchPreviewSchema = z.object({
+  summary: supplierBatchSummarySchema,
+  fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+})
+const publicationMetadata = {
+  id: z.guid(),
+  created_at: z.string(),
+  overlap_count: z.number().int().nonnegative(),
+  overlaps: z.array(z.strictObject({ id: z.guid(), kind: z.enum(['handoff', 'batch']) })).max(25),
+}
+export const supplierPublicationsSchema = supplierPackagesSchema.extend({
+  rows: z
+    .array(
+      z.discriminatedUnion('kind', [
+        z.strictObject({
+          ...publicationMetadata,
+          kind: z.literal('handoff'),
+          summary: supplierSummarySchema,
+        }),
+        z.strictObject({
+          ...publicationMetadata,
+          kind: z.literal('batch'),
+          summary: supplierBatchSummarySchema,
+        }),
+      ]),
+    )
+    .max(100),
+})

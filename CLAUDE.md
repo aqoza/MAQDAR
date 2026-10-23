@@ -20,7 +20,7 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
-Step 26 adds supplier-only grants and explicitly published allowlisted summaries. Never grant staff membership or raw handoff access. Preserve verified-email acceptance, current grant/withdrawal checks, publication gates and workspace boundaries. See [supplier-portal.md](docs/supplier-portal.md).
+Step 26 adds supplier-only grants and explicitly published allowlisted summaries. Never grant staff membership or raw handoff access. Preserve verified-email acceptance, current grant/withdrawal checks, publication gates and workspace boundaries. See [supplier-portal.md](docs/supplier-portal.md) and [supplier-batch-publications.md](docs/supplier-batch-publications.md). Batch publication must validate every original member atomically, preserve the supplier allowlist and expose overlap only among visible publications.
 
 Step 25k adds a read-only regional integration workbench. Preserve saved region identity/search after archive/deletion, all-location access including zero sources, exact latest system reports and independent live context. See [regional-integration-workbench.md](docs/regional-integration-workbench.md).
 

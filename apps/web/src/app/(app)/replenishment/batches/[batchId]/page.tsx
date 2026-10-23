@@ -1,3 +1,4 @@
+import { isEditorRole } from '@/lib/auth/roles'
 import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { ContainerCapacityHistory } from '@/components/container-capacity-history'
@@ -44,6 +45,7 @@ export default async function BatchDetail({
   ])
   if (saved.error || current.error) throw new Error('Batch unavailable')
   if (!saved.data || !current.data) notFound()
+  const portal = await getTranslations('SupplierPortal')
   const payload = batchPayloadSchema.parse(saved.data.payload)
   return (
     <div className="space-y-4">
@@ -66,6 +68,11 @@ export default async function BatchDetail({
         <p>{t('immutableNote')}</p>
       </section>
       <div className="flex flex-wrap gap-4">
+        {isEditorRole(context.role) && (
+          <Link className="underline" href={`/replenishment/batches/${batchId}/publish`}>
+            {portal('publishBatchTitle')}
+          </Link>
+        )}
         <Link className="underline" href={`/replenishment/capacity/new?batch=${batchId}`}>
           {t('capacity')}
         </Link>

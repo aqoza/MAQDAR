@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { supplierSummarySchema, portalGrantFromPath } from './supplier-portal'
+import {
+  supplierSummarySchema,
+  supplierBatchSummarySchema,
+  supplierPublicationsSchema,
+  portalGrantFromPath,
+} from './supplier-portal'
 import { emailReturnPath, emailDestination } from './auth/email-destination'
 const id = 'bc260000-0000-4000-8000-000000000001'
 const summary = {
@@ -43,4 +48,45 @@ describe('supplier portal contract', () => {
     ])
       expect(portalGrantFromPath(path)).toBeNull()
   })
+})
+
+it('bounds batch summaries and rejects internal evidence in every line', () => {
+  const batch = {
+    schema_version: 'supplier-batch-proposal-v1',
+    purpose: 'planning_only',
+    supplier_code: 'SUP',
+    location_code: 'L0',
+    order_date: summary.order_date,
+    currency: 'SAR',
+    subtotal: '24.12',
+    lines: [summary, { ...summary, item_code: '002', unit: 'KG' }],
+  }
+  expect(supplierBatchSummarySchema.parse(batch)).toEqual(batch)
+  for (const lines of [
+    [],
+    Array(51).fill(summary),
+    [{ ...summary, evidence: { stock: 'private' } }],
+  ])
+    expect(supplierBatchSummarySchema.safeParse({ ...batch, lines }).success).toBe(false)
+  expect(supplierBatchSummarySchema.safeParse({ ...batch, handoff_ids: [id] }).success).toBe(false)
+  expect(supplierBatchSummarySchema.safeParse({ ...batch, subtotal: 24.12 }).success).toBe(false)
+  const row = {
+    id,
+    created_at: '2026-10-23',
+    kind: 'batch',
+    summary: batch,
+    overlap_count: 1,
+    overlaps: [{ id, kind: 'handoff' }],
+  }
+  expect(
+    supplierPublicationsSchema.safeParse({ total: 1, page: 1, size: 25, rows: [row] }).success,
+  ).toBe(true)
+  expect(
+    supplierPublicationsSchema.safeParse({
+      total: 1,
+      page: 1,
+      size: 25,
+      rows: [{ ...row, members: [id] }],
+    }).success,
+  ).toBe(false)
 })
