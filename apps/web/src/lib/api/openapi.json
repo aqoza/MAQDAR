@@ -3,7 +3,7 @@
   "info": {
     "title": "ZeeSpare API",
     "version": "1.4.0",
-    "description": "Bulk upserts and lists of ZeeSpare master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer maqdar_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read, excess_disposition_handoffs:acknowledge, network_handoffs:read, network_handoffs:acknowledge, regional_handoffs:read), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
+    "description": "Bulk upserts and lists of ZeeSpare master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer maqdar_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read, excess_disposition_handoffs:acknowledge, network_handoffs:read, network_handoffs:acknowledge, regional_handoffs:read, regional_handoffs:acknowledge), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
     "x-maqdar-import-format": 1
   },
   "servers": [
@@ -86,7 +86,8 @@
     "excess_disposition_handoffs:acknowledge": "Append external receipt or rejection reports for saved disposition handoffs and batches across the organization; no returns, write-offs or stock movements.",
     "network_handoffs:read": "Read saved whole-network handoffs and copied batches across the organization, including every branch and retained evidence after source deletion; no reservations or transfer execution.",
     "network_handoffs:acknowledge": "Append whole-package receipt or rejection reports for saved network handoffs and batches across the organization; no reservations or transfer execution.",
-    "regional_handoffs:read": "Read complete regional handoffs and copied batches across the organization, including all sources and retained evidence after source deletion; no reservations or transfer execution."
+    "regional_handoffs:read": "Read complete regional handoffs and copied batches across the organization, including all sources and retained evidence after source deletion; no reservations or transfer execution.",
+    "regional_handoffs:acknowledge": "Append whole-package receipt or rejection reports for saved regional handoffs and batches across the organization; no reservations or transfer execution."
   },
   "paths": {
     "/organization": {
@@ -4051,7 +4052,7 @@
           "Purchase handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "purchase_handoffs:acknowledge"
         ],
@@ -4304,7 +4305,7 @@
           "Purchase handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "purchase_handoffs:acknowledge"
         ],
@@ -4557,7 +4558,7 @@
           "Transfer handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "transfer_handoffs:acknowledge"
         ],
@@ -4810,7 +4811,7 @@
           "Transfer handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "transfer_handoffs:acknowledge"
         ],
@@ -5063,7 +5064,7 @@
           "Event purchase handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "event_purchase_handoffs:acknowledge"
         ],
@@ -5316,7 +5317,7 @@
           "Event purchase handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "event_purchase_handoffs:acknowledge"
         ],
@@ -5569,7 +5570,7 @@
           "Disposition handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "excess_disposition_handoffs:acknowledge"
         ],
@@ -5822,7 +5823,7 @@
           "Disposition handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "excess_disposition_handoffs:acknowledge"
         ],
@@ -6075,7 +6076,7 @@
           "Network handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "network_handoffs:acknowledge"
         ],
@@ -6328,7 +6329,7 @@
           "Network handoffs"
         ],
         "summary": "Record an external receipt or rejection report",
-        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, or network independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "network_handoffs:acknowledge"
         ],
@@ -6450,6 +6451,512 @@
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
         "x-maqdar-scopes": [
           "network_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recorded reports.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffAcknowledgementDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/regional-handoffs/{id}/acknowledgements": {
+      "get": {
+        "operationId": "listRegionalHandoffAcknowledgements",
+        "tags": [
+          "Regional handoffs"
+        ],
+        "summary": "Read acknowledgement history",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "x-maqdar-scopes": [
+          "regional_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recorded reports.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffAcknowledgementPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createRegionalHandoffAcknowledgements",
+        "tags": [
+          "Regional handoffs"
+        ],
+        "summary": "Record an external receipt or rejection report",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "x-maqdar-scopes": [
+          "regional_handoffs:acknowledge"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandoffAcknowledgementInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Original event (replayed is true for a retry).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffAcknowledgementWrite"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Relative URL of the recorded event.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "New event recorded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffAcknowledgementWrite"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Relative URL of the recorded event.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "Client event ID already identifies a different target/content.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "description": "Invalid acknowledgement fields.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/regional-handoffs/{id}/acknowledgements/{eventId}": {
+      "get": {
+        "operationId": "getRegionalHandoffAcknowledgements",
+        "tags": [
+          "Regional handoffs"
+        ],
+        "summary": "Read acknowledgement history",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "x-maqdar-scopes": [
+          "regional_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recorded reports.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffAcknowledgementDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/regional-handoff-batches/{id}/acknowledgements": {
+      "get": {
+        "operationId": "listRegionalHandoffBatchAcknowledgements",
+        "tags": [
+          "Regional handoffs"
+        ],
+        "summary": "Read acknowledgement history",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "x-maqdar-scopes": [
+          "regional_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recorded reports.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffAcknowledgementPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createRegionalHandoffBatchAcknowledgements",
+        "tags": [
+          "Regional handoffs"
+        ],
+        "summary": "Record an external receipt or rejection report",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "x-maqdar-scopes": [
+          "regional_handoffs:acknowledge"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandoffAcknowledgementInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Original event (replayed is true for a retry).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffAcknowledgementWrite"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Relative URL of the recorded event.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "New event recorded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffAcknowledgementWrite"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Relative URL of the recorded event.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "Client event ID already identifies a different target/content.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "description": "Invalid acknowledgement fields.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/regional-handoff-batches/{id}/acknowledgements/{eventId}": {
+      "get": {
+        "operationId": "getRegionalHandoffBatchAcknowledgements",
+        "tags": [
+          "Regional handoffs"
+        ],
+        "summary": "Read acknowledgement history",
+        "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
+        "x-maqdar-scopes": [
+          "regional_handoffs:read"
         ],
         "parameters": [
           {
@@ -11208,7 +11715,8 @@
                   "excess_disposition_handoffs:acknowledge",
                   "network_handoffs:read",
                   "network_handoffs:acknowledge",
-                  "regional_handoffs:read"
+                  "regional_handoffs:read",
+                  "regional_handoffs:acknowledge"
                 ]
               }
             }
@@ -11678,7 +12186,8 @@
                     "excess_disposition_handoffs:acknowledge",
                     "network_handoffs:read",
                     "network_handoffs:acknowledge",
-                    "regional_handoffs:read"
+                    "regional_handoffs:read",
+                    "regional_handoffs:acknowledge"
                   ]
                 }
               },
@@ -44631,7 +45140,9 @@
               "excess-disposition-handoffs",
               "excess-disposition-handoff-batches",
               "network-handoffs",
-              "network-handoff-batches"
+              "network-handoff-batches",
+              "regional-handoffs",
+              "regional-handoff-batches"
             ]
           },
           "record_id": {

@@ -124,6 +124,8 @@ jobs:
             apps/web/test-results/**/regional-handoffs-*.png
             apps/web/test-results/**/regional-batches-*.png
             apps/web/test-results/**/regional-api-settings-*.png
+            apps/web/test-results/**/regional-reports-*.png
+            apps/web/test-results/**/regional-reporter-settings-*.png
           retention-days: 7
       - name: Stop local Supabase
         if: always()

@@ -20,7 +20,7 @@ Approved on 2026-10-23, following merged PR #148. Integrations can list saved re
 | GET / HEAD | `/api/v1/regional-handoff-batches`      | Saved batch summaries and live context              |
 | GET / HEAD | `/api/v1/regional-handoff-batches/{id}` | Original copied batch and live context              |
 
-Use `Authorization: Bearer <key>` from Settings. HEAD performs the same checks with no body; OPTIONS reports supported methods. Package mutations return 405. Regional acknowledgement subroutes are unavailable. Existing request IDs, rate limits, no-store responses and RFC 9457 errors apply; see [API v1](api.md) and [generated OpenAPI](../apps/web/src/lib/api/openapi.json).
+Use `Authorization: Bearer <key>` from Settings. HEAD performs the same checks with no body; OPTIONS reports supported methods. Package mutations return 405. Regional acknowledgement subroutes use the separate Step 25j write permission. Existing request IDs, rate limits, no-store responses and RFC 9457 errors apply; see [API v1](api.md) and [generated OpenAPI](../apps/web/src/lib/api/openapi.json).
 
 List responses contain `data`, `next_cursor` and `as_of`. Details contain `data`. Records contain `id`, `created_at`, `summary` and `current`; only details contain `payload`. Summaries expose saved `region_id`, `region_name`, `region_name_ar`, `destination_code`, `requested_date`, `handoff_count`, `source_row_count`, currency-separated `totals` and original `handoff_ids`. `item_code` is null for batches. Inspect each saved handoff's sources for quantities and units. Overlapping batches may contain the same member IDs.
 
@@ -40,6 +40,6 @@ Migration `20261023060000_regional_handoff_read_api.sql` is additive. It extends
 
 After review, the owner applies `pnpm exec supabase db push`, then deploys the matching web build. Rollback disables new callers and revokes new reader keys while retaining the additive schema and saved evidence. Hosted migration/deployment is separate from development validation.
 
-Regional read permission does not enable regional acknowledgement subroutes or permissions for any other package family.
+Regional read permission enables report history in Step 25j; writing reports requires the separate `regional_handoffs:acknowledge` permission. It grants no permissions for other package families.
 
 Reading packages creates no acknowledgement, transmission, reservation, transfer order, inbound update or stock movement. It does not prevent duplicate external execution.

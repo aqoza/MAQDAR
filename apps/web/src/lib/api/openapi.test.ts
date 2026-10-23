@@ -247,7 +247,7 @@ describe('structure', () => {
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
         : path.startsWith('/regional-handoff')
-          ? ['regional_handoffs:read']
+          ? [method === 'post' ? 'regional_handoffs:acknowledge' : 'regional_handoffs:read']
           : path.startsWith('/network-handoff')
             ? [method === 'post' ? 'network_handoffs:acknowledge' : 'network_handoffs:read']
             : path.startsWith('/excess-disposition-handoff')
@@ -530,7 +530,12 @@ it('documents complete regional evidence, separate currency totals and read-only
     expect(doc.paths[`/${resource}/{id}`].get['x-maqdar-scopes']).toEqual([
       'regional_handoffs:read',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]).toBeUndefined()
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].post['x-maqdar-scopes']).toEqual([
+      'regional_handoffs:acknowledge',
+    ])
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].get['x-maqdar-scopes']).toEqual([
+      'regional_handoffs:read',
+    ])
     expect(doc.paths[`/${resource}`].post).toBeUndefined()
   }
 })

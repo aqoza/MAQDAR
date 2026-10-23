@@ -208,5 +208,11 @@ Run `test_regional_batches_db.py`, `0109_regional_batches.test.sql`, serializer/
 
 - `test_regional_handoff_api_db.py`: real regional review/export chains, original JSON, separate freight currencies/zero sources, immutable summaries after archive/rename/deletion, paging, scope isolation and current creator authority.
 - `0110_regional_handoff_read_api.test.sql` and shared privilege snapshot: owner/admin issuance, private projection/service-only readers, tenant-bound cursors, copied-batch reads and unchanged browser access.
-- API handler/auth/OpenAPI tests: read-only routing, unchanged decimal text, malformed-request authorization, no acknowledgement route, schema-compatible original files.
+- API handler/auth/OpenAPI tests: read-only routing, unchanged decimal text, malformed-request authorization, separate acknowledgement permission, schema-compatible original files.
 - `regional-handoff-read-api.spec.ts`: Settings issue/revoke, API/browser payload equivalence, historical/source-unavailable batches, tenant and unrelated-scope rejection, keyboard use, five widths and Arabic RTL; screenshots retained in `regional-stock-visuals`.
+
+## Step 25j — regional package acknowledgements
+
+- Database: `0111_regional_acknowledgements.test.sql`, shared tenant/privilege invariants and `test_regional_acknowledgements_db.py` cover explicit scopes, tenant/all-location access, validation, parent-bound history, audit, concurrent identity/key rotation, post-lock authority and retained copied-batch lifecycle.
+- Web: shared API handler, authorization, RPC allowlist and OpenAPI tests exercise regional reports without enabling other package families.
+- Browser: `regional-acknowledgements.spec.ts` exercises real single/batch reports, key issuance/revocation, retries, independent histories, zero-source access, source/region deletion and original downloads. Settings and report history retain screenshots and layout checks at 375, 768, 1024, 1440 and 1920px in English and Arabic RTL.

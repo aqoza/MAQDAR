@@ -48,6 +48,7 @@ insert into rpc_only_tables values ('network_freight_estimates');
 insert into rpc_only_tables values ('network_transfer_proposals');
 insert into rpc_only_tables values ('network_handoff_batches');
 insert into rpc_only_tables values ('network_handoff_acknowledgements');
+insert into rpc_only_tables values ('regional_handoff_acknowledgements');
 insert into rpc_only_tables values ('external_driver_datasets');
 insert into rpc_only_tables values ('regional_stock_assessments');
 insert into rpc_only_tables values ('stock_regions');
