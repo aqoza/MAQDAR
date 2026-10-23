@@ -68,11 +68,11 @@ export default async function BatchDetail({
         <p>{t('immutableNote')}</p>
       </section>
       <div className="flex flex-wrap gap-4">
-        {isEditorRole(context.role) && (
+        {
           <Link className="underline" href={`/replenishment/batches/${batchId}/publish`}>
-            {portal('publishBatchTitle')}
+            {portal(isEditorRole(context.role) ? 'publishBatchTitle' : 'publicationTitle')}
           </Link>
-        )}
+        }
         <Link className="underline" href={`/replenishment/capacity/new?batch=${batchId}`}>
           {t('capacity')}
         </Link>
