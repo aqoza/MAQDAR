@@ -40,7 +40,7 @@ def test_publish_rechecks_after_wait(publication,change,expected):
     with session(source) as db:
         newer=db.execute(SUBMIT,(source[1],purchase[2],uuid4(),'Alternative')).fetchone()[0]
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.purchase-review:'||%s,0))",(str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.purchase-review:'||%s,0))",(str(source[1]),))
         call=_Call(waiting,PUBLISH,(source[1],batch,preview['fingerprint']))
         call.start();time.sleep(0.3);assert not call.finished
         if change=='price':admin.execute('update public.supplier_items set unit_price=99 where organization_id=%s',(source[1],))
