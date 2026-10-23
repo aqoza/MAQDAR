@@ -3155,7 +3155,22 @@
     "warehouseBranches": "Warehouse / included branches",
     "includedBranches": "{count, plural, one {# included branch} other {# included branches}}",
     "networkMeaning": "Reports apply to the whole network package. They do not confirm acceptance by a branch, transmit packages, reserve stock, create transfers or change inbound. No report means absent evidence, not failed delivery.",
-    "networkAccess": "Branch filters find complete packages and still require access to the warehouse and every included branch, including zero allocations. Copied batches retain their evidence after source deletion; unavailable live context is separate from report status."
+    "networkAccess": "Branch filters find complete packages and still require access to the warehouse and every included branch, including zero allocations. Copied batches retain their evidence after source deletion; unavailable live context is separate from report status.",
+    "regionalTitle": "Regional integration workbench",
+    "regionalContext": "Saved regional packages and latest external reports",
+    "regionalLink": "Regional integrations",
+    "regionalHandoffs": "Regional handoffs",
+    "regionalBatches": "Regional handoff batches",
+    "regionalSearch": "Item, saved region or latest reference",
+    "region": "Saved region ID",
+    "regionDetails": "Saved region details",
+    "requestedDate": "Requested dispatch",
+    "includedSource": "Included source code",
+    "regionLocations": "Saved region / receiving location",
+    "includedSources": "{count, plural, one {# included source} other {# included sources}}",
+    "regionalMeaning": "Each result shows the latest server-recorded report for one whole regional package and exact system label. No report means absent evidence, not failed delivery. Reports do not confirm source-level acceptance, transmit packages, reserve stock or create transfers.",
+    "regionalAccess": "Access to the receiver and every included source is required, including zero allocations. Source filters find complete packages. Select a saved region name in the results to filter that exact definition; search also finds saved English and Arabic names. Saved region evidence survives archive or deletion. Copied batches retain original evidence after source deletion; unavailable live context is independent of reported status.",
+    "otherIntegrations": "Other integration workbenches"
   },
   "HandoffAcknowledgements": {
     "title": "Integration acknowledgements",

@@ -636,6 +636,7 @@ select set_eq(
     ('public.installed_base_demand_save(uuid, jsonb, uuid, text)', 'authenticated'),
     ('public.installed_base_evaluation_save(uuid, jsonb, uuid, text)', 'authenticated'),
     ('public.regional_stock_save(uuid, jsonb, uuid, text)', 'authenticated'),
+    ('public.regional_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.network_integration_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('public.stock_locator(uuid, text, text, text, date, jsonb, integer, integer)', 'authenticated'),
     ('public.transfer_handoff_create(uuid, uuid)', 'authenticated'),

@@ -58,6 +58,10 @@ export default async function RegionalSourcingHistory({
         }
         actions={
           <>
+            <Link className="underline" href="/replenishment/regional-stock/sourcing/integrations">
+              {(await getTranslations('IntegrationWorkbench'))('regionalLink')}
+            </Link>
+
             {isEditorRole(context.role) && (
               <Link className="underline" href={`${regionalSourcingPath}/new`}>
                 {t('new')}

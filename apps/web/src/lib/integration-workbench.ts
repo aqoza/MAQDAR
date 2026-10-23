@@ -77,9 +77,23 @@ export const networkIntegrationListSpec: ListSpec = {
   ),
 }
 
-export type IntegrationFamily = 'purchase' | 'transfer' | 'event' | 'disposition' | 'network'
+export const regionalIntegrationListSpec: ListSpec = {
+  ...transferIntegrationListSpec,
+  filters: [
+    ...transferIntegrationListSpec.filters.map((filter) =>
+      filter.param === 'selection'
+        ? { ...filter, values: ['current', 'historical', 'unavailable'] }
+        : filter,
+    ),
+    { param: 'region', column: 'region_id', kind: 'uuid' },
+  ],
+}
+
+export type IntegrationFamily =
+  'purchase' | 'transfer' | 'event' | 'disposition' | 'network' | 'regional'
 
 function integrationSpec(family: IntegrationFamily) {
+  if (family === 'regional') return regionalIntegrationListSpec
   if (family === 'network') return networkIntegrationListSpec
   if (family === 'disposition') return dispositionIntegrationListSpec
   if (family === 'transfer') return transferIntegrationListSpec
@@ -87,6 +101,14 @@ function integrationSpec(family: IntegrationFamily) {
 }
 
 export const integrationFamilies = {
+  regional: {
+    prefix: 'regional-stock/sourcing/',
+    rpc: 'regional_integration_workbench',
+    title: 'regionalTitle',
+    context: 'regionalContext',
+    navigation: 'regionalStock',
+    link: 'regionalLink',
+  },
   network: {
     prefix: 'network/',
     rpc: 'network_integration_workbench',
@@ -231,6 +253,24 @@ export const networkIntegrationResultSchema = integrationResultSchema.extend({
           branch_codes: z.array(z.string()).min(1).max(1000),
           branch_row_count: z.number().int().min(1).max(1000),
           dispatch_date: z.iso.date(),
+          selection: z.enum(['current', 'historical', 'unavailable']),
+        }),
+    )
+    .max(100),
+})
+
+export const regionalIntegrationResultSchema = integrationResultSchema.extend({
+  rows: z
+    .array(
+      integrationResultSchema.shape.rows.element
+        .omit({ supplier_code: true, selected: true })
+        .extend({
+          region_id: z.guid(),
+          region_name: z.string(),
+          region_name_ar: z.string().nullable(),
+          source_codes: z.array(z.string()).min(1).max(950),
+          source_row_count: z.number().int().min(1).max(950),
+          requested_date: z.iso.date(),
           selection: z.enum(['current', 'historical', 'unavailable']),
         }),
     )

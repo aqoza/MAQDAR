@@ -82,14 +82,19 @@ export default async function RegionalBatches({
           </HelpDisclosure>
         }
         actions={
-          isEditorRole(context.role) && (
-            <Link
-              className="inline-block rounded-md bg-primary px-4 py-2 text-primary-foreground"
-              href="/replenishment/regional-stock/sourcing/batches/new"
-            >
-              {t('choose')}
+          <>
+            <Link className="underline" href="/replenishment/regional-stock/sourcing/integrations">
+              {(await getTranslations('IntegrationWorkbench'))('regionalLink')}
             </Link>
-          )
+            {isEditorRole(context.role) && (
+              <Link
+                className="inline-block rounded-md bg-primary px-4 py-2 text-primary-foreground"
+                href="/replenishment/regional-stock/sourcing/batches/new"
+              >
+                {t('choose')}
+              </Link>
+            )}
+          </>
         }
       />
       <Form
