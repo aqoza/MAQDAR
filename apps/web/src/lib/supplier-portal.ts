@@ -87,3 +87,13 @@ export const supplierPublicationsSchema = supplierPackagesSchema.extend({
     )
     .max(100),
 })
+
+// Event packages reuse the exact supplier summary allowlist; no ordinary response/overlap fields.
+export const supplierEventPackagesSchema = z.strictObject({
+  total: z.number().int().nonnegative(),
+  page: z.number().int().positive(),
+  size: z.union([z.literal(25), z.literal(50), z.literal(100)]),
+  rows: z
+    .array(z.strictObject({ id: z.guid(), created_at: z.string(), summary: supplierSummarySchema }))
+    .max(100),
+})

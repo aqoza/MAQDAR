@@ -42,6 +42,7 @@ export default async function EventHandoffDetail({
   ])
   if (record.error || current.error) throw new Error('Event handoff unavailable')
   if (!record.data || !current.data) notFound()
+  const portal = await getTranslations('SupplierPortal')
   const payload = handoffPayloadSchema.parse(record.data.payload)
   const event = payload.estimate.source.source.draft.scenario.event
   const price = await db.rpc('event_purchase_cost_preview', {
@@ -65,9 +66,17 @@ export default async function EventHandoffDetail({
         title={t('detailTitle', { item: event.source.item_code })}
         description={<span className="break-words">{event.input.name}</span>}
         actions={
-          <Link className="underline" href="/replenishment/events/handoffs">
-            {t('back')}
-          </Link>
+          <>
+            <Link className="underline" href="/replenishment/events/handoffs">
+              {t('back')}
+            </Link>
+            <Link
+              className="underline"
+              href={`/replenishment/events/handoffs/${handoffId}/publish`}
+            >
+              {portal('eventPublishLink')}
+            </Link>
+          </>
         }
         help={<EventPurchaseHandoffsHelp />}
       />

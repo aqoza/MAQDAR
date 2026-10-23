@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   supplierSummarySchema,
+  supplierEventPackagesSchema,
   supplierBatchSummarySchema,
   supplierPublicationsSchema,
   portalGrantFromPath,
@@ -89,4 +90,33 @@ it('bounds batch summaries and rejects internal evidence in every line', () => {
       rows: [{ ...row, members: [id] }],
     }).success,
   ).toBe(false)
+})
+
+it('event packages preserve full selected decimal strings and reject internal event fields', () => {
+  const row = {
+    id,
+    created_at: '2026-10-24T00:00:00Z',
+    summary: { ...summary, quantity: '9007199254740.123', subtotal: '999999999999.999' },
+  }
+  const result = { total: 1, page: 1, size: 25, rows: [row] }
+  expect(supplierEventPackagesSchema.parse(result)).toEqual(result)
+  for (const field of [
+    'baseline',
+    'event_name',
+    'event_before_receipt',
+    'forecast',
+    'approval_reason',
+  ]) {
+    expect(
+      supplierEventPackagesSchema.safeParse({
+        ...result,
+        rows: [{ ...row, summary: { ...row.summary, [field]: 'private' } }],
+      }).success,
+    ).toBe(false)
+  }
+  expect(
+    supplierEventPackagesSchema.safeParse({ ...result, rows: [{ ...row, handoff_id: id }] })
+      .success,
+  ).toBe(false)
+  expect(portalGrantFromPath(`/supplier-portal/${id}/events/${id}`)).toBe(id)
 })

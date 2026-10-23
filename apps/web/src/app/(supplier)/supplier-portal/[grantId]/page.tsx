@@ -59,6 +59,12 @@ export default async function SupplierPackages({
   return (
     <>
       {header}
+      <Link
+        className="inline-flex min-h-11 items-center underline"
+        href={`/supplier-portal/${grant.id}/events`}
+      >
+        {t('eventProposals')}
+      </Link>
       <TableScrollRegion label={t('proposals')}>
         <table className="w-full text-sm">
           <thead>
