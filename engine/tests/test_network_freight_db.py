@@ -233,7 +233,7 @@ def test_concurrent_retry_immutable_history_and_parent_cascade(freight):
 def test_advisory_wait_rechecks_authority_and_rates(freight, change):
     fixture, inputs, report = freight
     with psycopg.connect(fixture[0]) as admin, session(fixture) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.network-freight:'||%s,0))", (str(inputs[0]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.network-freight:'||%s,0))", (str(inputs[0]),))
         call = _Call(waiting, SAVE, (*inputs, uuid4(), report['fingerprint']))
         call.start()
         time.sleep(.3)

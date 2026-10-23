@@ -1,6 +1,6 @@
 from urllib.request import urlopen
 
-from maqdar_engine.worker_health import Heartbeat, health_server
+from zeespare_engine.worker_health import Heartbeat, health_server
 
 
 def test_stale_worker_health_is_unavailable():

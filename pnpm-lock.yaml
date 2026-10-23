@@ -204,9 +204,6 @@ importers:
       '@base-ui/react':
         specifier: 1.8.0
         version: 1.8.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@maqdar/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@opennextjs/cloudflare':
         specifier: 1.20.10
         version: 1.20.10(patch_hash=05bdafb7555a6a59bbc20518693f291d45f34e9cd7a74466a229da814da2cc73)(next@16.4.1(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.64.0)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)(wrangler@4.149.0(@cloudflare/workers-types@5.20261019.1)(@types/node@24.19.1))
@@ -216,6 +213,9 @@ importers:
       '@supabase/supabase-js':
         specifier: 2.117.3
         version: 2.117.3
+      '@zeespare/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1

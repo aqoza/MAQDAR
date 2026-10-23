@@ -122,35 +122,6 @@ wheels = [
 ]
 
 [[package]]
-name = "maqdar-engine"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "numpy" },
-    { name = "polars" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "statsforecast" },
-    { name = "threadpoolctl" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "numpy", specifier = "==2.5.3" },
-    { name = "polars", specifier = "==1.44.2" },
-    { name = "psycopg", extras = ["binary"], specifier = "==3.3.6" },
-    { name = "statsforecast", specifier = "==2.1.1" },
-    { name = "threadpoolctl", specifier = "==3.7.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = "==9.1.1" }]
-
-[[package]]
 name = "narwhals"
 version = "2.27.1"
 source = { registry = "https://pypi.org/simple" }
@@ -820,3 +791,32 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/13/77/6e414b3388b9f1ecb76107ef4a2aae501f1bdfcab85c8e34ef78f7db22db/wrapt-2.5.1-cp315-cp315t-win_arm64.whl", hash = "sha256:6405ff2160af9d59132ebb076eda0304db44d9d09809582932412ef7c0788a36", size = 106226, upload-time = "2026-10-14T00:39:13.061Z" },
     { url = "https://files.pythonhosted.org/packages/bc/0c/7da7513ddcc8f1d831ec4bfbedc9f7f174ecb91042bc16916fc1e0d06b22/wrapt-2.5.1-py3-none-any.whl", hash = "sha256:c6e6c226b1ca5402d7ae5fb34a0d21f1b49124fe4200e5884d1e19e53c47ac1d", size = 81849, upload-time = "2026-10-14T00:39:37.441Z" },
 ]
+
+[[package]]
+name = "zeespare-engine"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "numpy" },
+    { name = "polars" },
+    { name = "psycopg", extra = ["binary"] },
+    { name = "statsforecast" },
+    { name = "threadpoolctl" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "numpy", specifier = "==2.5.3" },
+    { name = "polars", specifier = "==1.44.2" },
+    { name = "psycopg", extras = ["binary"], specifier = "==3.3.6" },
+    { name = "statsforecast", specifier = "==2.1.1" },
+    { name = "threadpoolctl", specifier = "==3.7.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = "==9.1.1" }]

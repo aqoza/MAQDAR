@@ -1,8 +1,8 @@
-import contractJson from '@maqdar/shared/import-format.schema.json'
+import contractJson from '@zeespare/shared/import-format.schema.json'
 
 /**
- * Typed view of the import contract (`engine/src/maqdar_engine/importformat.py`, exported as
- * `@maqdar/shared/import-format.schema.json` by `uv run maqdar-synth format --json --write`).
+ * Typed view of the import contract (`engine/src/zeespare_engine/importformat.py`, exported as
+ * `@zeespare/shared/import-format.schema.json` by `uv run zeespare-synth format --json --write`).
  * The JSON is the single source for entities, load order, column kinds, natural keys and groups;
  * nothing here restates it. Pure module (no server or browser APIs), so the parse worker, client
  * components, route handlers and Vitest can all load it.

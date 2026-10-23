@@ -73,7 +73,7 @@ def test_changed_stock_rejects_preview_and_new_preview_saves(draft):
 def test_edit_role_is_rechecked_after_waiting_for_save_lock(draft):
     report=preview(draft)
     with psycopg.connect(draft[0]) as admin, session(draft) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.replenishment:'||%s,0))", (str(draft[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.replenishment:'||%s,0))", (str(draft[1]),))
         call=_Call(waiting,SAVE,(draft[1],draft[3],uuid4(),report['fingerprint']))
         call.start()
         time.sleep(1)

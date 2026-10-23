@@ -32,7 +32,7 @@ beforeEach(() => resetRateLimitWarning())
 
 describe('applyLimits', () => {
   it('allows everything without bindings (next dev, next start, CI)', async () => {
-    const hash = await hashApiKey('maqdar_sk_a')
+    const hash = await hashApiKey('zeespare_sk_a')
     const platform: ApiPlatform = { ipLimiter: null, keyLimiter: null }
     for (let i = 0; i < 500; i++) {
       expect(
@@ -42,7 +42,7 @@ describe('applyLimits', () => {
   })
 
   it('answers 429 rate_limited with Retry-After: 60 once a key is over its limit', async () => {
-    const hash = await hashApiKey('maqdar_sk_a')
+    const hash = await hashApiKey('zeespare_sk_a')
     const key = fakeBinding(120)
     const platform: ApiPlatform = { ipLimiter: null, keyLimiter: key.binding }
     for (let i = 0; i < 120; i++) {
@@ -56,12 +56,12 @@ describe('applyLimits', () => {
     })
     expect(key.calls.every((call) => call === keyLimitKey(hash))).toBe(true)
     // Another key still passes.
-    const other = await hashApiKey('maqdar_sk_b')
+    const other = await hashApiKey('zeespare_sk_b')
     expect(await applyLimits({ requestId: REQUEST_ID, keyHash: other }, platform)).toBeNull()
   })
 
   it('checks the IP before the key and stops at the first refusal', async () => {
-    const hash = await hashApiKey('maqdar_sk_a')
+    const hash = await hashApiKey('zeespare_sk_a')
     const ip = fakeBinding(0)
     const key = fakeBinding(10)
     const platform: ApiPlatform = { ipLimiter: ip.binding, keyLimiter: key.binding }
@@ -88,7 +88,7 @@ describe('applyLimits', () => {
   })
 
   it('fails open when a binding throws, warning once per isolate', async () => {
-    const hash = await hashApiKey('maqdar_sk_a')
+    const hash = await hashApiKey('zeespare_sk_a')
     const warn = vi.fn()
     const platform: ApiPlatform = { ipLimiter: throwingBinding(), keyLimiter: throwingBinding() }
     for (let i = 0; i < 3; i++) {
@@ -106,7 +106,7 @@ describe('applyLimits', () => {
   })
 
   it('keys limiters by IP and by a 16-hex prefix of the hash only', async () => {
-    const hash = await hashApiKey('maqdar_sk_a')
+    const hash = await hashApiKey('zeespare_sk_a')
     expect(keyLimitKey(hash)).toMatch(/^key:[0-9a-f]{16}$/)
     expect(ipLimitKey(' 2001:db8::1 ')).toBe('ip:2001:db8::1')
     expect(ipLimitKey('x'.repeat(100))).toBe(`ip:${'x'.repeat(64)}`)

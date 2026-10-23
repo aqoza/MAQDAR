@@ -27,7 +27,7 @@ test('purchase handoffs preserve exact downloads, history and access', async ({
   await createOrganization(page, { name: `Draft ${key}`, slug })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local fixture only')
   const runPython = (code: string) =>
@@ -43,7 +43,7 @@ with psycopg.connect(sys.argv[1]) as db:
   const { stdout } = await runPython(`
 import sys,json,psycopg
 from uuid import uuid4
-from maqdar_engine.worker import process_one
+from zeespare_engine.worker import process_one
 dsn,org,user=sys.argv[1:]
 location,item,supplier=[uuid4() for _ in range(3)]
 with psycopg.connect(dsn) as db:
@@ -61,7 +61,7 @@ def enqueue(sql,args):
         return db.execute(sql,args).fetchone()[0]
 def work():
     with psycopg.connect(dsn,autocommit=True) as db:
-        db.execute('set role maqdar_worker')
+        db.execute('set role zeespare_worker')
         assert process_one(db)
 run=enqueue("select public.forecast_enqueue(%s,'DRAFT','2026-07-01','2026-10-10',%s,true,array['DRAFT-ITEM'],7)",(org,uuid4()))
 work()

@@ -10,7 +10,7 @@
   "vars": {
     "ENABLED": "false",
     "MODE": "probe",
-    "MAQDAR_EXPECTED_ORGANIZATION": "REPLACE_WITH_REVIEWED_ACME_UUID",
+    "ZEESPARE_EXPECTED_ORGANIZATION": "REPLACE_WITH_REVIEWED_ACME_UUID",
   },
   "triggers": { "crons": ["* * * * *"] },
   "containers": [

@@ -3,8 +3,8 @@
   "info": {
     "title": "ZeeSpare API",
     "version": "1.4.0",
-    "description": "Bulk upserts and lists of ZeeSpare master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer maqdar_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read, excess_disposition_handoffs:acknowledge, network_handoffs:read, network_handoffs:acknowledge, regional_handoffs:read, regional_handoffs:acknowledge), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
-    "x-maqdar-import-format": 1
+    "description": "Bulk upserts and lists of ZeeSpare master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer zeespare_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read, excess_disposition_handoffs:acknowledge, network_handoffs:read, network_handoffs:acknowledge, regional_handoffs:read, regional_handoffs:acknowledge), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-zeespare-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
+    "x-zeespare-import-format": 1
   },
   "servers": [
     {
@@ -54,7 +54,7 @@
       "description": "Read-only saved planning evidence and live selection."
     }
   ],
-  "x-maqdar-load-order": [
+  "x-zeespare-load-order": [
     "work-calendars",
     "holiday-overrides",
     "locations",
@@ -71,7 +71,7 @@
     "open-orders",
     "receipts"
   ],
-  "x-maqdar-scopes": {
+  "x-zeespare-scopes": {
     "master_data:read": "List master data (calendars, locations, brands, items, suppliers, …).",
     "master_data:write": "Upsert master data.",
     "transactions:read": "List demand history, stock snapshots, open orders and receipts.",
@@ -98,7 +98,7 @@
         "tags": [
           "Organization"
         ],
-        "x-maqdar-scopes": [],
+        "x-zeespare-scopes": [],
         "responses": {
           "200": {
             "description": "The organization.",
@@ -141,10 +141,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "work_calendars",
+        "x-zeespare-entity": "work_calendars",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -201,11 +201,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "work_calendars",
-        "x-maqdar-load-order": 1,
+        "x-zeespare-entity": "work_calendars",
+        "x-zeespare-load-order": 1,
         "requestBody": {
           "required": true,
           "content": {
@@ -289,10 +289,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "holiday_overrides",
+        "x-zeespare-entity": "holiday_overrides",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -349,11 +349,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "holiday_overrides",
-        "x-maqdar-load-order": 2,
+        "x-zeespare-entity": "holiday_overrides",
+        "x-zeespare-load-order": 2,
         "requestBody": {
           "required": true,
           "content": {
@@ -435,10 +435,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "locations",
+        "x-zeespare-entity": "locations",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -495,11 +495,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "locations",
-        "x-maqdar-load-order": 3,
+        "x-zeespare-entity": "locations",
+        "x-zeespare-load-order": 3,
         "requestBody": {
           "required": true,
           "content": {
@@ -599,10 +599,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "network_links",
+        "x-zeespare-entity": "network_links",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -659,11 +659,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "network_links",
-        "x-maqdar-load-order": 4,
+        "x-zeespare-entity": "network_links",
+        "x-zeespare-load-order": 4,
         "requestBody": {
           "required": true,
           "content": {
@@ -747,10 +747,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "brands",
+        "x-zeespare-entity": "brands",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -807,11 +807,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "brands",
-        "x-maqdar-load-order": 5,
+        "x-zeespare-entity": "brands",
+        "x-zeespare-load-order": 5,
         "requestBody": {
           "required": true,
           "content": {
@@ -891,10 +891,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "items",
+        "x-zeespare-entity": "items",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -951,11 +951,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "items",
-        "x-maqdar-load-order": 6,
+        "x-zeespare-entity": "items",
+        "x-zeespare-load-order": 6,
         "requestBody": {
           "required": true,
           "content": {
@@ -1053,10 +1053,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "item_supersessions",
+        "x-zeespare-entity": "item_supersessions",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -1113,11 +1113,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "item_supersessions",
-        "x-maqdar-load-order": 7,
+        "x-zeespare-entity": "item_supersessions",
+        "x-zeespare-load-order": 7,
         "requestBody": {
           "required": true,
           "content": {
@@ -1196,10 +1196,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "item_interchanges",
+        "x-zeespare-entity": "item_interchanges",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -1256,11 +1256,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "item_interchanges",
-        "x-maqdar-load-order": 8,
+        "x-zeespare-entity": "item_interchanges",
+        "x-zeespare-load-order": 8,
         "requestBody": {
           "required": true,
           "content": {
@@ -1339,10 +1339,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "suppliers",
+        "x-zeespare-entity": "suppliers",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -1399,11 +1399,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "suppliers",
-        "x-maqdar-load-order": 9,
+        "x-zeespare-entity": "suppliers",
+        "x-zeespare-load-order": 9,
         "requestBody": {
           "required": true,
           "content": {
@@ -1486,10 +1486,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "supplier_items",
+        "x-zeespare-entity": "supplier_items",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -1546,11 +1546,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "supplier_items",
-        "x-maqdar-load-order": 10,
+        "x-zeespare-entity": "supplier_items",
+        "x-zeespare-load-order": 10,
         "requestBody": {
           "required": true,
           "content": {
@@ -1639,10 +1639,10 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:read"
         ],
-        "x-maqdar-entity": "fx_rates",
+        "x-zeespare-entity": "fx_rates",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -1699,11 +1699,11 @@
         "tags": [
           "Master data"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "master_data:write"
         ],
-        "x-maqdar-entity": "fx_rates",
-        "x-maqdar-load-order": 11,
+        "x-zeespare-entity": "fx_rates",
+        "x-zeespare-load-order": 11,
         "requestBody": {
           "required": true,
           "content": {
@@ -1782,10 +1782,10 @@
         "tags": [
           "Transactions"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transactions:read"
         ],
-        "x-maqdar-entity": "demand_history",
+        "x-zeespare-entity": "demand_history",
         "parameters": [
           {
             "$ref": "#/components/parameters/From"
@@ -1851,11 +1851,11 @@
         "tags": [
           "Transactions"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transactions:write"
         ],
-        "x-maqdar-entity": "demand_history",
-        "x-maqdar-load-order": 12,
+        "x-zeespare-entity": "demand_history",
+        "x-zeespare-load-order": 12,
         "requestBody": {
           "required": true,
           "content": {
@@ -1935,10 +1935,10 @@
         "tags": [
           "Transactions"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transactions:read"
         ],
-        "x-maqdar-entity": "stock_snapshots",
+        "x-zeespare-entity": "stock_snapshots",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -1995,11 +1995,11 @@
         "tags": [
           "Transactions"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transactions:write"
         ],
-        "x-maqdar-entity": "stock_snapshots",
-        "x-maqdar-load-order": 13,
+        "x-zeespare-entity": "stock_snapshots",
+        "x-zeespare-load-order": 13,
         "requestBody": {
           "required": true,
           "content": {
@@ -2081,10 +2081,10 @@
         "tags": [
           "Transactions"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transactions:read"
         ],
-        "x-maqdar-entity": "open_orders",
+        "x-zeespare-entity": "open_orders",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -2141,11 +2141,11 @@
         "tags": [
           "Transactions"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transactions:write"
         ],
-        "x-maqdar-entity": "open_orders",
-        "x-maqdar-load-order": 14,
+        "x-zeespare-entity": "open_orders",
+        "x-zeespare-load-order": 14,
         "requestBody": {
           "required": true,
           "content": {
@@ -2230,10 +2230,10 @@
         "tags": [
           "Transactions"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transactions:read"
         ],
-        "x-maqdar-entity": "receipts",
+        "x-zeespare-entity": "receipts",
         "parameters": [
           {
             "$ref": "#/components/parameters/Limit"
@@ -2290,11 +2290,11 @@
         "tags": [
           "Transactions"
         ],
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transactions:write"
         ],
-        "x-maqdar-entity": "receipts",
-        "x-maqdar-load-order": 15,
+        "x-zeespare-entity": "receipts",
+        "x-zeespare-load-order": 15,
         "requestBody": {
           "required": true,
           "content": {
@@ -2377,7 +2377,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires purchase_handoffs:read. Includes current and historical records. GET and HEAD never create orders, reserve quantities, acknowledge transmission or change evidence. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:read"
         ],
         "parameters": [
@@ -2449,7 +2449,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires purchase_handoffs:read. Includes current and historical records. GET and HEAD never create orders, reserve quantities, acknowledge transmission or change evidence. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:read"
         ],
         "parameters": [
@@ -2511,7 +2511,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires purchase_handoffs:read. Includes current and historical records. GET and HEAD never create orders, reserve quantities, acknowledge transmission or change evidence. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:read"
         ],
         "parameters": [
@@ -2583,7 +2583,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires purchase_handoffs:read. Includes current and historical records. GET and HEAD never create orders, reserve quantities, acknowledge transmission or change evidence. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:read"
         ],
         "parameters": [
@@ -2645,7 +2645,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires transfer_handoffs:read. Includes current and historical records. GET and HEAD never create transfer orders, reserve stock, refresh commitments, acknowledge transmission or change evidence. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:read"
         ],
         "parameters": [
@@ -2717,7 +2717,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires transfer_handoffs:read. Includes current and historical records. GET and HEAD never create transfer orders, reserve stock, refresh commitments, acknowledge transmission or change evidence. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:read"
         ],
         "parameters": [
@@ -2779,7 +2779,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires transfer_handoffs:read. Includes current and historical records. GET and HEAD never create transfer orders, reserve stock, refresh commitments, acknowledge transmission or change evidence. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:read"
         ],
         "parameters": [
@@ -2851,7 +2851,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires transfer_handoffs:read. Includes current and historical records. GET and HEAD never create transfer orders, reserve stock, refresh commitments, acknowledge transmission or change evidence. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:read"
         ],
         "parameters": [
@@ -2913,7 +2913,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires event_purchase_handoffs:read. Includes current and historical records. Full adjusted selections and baseline comparisons remain independent of ordinary purchase packages. Existing scopes grant no event access. GET and HEAD never create orders, reserve quantities, acknowledge transmission or change evidence. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:read"
         ],
         "parameters": [
@@ -2985,7 +2985,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires event_purchase_handoffs:read. Includes current and historical records. Full adjusted selections and baseline comparisons remain independent of ordinary purchase packages. Existing scopes grant no event access. GET and HEAD never create orders, reserve quantities, acknowledge transmission or change evidence. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:read"
         ],
         "parameters": [
@@ -3047,7 +3047,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires event_purchase_handoffs:read. Includes current and historical records. Full adjusted selections and baseline comparisons remain independent of ordinary purchase packages. Existing scopes grant no event access. GET and HEAD never create orders, reserve quantities, acknowledge transmission or change evidence. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:read"
         ],
         "parameters": [
@@ -3119,7 +3119,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires event_purchase_handoffs:read. Includes current and historical records. Full adjusted selections and baseline comparisons remain independent of ordinary purchase packages. Existing scopes grant no event access. GET and HEAD never create orders, reserve quantities, acknowledge transmission or change evidence. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:read"
         ],
         "parameters": [
@@ -3181,7 +3181,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires excess_disposition_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Reference values are not recovery proceeds or accounting write-offs. Other scopes grant no disposition access. GET and HEAD never create returns, scrap, reservations, stock movements or acknowledgements. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:read"
         ],
         "parameters": [
@@ -3253,7 +3253,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires excess_disposition_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Reference values are not recovery proceeds or accounting write-offs. Other scopes grant no disposition access. GET and HEAD never create returns, scrap, reservations, stock movements or acknowledgements. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:read"
         ],
         "parameters": [
@@ -3315,7 +3315,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires excess_disposition_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Reference values are not recovery proceeds or accounting write-offs. Other scopes grant no disposition access. GET and HEAD never create returns, scrap, reservations, stock movements or acknowledgements. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:read"
         ],
         "parameters": [
@@ -3387,7 +3387,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires excess_disposition_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Reference values are not recovery proceeds or accounting write-offs. Other scopes grant no disposition access. GET and HEAD never create returns, scrap, reservations, stock movements or acknowledgements. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:read"
         ],
         "parameters": [
@@ -3449,7 +3449,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires network_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Complete network approvals retain every branch, including zero transfers, with exact quantities and separate freight currencies. Other scopes grant no network access. GET and HEAD never transmit packages, create transfer orders, reserve stock, change inbound or record acknowledgements. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:read"
         ],
         "parameters": [
@@ -3521,7 +3521,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires network_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Complete network approvals retain every branch, including zero transfers, with exact quantities and separate freight currencies. Other scopes grant no network access. GET and HEAD never transmit packages, create transfer orders, reserve stock, change inbound or record acknowledgements. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:read"
         ],
         "parameters": [
@@ -3583,7 +3583,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires network_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Complete network approvals retain every branch, including zero transfers, with exact quantities and separate freight currencies. Other scopes grant no network access. GET and HEAD never transmit packages, create transfer orders, reserve stock, change inbound or record acknowledgements. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:read"
         ],
         "parameters": [
@@ -3655,7 +3655,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires network_handoffs:read. Includes current, historical and source-unavailable records. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Complete network approvals retain every branch, including zero transfers, with exact quantities and separate freight currencies. Other scopes grant no network access. GET and HEAD never transmit packages, create transfer orders, reserve stock, change inbound or record acknowledgements. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:read"
         ],
         "parameters": [
@@ -3717,7 +3717,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires regional_handoffs:read. Includes current, historical and source-unavailable records. Region archive or deletion does not rewrite original evidence. Actual dispatch and receipt dates remain per-source; the summary requested_date is not an arrival promise. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Complete regional approvals retain every source, including zero transfers, with exact quantities and separate freight currencies. Other scopes grant no regional access. GET and HEAD never transmit packages, create transfer orders, reserve stock, change inbound or record acknowledgements. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:read"
         ],
         "parameters": [
@@ -3789,7 +3789,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires regional_handoffs:read. Includes current, historical and source-unavailable records. Region archive or deletion does not rewrite original evidence. Actual dispatch and receipt dates remain per-source; the summary requested_date is not an arrival promise. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Complete regional approvals retain every source, including zero transfers, with exact quantities and separate freight currencies. Other scopes grant no regional access. GET and HEAD never transmit packages, create transfer orders, reserve stock, change inbound or record acknowledgements. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:read"
         ],
         "parameters": [
@@ -3851,7 +3851,7 @@
         ],
         "summary": "List saved planning packages",
         "description": "Organization-wide access requires regional_handoffs:read. Includes current, historical and source-unavailable records. Region archive or deletion does not rewrite original evidence. Actual dispatch and receipt dates remain per-source; the summary requested_date is not an arrival promise. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Complete regional approvals retain every source, including zero transfers, with exact quantities and separate freight currencies. Other scopes grant no regional access. GET and HEAD never transmit packages, create transfer orders, reserve stock, change inbound or record acknowledgements. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:read"
         ],
         "parameters": [
@@ -3923,7 +3923,7 @@
         ],
         "summary": "Read saved planning evidence",
         "description": "Organization-wide access requires regional_handoffs:read. Includes current, historical and source-unavailable records. Region archive or deletion does not rewrite original evidence. Actual dispatch and receipt dates remain per-source; the summary requested_date is not an arrival promise. Copied batches survive source deletion; individual handoffs cascade with their source proposal. Complete regional approvals retain every source, including zero transfers, with exact quantities and separate freight currencies. Other scopes grant no regional access. GET and HEAD never transmit packages, create transfer orders, reserve stock, change inbound or record acknowledgements. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:read"
         ],
         "parameters": [
@@ -3985,7 +3985,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:read"
         ],
         "parameters": [
@@ -4053,7 +4053,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:acknowledge"
         ],
         "parameters": [
@@ -4172,7 +4172,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:read"
         ],
         "parameters": [
@@ -4238,7 +4238,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:read"
         ],
         "parameters": [
@@ -4306,7 +4306,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:acknowledge"
         ],
         "parameters": [
@@ -4425,7 +4425,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nGET/HEAD require purchase_handoffs:read; POST requires purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "purchase_handoffs:read"
         ],
         "parameters": [
@@ -4491,7 +4491,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:read"
         ],
         "parameters": [
@@ -4559,7 +4559,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:acknowledge"
         ],
         "parameters": [
@@ -4678,7 +4678,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:read"
         ],
         "parameters": [
@@ -4744,7 +4744,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:read"
         ],
         "parameters": [
@@ -4812,7 +4812,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:acknowledge"
         ],
         "parameters": [
@@ -4931,7 +4931,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nGET/HEAD require transfer_handoffs:read; POST requires transfer_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "transfer_handoffs:read"
         ],
         "parameters": [
@@ -4997,7 +4997,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:read"
         ],
         "parameters": [
@@ -5065,7 +5065,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:acknowledge"
         ],
         "parameters": [
@@ -5184,7 +5184,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:read"
         ],
         "parameters": [
@@ -5250,7 +5250,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:read"
         ],
         "parameters": [
@@ -5318,7 +5318,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:acknowledge"
         ],
         "parameters": [
@@ -5437,7 +5437,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nGET/HEAD require event_purchase_handoffs:read; POST requires event_purchase_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "event_purchase_handoffs:read"
         ],
         "parameters": [
@@ -5503,7 +5503,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:read"
         ],
         "parameters": [
@@ -5571,7 +5571,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:acknowledge"
         ],
         "parameters": [
@@ -5690,7 +5690,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:read"
         ],
         "parameters": [
@@ -5756,7 +5756,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:read"
         ],
         "parameters": [
@@ -5824,7 +5824,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:acknowledge"
         ],
         "parameters": [
@@ -5943,7 +5943,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nDisposition reports do not create returns, scrap, write-offs or stock movements. Retained batches with unavailable source context are eligible. Reports follow their actual parent package: deleting source handoffs retains copied-batch reports; deleting the parent package or location cascades reports with audit history. Exact reference inventory values and original evidence remain unchanged.\n\nGET/HEAD require excess_disposition_handoffs:read; POST requires excess_disposition_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "excess_disposition_handoffs:read"
         ],
         "parameters": [
@@ -6009,7 +6009,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:read"
         ],
         "parameters": [
@@ -6077,7 +6077,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:acknowledge"
         ],
         "parameters": [
@@ -6196,7 +6196,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:read"
         ],
         "parameters": [
@@ -6262,7 +6262,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:read"
         ],
         "parameters": [
@@ -6330,7 +6330,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:acknowledge"
         ],
         "parameters": [
@@ -6449,7 +6449,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nNetwork reports apply to the whole saved package, never to individual branches. Retained batches with unavailable source context remain eligible. Reports survive source deletion with their copied batch, and follow deletion of their actual parent. Browser history requires access to the warehouse and every included branch, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require network_handoffs:read; POST requires network_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "network_handoffs:read"
         ],
         "parameters": [
@@ -6515,7 +6515,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:read"
         ],
         "parameters": [
@@ -6583,7 +6583,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:acknowledge"
         ],
         "parameters": [
@@ -6702,7 +6702,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:read"
         ],
         "parameters": [
@@ -6768,7 +6768,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nNewest recorded_at then UUID ascending. The cursor binds organization, resource and parent. Its creation-time upper bound is not a transactional snapshot; concurrent commits/deletions may affect traversal. Reconcile with overlap and deduplicate by event ID. Only limit and cursor are accepted.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:read"
         ],
         "parameters": [
@@ -6836,7 +6836,7 @@
         ],
         "summary": "Record an external receipt or rejection report",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nclient_event_id is unique across the organization's reports within this package family (ordinary purchase, transfer, event purchase, disposition, network, or regional independently), regardless of key rotation. Identical retries return 200 with the original event; different target/content returns 409. First creation returns 201. No query parameters. JSON body maximum 8192 bytes. Existing keys receive no new scope. Reauthenticate even on retries.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:acknowledge"
         ],
         "parameters": [
@@ -6955,7 +6955,7 @@
         ],
         "summary": "Read acknowledgement history",
         "description": "Organization-wide scoped API-key access. Events are append-only caller reports and do not verify external acceptance, create orders, change inbound or approvals, or alter saved evidence. Historical packages are eligible. Batch reports never propagate to individual handoffs or overlapping batches. recorded_at is server recording time; no global external delivery state is inferred.\n\nThe event must belong to this package and organization. Missing/other-organization records return 404. No query parameters.\n\nRegional reports apply to the whole saved package, never to individual sources. Historical packages, archived/deleted region definitions and retained batches with missing sources remain eligible. Reports follow their actual parent, so copied-batch reports survive source deletion. Browser history requires the destination and every source, including zero allocations. No reservations, transfers, inbound updates or stock movements.\n\nGET/HEAD require regional_handoffs:read; POST requires regional_handoffs:acknowledge. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.",
-        "x-maqdar-scopes": [
+        "x-zeespare-scopes": [
           "regional_handoffs:read"
         ],
         "parameters": [
@@ -7019,8 +7019,8 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "maqdar_sk_…",
-        "description": "A ZeeSpare API key. Operations list the scope they need in x-maqdar-scopes."
+        "bearerFormat": "zeespare_sk_…",
+        "description": "A ZeeSpare API key. Operations list the scope they need in x-zeespare-scopes."
       }
     },
     "parameters": {
@@ -7358,14 +7358,14 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Unique calendar code.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "name_ar": {
             "type": [
@@ -7374,7 +7374,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "country_code": {
             "type": [
@@ -7383,8 +7383,8 @@
             ],
             "pattern": "^[A-Z]{2}$",
             "description": "Country whose public holidays apply (sector all).",
-            "x-maqdar-kind": "country",
-            "x-maqdar-reference": "countries.code"
+            "x-zeespare-kind": "country",
+            "x-zeespare-reference": "countries.code"
           },
           "weekend_days": {
             "type": "array",
@@ -7396,17 +7396,17 @@
             "uniqueItems": true,
             "maxItems": 6,
             "description": "Weekend days; empty for none.",
-            "x-maqdar-kind": "weekdays"
+            "x-zeespare-kind": "weekdays"
           },
           "observe_public_holidays": {
             "type": "boolean",
             "description": "The country's public holidays are non-working days (needs country_code).",
-            "x-maqdar-kind": "boolean"
+            "x-zeespare-kind": "boolean"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for calendars no longer used.",
-            "x-maqdar-kind": "boolean"
+            "x-zeespare-kind": "boolean"
           },
           "updated_at": {
             "type": "string",
@@ -7415,7 +7415,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "work_calendar_code"
         ]
       },
@@ -7432,15 +7432,15 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Unique calendar code.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "text",
+            "x-zeespare-required-for-new": true
           },
           "name_ar": {
             "type": [
@@ -7449,7 +7449,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "country_code": {
             "oneOf": [
@@ -7465,8 +7465,8 @@
               }
             ],
             "description": "Country whose public holidays apply (sector all).",
-            "x-maqdar-kind": "country",
-            "x-maqdar-reference": "countries.code"
+            "x-zeespare-kind": "country",
+            "x-zeespare-reference": "countries.code"
           },
           "weekend_days": {
             "oneOf": [
@@ -7488,30 +7488,30 @@
               }
             ],
             "description": "Weekend days; empty for none.",
-            "x-maqdar-kind": "weekdays",
-            "x-maqdar-default-for-new": ""
+            "x-zeespare-kind": "weekdays",
+            "x-zeespare-default-for-new": ""
           },
           "observe_public_holidays": {
             "type": "boolean",
             "description": "The country's public holidays are non-working days (needs country_code).",
-            "x-maqdar-kind": "boolean",
-            "x-maqdar-default-for-new": "true"
+            "x-zeespare-kind": "boolean",
+            "x-zeespare-default-for-new": "true"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for calendars no longer used.",
-            "x-maqdar-kind": "boolean",
-            "x-maqdar-default-for-new": "true"
+            "x-zeespare-kind": "boolean",
+            "x-zeespare-default-for-new": "true"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "work_calendar_code"
         ],
-        "x-maqdar-load-order": 1,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 1,
+        "x-zeespare-rules": [
           {
             "code": "country_required",
             "columns": [
@@ -7592,8 +7592,8 @@
             ],
             "pattern": "^[A-Z]{2}$",
             "description": "Country scope; empty when work_calendar_code is set.",
-            "x-maqdar-kind": "country",
-            "x-maqdar-reference": "countries.code"
+            "x-zeespare-kind": "country",
+            "x-zeespare-reference": "countries.code"
           },
           "work_calendar_code": {
             "type": [
@@ -7603,21 +7603,21 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Calendar scope; empty when country_code is set.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "work_calendars.work_calendar_code",
-            "x-maqdar-lookup": "work-calendars"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "work_calendars.work_calendar_code",
+            "x-zeespare-lookup": "work-calendars"
           },
           "starts_on": {
             "type": "string",
             "format": "date",
             "description": "First day.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "ends_on": {
             "type": "string",
             "format": "date",
             "description": "Last day (on or after starts_on, at most 366 days in all).",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "kind": {
             "type": "string",
@@ -7626,14 +7626,14 @@
               "working_day"
             ],
             "description": "closure: non-working days; working_day: working days despite a holiday or weekend.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "name_ar": {
             "type": [
@@ -7642,7 +7642,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "note": {
             "type": [
@@ -7651,7 +7651,7 @@
             ],
             "maxLength": 1000,
             "description": "Free text.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "updated_at": {
             "type": "string",
@@ -7660,7 +7660,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "country_code",
           "work_calendar_code",
           "starts_on"
@@ -7688,8 +7688,8 @@
               }
             ],
             "description": "Country scope; empty when work_calendar_code is set.",
-            "x-maqdar-kind": "country",
-            "x-maqdar-reference": "countries.code"
+            "x-zeespare-kind": "country",
+            "x-zeespare-reference": "countries.code"
           },
           "work_calendar_code": {
             "oneOf": [
@@ -7706,24 +7706,24 @@
               }
             ],
             "description": "Calendar scope; empty when country_code is set.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "work_calendars.work_calendar_code",
-            "x-maqdar-lookup": "work-calendars"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "work_calendars.work_calendar_code",
+            "x-zeespare-lookup": "work-calendars"
           },
           "starts_on": {
             "type": "string",
             "format": "date",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
             "description": "First day.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "ends_on": {
             "type": "string",
             "format": "date",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
             "description": "Last day (on or after starts_on, at most 366 days in all).",
-            "x-maqdar-kind": "date",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "date",
+            "x-zeespare-required-for-new": true
           },
           "kind": {
             "type": "string",
@@ -7732,16 +7732,16 @@
               "working_day"
             ],
             "description": "closure: non-working days; working_day: working days despite a holiday or weekend.",
-            "x-maqdar-kind": "enum",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "enum",
+            "x-zeespare-required-for-new": true
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "text",
+            "x-zeespare-required-for-new": true
           },
           "name_ar": {
             "type": [
@@ -7750,7 +7750,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "note": {
             "type": [
@@ -7759,7 +7759,7 @@
             ],
             "maxLength": 1000,
             "description": "Free text.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -7797,13 +7797,13 @@
             }
           }
         ],
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "country_code",
           "work_calendar_code",
           "starts_on"
         ],
-        "x-maqdar-load-order": 2,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 2,
+        "x-zeespare-rules": [
           {
             "code": "scope_exactly_one",
             "columns": [
@@ -7918,14 +7918,14 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Unique location code.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "name_ar": {
             "type": [
@@ -7934,7 +7934,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "location_type": {
             "type": "string",
@@ -7944,14 +7944,14 @@
               "branch"
             ],
             "description": "Role in the network.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "country_code": {
             "type": "string",
             "pattern": "^[A-Z]{2}$",
             "description": "Country of the location (drives weekends and holidays).",
-            "x-maqdar-kind": "country",
-            "x-maqdar-reference": "countries.code"
+            "x-zeespare-kind": "country",
+            "x-zeespare-reference": "countries.code"
           },
           "city": {
             "type": [
@@ -7960,7 +7960,7 @@
             ],
             "maxLength": 100,
             "description": "City.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "latitude": {
             "type": [
@@ -7969,7 +7969,7 @@
             ],
             "pattern": "^-?(0|[1-9][0-9]{0,2})(\\.[0-9]{0,5}[1-9])?$",
             "description": "Decimal degrees.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "longitude": {
             "type": [
@@ -7978,14 +7978,14 @@
             ],
             "pattern": "^-?(0|[1-9][0-9]{0,2})(\\.[0-9]{0,5}[1-9])?$",
             "description": "Decimal degrees.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "timezone": {
             "type": "string",
             "pattern": "^[A-Za-z][A-Za-z0-9_+/-]*$",
             "maxLength": 64,
             "description": "Time zone of the location.",
-            "x-maqdar-kind": "timezone"
+            "x-zeespare-kind": "timezone"
           },
           "parent_location_code": {
             "type": [
@@ -7995,14 +7995,14 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Default replenishment source; empty for the central warehouse.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for closed locations.",
-            "x-maqdar-kind": "boolean"
+            "x-zeespare-kind": "boolean"
           },
           "work_calendar_code": {
             "type": [
@@ -8012,9 +8012,9 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Work calendar; empty for the country default (weekends and public holidays).",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "work_calendars.work_calendar_code",
-            "x-maqdar-lookup": "work-calendars"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "work_calendars.work_calendar_code",
+            "x-zeespare-lookup": "work-calendars"
           },
           "updated_at": {
             "type": "string",
@@ -8023,7 +8023,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "location_code"
         ]
       },
@@ -8040,15 +8040,15 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Unique location code.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "text",
+            "x-zeespare-required-for-new": true
           },
           "name_ar": {
             "type": [
@@ -8057,7 +8057,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "location_type": {
             "type": "string",
@@ -8067,16 +8067,16 @@
               "branch"
             ],
             "description": "Role in the network.",
-            "x-maqdar-kind": "enum",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "enum",
+            "x-zeespare-required-for-new": true
           },
           "country_code": {
             "type": "string",
             "pattern": "^[A-Z]{2}$",
             "description": "Country of the location (drives weekends and holidays).",
-            "x-maqdar-kind": "country",
-            "x-maqdar-reference": "countries.code",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "country",
+            "x-zeespare-reference": "countries.code",
+            "x-zeespare-required-for-new": true
           },
           "city": {
             "type": [
@@ -8085,7 +8085,7 @@
             ],
             "maxLength": 100,
             "description": "City.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "latitude": {
             "oneOf": [
@@ -8106,7 +8106,7 @@
               }
             ],
             "description": "Decimal degrees.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "longitude": {
             "oneOf": [
@@ -8127,15 +8127,15 @@
               }
             ],
             "description": "Decimal degrees.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "timezone": {
             "type": "string",
             "pattern": "^[A-Za-z][A-Za-z0-9_+/-]*$",
             "maxLength": 64,
             "description": "Time zone of the location.",
-            "x-maqdar-kind": "timezone",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "timezone",
+            "x-zeespare-required-for-new": true
           },
           "parent_location_code": {
             "oneOf": [
@@ -8152,15 +8152,15 @@
               }
             ],
             "description": "Default replenishment source; empty for the central warehouse.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for closed locations.",
-            "x-maqdar-kind": "boolean",
-            "x-maqdar-default-for-new": "true"
+            "x-zeespare-kind": "boolean",
+            "x-zeespare-default-for-new": "true"
           },
           "work_calendar_code": {
             "oneOf": [
@@ -8177,19 +8177,19 @@
               }
             ],
             "description": "Work calendar; empty for the country default (weekends and public holidays).",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "work_calendars.work_calendar_code",
-            "x-maqdar-lookup": "work-calendars"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "work_calendars.work_calendar_code",
+            "x-zeespare-lookup": "work-calendars"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "location_code"
         ],
-        "x-maqdar-load-order": 3,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 3,
+        "x-zeespare-rules": [
           {
             "code": "must_differ",
             "columns": [
@@ -8280,32 +8280,32 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Sending location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "to_location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Receiving location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "lead_time_days_p50": {
             "type": "integer",
             "minimum": 0,
             "maximum": 3650,
             "description": "Typical transfer lead time in calendar days.",
-            "x-maqdar-kind": "integer"
+            "x-zeespare-kind": "integer"
           },
           "lead_time_days_p90": {
             "type": "integer",
             "minimum": 0,
             "maximum": 3650,
             "description": "Slow (90th percentile) lead time in calendar days.",
-            "x-maqdar-kind": "integer"
+            "x-zeespare-kind": "integer"
           },
           "freight_basis": {
             "type": "string",
@@ -8315,7 +8315,7 @@
               "per_shipment"
             ],
             "description": "How freight is charged.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "freight_cost": {
             "type": [
@@ -8324,7 +8324,7 @@
             ],
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Freight cost; empty when freight_basis is none.",
-            "x-maqdar-kind": "money"
+            "x-zeespare-kind": "money"
           },
           "currency": {
             "type": [
@@ -8333,13 +8333,13 @@
             ],
             "pattern": "^[A-Z]{3}$",
             "description": "Currency of freight_cost; empty when freight_basis is none.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for lanes no longer used.",
-            "x-maqdar-kind": "boolean"
+            "x-zeespare-kind": "boolean"
           },
           "freight_unit": {
             "type": [
@@ -8354,7 +8354,7 @@
               null
             ],
             "description": "Source-supplied unit for per-unit freight; empty means unknown. Supplying freight terms without this field clears prior unit evidence.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "freight_valid_from": {
             "type": [
@@ -8363,7 +8363,7 @@
             ],
             "format": "date",
             "description": "Source-supplied date from which the freight terms apply; empty means unknown. Supplying freight terms without this field clears prior date evidence.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "updated_at": {
             "type": "string",
@@ -8372,7 +8372,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "from_location_code",
           "to_location_code"
         ]
@@ -8391,18 +8391,18 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Sending location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "to_location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Receiving location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "lead_time_days_p50": {
             "oneOf": [
@@ -8417,8 +8417,8 @@
               }
             ],
             "description": "Typical transfer lead time in calendar days.",
-            "x-maqdar-kind": "integer",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "integer",
+            "x-zeespare-required-for-new": true
           },
           "lead_time_days_p90": {
             "oneOf": [
@@ -8433,8 +8433,8 @@
               }
             ],
             "description": "Slow (90th percentile) lead time in calendar days.",
-            "x-maqdar-kind": "integer",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "integer",
+            "x-zeespare-required-for-new": true
           },
           "freight_basis": {
             "type": "string",
@@ -8444,8 +8444,8 @@
               "per_shipment"
             ],
             "description": "How freight is charged.",
-            "x-maqdar-kind": "enum",
-            "x-maqdar-default-for-new": "none"
+            "x-zeespare-kind": "enum",
+            "x-zeespare-default-for-new": "none"
           },
           "freight_cost": {
             "oneOf": [
@@ -8466,7 +8466,7 @@
               }
             ],
             "description": "Freight cost; empty when freight_basis is none.",
-            "x-maqdar-kind": "money"
+            "x-zeespare-kind": "money"
           },
           "currency": {
             "oneOf": [
@@ -8482,14 +8482,14 @@
               }
             ],
             "description": "Currency of freight_cost; empty when freight_basis is none.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for lanes no longer used.",
-            "x-maqdar-kind": "boolean",
-            "x-maqdar-default-for-new": "true"
+            "x-zeespare-kind": "boolean",
+            "x-zeespare-default-for-new": "true"
           },
           "freight_unit": {
             "oneOf": [
@@ -8510,7 +8510,7 @@
               }
             ],
             "description": "Source-supplied unit for per-unit freight; empty means unknown. Supplying freight terms without this field clears prior unit evidence.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "freight_valid_from": {
             "oneOf": [
@@ -8527,7 +8527,7 @@
               }
             ],
             "description": "Source-supplied date from which the freight terms apply; empty means unknown. Supplying freight terms without this field clears prior date evidence.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -8553,12 +8553,12 @@
             "freight_cost"
           ]
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "from_location_code",
           "to_location_code"
         ],
-        "x-maqdar-load-order": 4,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 4,
+        "x-zeespare-rules": [
           {
             "code": "must_differ",
             "columns": [
@@ -8656,14 +8656,14 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Unique brand code.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "name_ar": {
             "type": [
@@ -8672,7 +8672,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "brand_type": {
             "type": [
@@ -8685,7 +8685,7 @@
               null
             ],
             "description": "Genuine (OEM) or aftermarket.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "country_of_origin": {
             "type": [
@@ -8694,12 +8694,12 @@
             ],
             "pattern": "^[A-Z]{2}$",
             "description": "Country of origin (any ISO code).",
-            "x-maqdar-kind": "country"
+            "x-zeespare-kind": "country"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for brands no longer sold.",
-            "x-maqdar-kind": "boolean"
+            "x-zeespare-kind": "boolean"
           },
           "updated_at": {
             "type": "string",
@@ -8708,7 +8708,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "brand_code"
         ]
       },
@@ -8725,15 +8725,15 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Unique brand code.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "text",
+            "x-zeespare-required-for-new": true
           },
           "name_ar": {
             "type": [
@@ -8742,7 +8742,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "brand_type": {
             "oneOf": [
@@ -8761,7 +8761,7 @@
               }
             ],
             "description": "Genuine (OEM) or aftermarket.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "country_of_origin": {
             "oneOf": [
@@ -8777,22 +8777,22 @@
               }
             ],
             "description": "Country of origin (any ISO code).",
-            "x-maqdar-kind": "country"
+            "x-zeespare-kind": "country"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for brands no longer sold.",
-            "x-maqdar-kind": "boolean",
-            "x-maqdar-default-for-new": "true"
+            "x-zeespare-kind": "boolean",
+            "x-zeespare-default-for-new": "true"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "brand_code"
         ],
-        "x-maqdar-load-order": 5
+        "x-zeespare-load-order": 5
       },
       "BrandsUpsertRequest": {
         "type": "object",
@@ -8863,14 +8863,14 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Unique part number.",
-            "x-maqdar-kind": "item_code"
+            "x-zeespare-kind": "item_code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "name_ar": {
             "type": [
@@ -8879,7 +8879,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "brand_code": {
             "type": [
@@ -8889,16 +8889,16 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Brand or make.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "brands.brand_code",
-            "x-maqdar-lookup": "brands"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "brands.brand_code",
+            "x-zeespare-lookup": "brands"
           },
           "product_group": {
             "type": "string",
             "maxLength": 64,
             "minLength": 1,
             "description": "Planning group, e.g. battery, oil_filter.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "unit_of_measure": {
             "type": "string",
@@ -8909,20 +8909,20 @@
               "KG"
             ],
             "description": "Stocking unit.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "unit_cost": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Standard cost per unit.",
-            "x-maqdar-kind": "money"
+            "x-zeespare-kind": "money"
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Currency of unit_cost.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "status": {
             "type": "string",
@@ -8933,7 +8933,7 @@
               "discontinued"
             ],
             "description": "Lifecycle status.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "introduced_on": {
             "type": [
@@ -8942,7 +8942,7 @@
             ],
             "format": "date",
             "description": "First day the item was available.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "discontinued_on": {
             "type": [
@@ -8951,7 +8951,7 @@
             ],
             "format": "date",
             "description": "Last day the item was available.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "updated_at": {
             "type": "string",
@@ -8960,7 +8960,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "item_code"
         ]
       },
@@ -8977,15 +8977,15 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Unique part number.",
-            "x-maqdar-kind": "item_code"
+            "x-zeespare-kind": "item_code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "text",
+            "x-zeespare-required-for-new": true
           },
           "name_ar": {
             "type": [
@@ -8994,7 +8994,7 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "brand_code": {
             "oneOf": [
@@ -9011,17 +9011,17 @@
               }
             ],
             "description": "Brand or make.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "brands.brand_code",
-            "x-maqdar-lookup": "brands"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "brands.brand_code",
+            "x-zeespare-lookup": "brands"
           },
           "product_group": {
             "type": "string",
             "maxLength": 64,
             "minLength": 1,
             "description": "Planning group, e.g. battery, oil_filter.",
-            "x-maqdar-kind": "text",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "text",
+            "x-zeespare-required-for-new": true
           },
           "unit_of_measure": {
             "type": "string",
@@ -9032,8 +9032,8 @@
               "KG"
             ],
             "description": "Stocking unit.",
-            "x-maqdar-kind": "enum",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "enum",
+            "x-zeespare-required-for-new": true
           },
           "unit_cost": {
             "oneOf": [
@@ -9048,16 +9048,16 @@
               }
             ],
             "description": "Standard cost per unit.",
-            "x-maqdar-kind": "money",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "money",
+            "x-zeespare-required-for-new": true
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Currency of unit_cost.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code",
+            "x-zeespare-required-for-new": true
           },
           "status": {
             "type": "string",
@@ -9068,8 +9068,8 @@
               "discontinued"
             ],
             "description": "Lifecycle status.",
-            "x-maqdar-kind": "enum",
-            "x-maqdar-default-for-new": "active"
+            "x-zeespare-kind": "enum",
+            "x-zeespare-default-for-new": "active"
           },
           "introduced_on": {
             "oneOf": [
@@ -9086,7 +9086,7 @@
               }
             ],
             "description": "First day the item was available.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "discontinued_on": {
             "oneOf": [
@@ -9103,7 +9103,7 @@
               }
             ],
             "description": "Last day the item was available.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -9117,11 +9117,11 @@
             "unit_cost"
           ]
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "item_code"
         ],
-        "x-maqdar-load-order": 6,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 6,
+        "x-zeespare-rules": [
           {
             "code": "end_before_start",
             "columns": [
@@ -9197,30 +9197,30 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Replaced item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "successor_item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Replacing item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "effective_on": {
             "type": "string",
             "format": "date",
             "description": "First day the successor replaces the predecessor.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "quantity_factor": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Units of successor per unit of predecessor (1 unless the pack changes).",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "note": {
             "type": [
@@ -9229,7 +9229,7 @@
             ],
             "maxLength": 1000,
             "description": "Free text.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "updated_at": {
             "type": "string",
@@ -9238,7 +9238,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "predecessor_item_code"
         ]
       },
@@ -9255,27 +9255,27 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Replaced item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "successor_item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Replacing item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items",
+            "x-zeespare-required-for-new": true
           },
           "effective_on": {
             "type": "string",
             "format": "date",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
             "description": "First day the successor replaces the predecessor.",
-            "x-maqdar-kind": "date",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "date",
+            "x-zeespare-required-for-new": true
           },
           "quantity_factor": {
             "oneOf": [
@@ -9290,8 +9290,8 @@
               }
             ],
             "description": "Units of successor per unit of predecessor (1 unless the pack changes).",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-default-for-new": "1"
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-default-for-new": "1"
           },
           "note": {
             "type": [
@@ -9300,17 +9300,17 @@
             ],
             "maxLength": 1000,
             "description": "Free text.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "predecessor_item_code"
         ],
-        "x-maqdar-load-order": 7,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 7,
+        "x-zeespare-rules": [
           {
             "code": "must_differ",
             "columns": [
@@ -9396,18 +9396,18 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Requested item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "alternate_item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item that may be issued instead.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "direction": {
             "type": "string",
@@ -9416,14 +9416,14 @@
               "two_way"
             ],
             "description": "Direction of the interchange.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "priority": {
             "type": "integer",
             "minimum": 1,
             "maximum": 99,
             "description": "Order in which alternates are tried (1 first).",
-            "x-maqdar-kind": "integer"
+            "x-zeespare-kind": "integer"
           },
           "note": {
             "type": [
@@ -9432,7 +9432,7 @@
             ],
             "maxLength": 1000,
             "description": "Free text.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "updated_at": {
             "type": "string",
@@ -9441,7 +9441,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "item_code",
           "alternate_item_code"
         ]
@@ -9460,18 +9460,18 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Requested item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "alternate_item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item that may be issued instead.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "direction": {
             "type": "string",
@@ -9480,8 +9480,8 @@
               "two_way"
             ],
             "description": "Direction of the interchange.",
-            "x-maqdar-kind": "enum",
-            "x-maqdar-default-for-new": "two_way"
+            "x-zeespare-kind": "enum",
+            "x-zeespare-default-for-new": "two_way"
           },
           "priority": {
             "oneOf": [
@@ -9496,8 +9496,8 @@
               }
             ],
             "description": "Order in which alternates are tried (1 first).",
-            "x-maqdar-kind": "integer",
-            "x-maqdar-default-for-new": "1"
+            "x-zeespare-kind": "integer",
+            "x-zeespare-default-for-new": "1"
           },
           "note": {
             "type": [
@@ -9506,19 +9506,19 @@
             ],
             "maxLength": 1000,
             "description": "Free text.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "item_code",
           "alternate_item_code"
         ],
-        "x-maqdar-load-order": 8,
-        "x-maqdar-unordered-pair": true,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 8,
+        "x-zeespare-unordered-pair": true,
+        "x-zeespare-rules": [
           {
             "code": "must_differ",
             "columns": [
@@ -9598,14 +9598,14 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Unique supplier code.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "name_ar": {
             "type": [
@@ -9614,39 +9614,39 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "country_code": {
             "type": "string",
             "pattern": "^[A-Z]{2}$",
             "description": "Country the supplier ships from (any ISO code).",
-            "x-maqdar-kind": "country"
+            "x-zeespare-kind": "country"
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Default price currency.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "lead_time_days_p50": {
             "type": "integer",
             "minimum": 0,
             "maximum": 999999999,
             "description": "Typical lead time in calendar days.",
-            "x-maqdar-kind": "integer"
+            "x-zeespare-kind": "integer"
           },
           "lead_time_days_p90": {
             "type": "integer",
             "minimum": 0,
             "maximum": 999999999,
             "description": "Slow lead time (90th percentile) in calendar days.",
-            "x-maqdar-kind": "integer"
+            "x-zeespare-kind": "integer"
           },
           "is_active": {
             "type": "boolean",
             "description": "false for inactive suppliers.",
-            "x-maqdar-kind": "boolean"
+            "x-zeespare-kind": "boolean"
           },
           "work_calendar_code": {
             "type": [
@@ -9656,9 +9656,9 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Work calendar; empty for the country default (weekends and public holidays).",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "work_calendars.work_calendar_code",
-            "x-maqdar-lookup": "work-calendars"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "work_calendars.work_calendar_code",
+            "x-zeespare-lookup": "work-calendars"
           },
           "updated_at": {
             "type": "string",
@@ -9667,7 +9667,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "supplier_code"
         ]
       },
@@ -9684,15 +9684,15 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Unique supplier code.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "name_en": {
             "type": "string",
             "maxLength": 200,
             "minLength": 1,
             "description": "English name.",
-            "x-maqdar-kind": "text",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "text",
+            "x-zeespare-required-for-new": true
           },
           "name_ar": {
             "type": [
@@ -9701,22 +9701,22 @@
             ],
             "maxLength": 200,
             "description": "Arabic name.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "country_code": {
             "type": "string",
             "pattern": "^[A-Z]{2}$",
             "description": "Country the supplier ships from (any ISO code).",
-            "x-maqdar-kind": "country",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "country",
+            "x-zeespare-required-for-new": true
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Default price currency.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code",
+            "x-zeespare-required-for-new": true
           },
           "lead_time_days_p50": {
             "oneOf": [
@@ -9731,8 +9731,8 @@
               }
             ],
             "description": "Typical lead time in calendar days.",
-            "x-maqdar-kind": "integer",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "integer",
+            "x-zeespare-required-for-new": true
           },
           "lead_time_days_p90": {
             "oneOf": [
@@ -9747,14 +9747,14 @@
               }
             ],
             "description": "Slow lead time (90th percentile) in calendar days.",
-            "x-maqdar-kind": "integer",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "integer",
+            "x-zeespare-required-for-new": true
           },
           "is_active": {
             "type": "boolean",
             "description": "false for inactive suppliers.",
-            "x-maqdar-kind": "boolean",
-            "x-maqdar-default-for-new": "true"
+            "x-zeespare-kind": "boolean",
+            "x-zeespare-default-for-new": "true"
           },
           "work_calendar_code": {
             "oneOf": [
@@ -9771,9 +9771,9 @@
               }
             ],
             "description": "Work calendar; empty for the country default (weekends and public holidays).",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "work_calendars.work_calendar_code",
-            "x-maqdar-lookup": "work-calendars"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "work_calendars.work_calendar_code",
+            "x-zeespare-lookup": "work-calendars"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -9787,11 +9787,11 @@
             "lead_time_days_p50"
           ]
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "supplier_code"
         ],
-        "x-maqdar-load-order": 9,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 9,
+        "x-zeespare-rules": [
           {
             "code": "p90_below_p50",
             "columns": [
@@ -9877,18 +9877,18 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Supplier.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "suppliers.supplier_code",
-            "x-maqdar-lookup": "suppliers"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "suppliers.supplier_code",
+            "x-zeespare-lookup": "suppliers"
           },
           "item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "supplier_part_number": {
             "type": [
@@ -9897,14 +9897,14 @@
             ],
             "maxLength": 100,
             "description": "Supplier's own part number.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "lead_time_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 999999999,
             "description": "Planning lead time in calendar days.",
-            "x-maqdar-kind": "integer"
+            "x-zeespare-kind": "integer"
           },
           "lead_time_days_p90": {
             "type": [
@@ -9914,37 +9914,37 @@
             "minimum": 0,
             "maximum": 999999999,
             "description": "Slow lead time in calendar days.",
-            "x-maqdar-kind": "integer"
+            "x-zeespare-kind": "integer"
           },
           "min_order_quantity": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Minimum order quantity (0 = none).",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "pack_size": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Order multiple.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "unit_price": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Purchase price per unit.",
-            "x-maqdar-kind": "money"
+            "x-zeespare-kind": "money"
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Currency of unit_price.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "is_preferred": {
             "type": "boolean",
             "description": "Preferred source for the item (at most one per item).",
-            "x-maqdar-kind": "boolean"
+            "x-zeespare-kind": "boolean"
           },
           "valid_from": {
             "type": [
@@ -9953,7 +9953,7 @@
             ],
             "format": "date",
             "description": "Price valid from.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "unit_of_measure": {
             "type": [
@@ -9968,7 +9968,7 @@
               null
             ],
             "description": "Source-supplied unit for MOQ, pack multiple and unit price; empty means unknown.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "shipping_weight_kg": {
             "type": [
@@ -9977,7 +9977,7 @@
             ],
             "pattern": "^(0|[1-9][0-9]{0,8})(\\.[0-9]{0,5}[1-9])?$",
             "description": "Shipping weight in kg per supplied purchase unit, including apportioned packaging; empty means unknown.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "shipping_volume_m3": {
             "type": [
@@ -9986,7 +9986,7 @@
             ],
             "pattern": "^(0|[1-9][0-9]{0,8})(\\.[0-9]{0,5}[1-9])?$",
             "description": "Shipping volume in cubic metres per supplied purchase unit, including apportioned packaging; empty means unknown.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "shipping_valid_from": {
             "type": [
@@ -9995,7 +9995,7 @@
             ],
             "format": "date",
             "description": "Separate effective-from date for shipping measurements; empty means unknown.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "updated_at": {
             "type": "string",
@@ -10004,7 +10004,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "supplier_code",
           "item_code"
         ]
@@ -10023,18 +10023,18 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Supplier.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "suppliers.supplier_code",
-            "x-maqdar-lookup": "suppliers"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "suppliers.supplier_code",
+            "x-zeespare-lookup": "suppliers"
           },
           "item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "supplier_part_number": {
             "type": [
@@ -10043,7 +10043,7 @@
             ],
             "maxLength": 100,
             "description": "Supplier's own part number.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "lead_time_days": {
             "oneOf": [
@@ -10058,8 +10058,8 @@
               }
             ],
             "description": "Planning lead time in calendar days.",
-            "x-maqdar-kind": "integer",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "integer",
+            "x-zeespare-required-for-new": true
           },
           "lead_time_days_p90": {
             "oneOf": [
@@ -10080,7 +10080,7 @@
               }
             ],
             "description": "Slow lead time in calendar days.",
-            "x-maqdar-kind": "integer"
+            "x-zeespare-kind": "integer"
           },
           "min_order_quantity": {
             "oneOf": [
@@ -10095,8 +10095,8 @@
               }
             ],
             "description": "Minimum order quantity (0 = none).",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-default-for-new": "0"
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-default-for-new": "0"
           },
           "pack_size": {
             "oneOf": [
@@ -10111,8 +10111,8 @@
               }
             ],
             "description": "Order multiple.",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-default-for-new": "1"
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-default-for-new": "1"
           },
           "unit_price": {
             "oneOf": [
@@ -10127,22 +10127,22 @@
               }
             ],
             "description": "Purchase price per unit.",
-            "x-maqdar-kind": "money",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "money",
+            "x-zeespare-required-for-new": true
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Currency of unit_price.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code",
+            "x-zeespare-required-for-new": true
           },
           "is_preferred": {
             "type": "boolean",
             "description": "Preferred source for the item (at most one per item).",
-            "x-maqdar-kind": "boolean",
-            "x-maqdar-default-for-new": "false"
+            "x-zeespare-kind": "boolean",
+            "x-zeespare-default-for-new": "false"
           },
           "valid_from": {
             "oneOf": [
@@ -10159,7 +10159,7 @@
               }
             ],
             "description": "Price valid from.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "unit_of_measure": {
             "oneOf": [
@@ -10180,7 +10180,7 @@
               }
             ],
             "description": "Source-supplied unit for MOQ, pack multiple and unit price; empty means unknown.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "shipping_weight_kg": {
             "oneOf": [
@@ -10201,7 +10201,7 @@
               }
             ],
             "description": "Shipping weight in kg per supplied purchase unit, including apportioned packaging; empty means unknown.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "shipping_volume_m3": {
             "oneOf": [
@@ -10222,7 +10222,7 @@
               }
             ],
             "description": "Shipping volume in cubic metres per supplied purchase unit, including apportioned packaging; empty means unknown.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "shipping_valid_from": {
             "oneOf": [
@@ -10239,7 +10239,7 @@
               }
             ],
             "description": "Separate effective-from date for shipping measurements; empty means unknown.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -10253,12 +10253,12 @@
             "unit_price"
           ]
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "supplier_code",
           "item_code"
         ],
-        "x-maqdar-load-order": 10,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 10,
+        "x-zeespare-rules": [
           {
             "code": "p90_below_p50",
             "columns": [
@@ -10343,27 +10343,27 @@
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Currency converted from.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "to_currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Currency converted to.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "valid_from": {
             "type": "string",
             "format": "date",
             "description": "First day the rate applies.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "rate": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,9})(\\.[0-9]{0,9}[1-9])?$",
             "description": "Units of to_currency per unit of from_currency.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "note": {
             "type": [
@@ -10372,7 +10372,7 @@
             ],
             "maxLength": 1000,
             "description": "Free text.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "updated_at": {
             "type": "string",
@@ -10381,7 +10381,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "from_currency",
           "to_currency",
           "valid_from"
@@ -10401,22 +10401,22 @@
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Currency converted from.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "to_currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Currency converted to.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "valid_from": {
             "type": "string",
             "format": "date",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
             "description": "First day the rate applies.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "rate": {
             "oneOf": [
@@ -10431,8 +10431,8 @@
               }
             ],
             "description": "Units of to_currency per unit of from_currency.",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-required-for-new": true
           },
           "note": {
             "type": [
@@ -10441,20 +10441,20 @@
             ],
             "maxLength": 1000,
             "description": "Free text.",
-            "x-maqdar-kind": "text"
+            "x-zeespare-kind": "text"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "from_currency",
           "to_currency",
           "valid_from"
         ],
-        "x-maqdar-load-order": 11,
-        "x-maqdar-unordered-pair": true,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 11,
+        "x-zeespare-unordered-pair": true,
+        "x-zeespare-rules": [
           {
             "code": "must_differ",
             "columns": [
@@ -10530,36 +10530,36 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Location where the demand arose.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "demand_date": {
             "type": "string",
             "format": "date",
             "description": "Business day at the location.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "quantity": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Quantity sold or issued.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "lost_sales_quantity": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Quantity requested but not served (stock-out).",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "unit_of_measure": {
             "type": [
@@ -10574,10 +10574,10 @@
               null
             ],
             "description": "Source unit for sold and lost quantities; absent means unknown.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "item_code",
           "location_code",
           "demand_date"
@@ -10598,25 +10598,25 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Location where the demand arose.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "demand_date": {
             "type": "string",
             "format": "date",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
             "description": "Business day at the location.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "quantity": {
             "oneOf": [
@@ -10631,8 +10631,8 @@
               }
             ],
             "description": "Quantity sold or issued.",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-default-for-new": "0"
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-default-for-new": "0"
           },
           "lost_sales_quantity": {
             "oneOf": [
@@ -10647,8 +10647,8 @@
               }
             ],
             "description": "Quantity requested but not served (stock-out).",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-default-for-new": "0"
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-default-for-new": "0"
           },
           "unit_of_measure": {
             "oneOf": [
@@ -10669,7 +10669,7 @@
               }
             ],
             "description": "Source unit for sold and lost quantities; absent means unknown.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -10687,13 +10687,13 @@
             ]
           }
         ],
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "item_code",
           "location_code",
           "demand_date"
         ],
-        "x-maqdar-load-order": 12,
-        "x-maqdar-rules": [
+        "x-zeespare-load-order": 12,
+        "x-zeespare-rules": [
           {
             "code": "date_outside_history_window",
             "columns": [
@@ -10771,49 +10771,49 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Stock location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "snapshot_date": {
             "type": "string",
             "format": "date",
             "description": "Business date of the observation.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "quantity": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Physical units on hand.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "allocated_quantity": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Units already allocated.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "unit_cost": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Inventory cost per physical unit.",
-            "x-maqdar-kind": "money"
+            "x-zeespare-kind": "money"
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Cost currency.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "unit_of_measure": {
             "type": [
@@ -10828,7 +10828,7 @@
               null
             ],
             "description": "Source unit for physical/allocated quantity and unit cost; absent means unknown.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "updated_at": {
             "type": "string",
@@ -10837,7 +10837,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "item_code",
           "location_code",
           "snapshot_date"
@@ -10858,25 +10858,25 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Stock location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "snapshot_date": {
             "type": "string",
             "format": "date",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
             "description": "Business date of the observation.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "quantity": {
             "oneOf": [
@@ -10891,8 +10891,8 @@
               }
             ],
             "description": "Physical units on hand.",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-required-for-new": true
           },
           "allocated_quantity": {
             "oneOf": [
@@ -10907,8 +10907,8 @@
               }
             ],
             "description": "Units already allocated.",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-default-for-new": "0"
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-default-for-new": "0"
           },
           "unit_cost": {
             "oneOf": [
@@ -10923,16 +10923,16 @@
               }
             ],
             "description": "Inventory cost per physical unit.",
-            "x-maqdar-kind": "money",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "money",
+            "x-zeespare-required-for-new": true
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Cost currency.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code",
+            "x-zeespare-required-for-new": true
           },
           "unit_of_measure": {
             "oneOf": [
@@ -10953,7 +10953,7 @@
               }
             ],
             "description": "Source unit for physical/allocated quantity and unit cost; absent means unknown.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -10967,12 +10967,12 @@
             "unit_cost"
           ]
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "item_code",
           "location_code",
           "snapshot_date"
         ],
-        "x-maqdar-load-order": 13
+        "x-zeespare-load-order": 13
       },
       "StockSnapshotsUpsertRequest": {
         "type": "object",
@@ -11043,66 +11043,66 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "External order reference.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "line_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "External line reference, unique within the order.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Stock location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "supplier_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Supplier.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "suppliers.supplier_code",
-            "x-maqdar-lookup": "suppliers"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "suppliers.supplier_code",
+            "x-zeespare-lookup": "suppliers"
           },
           "expected_date": {
             "type": "string",
             "format": "date",
             "description": "Expected arrival business date.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "quantity": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Remaining quantity.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "unit_cost": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Cost per unit.",
-            "x-maqdar-kind": "money"
+            "x-zeespare-kind": "money"
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Cost currency.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "status": {
             "type": "string",
@@ -11112,7 +11112,7 @@
               "canceled"
             ],
             "description": "Current line status.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "unit_of_measure": {
             "type": [
@@ -11127,7 +11127,7 @@
               null
             ],
             "description": "Source unit for remaining quantity and unit cost; absent means unknown.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "updated_at": {
             "type": "string",
@@ -11136,7 +11136,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "order_code",
           "line_code"
         ]
@@ -11155,52 +11155,52 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "External order reference.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "line_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "External line reference, unique within the order.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items",
+            "x-zeespare-required-for-new": true
           },
           "location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Stock location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations",
+            "x-zeespare-required-for-new": true
           },
           "supplier_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Supplier.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "suppliers.supplier_code",
-            "x-maqdar-lookup": "suppliers",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "suppliers.supplier_code",
+            "x-zeespare-lookup": "suppliers",
+            "x-zeespare-required-for-new": true
           },
           "expected_date": {
             "type": "string",
             "format": "date",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
             "description": "Expected arrival business date.",
-            "x-maqdar-kind": "date",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "date",
+            "x-zeespare-required-for-new": true
           },
           "quantity": {
             "oneOf": [
@@ -11215,8 +11215,8 @@
               }
             ],
             "description": "Remaining quantity.",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-required-for-new": true
           },
           "unit_cost": {
             "oneOf": [
@@ -11231,16 +11231,16 @@
               }
             ],
             "description": "Cost per unit.",
-            "x-maqdar-kind": "money",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "money",
+            "x-zeespare-required-for-new": true
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Cost currency.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code",
+            "x-zeespare-required-for-new": true
           },
           "status": {
             "type": "string",
@@ -11250,8 +11250,8 @@
               "canceled"
             ],
             "description": "Current line status.",
-            "x-maqdar-kind": "enum",
-            "x-maqdar-default-for-new": "open"
+            "x-zeespare-kind": "enum",
+            "x-zeespare-default-for-new": "open"
           },
           "unit_of_measure": {
             "oneOf": [
@@ -11272,7 +11272,7 @@
               }
             ],
             "description": "Source unit for remaining quantity and unit cost; absent means unknown.",
-            "x-maqdar-kind": "enum"
+            "x-zeespare-kind": "enum"
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -11286,11 +11286,11 @@
             "unit_cost"
           ]
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "order_code",
           "line_code"
         ],
-        "x-maqdar-load-order": 14
+        "x-zeespare-load-order": 14
       },
       "OpenOrdersUpsertRequest": {
         "type": "object",
@@ -11359,66 +11359,66 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "External receipt reference.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "line_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "External line reference, unique within the receipt.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items"
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items"
           },
           "location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Stock location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations"
           },
           "supplier_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Supplier.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "suppliers.supplier_code",
-            "x-maqdar-lookup": "suppliers"
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "suppliers.supplier_code",
+            "x-zeespare-lookup": "suppliers"
           },
           "receipt_date": {
             "type": "string",
             "format": "date",
             "description": "Received business date.",
-            "x-maqdar-kind": "date"
+            "x-zeespare-kind": "date"
           },
           "quantity": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Units received.",
-            "x-maqdar-kind": "decimal"
+            "x-zeespare-kind": "decimal"
           },
           "unit_cost": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{0,2}[1-9])?$",
             "description": "Cost per received unit.",
-            "x-maqdar-kind": "money"
+            "x-zeespare-kind": "money"
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Cost currency.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code"
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code"
           },
           "updated_at": {
             "type": "string",
@@ -11427,7 +11427,7 @@
             "description": "Last change (UTC, microseconds). Ignored when the record is sent back."
           }
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "receipt_code",
           "line_code"
         ]
@@ -11446,52 +11446,52 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "External receipt reference.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "line_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "External line reference, unique within the receipt.",
-            "x-maqdar-kind": "code"
+            "x-zeespare-kind": "code"
           },
           "item_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$",
             "maxLength": 64,
             "description": "Item.",
-            "x-maqdar-kind": "item_code",
-            "x-maqdar-reference": "items.item_code",
-            "x-maqdar-lookup": "items",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "item_code",
+            "x-zeespare-reference": "items.item_code",
+            "x-zeespare-lookup": "items",
+            "x-zeespare-required-for-new": true
           },
           "location_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Stock location.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "locations.location_code",
-            "x-maqdar-lookup": "locations",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "locations.location_code",
+            "x-zeespare-lookup": "locations",
+            "x-zeespare-required-for-new": true
           },
           "supplier_code": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
             "maxLength": 64,
             "description": "Supplier.",
-            "x-maqdar-kind": "code",
-            "x-maqdar-reference": "suppliers.supplier_code",
-            "x-maqdar-lookup": "suppliers",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "code",
+            "x-zeespare-reference": "suppliers.supplier_code",
+            "x-zeespare-lookup": "suppliers",
+            "x-zeespare-required-for-new": true
           },
           "receipt_date": {
             "type": "string",
             "format": "date",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
             "description": "Received business date.",
-            "x-maqdar-kind": "date",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "date",
+            "x-zeespare-required-for-new": true
           },
           "quantity": {
             "oneOf": [
@@ -11506,8 +11506,8 @@
               }
             ],
             "description": "Units received.",
-            "x-maqdar-kind": "decimal",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "decimal",
+            "x-zeespare-required-for-new": true
           },
           "unit_cost": {
             "oneOf": [
@@ -11522,16 +11522,16 @@
               }
             ],
             "description": "Cost per received unit.",
-            "x-maqdar-kind": "money",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "money",
+            "x-zeespare-required-for-new": true
           },
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$",
             "description": "Cost currency.",
-            "x-maqdar-kind": "currency",
-            "x-maqdar-reference": "currencies.code",
-            "x-maqdar-required-for-new": true
+            "x-zeespare-kind": "currency",
+            "x-zeespare-reference": "currencies.code",
+            "x-zeespare-required-for-new": true
           },
           "updated_at": {
             "description": "Read-only; ignored, so that listed records can be sent back unchanged."
@@ -11545,11 +11545,11 @@
             "unit_cost"
           ]
         },
-        "x-maqdar-natural-key": [
+        "x-zeespare-natural-key": [
           "receipt_code",
           "line_code"
         ],
-        "x-maqdar-load-order": 15
+        "x-zeespare-load-order": 15
       },
       "ReceiptsUpsertRequest": {
         "type": "object",
@@ -11612,7 +11612,7 @@
         "properties": {
           "type": {
             "type": "string",
-            "description": "urn:maqdar:problem:<code>"
+            "description": "urn:zeespare:problem:<code>"
           },
           "title": {
             "type": "string"
@@ -12165,7 +12165,7 @@
               },
               "display": {
                 "type": "string",
-                "description": "maqdar_sk_AbCd…wxyz"
+                "description": "zeespare_sk_AbCd…wxyz"
               },
               "scopes": {
                 "type": "array",

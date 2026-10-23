@@ -25,7 +25,7 @@ The working checkout is on `codex/step-16b-transfer-dates` at `2888553` (merged 
 
 After approval, use a suitable isolated managed worktree based on verified current `main`, following the repository branch convention (`feat/step-N-<slug>`) with a descriptive dashboard slug. Re-read instructions and relevant files on that base. Keep every unrelated working change out of the dashboard PR. Do not include or modify transfer-date migrations or generated database types.
 
-Node, pnpm, uv and Docker are installed, web dependencies are present, and `.env.local` points to loopback Supabase. Read-only Docker inspection confirmed the MAQDAR database/auth/REST/gateway services are running. The vector container is restarting; application/browser readiness remains to be verified. No credentials were printed. No tests, application screenshots or similarity measurements have run for this task yet.
+Node, pnpm, uv and Docker are installed, web dependencies are present, and `.env.local` points to loopback Supabase. Read-only Docker inspection confirmed the ZeeSpare database/auth/REST/gateway services are running. The vector container is restarting; application/browser readiness remains to be verified. No credentials were printed. No tests, application screenshots or similarity measurements have run for this task yet.
 
 ## Reference geometry and visual tokens
 

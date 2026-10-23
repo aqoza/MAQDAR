@@ -184,7 +184,7 @@ def test_concurrent_retries_are_one_immutable_record(dates):
 def test_waiting_save_rechecks_authority_and_evidence(dates, change):
     fixture, inputs, report = dates
     with psycopg.connect(fixture[0]) as admin, session(fixture) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.network-dates:'||%s,0))", (str(inputs[0]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.network-dates:'||%s,0))", (str(inputs[0]),))
         call = _Call(waiting, SAVE, (*inputs, uuid4(), report['fingerprint']))
         call.start()
         time.sleep(.3)

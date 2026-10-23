@@ -51,6 +51,6 @@ A local rollback-only benchmark on 2026-10-15 captured 50,000 items and 100,000 
 ## Owner-run rollout and rollback
 
 1. Stop existing workers before upgrading. Review `20261015110000_demand_classification.sql` and apply it yourself with `pnpm exec supabase db push`. This task does not change the hosted database.
-2. Upgrade the worker to this revision and run `uv sync --locked`. The existing dedicated login inherits two additional capabilities through `maqdar_worker`: `app.planning_task` and `app.classification_finish`. Start the upgraded worker before deploying the web form. No credentials or hosted workers are provisioned here.
+2. Upgrade the worker to this revision and run `uv sync --locked`. The existing dedicated login inherits two additional capabilities through `zeespare_worker`: `app.planning_task` and `app.classification_finish`. Start the upgraded worker before deploying the web form. No credentials or hosted workers are provisioned here.
 3. Deploy the web build using the existing process. Queue a small confirmed-history run; verify its method, scope, evidence and attempt count. Also verify an ordinary readiness check.
 4. For rollback, stop workers and cancel unwanted active classifications through the current web version. Revert the web application and worker together, preserving schema/history. The old worker can still execute readiness jobs, but classification jobs deliberately fail its dispatch guard. Do not leave old workers consuming classification jobs. Destructive schema rollback requires a separate reviewed migration.

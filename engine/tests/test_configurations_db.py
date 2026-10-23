@@ -11,8 +11,8 @@ import pytest
 
 from test_planning_db import planning, worker
 from test_simulation_db import policy, enqueue as enqueue_original
-from maqdar_engine.worker import process_one
-from maqdar_engine.policy_configurations import calculate
+from zeespare_engine.worker import process_one
+from zeespare_engine.policy_configurations import calculate
 
 pytestmark = pytest.mark.db
 
@@ -123,7 +123,7 @@ def test_membership_revocation_during_request_lock_is_rechecked(planning, simula
             assert process_one(db)
     name = f'configurations-authority-{uuid4()}'
     with psycopg.connect(planning[0]) as lock:
-        lock.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.planning:'||%s,0))", (str(planning[1]),))
+        lock.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.planning:'||%s,0))", (str(planning[1]),))
         with ThreadPoolExecutor(max_workers=1) as pool:
             pending = pool.submit(enqueue, planning, simulation, request, None, name)
             try:

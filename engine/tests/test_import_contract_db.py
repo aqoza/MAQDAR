@@ -2,7 +2,7 @@
 
 * Every contract column exists in its application table with matching nullability, default, enum
   values and code pattern, and every NOT NULL column without a default is part of the contract.
-* The generated seed (`maqdar-synth format --sql`) runs against tables shaped like
+* The generated seed (`zeespare-synth format --sql`) runs against tables shaped like
   ``ingest.contract_entities`` / ``ingest.contract_columns`` (temporary copies, rolled back).
 * Once the import wizard migration exists, its seeded rows equal the Python contract.
 """
@@ -15,7 +15,7 @@ from decimal import Decimal
 import psycopg
 import pytest
 
-from maqdar_engine import importformat
+from zeespare_engine import importformat
 
 pytestmark = pytest.mark.db
 

@@ -110,7 +110,7 @@ create temporary table batches(id uuid,payload jsonb);
 insert into batches(id) select public.transfer_handoff_batch_create(pg_temp.id(1),array_agg(id order by id)) from lines where n in(0,1);
 update batches set payload=b.payload from public.transfer_handoff_batches b where b.id=batches.id;
 create function pg_temp.hash(n integer) returns bytea language sql immutable as $$select decode(lpad(n::text,64,'0'),'hex')$$;
-create function pg_temp.key(n integer,scopes text[] default array['transfer_handoffs:read'],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Test key '||n,scopes,30,pg_temp.hash(n),'maqdar_sk_test','test')$$;
+create function pg_temp.key(n integer,scopes text[] default array['transfer_handoffs:read'],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Test key '||n,scopes,30,pg_temp.hash(n),'zeespare_sk_test','test')$$;
 select pg_temp.login(10,1);
 set local role authenticated;
 

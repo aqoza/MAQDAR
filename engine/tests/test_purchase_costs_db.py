@@ -43,7 +43,7 @@ def test_cost_rechecks_after_lock_wait(cost, change, expected):
     source, delivery_id = cost
     report = preview(cost)
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.purchase-cost:'||%s,0))", (str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.purchase-cost:'||%s,0))", (str(source[1]),))
         call = _Call(waiting, SAVE, (source[1], delivery_id, uuid4(), report['fingerprint']))
         call.start()
         time.sleep(1)

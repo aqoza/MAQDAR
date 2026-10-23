@@ -37,7 +37,7 @@
  *   columns.<column key>, fields.<field name>, hints.<field name>?, filters.<param>,
  *   options.<field or filter column>.<value> (enum and boolean labels).
  */
-import type { Database } from '@maqdar/shared/database.types'
+import type { Database } from '@zeespare/shared/database.types'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { z } from 'zod'
 import type { Messages } from '../../i18n/messages'

@@ -3,9 +3,9 @@
 --   successor_item_code); a self-loop is the existing 23514 check;
 -- * location parents: no cycles (MQ422, hint parent_location_id);
 -- * the demand delete guard: items and locations with demand_history cannot be deleted (MQ409) by
---   an editor or by postgres, unless the session sets maqdar.demand_guard = 'off' (the loader);
+--   an editor or by postgres, unless the session sets zeespare.demand_guard = 'off' (the loader);
 --   rows without demand delete fine and an item delete cascades its interchanges; the guard takes
---   the shared import lock maqdar.import:<organization> (Step 5a), held until the transaction ends;
+--   the shared import lock zeespare.import:<organization> (Step 5a), held until the transaction ends;
 -- * brands and calendars in use cannot be deleted (23503);
 -- * one preferred supplier per item (23505);
 -- * deleting an organization that still has demand is MQ409; after its demand is deleted the
@@ -31,7 +31,7 @@ exception when others then
 end;
 $$;
 
--- The advisory locks this session holds on maqdar.import:<organization> (the key the import commit
+-- The advisory locks this session holds on zeespare.import:<organization> (the key the import commit
 -- steps take exclusively), as "mode:granted" ('-' when none).
 create function pg_temp.import_locks(p_organization_id uuid)
 returns text
@@ -39,7 +39,7 @@ language sql
 as $$
   select coalesce(string_agg(l.mode || ':' || l.granted::text, ',' order by l.mode), '-')
   from pg_locks l
-  cross join (select hashtextextended('maqdar.import:' || p_organization_id::text, 0) as key) as k
+  cross join (select hashtextextended('zeespare.import:' || p_organization_id::text, 0) as key) as k
   where l.locktype = 'advisory'
     and l.pid = pg_backend_pid()
     and l.database = (select oid from pg_database where datname = current_database())
@@ -226,7 +226,7 @@ select lives_ok(
 select is(
   pg_temp.import_locks('00000000-0000-4000-8000-a15000000000'),
   'ShareLock:true',
-  'the delete guard took maqdar.import:<organization> in share mode and holds it until the transaction ends'
+  'the delete guard took zeespare.import:<organization> in share mode and holds it until the transaction ends'
 );
 select is(
   pg_temp.import_locks('00000000-0000-4000-8000-b15000000000'),
@@ -308,16 +308,16 @@ select throws_ok(
   'MQ409', null, 'postgres cannot delete a location with demand history either'
 );
 
-set local maqdar.demand_guard = 'off';
+set local zeespare.demand_guard = 'off';
 select lives_ok(
   $$delete from public.items where id = '00000000-0000-4000-8000-a15020000004'$$,
-  'with maqdar.demand_guard off the item with demand deletes'
+  'with zeespare.demand_guard off the item with demand deletes'
 );
 select lives_ok(
   $$delete from public.locations where id = '00000000-0000-4000-8000-a15010000001'$$,
-  'with maqdar.demand_guard off the location with demand deletes'
+  'with zeespare.demand_guard off the location with demand deletes'
 );
-set local maqdar.demand_guard = 'on';
+set local zeespare.demand_guard = 'on';
 select throws_ok(
   $$delete from public.items where id = '00000000-0000-4000-8000-a15020000008'$$,
   'MQ409', null, 'the guard is back once the setting is no longer off'

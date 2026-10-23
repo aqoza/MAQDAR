@@ -25,7 +25,7 @@ select is(app.simulation_calendar_next('{"2026-01-02":{"date":"2026-01-02","work
 select is(app.simulation_calendar_next((select jsonb_object_agg((date '2026-01-02'+n)::text,jsonb_build_object('date',date '2026-01-02'+n,'working',false)) from generate_series(0,89) n),'2026-01-02')->>'status','search_exhausted','90 closed dates exhaust search');
 select ok(not has_function_privilege('service_role','public.simulation_calendars_enqueue(uuid,uuid,uuid,uuid,text,boolean)','execute'),'integration keys gain no scope');
 select ok(not has_function_privilege('authenticated','app.simulation_calendar_output(jsonb)','execute'),'result calculator private');
-select ok(not has_function_privilege('maqdar_worker','app.simulation_calendar_replay(jsonb,jsonb)','execute'),'worker has only existing publication capability');
+select ok(not has_function_privilege('zeespare_worker','app.simulation_calendar_replay(jsonb,jsonb)','execute'),'worker has only existing publication capability');
 set local role authenticated;
 select throws_ok($$select public.simulation_calendars_preview(gen_random_uuid(),gen_random_uuid(),gen_random_uuid())$$,'MQ404',null,'anonymous membership cannot preview another tenant');
 select throws_ok($$select public.simulation_calendars_enqueue(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),repeat('a',64),true)$$,'MQ403',null,'nonmember cannot enqueue');

@@ -79,7 +79,7 @@ The planned local CPU profile of the Step 4 pages (`cf:preview`) was not run, be
 
 ### Through the wizard at scale
 
-`apps/web/e2e/imports-scale.spec.ts` (`SCALE=1`) drives the wizard in Chromium against `next start` and the local stack, with the files the `large` synthetic preset generates (written to disk, never loaded by `maqdar-synth`), into a fresh organization. Times are wall clock on the same Windows laptop as above; RPC figures come from the browser's requests and from `import_batches.progress`.
+`apps/web/e2e/imports-scale.spec.ts` (`SCALE=1`) drives the wizard in Chromium against `next start` and the local stack, with the files the `large` synthetic preset generates (written to disk, never loaded by `zeespare-synth`), into a fresh organization. Times are wall clock on the same Windows laptop as above; RPC figures come from the browser's requests and from `import_batches.progress`.
 
 | Run                                                                                                             | Rows                          | Parse in the browser | Stage and check | Commit          | End to end | Target |
 | --------------------------------------------------------------------------------------------------------------- | ----------------------------- | -------------------- | --------------- | --------------- | ---------- | ------ |

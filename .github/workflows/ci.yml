@@ -65,10 +65,10 @@ jobs:
         working-directory: engine
         run: |
           uv sync --locked
-          uv run maqdar-synth all --preset tiny --force
+          uv run zeespare-synth all --preset tiny --force
           uv run pytest -m db -q
         env:
-          MAQDAR_TEST_DSN: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+          ZEESPARE_TEST_DSN: postgresql://postgres:postgres@127.0.0.1:54322/postgres
       - name: Import retention unit tests
         run: node --test scripts/import-retention.test.mjs
       - name: Build web
@@ -184,9 +184,9 @@ jobs:
       - name: Real image probe, scoped publication and lease recovery
         run: uv run --project engine pytest engine/tests/test_scoped_container_db.py -q
         env:
-          MAQDAR_TEST_DSN: postgresql://postgres:postgres@127.0.0.1:54322/postgres
-          MAQDAR_CONTAINER_IMAGE: simulation-worker:ci
-          MAQDAR_TEST_DB_CONTAINER: supabase_db_MAQDAR
+          ZEESPARE_TEST_DSN: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+          ZEESPARE_CONTAINER_IMAGE: simulation-worker:ci
+          ZEESPARE_TEST_DB_CONTAINER: supabase_db_zeespare
       - name: Stop CI database
         if: always()
         run: pnpm exec supabase stop --no-backup

@@ -134,7 +134,7 @@ update batches set payload=b.payload from public.purchase_handoff_batches b wher
 -- Force timestamp ties to exercise the UUID tiebreak and inclusive lower bound.
 update public.purchase_handoffs set created_at='2026-10-01T00:00:00Z' where organization_id=pg_temp.id(1);
 create function pg_temp.hash(n integer) returns bytea language sql immutable as $$select decode(lpad(n::text,64,'0'),'hex')$$;
-create function pg_temp.key(n integer,scopes text[] default array['purchase_handoffs:read'],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Test key '||n,scopes,30,pg_temp.hash(n),'maqdar_sk_test','test')$$;
+create function pg_temp.key(n integer,scopes text[] default array['purchase_handoffs:read'],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Test key '||n,scopes,30,pg_temp.hash(n),'zeespare_sk_test','test')$$;
 select pg_temp.login(10,1);
 set local role authenticated;
 

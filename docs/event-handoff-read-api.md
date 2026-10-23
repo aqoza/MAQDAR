@@ -40,8 +40,8 @@ Rows sort by creation time descending, then UUID ascending. Cursors bind the org
 For example, using an origin and key supplied by your integration's configuration/secret store:
 
 ```sh
-curl --fail-with-body "$MAQDAR_ORIGIN/api/v1/event-purchase-handoffs?limit=25" \
-  -H "Authorization: Bearer $MAQDAR_API_KEY"
+curl --fail-with-body "$ZEESPARE_ORIGIN/api/v1/event-purchase-handoffs?limit=25" \
+  -H "Authorization: Bearer $ZEESPARE_API_KEY"
 ```
 
 ## Acceptance and verification

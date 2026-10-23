@@ -2,8 +2,8 @@
 from datetime import date, timedelta
 from decimal import Decimal, localcontext
 
-from maqdar_engine.policy_constraints import calculate as constraints_calculate, rounded_order
-from maqdar_engine.policy_simulation import exact, quantity, ratio, ZERO
+from zeespare_engine.policy_constraints import calculate as constraints_calculate, rounded_order
+from zeespare_engine.policy_simulation import exact, quantity, ratio, ZERO
 
 VERSION = "periodic-calendars-v1"
 SEARCH_DAYS = 90

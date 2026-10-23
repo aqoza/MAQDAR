@@ -9,10 +9,10 @@ import psycopg
 from psycopg.conninfo import conninfo_to_dict
 import pytest
 
-from maqdar_engine.worker import process_one
-from maqdar_engine.classification import classify
-from maqdar_engine.forecasting import forecast as baseline_forecast
-from maqdar_engine.expanded_forecasting import forecast as expanded_forecast
+from zeespare_engine.worker import process_one
+from zeespare_engine.classification import classify
+from zeespare_engine.forecasting import forecast as baseline_forecast
+from zeespare_engine.expanded_forecasting import forecast as expanded_forecast
 from psycopg.types.json import Jsonb
 
 
@@ -59,7 +59,7 @@ def enqueue(fixture, request):
 @contextmanager
 def worker(dsn):
     with psycopg.connect(dsn, autocommit=True) as db:
-        db.execute('set role maqdar_worker')
+        db.execute('set role zeespare_worker')
         db.execute("set statement_timeout='90s'")
         yield db
 

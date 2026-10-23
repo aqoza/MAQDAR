@@ -26,6 +26,6 @@ select ok(not has_table_privilege('authenticated','public.network_allocation_sce
 select ok(not has_table_privilege('authenticated','public.network_allocation_scenarios','DELETE'),'no direct delete');
 select ok(not has_table_privilege('service_role','public.network_allocation_scenarios','SELECT'),'no API service read grant');
 select ok(not has_function_privilege('anon','public.network_allocation_preview(uuid,uuid[],uuid,text,uuid,text,boolean,boolean)','EXECUTE'),'anonymous cannot preview');
-select ok(not has_function_privilege('maqdar_worker','public.network_allocation_save(uuid,uuid[],uuid,text,uuid,text,boolean,boolean,uuid,text)','EXECUTE'),'worker cannot save');
+select ok(not has_function_privilege('zeespare_worker','public.network_allocation_save(uuid,uuid[],uuid,text,uuid,text,boolean,boolean,uuid,text)','EXECUTE'),'worker cannot save');
 select * from finish();
 rollback;

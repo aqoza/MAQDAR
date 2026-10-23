@@ -224,7 +224,7 @@ def test_waits_recheck_authority_and_evidence(package, lock, change, expected):
         if lock == "parent" and change == "freight":
             admin.execute("select id from public.network_links where organization_id=%s order by id for update",(source[1],))
         if lock == "advisory":
-            admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.regional-review:'||%s,0))",(str(source[1]),))
+            admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.regional-review:'||%s,0))",(str(source[1]),))
         elif lock == "parent":
             admin.execute("select id from public.regional_transfer_handoffs where id=%s for update",(ids[0],))
         else:

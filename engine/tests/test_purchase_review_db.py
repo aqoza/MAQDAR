@@ -78,7 +78,7 @@ def test_rechecks_after_lock_wait(purchase, operation, change, expected):
     else:
         sql,args,waiting,user=SUBMIT,(source[1],purchase[1],uuid4(),'Purchase reason'),session(source),source[2]
     with psycopg.connect(source[0]) as admin, waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.purchase-review:'||%s,0))",(str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.purchase-review:'||%s,0))",(str(source[1]),))
         call=_Call(waiting,sql,args)
         call.start()
         time.sleep(1)

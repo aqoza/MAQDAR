@@ -228,7 +228,7 @@ set local role service_role;
 select throws_ok($$select pg_temp.cp()$$,'42501',null,'integration keys cannot access capacity RPC');
 reset role;
 insert into public.api_keys(organization_id,name,display_prefix,last4,key_hash,scopes,created_by,expires_at)
-values(pg_temp.id(1),'Capacity','maqdar_sk_abcd','abcd',decode(repeat('ac',32),'hex'),array['master_data:read','master_data:write'],pg_temp.id(10),now()+interval '1 day');
+values(pg_temp.id(1),'Capacity','zeespare_sk_abcd','abcd',decode(repeat('ac',32),'hex'),array['master_data:read','master_data:write'],pg_temp.id(10),now()+interval '1 day');
 create function pg_temp.upsert(record jsonb) returns jsonb language sql as $$select public.api_upsert(decode(repeat('ac',32),'hex'),'supplier_items',jsonb_build_object('records',jsonb_build_array(record)),gen_random_uuid())$$;
 select set_config('request.jwt.claims','{}',true);
 set local role service_role;

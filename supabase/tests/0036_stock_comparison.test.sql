@@ -81,7 +81,7 @@ select ok(not has_function_privilege('service_role','public.policy_stock_compari
 -- Imports/API use the same merge path; omission on quantity replacement clears provenance.
 select set_config('request.jwt.claims','{}',true);
 insert into public.api_keys(organization_id,name,display_prefix,last4,key_hash,scopes,created_by,expires_at) values
- (pg_temp.id(1),'Units','maqdar_sk_abcd','abcd',decode(repeat('ab',32),'hex'),array['transactions:read','transactions:write'],pg_temp.id(10),now()+interval '1 day');
+ (pg_temp.id(1),'Units','zeespare_sk_abcd','abcd',decode(repeat('ab',32),'hex'),array['transactions:read','transactions:write'],pg_temp.id(10),now()+interval '1 day');
 create function pg_temp.upsert(entity text, record jsonb) returns jsonb language sql as $$select public.api_upsert(decode(repeat('ab',32),'hex'),entity,jsonb_build_object('records',jsonb_build_array(record)),gen_random_uuid())$$;
 set local role service_role;
 select is(pg_temp.upsert('demand_history','{"item_code":"ITEM","location_code":"L0","demand_date":"2026-10-01","quantity":"5","unit_of_measure":"EA"}')->>'result','succeeded','demand unit import succeeds');

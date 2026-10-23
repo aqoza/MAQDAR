@@ -53,7 +53,7 @@ def test_delivery_rechecks_after_lock_wait(delivery, change, expected):
     source, supplier_id = delivery
     report = preview(delivery)
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.delivery-scenario:'||%s,0))", (str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.delivery-scenario:'||%s,0))", (str(source[1]),))
         call = _Call(waiting, SAVE, (source[1], supplier_id, uuid4(), report['fingerprint']))
         call.start()
         time.sleep(1)

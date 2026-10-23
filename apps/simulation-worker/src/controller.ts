@@ -1,9 +1,9 @@
 export interface RuntimeConfig {
   ENABLED: string
   MODE: string
-  MAQDAR_EXPECTED_ORGANIZATION: string
-  MAQDAR_WORKER_DSN: string
-  MAQDAR_DATABASE_CA: string
+  ZEESPARE_EXPECTED_ORGANIZATION: string
+  ZEESPARE_WORKER_DSN: string
+  ZEESPARE_DATABASE_CA: string
 }
 
 // Narrow structural boundary makes the lifecycle executable in node tests.
@@ -91,11 +91,11 @@ export async function tick(
     return
   }
   if (
-    !config.MAQDAR_WORKER_DSN ||
-    !config.MAQDAR_DATABASE_CA ||
+    !config.ZEESPARE_WORKER_DSN ||
+    !config.ZEESPARE_DATABASE_CA ||
     !['probe', 'consume'].includes(config.MODE) ||
     !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-      config.MAQDAR_EXPECTED_ORGANIZATION,
+      config.ZEESPARE_EXPECTED_ORGANIZATION,
     )
   ) {
     throw new Error('Simulation container configuration is incomplete')
@@ -107,10 +107,10 @@ export async function tick(
       instance: 'basic',
       enableInternet: true,
       env: {
-        MAQDAR_WORKER_DSN: config.MAQDAR_WORKER_DSN,
-        MAQDAR_DATABASE_CA: config.MAQDAR_DATABASE_CA,
-        MAQDAR_EXPECTED_ORGANIZATION: config.MAQDAR_EXPECTED_ORGANIZATION,
-        MAQDAR_WORKER_MODE: config.MODE,
+        ZEESPARE_WORKER_DSN: config.ZEESPARE_WORKER_DSN,
+        ZEESPARE_DATABASE_CA: config.ZEESPARE_DATABASE_CA,
+        ZEESPARE_EXPECTED_ORGANIZATION: config.ZEESPARE_EXPECTED_ORGANIZATION,
+        ZEESPARE_WORKER_MODE: config.MODE,
       },
     })
   }

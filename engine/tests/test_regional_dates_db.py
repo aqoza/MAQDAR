@@ -178,7 +178,7 @@ def test_request_wait_rechecks_authority(dates, retry, change):
         with session(fixture) as db:
             db.execute(SAVE,args)
     with psycopg.connect(fixture[0]) as admin, session(fixture) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.regional-dates:'||%s||':'||%s,0))", (str(inputs[0]),str(args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.regional-dates:'||%s||':'||%s,0))", (str(inputs[0]),str(args[2])))
         call = _Call(waiting,SAVE,args); call.start(); time.sleep(.3)
         assert not call.finished
         if change=='role':

@@ -1,4 +1,4 @@
-import type { Json } from '@maqdar/shared/database.types'
+import type { Json } from '@zeespare/shared/database.types'
 import type { NextRequest } from 'next/server'
 import {
   IMPORTS_BUCKET,

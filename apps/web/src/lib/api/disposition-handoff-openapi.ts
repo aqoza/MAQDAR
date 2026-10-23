@@ -123,7 +123,7 @@ export function dispositionHandoffPaths(): Record<string, Record<string, Schema>
               ? 'data.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.'
               : 'Newest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a selection-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for current selection. Unknown, repeated or empty parameters return 400.',
           ].join('\n\n'),
-          'x-maqdar-scopes': [HANDOFF_SCOPE],
+          'x-zeespare-scopes': [HANDOFF_SCOPE],
           parameters: detail
             ? [{ name: 'id', in: 'path', required: true, schema: uuid }]
             : [

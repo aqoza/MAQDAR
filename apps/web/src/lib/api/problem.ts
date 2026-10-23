@@ -15,7 +15,7 @@ import type { RequestIssue, UpsertBodyFailure } from './records'
 
 /**
  * RFC 9457 problems of `/api/v1`. Every error answer is `application/problem+json` with
- * `type: urn:maqdar:problem:<code>`, a stable `title`, `status` (the HTTP status), `detail`,
+ * `type: urn:zeespare:problem:<code>`, a stable `title`, `status` (the HTTP status), `detail`,
  * `instance: urn:uuid:<request id>`, `code` and `request_id`, plus the extension members listed
  * per code. Problems carry codes, the caller's own values (at most 200 characters) and the request
  * id: never SQL text, SQLSTATEs, the 5a `phase` or stack traces. Pure module.
@@ -147,7 +147,7 @@ export function isProblemCode(value: unknown): value is ProblemCode {
 
 /** `type` of a problem. */
 export function problemType(code: ProblemCode): string {
-  return `urn:maqdar:problem:${code}`
+  return `urn:zeespare:problem:${code}`
 }
 
 /** Seconds of the Retry-After header per situation. */
@@ -163,7 +163,7 @@ export const RETRY_AFTER_SECONDS = {
   unavailable: 5,
 } as const
 
-export const AUTH_REALM = 'maqdar-api'
+export const AUTH_REALM = 'zeespare-api'
 
 /** `WWW-Authenticate` per RFC 6750 §3. */
 export function wwwAuthenticate(

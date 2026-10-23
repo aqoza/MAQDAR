@@ -85,7 +85,7 @@ def test_rechecks_after_lock_wait(purchase, operation, change, expected):
     else:
         sql,args,waiting,user=SUBMIT,(source[1],purchase[1],uuid4(),'Purchase reason'),session(source),source[2]
     with psycopg.connect(source[0]) as admin, waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.event-purchase-review:'||%s,0))",(str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.event-purchase-review:'||%s,0))",(str(source[1]),))
         call=_Call(waiting,sql,args)
         call.start()
         time.sleep(1)
@@ -140,7 +140,7 @@ def test_author_withdrawal_rechecks_location_access_after_wait(purchase):
     source=purchase[0]
     proposal=propose(purchase)
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.event-purchase-review:'||%s,0))",(str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.event-purchase-review:'||%s,0))",(str(source[1]),))
         call=_Call(waiting,DECIDE,(source[1],proposal,uuid4(),'withdrawn','Withdraw'))
         call.start();time.sleep(1);assert not call.finished
         admin.execute("update public.memberships set role='branch_user' where organization_id=%s and user_id=%s",(source[1],source[2]))

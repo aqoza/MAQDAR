@@ -3,10 +3,10 @@ from datetime import timedelta
 from decimal import Decimal
 from uuid import UUID
 
-from maqdar_engine.driver_forecasting import (
+from zeespare_engine.driver_forecasting import (
     DriverUnavailable, MAX_PREDICTION, RIDGE, driver_values, forecast_captured,
 )
-from maqdar_engine.forecasting import decimal_text
+from zeespare_engine.forecasting import decimal_text
 
 VERSION = 'multi-driver-v1'
 MODEL = 'multi_driver_weekday'

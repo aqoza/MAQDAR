@@ -33,9 +33,9 @@ import type { ApiRpcResult } from './rpc-request'
 
 const REQUEST_ID = '6f1d2c3b-4a5e-4f60-8a7b-9c0d1e2f3a4b'
 /** The shared key vector of keys.test.ts and pgTAP 0022 (valid format and checksum). */
-const TOKEN = 'maqdar_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg27zRqD'
-const HASH = '\\x57c5db9f1c461c47073a614bba4368a3902a3fa56525f94fa8fab6528f35efcb'
-const BASE = 'https://maqdar.test/api/v1'
+const TOKEN = 'zeespare_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0QUuQI'
+const HASH = '\\x5ce42b3eff9f75f4c38e409644e5813fce73de68bce8d108dfd5e117b42b1863'
+const BASE = 'https://zeespare.test/api/v1'
 const LEAK = 'permission denied for function api_upsert (secret detail)'
 
 const ALL_SCOPES = [
@@ -69,7 +69,7 @@ function organizationText(scopes: string[] = ALL_SCOPES): string {
     key: {
       id: '0b5f3a52-6c1e-4f43-9d55-1f0c2b7a9e10',
       name: 'ERP',
-      display: 'maqdar_sk_0123…RqD',
+      display: 'zeespare_sk_0123…RqD',
       scopes,
       created_at: '2026-10-01T00:00:00.000000Z',
       expires_at: '2026-12-30T00:00:00.000000Z',
@@ -624,7 +624,7 @@ describe('routing', () => {
       }
       const problem = await body(response)
       expect(problem).toMatchObject({
-        type: 'urn:maqdar:problem:method_not_allowed',
+        type: 'urn:zeespare:problem:method_not_allowed',
         status: 405,
         code: 'method_not_allowed',
         detail,
@@ -731,7 +731,7 @@ describe('authentication', () => {
         state.deps,
       )
       expect(response.status).toBe(401)
-      expect(response.headers.get('www-authenticate')).toBe('Bearer realm="maqdar-api"')
+      expect(response.headers.get('www-authenticate')).toBe('Bearer realm="zeespare-api"')
       expect(response.headers.get('set-cookie')).toBeNull()
       expect((await body(response)).code).toBe('unauthorized')
       expect(state.rpcCalls).toEqual([])

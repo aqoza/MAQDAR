@@ -15,7 +15,7 @@ const exactScore = '123,456,789,012,345,678.123'
 
 async function seedForecastSearch(organization: string, branch: string) {
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname)) {
     throw new Error('Forecast search fixtures require the local database')
   }

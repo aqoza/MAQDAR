@@ -5,9 +5,9 @@ from decimal import Decimal, ROUND_CEILING, localcontext
 from hashlib import sha256
 import random
 
-from maqdar_engine.expanded_forecasting import predict
-from maqdar_engine.forecasting import MIN_TRAIN, daily_series, decimal_text
-from maqdar_engine.regional_forecasting import calendar_predict
+from zeespare_engine.expanded_forecasting import predict
+from zeespare_engine.forecasting import MIN_TRAIN, daily_series, decimal_text
+from zeespare_engine.regional_forecasting import calendar_predict
 
 VERSION = "policy-v1"
 SAMPLES = 5000

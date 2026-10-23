@@ -339,7 +339,7 @@ export function parseIntValue(value: unknown, min: number, max: number): number 
 /* RPC errors                                                                                   */
 /* ------------------------------------------------------------------------------------------ */
 
-/** HTTP status per custom MAQDAR SQLSTATE (see the tenancy and import migrations). */
+/** HTTP status per custom ZeeSpare SQLSTATE (see the tenancy and import migrations). */
 const MQ_STATUS: Readonly<Record<string, number>> = {
   MQ401: 401,
   MQ403: 403,

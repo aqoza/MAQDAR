@@ -108,7 +108,7 @@ def test_rechecks_after_lock_wait(transfer, operation, change, expected):
     else:
         sql,args,waiting,user=SUBMIT,(source[1],transfer[1],uuid4(),'Transfer reason'),session(source),source[2]
     with psycopg.connect(source[0]) as admin, waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.network-review:'||%s,0))",(str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.network-review:'||%s,0))",(str(source[1]),))
         call=_Call(waiting,sql,args)
         call.start()
         time.sleep(.3)
@@ -158,7 +158,7 @@ def test_waiting_withdrawal_rechecks_both_endpoint_access(transfer):
         db.execute("update public.memberships set role='branch_user' where organization_id=%s and user_id=%s", (source[1], source[2]))
         db.execute('insert into public.membership_locations select organization_id,%s,id from public.locations where organization_id=%s', (source[2], source[1]))
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.network-review:'||%s,0))", (str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.network-review:'||%s,0))", (str(source[1]),))
         call = _Call(waiting, DECIDE, (source[1], proposal, uuid4(), 'withdrawn', 'Author withdrawal'))
         call.start()
         time.sleep(0.3)

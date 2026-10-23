@@ -55,7 +55,7 @@ def test_region_create_rechecks_editor_after_wait(regional, retry):
         with session(regional) as db:
             db.execute(CREATE, args)
     with psycopg.connect(regional[0]) as admin, session(regional) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.stock-region:'||%s||':'||%s,0))", (str(regional[1]), str(args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.stock-region:'||%s||':'||%s,0))", (str(regional[1]), str(args[2])))
         call = _Call(waiting, CREATE, args)
         call.start()
         time.sleep(0.5)

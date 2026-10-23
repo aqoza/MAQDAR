@@ -39,7 +39,7 @@ def test_waiting_first_save_rechecks_source(approved, change):
     source, proposal = approved
     dsn, org, _, _ = source['draft']
     with psycopg.connect(dsn) as admin, session(source['draft']) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.excess-disposition:'||%s,0))", (str(org),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.excess-disposition:'||%s,0))", (str(org),))
         call = _Call(waiting, HANDOFF, (org, proposal))
         call.start()
         time.sleep(1)
@@ -63,7 +63,7 @@ def test_waiting_save_and_retry_recheck_authority(approved, replay, change):
         with session(source['draft']) as db:
             db.execute(HANDOFF, (org, proposal))
     with psycopg.connect(dsn) as admin, session(source['draft']) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.excess-disposition:'||%s,0))", (str(org),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.excess-disposition:'||%s,0))", (str(org),))
         call = _Call(waiting, HANDOFF, (org, proposal))
         call.start()
         time.sleep(1)

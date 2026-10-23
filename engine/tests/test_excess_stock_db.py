@@ -42,7 +42,7 @@ def test_parallel_retries_save_one_record_and_audit(draft):
 def test_lock_wait_rechecks_sources_and_authority(draft, change, code):
     report = preview(draft)
     with psycopg.connect(draft[0]) as admin, session(draft) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.excess-stock:'||%s,0))", (str(draft[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.excess-stock:'||%s,0))", (str(draft[1]),))
         call = _Call(waiting, SAVE, (draft[1], choices(draft), uuid4(), report["fingerprint"]))
         call.start()
         time.sleep(1)

@@ -13,7 +13,7 @@ from test_replenishment_db import session
 from test_tenancy_concurrency import _Call, _race
 from test_planning_db import planning, worker
 from test_policy_db import saved_forecast, enqueue_policy
-from maqdar_engine.worker import process_one
+from zeespare_engine.worker import process_one
 
 pytestmark = pytest.mark.db
 PREVIEW = "select public.event_replenishment_preview(%s,%s,'0',true,true)"
@@ -53,7 +53,7 @@ def test_event_draft_rechecks_after_lock(event_draft, change, expected):
     source, scenario, report = event_draft
     request = uuid4()
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.event-replenishment:'||%s||':'||%s,0))", (str(source[1]), str(request)))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.event-replenishment:'||%s||':'||%s,0))", (str(source[1]), str(request)))
         call = _Call(waiting, SAVE, (source[1], scenario, request, report['fingerprint']))
         call.start()
         time.sleep(1)

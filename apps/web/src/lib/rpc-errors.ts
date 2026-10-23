@@ -73,7 +73,7 @@ export function violatedConstraint(error: RpcErrorLike): string | null {
 }
 
 /**
- * The hint of a custom MAQDAR error, which names the offending form field (the graph guards raise
+ * The hint of a custom ZeeSpare error, which names the offending form field (the graph guards raise
  * MQ422 with hint `successor_item_code` or `parent_location_id`). Only identifier-like hints count.
  */
 export function errorHintField(error: RpcErrorLike): string | null {

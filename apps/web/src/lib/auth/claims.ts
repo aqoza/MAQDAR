@@ -4,7 +4,7 @@ import { isRole, type Role } from './roles'
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 /**
- * The claims MAQDAR reads from a verified access token. `org_id` and `org_role` come from the
+ * The claims ZeeSpare reads from a verified access token. `org_id` and `org_role` come from the
  * custom access-token hook (app.custom_access_token_hook) and name the user's active organization.
  * Only `sub` is required: anything unexpected in the other claims is treated as absent, never as an
  * error, because the database re-checks memberships on every statement and the app falls back to
@@ -31,9 +31,9 @@ export const claimsSchema = z
   })
   .loose()
 
-export type MaqdarClaims = z.infer<typeof claimsSchema>
+export type ZeeSpareClaims = z.infer<typeof claimsSchema>
 
-export function parseClaims(raw: unknown): MaqdarClaims | null {
+export function parseClaims(raw: unknown): ZeeSpareClaims | null {
   const result = claimsSchema.safeParse(raw)
   return result.success ? result.data : null
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '@maqdar/shared'
+import type { Database } from '@zeespare/shared'
 import {
   dashboardLocationHref,
   loadDashboardLocations,

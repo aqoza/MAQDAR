@@ -12,7 +12,7 @@ import shutil
 from pathlib import Path
 from typing import Callable, Sequence
 
-from maqdar_engine.synth.writer import count_rows, sha256_of
+from zeespare_engine.synth.writer import count_rows, sha256_of
 
 CALENDAR = "KSA-STD"
 

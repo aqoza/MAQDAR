@@ -1,7 +1,7 @@
 import 'server-only'
 import { isEditorRole } from '@/lib/auth/roles'
 import { getSessionClaims } from '@/lib/auth/session'
-import type { MaqdarClaims } from '@/lib/auth/claims'
+import type { ZeeSpareClaims } from '@/lib/auth/claims'
 import { env } from '@/lib/env'
 import { getActiveContext, type ActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
@@ -12,7 +12,7 @@ import { errorResponse } from './route'
 export type ServerClient = Awaited<ReturnType<typeof createClient>>
 
 export type SessionRoute =
-  { ok: true; claims: MaqdarClaims; supabase: ServerClient } | { ok: false; response: Response }
+  { ok: true; claims: ZeeSpareClaims; supabase: ServerClient } | { ok: false; response: Response }
 
 export type EditorRoute =
   | { ok: true; context: ActiveContext; organizationId: string; supabase: ServerClient }

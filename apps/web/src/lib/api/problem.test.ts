@@ -54,7 +54,7 @@ describe('toProblem', () => {
       const problem = toProblem(code, REQUEST_ID, { allow: 'GET' })
       expect(problem.status).toBe(PROBLEMS[code].status)
       expect(problem.body).toMatchObject({
-        type: `urn:maqdar:problem:${code}`,
+        type: `urn:zeespare:problem:${code}`,
         title: PROBLEMS[code].title,
         status: problem.status,
         detail: PROBLEMS[code].detail,
@@ -79,13 +79,13 @@ describe('toProblem', () => {
   it('adds the standard headers per code', () => {
     const header = (code: ProblemCode, init: ProblemInit = {}) =>
       toProblem(code, REQUEST_ID, init).headers
-    expect(header('unauthorized')).toEqual({ 'WWW-Authenticate': 'Bearer realm="maqdar-api"' })
+    expect(header('unauthorized')).toEqual({ 'WWW-Authenticate': 'Bearer realm="zeespare-api"' })
     expect(header('invalid_token')).toEqual({
-      'WWW-Authenticate': 'Bearer realm="maqdar-api", error="invalid_token"',
+      'WWW-Authenticate': 'Bearer realm="zeespare-api", error="invalid_token"',
     })
     expect(header('insufficient_scope', { requiredScope: 'master_data:write' })).toEqual({
       'WWW-Authenticate':
-        'Bearer realm="maqdar-api", error="insufficient_scope", scope="master_data:write"',
+        'Bearer realm="zeespare-api", error="insufficient_scope", scope="master_data:write"',
     })
     expect(header('busy')).toEqual({ 'Retry-After': '2' })
     expect(header('write_conflict')).toEqual({ 'Retry-After': '2' })
@@ -125,9 +125,9 @@ describe('toProblem', () => {
   })
 
   it('formats the WWW-Authenticate challenges', () => {
-    expect(wwwAuthenticate()).toBe('Bearer realm="maqdar-api"')
+    expect(wwwAuthenticate()).toBe('Bearer realm="zeespare-api"')
     expect(wwwAuthenticate('insufficient_scope', null)).toBe(
-      'Bearer realm="maqdar-api", error="insufficient_scope"',
+      'Bearer realm="zeespare-api", error="insufficient_scope"',
     )
   })
 })

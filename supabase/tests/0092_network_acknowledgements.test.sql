@@ -39,7 +39,7 @@ values(pg_temp.id(70),pg_temp.id(1),pg_temp.id(20),array[pg_temp.id(20),pg_temp.
 '{"schema_version":"network-handoff-batch-v1","purpose":"planning_only","summary":{"source_code":"SOURCE","dispatch_date":"2026-10-12","branch_row_count":1,"totals":[]},"lines":[]}');
 
 create function pg_temp.hash(n integer) returns bytea language sql immutable as $$select decode(lpad(n::text,64,'0'),'hex')$$;
-create function pg_temp.key(n integer,scopes text[],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Network reporter',scopes,30,pg_temp.hash(n),'maqdar_sk_test','test')$$;
+create function pg_temp.key(n integer,scopes text[],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Network reporter',scopes,30,pg_temp.hash(n),'zeespare_sk_test','test')$$;
 select pg_temp.login(10,1);
 set local role authenticated;
 select lives_ok($$select pg_temp.key(100,array['network_handoffs:read','network_handoffs:acknowledge'])$$,'owner explicitly issues report scope');
@@ -105,9 +105,9 @@ select pg_temp.login(11,2);
 select is((select count(*) from public.network_handoff_acknowledgements),0::bigint,'other tenant cannot read history directly');
 reset role;
 select ok(not has_table_privilege(r,'public.network_handoff_acknowledgements','INSERT,UPDATE,DELETE'),'no direct writes for '||r)
-from unnest(array['anon','authenticated','service_role','maqdar_worker','maqdar_simulation_worker']) r;
+from unnest(array['anon','authenticated','service_role','zeespare_worker','zeespare_simulation_worker']) r;
 select ok(has_function_privilege(r,'public.api_network_handoff_acknowledge(bytea,text,uuid,jsonb)','execute')=(r='service_role'),'writer execute restricted for '||r)
-from unnest(array['anon','authenticated','service_role','maqdar_worker','maqdar_simulation_worker']) r;
+from unnest(array['anon','authenticated','service_role','zeespare_worker','zeespare_simulation_worker']) r;
 -- Deleting source ancestry removes single history, but retains the copied batch and its reports.
 delete from public.network_allocation_scenarios where id=pg_temp.id(30);
 select is((select count(*) from public.network_handoff_acknowledgements where handoff_id is not null),0::bigint,'single follows source deletion');

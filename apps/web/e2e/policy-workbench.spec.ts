@@ -24,7 +24,7 @@ test('policy workbench pages, filters, and records an independent review with im
   await createOrganization(page, { name: `Policy ${key}`, slug })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local workbench fixture only')
   // Only test setup uses a privileged connection. All proposals/decisions use browser sessions.

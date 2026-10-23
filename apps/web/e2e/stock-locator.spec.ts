@@ -30,7 +30,7 @@ test('stock locator separates observation evidence, ranks distance and preserves
   await createOrganization(page, { name: 'Acme stock locator', slug, arabicEnabled: true })
   const org = await organizationIdBySlug(slug)
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   const fixture = (action: string, codes: string[] = []) =>
     promisify(execFile)(
       'uv',

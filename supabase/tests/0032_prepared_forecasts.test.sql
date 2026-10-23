@@ -47,9 +47,9 @@ select is((select app.planning_task(run_id,lease_token) from claimed),(select pa
 create temp table output as select jsonb_build_array(jsonb_build_object('item_id',pg_temp.id(50),'status','insufficient','model',null,'total',null,
  'forecast','[]'::jsonb,'scores','[]'::jsonb,'folds','[]'::jsonb,'uncertainty','{"status":"unavailable","bands":[]}'::jsonb,
  'evaluation','{"status":"unavailable"}'::jsonb,'unavailable_models','[]'::jsonb,'comparison','fixed-group-v1','calendar_model',null,'future_calendar','[]'::jsonb)) rows;
-grant select on claimed,output to maqdar_worker;
-grant usage on schema extensions to maqdar_worker;
-set local role maqdar_worker;
+grant select on claimed,output to zeespare_worker;
+grant usage on schema extensions to zeespare_worker;
+set local role zeespare_worker;
 select throws_ok($$select app.forecast_task_individual(gen_random_uuid(),gen_random_uuid())$$,'42501',null,'worker cannot bypass task wrapper');
 select throws_ok($$select app.forecast_finish_individual(gen_random_uuid(),gen_random_uuid(),'[]')$$,'42501',null,'worker cannot bypass publication wrapper');
 select throws_ok($$select * from planning.forecast_inputs$$,'42501',null,'worker cannot read raw inputs');

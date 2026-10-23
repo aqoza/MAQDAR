@@ -10,8 +10,8 @@ import pytest
 from test_planning_db import planning, worker
 from test_preparation_db import enqueue_preparation
 from test_policy_db import enqueue_policy
-from maqdar_engine.preparation import prepare
-from maqdar_engine.worker import process_one
+from zeespare_engine.preparation import prepare
+from zeespare_engine.worker import process_one
 
 pytestmark = pytest.mark.db
 

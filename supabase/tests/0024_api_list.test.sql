@@ -28,9 +28,9 @@ select plan(91);
 \set api_limits `cat fixtures/api_limits.json 2>/dev/null || cat supabase/tests/fixtures/api_limits.json`
 
 -- Helpers ---------------------------------------------------------------------------------------
--- The SHA-256 the Worker sends for a sample key named n (maqdar_sk_ + 43 characters + a checksum).
+-- The SHA-256 the Worker sends for a sample key named n (zeespare_sk_ + 43 characters + a checksum).
 create function pg_temp.h(n text) returns bytea language sql immutable as $$
-  select sha256(convert_to('maqdar_sk_' || rpad(n, 43, 'x') || 'Ab12Cd', 'UTF8'));
+  select sha256(convert_to('zeespare_sk_' || rpad(n, 43, 'x') || 'Ab12Cd', 'UTF8'));
 $$;
 create function pg_temp.up(p_key text, p_entity text, p_body jsonb) returns jsonb language sql as $$
   select public.api_upsert(pg_temp.h(p_key), p_entity, p_body, gen_random_uuid());
@@ -146,7 +146,7 @@ insert into public.memberships (organization_id, user_id, role) values
   ('00000000-0000-4000-8000-5b24000000aa', '00000000-0000-4000-8000-5b2400000001', 'owner'),
   ('00000000-0000-4000-8000-5b24000000bb', '00000000-0000-4000-8000-5b2400000002', 'owner');
 insert into public.api_keys (id, organization_id, name, display_prefix, last4, key_hash, scopes, created_by, expires_at)
-select v.id::uuid, v.org::uuid, v.name, 'maqdar_sk_' || v.prefix, 'Cd12', pg_temp.h(v.name), v.scopes, v.creator::uuid,
+select v.id::uuid, v.org::uuid, v.name, 'zeespare_sk_' || v.prefix, 'Cd12', pg_temp.h(v.name), v.scopes, v.creator::uuid,
        now() + interval '90 days'
 from (values
   ('00000000-0000-4000-8000-5b2400000c01', '00000000-0000-4000-8000-5b24000000aa', 'a-full', 'AFul',
@@ -855,7 +855,7 @@ select is(
 );
 select is(
   (select (body -> 'key')::jsonb - 'created_at' - 'expires_at' from lists where k = 'org:a'),
-  '{"id": "00000000-0000-4000-8000-5b2400000c01", "name": "a-full", "display": "maqdar_sk_AFul…Cd12", "scopes": ["master_data:read", "master_data:write", "transactions:read", "transactions:write"]}'::jsonb,
+  '{"id": "00000000-0000-4000-8000-5b2400000c01", "name": "a-full", "display": "zeespare_sk_AFul…Cd12", "scopes": ["master_data:read", "master_data:write", "transactions:read", "transactions:write"]}'::jsonb,
   'api_organization: the key with its display form (prefix, an ellipsis, last four) and scopes'
 );
 select is(

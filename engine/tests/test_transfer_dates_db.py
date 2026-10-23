@@ -57,7 +57,7 @@ def test_conflicting_parallel_date_is_rejected(dates):
 def test_waiting_save_rechecks_authority_and_evidence(dates, change):
     draft, inputs, preview = dates
     with psycopg.connect(draft[0]) as admin, session(draft) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.transfer-dates:'||%s,0))", (str(draft[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.transfer-dates:'||%s,0))", (str(draft[1]),))
         call = _Call(waiting, SAVE, (*inputs, uuid4(), preview['fingerprint']))
         call.start()
         time.sleep(0.3)

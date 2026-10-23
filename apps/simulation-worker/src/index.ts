@@ -47,9 +47,9 @@ export default {
       await env.ACME_SIMULATION.getByName('acme-simulations-v1').check({
         ENABLED: env.ENABLED,
         MODE: env.MODE,
-        MAQDAR_EXPECTED_ORGANIZATION: env.MAQDAR_EXPECTED_ORGANIZATION,
-        MAQDAR_WORKER_DSN: env.MAQDAR_WORKER_DSN,
-        MAQDAR_DATABASE_CA: env.MAQDAR_DATABASE_CA,
+        ZEESPARE_EXPECTED_ORGANIZATION: env.ZEESPARE_EXPECTED_ORGANIZATION,
+        ZEESPARE_WORKER_DSN: env.ZEESPARE_WORKER_DSN,
+        ZEESPARE_DATABASE_CA: env.ZEESPARE_DATABASE_CA,
       })
       console.log('Simulation supervisor check completed')
     } catch {

@@ -27,7 +27,7 @@ select plan(13);
 
 -- The SHA-256 the Worker sends for a sample key named n.
 create function pg_temp.h(n text) returns bytea language sql immutable as $$
-  select sha256(convert_to('maqdar_sk_' || rpad(n, 43, 'x') || 'Ab12Cd', 'UTF8'));
+  select sha256(convert_to('zeespare_sk_' || rpad(n, 43, 'x') || 'Ab12Cd', 'UTF8'));
 $$;
 create function pg_temp.b64url(p text) returns text language sql immutable as $$
   select translate(encode(convert_to(p, 'UTF8'), 'base64'), E'+/=\n', '-_');
@@ -42,7 +42,7 @@ insert into public.organizations (id, slug, name) values
 insert into public.memberships (organization_id, user_id, role) values
   ('00000000-0000-4000-8000-5b25000000aa', '00000000-0000-4000-8000-5b2500000001', 'owner');
 insert into public.api_keys (organization_id, name, display_prefix, last4, key_hash, scopes, created_by, expires_at)
-values ('00000000-0000-4000-8000-5b25000000aa', 'plans', 'maqdar_sk_Plan', 'Cd12', pg_temp.h('plans'),
+values ('00000000-0000-4000-8000-5b25000000aa', 'plans', 'zeespare_sk_Plan', 'Cd12', pg_temp.h('plans'),
         array['master_data:read', 'master_data:write', 'transactions:read', 'transactions:write'],
         '00000000-0000-4000-8000-5b2500000001', now() + interval '30 days');
 

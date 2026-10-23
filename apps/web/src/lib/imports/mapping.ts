@@ -49,7 +49,7 @@ export function headerKey(text: string): string {
 }
 
 /**
- * A small set of synonyms by column name (any entity), for exports that do not use MAQDAR's
+ * A small set of synonyms by column name (any entity), for exports that do not use ZeeSpare's
  * labels. English and Arabic; matched like labels.
  */
 export const BUILT_IN_SYNONYMS: Readonly<Record<string, readonly string[]>> = {

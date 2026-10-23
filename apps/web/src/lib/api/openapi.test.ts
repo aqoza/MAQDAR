@@ -219,7 +219,7 @@ describe('structure', () => {
       expect(Object.keys(doc.paths[resourcePath(resource, 'list')] ?? {})).toEqual(['get'])
       expect(Object.keys(doc.paths[resourcePath(resource, 'upsert')] ?? {})).toEqual(['post'])
     }
-    expect(doc['x-maqdar-load-order']).toEqual(RESOURCES.map((resource) => resource.name))
+    expect(doc['x-zeespare-load-order']).toEqual(RESOURCES.map((resource) => resource.name))
   })
 
   it('has unique operationIds equal to the served operations', () => {
@@ -267,7 +267,7 @@ describe('structure', () => {
                   : path.startsWith('/purchase-handoff')
                     ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
                     : []
-      expect(operation['x-maqdar-scopes'], operation.operationId).toEqual(scopes)
+      expect(operation['x-zeespare-scopes'], operation.operationId).toEqual(scopes)
       expect(operation.deprecated === true).toBe(deprecationFor(operation.operationId) !== null)
     }
   })
@@ -320,7 +320,7 @@ describe('entity schemas', () => {
       const upsert = schema(names.upsert)
       expect(Object.keys(upsert.properties as Schema)).toEqual([...columns, 'updated_at'])
       expect(upsert.additionalProperties).toBe(false)
-      expect(upsert['x-maqdar-natural-key']).toEqual([...getEntity(entity).natural_key])
+      expect(upsert['x-zeespare-natural-key']).toEqual([...getEntity(entity).natural_key])
     }
   })
 
@@ -433,13 +433,13 @@ it('documents complete event evidence with independent read and acknowledgement 
     }),
   ).toBe(false)
   for (const resource of ['event-purchase-handoffs', 'event-purchase-handoff-batches']) {
-    expect(doc.paths[`/${resource}`]?.get?.['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}`]?.get?.['x-zeespare-scopes']).toEqual([
       'event_purchase_handoffs:read',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.post?.['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.post?.['x-zeespare-scopes']).toEqual([
       'event_purchase_handoffs:acknowledge',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.get?.['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.get?.['x-zeespare-scopes']).toEqual([
       'event_purchase_handoffs:read',
     ])
   }
@@ -468,13 +468,13 @@ it('documents exact disposition files, unavailable live context and read-only sc
     }),
   ).toBe(false)
   for (const resource of ['excess-disposition-handoffs', 'excess-disposition-handoff-batches']) {
-    expect(doc.paths[`/${resource}`].get['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}`].get['x-zeespare-scopes']).toEqual([
       'excess_disposition_handoffs:read',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.post?.['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.post?.['x-zeespare-scopes']).toEqual([
       'excess_disposition_handoffs:acknowledge',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.get?.['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`]?.get?.['x-zeespare-scopes']).toEqual([
       'excess_disposition_handoffs:read',
     ])
   }
@@ -497,12 +497,14 @@ it('documents complete network evidence, separate currency totals and explicit a
       valid(schema('NetworkHandoffSelection'), { selection, checked_at: '2026-10-20T00:00:00Z' }),
     ).toBe(true)
   for (const resource of ['network-handoffs', 'network-handoff-batches']) {
-    expect(doc.paths[`/${resource}`].get['x-maqdar-scopes']).toEqual(['network_handoffs:read'])
-    expect(doc.paths[`/${resource}/{id}`].get['x-maqdar-scopes']).toEqual(['network_handoffs:read'])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`].post['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}`].get['x-zeespare-scopes']).toEqual(['network_handoffs:read'])
+    expect(doc.paths[`/${resource}/{id}`].get['x-zeespare-scopes']).toEqual([
+      'network_handoffs:read',
+    ])
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].post['x-zeespare-scopes']).toEqual([
       'network_handoffs:acknowledge',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`].get['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].get['x-zeespare-scopes']).toEqual([
       'network_handoffs:read',
     ])
     expect(doc.paths[`/${resource}`].post).toBeUndefined()
@@ -526,14 +528,14 @@ it('documents complete regional evidence, separate currency totals and read-only
       valid(schema('RegionalHandoffSelection'), { selection, checked_at: '2026-10-20T00:00:00Z' }),
     ).toBe(true)
   for (const resource of ['regional-handoffs', 'regional-handoff-batches']) {
-    expect(doc.paths[`/${resource}`].get['x-maqdar-scopes']).toEqual(['regional_handoffs:read'])
-    expect(doc.paths[`/${resource}/{id}`].get['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}`].get['x-zeespare-scopes']).toEqual(['regional_handoffs:read'])
+    expect(doc.paths[`/${resource}/{id}`].get['x-zeespare-scopes']).toEqual([
       'regional_handoffs:read',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`].post['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].post['x-zeespare-scopes']).toEqual([
       'regional_handoffs:acknowledge',
     ])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`].get['x-maqdar-scopes']).toEqual([
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].get['x-zeespare-scopes']).toEqual([
       'regional_handoffs:read',
     ])
     expect(doc.paths[`/${resource}`].post).toBeUndefined()

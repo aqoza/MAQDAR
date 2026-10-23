@@ -168,9 +168,9 @@ select throws_ok($$select pg_temp.fp()$$,'42501',null,'anonymous cannot preview'
 set local role service_role;
 select throws_ok($$select pg_temp.fp()$$,'42501',null,'API cannot preview estimates');
 reset role;
-select ok(not has_function_privilege('maqdar_worker','public.transfer_freight_save(uuid,uuid,boolean,uuid,text)','EXECUTE'),'worker capability unchanged');
+select ok(not has_function_privilege('zeespare_worker','public.transfer_freight_save(uuid,uuid,boolean,uuid,text)','EXECUTE'),'worker capability unchanged');
 insert into public.api_keys(organization_id,name,display_prefix,last4,key_hash,scopes,created_by,expires_at)
-values(pg_temp.id(1),'Freight','maqdar_sk_abcd','abcd',decode(repeat('ae',32),'hex'),array['master_data:read','master_data:write'],pg_temp.id(10),now()+interval '1 day');
+values(pg_temp.id(1),'Freight','zeespare_sk_abcd','abcd',decode(repeat('ae',32),'hex'),array['master_data:read','master_data:write'],pg_temp.id(10),now()+interval '1 day');
 create function pg_temp.upsert(record jsonb) returns jsonb language sql as $$select public.api_upsert(decode(repeat('ae',32),'hex'),'network_links',jsonb_build_object('records',jsonb_build_array(record)),gen_random_uuid())$$;
 select set_config('request.jwt.claims','{}',true);
 set local role service_role;

@@ -8,7 +8,7 @@ import pytest
 from test_event_replenishment_db import event_draft, policy_event, event, planning, saved_forecast, enqueue_policy, worker
 from test_replenishment_db import session
 from test_tenancy_concurrency import _Call, _race
-from maqdar_engine.worker import process_one
+from zeespare_engine.worker import process_one
 pytestmark = pytest.mark.db
 PREVIEW = "select public.event_supplier_preview(%s,%s,'SUP',true)"
 SAVE = "select public.event_supplier_save(%s,%s,'SUP',true,%s,%s)"
@@ -44,7 +44,7 @@ def test_supplier_rechecks_after_wait(event_supplier, change, expected):
     source, draft, report = event_supplier
     request = uuid4()
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.event-supplier:'||%s||':'||%s,0))", (str(source[1]), str(request)))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.event-supplier:'||%s||':'||%s,0))", (str(source[1]), str(request)))
         call = _Call(waiting, SAVE, (source[1], draft, request, report['fingerprint']))
         call.start()
         time.sleep(1)

@@ -6,15 +6,15 @@ def _run(sender, task):
     try:
         from threadpoolctl import threadpool_limits
         if task.get('method') == 'policy-v1':
-            from maqdar_engine.inventory_policy import calculate as forecast
+            from zeespare_engine.inventory_policy import calculate as forecast
         elif task.get('method') == 'regional-v1':
-            from maqdar_engine.regional_forecasting import forecast
+            from zeespare_engine.regional_forecasting import forecast
         elif task.get('method') == 'driver-v1':
-            from maqdar_engine.driver_forecasting import forecast
+            from zeespare_engine.driver_forecasting import forecast
         elif task.get('method') == 'multi-driver-v1':
-            from maqdar_engine.multi_driver_forecasting import forecast
+            from zeespare_engine.multi_driver_forecasting import forecast
         else:
-            from maqdar_engine.expanded_forecasting import forecast
+            from zeespare_engine.expanded_forecasting import forecast
         with threadpool_limits(limits=1):
             sender.send(forecast(task))
     except Exception:

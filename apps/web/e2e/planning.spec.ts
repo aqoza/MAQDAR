@@ -28,9 +28,9 @@ async function inspectPolicy(page: Page, dsn: string, compareStock = false) {
   await page.getByLabel('Review interval (calendar days)', { exact: true }).fill('4')
   await page.getByRole('button', { name: 'Queue inventory policy', exact: true }).click()
   await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
-  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+  await promisify(execFile)('uv', ['run', 'zeespare-worker', '--once'], {
     cwd: resolve(process.cwd(), '../../engine'),
-    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    env: { ...process.env, ZEESPARE_WORKER_DSN: dsn },
     timeout: 100_000,
   })
   await page.getByRole('button', { name: 'Refresh runs' }).click()
@@ -158,12 +158,12 @@ test('preparation preserves contributions and forecasts a saved group with fixed
   await page.getByRole('button', { name: 'Queue preparation', exact: true }).click()
   await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local worker test only')
-  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+  await promisify(execFile)('uv', ['run', 'zeespare-worker', '--once'], {
     cwd: resolve(process.cwd(), '../../engine'),
-    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    env: { ...process.env, ZEESPARE_WORKER_DSN: dsn },
     timeout: 100_000,
   })
   await page.getByRole('button', { name: 'Refresh runs' }).click()
@@ -194,9 +194,9 @@ test('preparation preserves contributions and forecasts a saved group with fixed
   await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: 'Queue prepared-group forecast', exact: true }).click()
   await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
-  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+  await promisify(execFile)('uv', ['run', 'zeespare-worker', '--once'], {
     cwd: resolve(process.cwd(), '../../engine'),
-    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    env: { ...process.env, ZEESPARE_WORKER_DSN: dsn },
     timeout: 100_000,
   })
   await page.getByRole('button', { name: 'Refresh runs' }).click()
@@ -322,12 +322,12 @@ for (const method of ['baseline-v1', 'expanded-v1']) {
     await page.getByRole('button', { name: 'Queue forecast', exact: true }).click()
     await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
     const dsn =
-      process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+      process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
     if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
       throw new Error('Local worker test only')
-    await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+    await promisify(execFile)('uv', ['run', 'zeespare-worker', '--once'], {
       cwd: resolve(process.cwd(), '../../engine'),
-      env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+      env: { ...process.env, ZEESPARE_WORKER_DSN: dsn },
       timeout: 100_000,
     })
     await page.getByRole('button', { name: 'Refresh runs' }).click()
@@ -442,12 +442,12 @@ test('planner queues a readiness check, the worker completes it, and another run
   await expect(page.getByRole('button', { name: 'Check demand data', exact: true })).toHaveCount(0)
   // Runs only against the same loopback stack as seedRows, never a hosted worker.
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local worker test only')
-  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+  await promisify(execFile)('uv', ['run', 'zeespare-worker', '--once'], {
     cwd: resolve(process.cwd(), '../../engine'),
-    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    env: { ...process.env, ZEESPARE_WORKER_DSN: dsn },
     timeout: 100_000,
   })
   await page.getByRole('button', { name: 'Refresh runs' }).click()
@@ -550,12 +550,12 @@ test('confirmed history produces inspectable classifications with separate lost 
   await page.getByRole('button', { name: 'Queue classification', exact: true }).click()
   await expect(page.locator('#run-detail').getByText('Queued', { exact: true })).toBeVisible()
   const dsn =
-    process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local worker test only')
-  await promisify(execFile)('uv', ['run', 'maqdar-worker', '--once'], {
+  await promisify(execFile)('uv', ['run', 'zeespare-worker', '--once'], {
     cwd: resolve(process.cwd(), '../../engine'),
-    env: { ...process.env, MAQDAR_WORKER_DSN: dsn },
+    env: { ...process.env, ZEESPARE_WORKER_DSN: dsn },
     timeout: 100_000,
   })
   await page.getByRole('button', { name: 'Refresh runs' }).click()

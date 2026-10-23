@@ -54,8 +54,8 @@ reset role;
 select set_config('request.jwt.claims','{}',true);
 
 insert into public.api_keys(organization_id,name,display_prefix,last4,key_hash,scopes,created_by,expires_at) values
- (pg_temp.id(1),'Step 6','maqdar_sk_abcd','abcd',decode(repeat('ab',32),'hex'),array['transactions:read','transactions:write'],pg_temp.id(10),now()+interval '1 day'),
- (pg_temp.id(1),'Master only','maqdar_sk_efgh','efgh',decode(repeat('cd',32),'hex'),array['master_data:read','master_data:write'],pg_temp.id(10),now()+interval '1 day');
+ (pg_temp.id(1),'Step 6','zeespare_sk_abcd','abcd',decode(repeat('ab',32),'hex'),array['transactions:read','transactions:write'],pg_temp.id(10),now()+interval '1 day'),
+ (pg_temp.id(1),'Master only','zeespare_sk_efgh','efgh',decode(repeat('cd',32),'hex'),array['master_data:read','master_data:write'],pg_temp.id(10),now()+interval '1 day');
 set local role service_role;
 select is(public.api_upsert(decode(repeat('ab',32),'hex'),'stock_snapshots','{"records":[{"item_code":"I-2","location_code":"L-2","snapshot_date":"2026-10-15","quantity":"4","unit_cost":"0.123","currency":"KWD"}]}',gen_random_uuid())->>'result','succeeded','transaction-scoped key imports stock with default allocation');
 select is(public.api_upsert(decode(repeat('ab',32),'hex'),'stock_snapshots','{"records":[{"item_code":"I-2","location_code":"L-2","snapshot_date":"2026-10-15","quantity":"4","unit_cost":"0.123","currency":"KWD"}]}',gen_random_uuid())->>'recorded','false','replay changes nothing');
@@ -107,7 +107,7 @@ select lives_ok($$select app.import_housekeeping()$$,'housekeeping runs with bou
 select is((select count(*) from public.import_errors where batch_id in(select batch_id from retention_file)),0::bigint,'row-level error details expire after 30 days');
 select is((select count(*) from public.import_batches where id in(select batch_id from retention_file)),1::bigint,'import summary survives retention');
 select lives_ok($$select app.maintain_demand_partitions()$$,'partition maintenance is idempotent');
-select is((select count(*) from cron.job where jobname in ('maqdar-demand-partitions','maqdar-import-housekeeping')),2::bigint,'both database maintenance jobs are scheduled');
+select is((select count(*) from cron.job where jobname in ('zeespare-demand-partitions','zeespare-import-housekeeping')),2::bigint,'both database maintenance jobs are scheduled');
 select throws_ok($$set local role authenticated; select app.import_housekeeping()$$,'42501',null,'members cannot run maintenance');
 reset role;
 select * from finish();

@@ -3,8 +3,8 @@ from datetime import date, timedelta
 
 import pytest
 
-from maqdar_engine.policy_constraints import calculate as constraints
-from maqdar_engine.policy_calendars import calculate, next_day
+from zeespare_engine.policy_constraints import calculate as constraints
+from zeespare_engine.policy_calendars import calculate, next_day
 from test_policy_constraints import task as constraint_task, config
 
 

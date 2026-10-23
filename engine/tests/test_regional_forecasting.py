@@ -4,7 +4,7 @@ from decimal import Decimal
 
 import pytest
 
-from maqdar_engine.regional_forecasting import calendar_predict, forecast, select
+from zeespare_engine.regional_forecasting import calendar_predict, forecast, select
 
 
 def calendar(days=196):
@@ -98,7 +98,7 @@ def test_weekdays_learn_without_any_verified_event_coverage():
 
 def test_rolling_fits_never_receive_test_demand(monkeypatch):
     seen = []
-    from maqdar_engine import regional_forecasting as module
+    from zeespare_engine import regional_forecasting as module
 
     original = module.calendar_predict
 
@@ -115,7 +115,7 @@ def test_rolling_fits_never_receive_test_demand(monkeypatch):
 
 
 def test_historical_coverage_does_not_learn_from_held_out_values(monkeypatch):
-    from maqdar_engine import regional_forecasting as module
+    from zeespare_engine import regional_forecasting as module
 
     monkeypatch.setattr(module, "MODELS", ("mean", "calendar"))
     # Each comparison window spans the complete event cycle.
@@ -173,7 +173,7 @@ def test_ineligible_group_reports_reason_without_forecasts(case):
 
 
 def test_future_without_active_sources_has_zero_points_and_bands(monkeypatch):
-    from maqdar_engine import regional_forecasting as module
+    from zeespare_engine import regional_forecasting as module
 
     monkeypatch.setattr(module, "MODELS", ("mean", "calendar"))
     data = task()
@@ -219,7 +219,7 @@ def test_invalid_input_is_rejected(case):
 
 
 def test_candidate_failure_is_reported_and_baseline_failure_is_not_hidden(monkeypatch):
-    from maqdar_engine import regional_forecasting as module
+    from zeespare_engine import regional_forecasting as module
 
     original = module.candidate
 
@@ -242,7 +242,7 @@ def test_candidate_failure_is_reported_and_baseline_failure_is_not_hidden(monkey
 
 
 def test_failed_refit_falls_back_to_next_candidate(monkeypatch):
-    from maqdar_engine import regional_forecasting as module
+    from zeespare_engine import regional_forecasting as module
 
     def broken(series, history, future, model):
         if model == "calendar" and len(series) == 98:
@@ -276,7 +276,7 @@ def test_event_effect_is_bounded_and_nonnegative_forecast_for_depressed_events()
 
 
 def test_uncertainty_requires_enough_residuals_and_independent_history(monkeypatch):
-    from maqdar_engine import regional_forecasting as module
+    from zeespare_engine import regional_forecasting as module
 
     monkeypatch.setattr(module, "MODELS", ("mean", "calendar"))
     assert forecast(task(80, 7))[0]["evaluation"]["status"] == "insufficient_history"
@@ -286,6 +286,6 @@ def test_uncertainty_requires_enough_residuals_and_independent_history(monkeypat
 
 
 def test_child_process_dispatches_prepared_method():
-    from maqdar_engine.forecast_process import compute
+    from zeespare_engine.forecast_process import compute
 
     assert compute(task(60))[0]["status"] == "insufficient"

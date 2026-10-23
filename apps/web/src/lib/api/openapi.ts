@@ -35,7 +35,7 @@ import { acknowledgementPaths, acknowledgementSchemas } from './acknowledgement-
 
 /**
  * The OpenAPI 3.1.1 document of `/api/v1`, generated from the import contract
- * (`@maqdar/shared/import-format.schema.json`), the resources, limits, problems, versioning and
+ * (`@zeespare/shared/import-format.schema.json`), the resources, limits, problems, versioning and
  * examples of `src/lib/api`. It is committed as `openapi.json` and pinned by a Vitest file
  * snapshot: run `pnpm --filter web gen:openapi` after changing any of them. Pure module.
  */
@@ -227,12 +227,12 @@ function nullable(schema: Schema): Schema {
 }
 
 function columnExtensions(column: ContractColumn, mode: 'request' | 'response'): Schema {
-  const out: Schema = { description: column.description, 'x-maqdar-kind': column.kind }
-  if (column.references) out['x-maqdar-reference'] = column.references
-  if (column.lookup) out['x-maqdar-lookup'] = resourceForEntity(column.lookup).name
+  const out: Schema = { description: column.description, 'x-zeespare-kind': column.kind }
+  if (column.references) out['x-zeespare-reference'] = column.references
+  if (column.lookup) out['x-zeespare-lookup'] = resourceForEntity(column.lookup).name
   if (mode === 'request') {
-    if (column.default !== null) out['x-maqdar-default-for-new'] = column.default
-    if (column.required_for_new) out['x-maqdar-required-for-new'] = true
+    if (column.default !== null) out['x-zeespare-default-for-new'] = column.default
+    if (column.required_for_new) out['x-zeespare-required-for-new'] = true
   }
   return out
 }
@@ -279,7 +279,7 @@ function recordSchema(entity: ContractEntity): Schema {
     description: `${entity.description} Every field is always present; decimals are canonical strings.`,
     required: [...entity.columns.map((column) => column.name), ...(master ? ['updated_at'] : [])],
     properties,
-    'x-maqdar-natural-key': [...entity.natural_key],
+    'x-zeespare-natural-key': [...entity.natural_key],
   }
 }
 
@@ -316,11 +316,11 @@ function upsertSchema(entity: ContractEntity): Schema {
       properties: { [column]: { type: 'string', minLength: 1 } },
     }))
   }
-  schema['x-maqdar-natural-key'] = [...entity.natural_key]
-  schema['x-maqdar-load-order'] = entity.load_order
-  if (entity.unordered_pair) schema['x-maqdar-unordered-pair'] = true
+  schema['x-zeespare-natural-key'] = [...entity.natural_key]
+  schema['x-zeespare-load-order'] = entity.load_order
+  if (entity.unordered_pair) schema['x-zeespare-unordered-pair'] = true
   const entityRules = rules(entity)
-  if (entityRules.length > 0) schema['x-maqdar-rules'] = entityRules
+  if (entityRules.length > 0) schema['x-zeespare-rules'] = entityRules
   return schema
 }
 
@@ -387,7 +387,7 @@ function sharedSchemas(): Record<string, Schema> {
       description: 'RFC 9457 problem details.',
       required: ['type', 'title', 'status', 'detail', 'instance', 'code', 'request_id'],
       properties: {
-        type: { type: 'string', description: 'urn:maqdar:problem:<code>' },
+        type: { type: 'string', description: 'urn:zeespare:problem:<code>' },
         title: { type: 'string' },
         status: { type: 'integer' },
         detail: { type: 'string' },
@@ -796,8 +796,8 @@ function listOperation(resource: ApiResource): Schema {
       ? 'Demand in a date range, in key order. from and to are required.'
       : 'Records in a stable order, with cursor paging and an optional updated_since filter.',
     tags: [transaction ? TAGS.transactions : TAGS.master_data],
-    'x-maqdar-scopes': [scope],
-    'x-maqdar-entity': entity.name,
+    'x-zeespare-scopes': [scope],
+    'x-zeespare-entity': entity.name,
     parameters: parameterNames.map((name) =>
       ref(
         'parameters',
@@ -840,9 +840,9 @@ function upsertOperation(resource: ApiResource): Schema {
     summary: `Upsert ${resource.name}`,
     description,
     tags: [transaction ? TAGS.transactions : TAGS.master_data],
-    'x-maqdar-scopes': [scope],
-    'x-maqdar-entity': entity.name,
-    'x-maqdar-load-order': entity.load_order,
+    'x-zeespare-scopes': [scope],
+    'x-zeespare-entity': entity.name,
+    'x-zeespare-load-order': entity.load_order,
     requestBody: {
       required: true,
       content: {
@@ -879,7 +879,7 @@ function organizationOperation(): Schema {
     description:
       'The organization the key belongs to, the key itself, the demand history window and the limits. Any valid key.',
     tags: [TAGS.organization],
-    'x-maqdar-scopes': [],
+    'x-zeespare-scopes': [],
     responses: {
       '200': {
         description: 'The organization.',
@@ -906,7 +906,7 @@ const INFO_DESCRIPTION = [
   '',
   `Authenticate with \`Authorization: Bearer ${API_KEY_PREFIX}…\`; an owner or admin creates keys in Settings. Keys are scoped (${API_SCOPES.join(', ')}), expire, and stop working when their creator is no longer an owner or admin.`,
   '',
-  'Upserts are `POST /{resource}:upsert` with `{"records": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or "" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-maqdar-load-order).',
+  'Upserts are `POST /{resource}:upsert` with `{"records": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or "" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-zeespare-load-order).',
   '',
   'Errors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.',
   '',
@@ -960,7 +960,7 @@ export function buildOpenApi(): OpenApiDocument {
       title: 'ZeeSpare API',
       version: OPENAPI_DOCUMENT_VERSION,
       description: INFO_DESCRIPTION,
-      'x-maqdar-import-format': CONTRACT.format_version,
+      'x-zeespare-import-format': CONTRACT.format_version,
     },
     servers: [{ url: API_BASE_PATH }],
     security: [{ bearerAuth: [] }],
@@ -998,8 +998,8 @@ export function buildOpenApi(): OpenApiDocument {
         description: 'Read-only saved planning evidence and live selection.',
       },
     ],
-    'x-maqdar-load-order': RESOURCES.map((resource) => resource.name),
-    'x-maqdar-scopes': Object.fromEntries(
+    'x-zeespare-load-order': RESOURCES.map((resource) => resource.name),
+    'x-zeespare-scopes': Object.fromEntries(
       API_SCOPES.map((scope) => [scope, SCOPE_DESCRIPTIONS[scope]]),
     ),
     paths,
@@ -1010,7 +1010,7 @@ export function buildOpenApi(): OpenApiDocument {
           scheme: 'bearer',
           bearerFormat: `${API_KEY_PREFIX}…`,
           description:
-            'A ZeeSpare API key. Operations list the scope they need in x-maqdar-scopes.',
+            'A ZeeSpare API key. Operations list the scope they need in x-zeespare-scopes.',
         },
       },
       parameters: parameters(),

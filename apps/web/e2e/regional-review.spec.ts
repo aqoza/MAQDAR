@@ -24,7 +24,7 @@ test('regional proposals retain independent decisions, archive-safe actions and 
   const slug = `regional-review-${key}`
   await createOrganization(page, { name: 'Regional freight', slug, arabicEnabled: true })
   const org = await organizationIdBySlug(slug),
-    dsn = process.env.MAQDAR_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+    dsn = process.env.ZEESPARE_TEST_DSN ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres'
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(dsn).hostname))
     throw new Error('Local fixtures only')
   const python = (code: string) =>

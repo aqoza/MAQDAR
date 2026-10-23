@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pytest
 
-from maqdar_engine import importformat
-from maqdar_engine.synth import cli
-from maqdar_engine.synth.cli import main
-from maqdar_engine.synth.reference_sql import BEGIN_MARK
+from zeespare_engine import importformat
+from zeespare_engine.synth import cli
+from zeespare_engine.synth.cli import main
+from zeespare_engine.synth.reference_sql import BEGIN_MARK
 
 
 def test_format_sql_prints_the_marked_seed(capsys):

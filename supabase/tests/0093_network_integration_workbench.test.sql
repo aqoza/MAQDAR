@@ -140,7 +140,7 @@ select throws_ok($$select pg_temp.work()$$,'MQ401',null,'anonymous identity refu
 reset role;
 select ok(not p.prosecdef and p.provolatile='s','stable invoker function') from pg_proc p where p.oid='public.network_integration_workbench(uuid,jsonb,integer,integer)'::regprocedure;
 select ok(has_function_privilege(r,'public.network_integration_workbench(uuid,jsonb,integer,integer)','EXECUTE')=(r='authenticated'),'reviewed workbench grant: '||r)
-  from unnest(array['anon','authenticated','service_role','maqdar_worker','maqdar_simulation_worker']) r;
+  from unnest(array['anon','authenticated','service_role','zeespare_worker','zeespare_simulation_worker']) r;
 select is((select count(*) from public.network_handoff_acknowledgements where organization_id=pg_temp.id(1)),6::bigint,'reads do not write reports');
 select ok(not exists(select 1 from original o join public.network_handoff_batches b using(id) where b.payload<>o.payload),'reads preserve copied evidence');
 -- Later selection leaves reports independent; deleting source context retains searchable copied batches.

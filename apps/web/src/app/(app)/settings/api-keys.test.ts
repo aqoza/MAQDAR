@@ -28,7 +28,7 @@ function record(overrides: Partial<ApiKeyRecord> = {}): ApiKeyRecord {
   return {
     id: '00000000-0000-4000-8000-000000000001',
     name: 'ERP nightly sync',
-    display_prefix: 'maqdar_sk_AbCd',
+    display_prefix: 'zeespare_sk_AbCd',
     last4: 'wxyz',
     scopes: ['master_data:read', 'master_data:write'],
     created_by: 'admin-user',
@@ -119,8 +119,8 @@ describe('listedApiKeys', () => {
 
 describe('rows', () => {
   it('shows keys as displayKey does', () => {
-    expect(keyDisplay('maqdar_sk_AbCd', 'wxyz')).toBe('maqdar_sk_AbCd…wxyz')
-    expect(keyDisplay('maqdar_sk_AbCd', 'wxyz')).toBe(displayKey('maqdar_sk_AbCd', 'wxyz'))
+    expect(keyDisplay('zeespare_sk_AbCd', 'wxyz')).toBe('zeespare_sk_AbCd…wxyz')
+    expect(keyDisplay('zeespare_sk_AbCd', 'wxyz')).toBe(displayKey('zeespare_sk_AbCd', 'wxyz'))
   })
 
   it('reads explicit columns, never key_hash', () => {
@@ -154,7 +154,7 @@ describe('rows', () => {
       ['d', null, 'creatorInactive'],
       ['e', null, 'revoked'],
     ])
-    expect(rows[0]?.display).toBe('maqdar_sk_AbCd…wxyz')
+    expect(rows[0]?.display).toBe('zeespare_sk_AbCd…wxyz')
     expect(rows[1]?.scopes).toEqual([{ value: 'transactions:read', key: 'transactionsRead' }])
   })
 })

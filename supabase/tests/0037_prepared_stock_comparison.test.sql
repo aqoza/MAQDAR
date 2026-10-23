@@ -107,7 +107,7 @@ select is(pg_temp.compare()->>'status','policy_unit_unknown','unknown demand uni
 update public.inventory_policies set evidence=evidence #- '{forecast,source,preparation,stock_pool}' where id=pg_temp.id(50);
 select is(pg_temp.compare()->>'status','prepared_group','legacy policy remains non-comparable');
 select ok(not has_function_privilege('authenticated','app.prepared_stock_evidence(jsonb,jsonb)','EXECUTE'),'private evidence helper is not a session capability');
-select ok(not has_function_privilege('maqdar_worker','app.prepared_stock_evidence(jsonb,jsonb)','EXECUTE'),'worker gains no direct capability');
+select ok(not has_function_privilege('zeespare_worker','app.prepared_stock_evidence(jsonb,jsonb)','EXECUTE'),'worker gains no direct capability');
 select ok((select not prosecdef from pg_proc where oid='public.policy_stock_comparison(uuid,uuid,date,text,uuid)'::regprocedure),'comparison remains invoker with RLS');
 select * from finish();
 rollback;

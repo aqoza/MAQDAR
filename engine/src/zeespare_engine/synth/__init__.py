@@ -1,4 +1,4 @@
-"""Synthetic data generator for MAQDAR.
+"""Synthetic data generator for ZeeSpare.
 
 Generates import-format CSV bundles (locations, brands, items, supersessions, suppliers, supplier items
 and daily demand history) for the Gulf service-parts network described in docs/synthetic-data.md, and

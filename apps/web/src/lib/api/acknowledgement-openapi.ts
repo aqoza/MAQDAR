@@ -152,7 +152,7 @@ export function acknowledgementPaths(): Record<string, Record<string, Schema>> {
             : []),
           `GET/HEAD require ${handoffReadScope(resource)}; POST requires ${acknowledgementScope(resource)}. Existing events have no PUT/PATCH/DELETE routes. All responses are no-store. Browser sessions are not API credentials.`,
         ].join('\n\n'),
-        'x-maqdar-scopes': [
+        'x-zeespare-scopes': [
           action === 'create' ? acknowledgementScope(resource) : handoffReadScope(resource),
         ],
         parameters,

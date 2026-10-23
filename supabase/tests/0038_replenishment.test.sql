@@ -121,14 +121,14 @@ select is(pg_temp.preview()->>'inbound_quantity',null,'no truncated total');
 select is(jsonb_array_length(pg_temp.preview()->'orders'),0,'no misleading partial evidence');
 select is(pg_temp.preview()->>'orders_truncated','true','overflow explicit');
 select ok(not has_function_privilege('service_role','public.replenishment_save(uuid,uuid,uuid,text,uuid,text,boolean,text)','EXECUTE'),'API service cannot save drafts');
-select ok(not has_function_privilege('maqdar_worker','public.replenishment_save(uuid,uuid,uuid,text,uuid,text,boolean,text)','EXECUTE'),'no worker capability added');
+select ok(not has_function_privilege('zeespare_worker','public.replenishment_save(uuid,uuid,uuid,text,uuid,text,boolean,text)','EXECUTE'),'no worker capability added');
 select ok((select indisvalid from pg_index where indexrelid='public.open_orders_replenishment_idx'::regclass),'concurrent lookup index valid');
 delete from public.open_orders where organization_id=pg_temp.id(1) and order_code like 'MANY%';
 
 -- Canonical importer/API: explicit evidence, replay, legacy updates and clears.
 select set_config('request.jwt.claims','{}',true);
 insert into public.api_keys(organization_id,name,display_prefix,last4,key_hash,scopes,created_by,expires_at)
-values(pg_temp.id(1),'Orders','maqdar_sk_abcd','abcd',decode(repeat('ac',32),'hex'),array['transactions:read','transactions:write'],pg_temp.id(10),now()+interval '1 day');
+values(pg_temp.id(1),'Orders','zeespare_sk_abcd','abcd',decode(repeat('ac',32),'hex'),array['transactions:read','transactions:write'],pg_temp.id(10),now()+interval '1 day');
 create function pg_temp.upsert(record jsonb) returns jsonb language sql as $$select public.api_upsert(decode(repeat('ac',32),'hex'),'open_orders',jsonb_build_object('records',jsonb_build_array(record)),gen_random_uuid())$$;
 set local role service_role;
 select is(pg_temp.upsert('{"order_code":"API","line_code":"1","item_code":"ITEM","location_code":"L0","supplier_code":"SUP","expected_date":"2026-10-11","quantity":"1.125","unit_cost":"2","currency":"KWD","unit_of_measure":"EA"}')->>'result','succeeded','unit-aware open order API create');

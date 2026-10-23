@@ -1,7 +1,7 @@
 import { emailDestination } from './email-destination'
 
 const DEFAULT_PATH = '/dashboard'
-const PROBE_ORIGIN = 'http://maqdar.invalid'
+const PROBE_ORIGIN = 'http://zeespare.invalid'
 // Browsers strip ASCII tab and newline from URLs and treat backslashes like slashes, so
 // "/\t/evil.example" or "/\\evil.example" would leave the site. Reject them outright.
 const UNSAFE_CHARACTERS = /[\u0000-\u001f\u007f\\]/

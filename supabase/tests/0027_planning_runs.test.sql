@@ -42,11 +42,11 @@ select pg_temp.login(12,2);
 select is((select count(*) from public.planning_runs),0::bigint,'other tenant cannot read run');
 reset role;
 create temp table claimed as select * from app.planning_claim();
-grant select on claimed to maqdar_worker;
+grant select on claimed to zeespare_worker;
 -- Test harness only: worker can resolve pgTAP while the transaction is open.
-grant usage on schema extensions to maqdar_worker;
+grant usage on schema extensions to zeespare_worker;
 select is((select attempts from public.planning_runs where organization_id=pg_temp.id(1)),1,'claim records first attempt');
-set local role maqdar_worker;
+set local role zeespare_worker;
 select throws_ok($$select * from public.items$$,'42501',null,'worker cannot read raw business data');
 select throws_ok($$select * from public.planning_runs$$,'42501',null,'worker has no raw run privileges');
 select throws_ok($$select * from planning.leases$$,'42501',null,'worker has no raw lease privileges');
@@ -100,7 +100,7 @@ select is(app.planning_execute((select run_id from claimed),(select lease_token 
 select is((select count(*) from pgmq.q_planning),0::bigint,'cancel archives transport');
 select ok(not has_schema_privilege('service_role','pgmq','USAGE'),'service role cannot bypass queue');
 select ok(not has_function_privilege('service_role','app.planning_claim()','EXECUTE'),'service role cannot claim');
-select ok((select not rolcanlogin and not rolsuper and not rolbypassrls and not rolcreaterole from pg_roles where rolname='maqdar_worker'),'worker capability role has no login or administrative privileges');
+select ok((select not rolcanlogin and not rolsuper and not rolbypassrls and not rolcreaterole from pg_roles where rolname='zeespare_worker'),'worker capability role has no login or administrative privileges');
 -- An empty report is valid and never fabricates zero observations.
 set local role authenticated;
 select public.planning_enqueue(pg_temp.id(1),'L1','2026-09-01','2026-09-01',pg_temp.id(44));

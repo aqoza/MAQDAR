@@ -3,8 +3,8 @@ from datetime import date, timedelta
 from decimal import Decimal, localcontext
 from numpy.linalg import LinAlgError
 
-from maqdar_engine.expanded_forecasting import MODELS as EXISTING_MODELS, bootstrap_bands, predict, rounded
-from maqdar_engine.forecasting import MIN_TRAIN, MODELS as BASELINES, accuracy, daily_series, decimal_text
+from zeespare_engine.expanded_forecasting import MODELS as EXISTING_MODELS, bootstrap_bands, predict, rounded
+from zeespare_engine.forecasting import MIN_TRAIN, MODELS as BASELINES, accuracy, daily_series, decimal_text
 
 VERSION = 'driver-v1'
 MODELS = (*EXISTING_MODELS, 'driver_weekday')

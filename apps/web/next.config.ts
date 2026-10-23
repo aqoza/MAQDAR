@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // The pnpm workspace root, so output tracing and Turbopack agree on the monorepo root.
   outputFileTracingRoot: path.join(__dirname, '../..'),
-  transpilePackages: ['@maqdar/shared'],
+  transpilePackages: ['@zeespare/shared'],
   // CLAUDE.md is the rules file for agents; do not let `next dev` generate AGENTS.md.
   agentRules: false,
 }

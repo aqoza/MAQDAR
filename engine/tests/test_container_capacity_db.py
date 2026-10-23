@@ -51,7 +51,7 @@ def test_capacity_rechecks_after_wait(capacity, change, expected):
     purchase, batch, newer, report = capacity
     source = purchase[0]
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.purchase-review:'||%s,0))", (str(source[1]),))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.purchase-review:'||%s,0))", (str(source[1]),))
         call = _Call(waiting, SAVE, (source[1], batch, '10', '100', uuid4(), report['fingerprint']))
         call.start()
         time.sleep(1)

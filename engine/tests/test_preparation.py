@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from maqdar_engine.preparation import prepare
+from zeespare_engine.preparation import prepare
 
 
 def task():

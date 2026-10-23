@@ -70,7 +70,7 @@ def test_request_wait_rechecks_editor(sourcing, retry):
         with session(fixture) as db:
             db.execute(SAVE, args)
     with psycopg.connect(fixture[0]) as admin, session(fixture) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.regional-sourcing:'||%s||':'||%s,0))", (str(fixture[1]), str(args[2])))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.regional-sourcing:'||%s||':'||%s,0))", (str(fixture[1]), str(args[2])))
         call = _Call(waiting, SAVE, args)
         call.start()
         time.sleep(0.4)

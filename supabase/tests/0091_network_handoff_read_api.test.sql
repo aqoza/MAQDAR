@@ -43,7 +43,7 @@ create function pg_temp.hash(n integer) returns bytea language sql immutable as 
 $$;
 create function pg_temp.key(n integer,org integer default 1,scopes text[] default array['network_handoffs:read'])
 returns uuid language sql as $$
-  select public.create_api_key(pg_temp.id(org),'Network reader',scopes,30,pg_temp.hash(n),'maqdar_sk_test','test')
+  select public.create_api_key(pg_temp.id(org),'Network reader',scopes,30,pg_temp.hash(n),'zeespare_sk_test','test')
 $$;
 select pg_temp.login(10,1);
 set local role authenticated;
@@ -92,16 +92,16 @@ select ok(has_function_privilege('service_role','public.api_network_handoff_list
 select ok(has_function_privilege('service_role','public.api_network_handoff_get(bytea,text,uuid)','execute'),'reader get execution for service_role');
 select ok(not has_table_privilege('service_role','public.network_transfer_handoffs','SELECT'),'no direct network_transfer_handoffs read by service_role');
 select ok(not has_table_privilege('service_role','public.network_handoff_batches','SELECT'),'no direct network_handoff_batches read by service_role');
-select ok(not has_table_privilege('maqdar_worker','app.network_handoff_api_records','SELECT'),'private projection denied to maqdar_worker');
-select ok(not has_function_privilege('maqdar_worker','public.api_network_handoff_list(bytea,text,text,integer,timestamptz)','execute'),'reader list execution for maqdar_worker');
-select ok(not has_function_privilege('maqdar_worker','public.api_network_handoff_get(bytea,text,uuid)','execute'),'reader get execution for maqdar_worker');
-select ok(not has_table_privilege('maqdar_worker','public.network_transfer_handoffs','SELECT'),'no direct network_transfer_handoffs read by maqdar_worker');
-select ok(not has_table_privilege('maqdar_worker','public.network_handoff_batches','SELECT'),'no direct network_handoff_batches read by maqdar_worker');
-select ok(not has_table_privilege('maqdar_simulation_worker','app.network_handoff_api_records','SELECT'),'private projection denied to maqdar_simulation_worker');
-select ok(not has_function_privilege('maqdar_simulation_worker','public.api_network_handoff_list(bytea,text,text,integer,timestamptz)','execute'),'reader list execution for maqdar_simulation_worker');
-select ok(not has_function_privilege('maqdar_simulation_worker','public.api_network_handoff_get(bytea,text,uuid)','execute'),'reader get execution for maqdar_simulation_worker');
-select ok(not has_table_privilege('maqdar_simulation_worker','public.network_transfer_handoffs','SELECT'),'no direct network_transfer_handoffs read by maqdar_simulation_worker');
-select ok(not has_table_privilege('maqdar_simulation_worker','public.network_handoff_batches','SELECT'),'no direct network_handoff_batches read by maqdar_simulation_worker');
+select ok(not has_table_privilege('zeespare_worker','app.network_handoff_api_records','SELECT'),'private projection denied to zeespare_worker');
+select ok(not has_function_privilege('zeespare_worker','public.api_network_handoff_list(bytea,text,text,integer,timestamptz)','execute'),'reader list execution for zeespare_worker');
+select ok(not has_function_privilege('zeespare_worker','public.api_network_handoff_get(bytea,text,uuid)','execute'),'reader get execution for zeespare_worker');
+select ok(not has_table_privilege('zeespare_worker','public.network_transfer_handoffs','SELECT'),'no direct network_transfer_handoffs read by zeespare_worker');
+select ok(not has_table_privilege('zeespare_worker','public.network_handoff_batches','SELECT'),'no direct network_handoff_batches read by zeespare_worker');
+select ok(not has_table_privilege('zeespare_simulation_worker','app.network_handoff_api_records','SELECT'),'private projection denied to zeespare_simulation_worker');
+select ok(not has_function_privilege('zeespare_simulation_worker','public.api_network_handoff_list(bytea,text,text,integer,timestamptz)','execute'),'reader list execution for zeespare_simulation_worker');
+select ok(not has_function_privilege('zeespare_simulation_worker','public.api_network_handoff_get(bytea,text,uuid)','execute'),'reader get execution for zeespare_simulation_worker');
+select ok(not has_table_privilege('zeespare_simulation_worker','public.network_transfer_handoffs','SELECT'),'no direct network_transfer_handoffs read by zeespare_simulation_worker');
+select ok(not has_table_privilege('zeespare_simulation_worker','public.network_handoff_batches','SELECT'),'no direct network_handoff_batches read by zeespare_simulation_worker');
 
 -- A cursor is tenant-bound even when its record UUID is known.
 create temporary table cursor_fixture(value text);

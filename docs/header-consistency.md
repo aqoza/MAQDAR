@@ -68,7 +68,7 @@ Fixture names, record values, timestamps and reviewer identities differ from the
 
 ## Verification and reproduction
 
-Use the [regression ledger](REGRESSION.md) for downstream dependencies. Commands run from the repository root with the local stack's `.env.local`, `PLAYWRIGHT_BASE_URL` and `MAQDAR_TEST_DSN`. Database/browser suites run sequentially.
+Use the [regression ledger](REGRESSION.md) for downstream dependencies. Commands run from the repository root with the local stack's `.env.local`, `PLAYWRIGHT_BASE_URL` and `ZEESPARE_TEST_DSN`. Database/browser suites run sequentially.
 
 ```text
 pnpm lint

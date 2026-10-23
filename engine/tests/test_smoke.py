@@ -1,4 +1,4 @@
-from maqdar_engine import __version__, main
+from zeespare_engine import __version__, main
 
 
 def test_version_is_set() -> None:
@@ -7,4 +7,4 @@ def test_version_is_set() -> None:
 
 def test_main_prints_version(capsys) -> None:
     main()
-    assert f"maqdar-engine {__version__}" in capsys.readouterr().out
+    assert f"zeespare-engine {__version__}" in capsys.readouterr().out

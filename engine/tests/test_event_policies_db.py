@@ -12,7 +12,7 @@ from test_replenishment_db import session
 from test_tenancy_concurrency import _Call, _race
 from test_planning_db import planning, worker
 from test_policy_db import saved_forecast, enqueue_policy
-from maqdar_engine.worker import process_one
+from zeespare_engine.worker import process_one
 
 pytestmark = pytest.mark.db
 SAVE = "select public.event_policy_save(%s,%s,%s,'Fixed event comparison',%s,%s)"
@@ -82,7 +82,7 @@ def test_event_policy_rechecks_after_lock(policy_event, change, expected):
     source, event_id, policy, fingerprint = policy_event
     request = uuid4()
     with psycopg.connect(source[0]) as admin, session(source) as waiting:
-        admin.execute("select pg_advisory_xact_lock(hashtextextended('maqdar.event-policy:'||%s||':'||%s,0))", (str(source[1]), str(request)))
+        admin.execute("select pg_advisory_xact_lock(hashtextextended('zeespare.event-policy:'||%s||':'||%s,0))", (str(source[1]), str(request)))
         call = _Call(waiting, SAVE, (source[1], event_id, policy, request, fingerprint))
         call.start()
         time.sleep(1)

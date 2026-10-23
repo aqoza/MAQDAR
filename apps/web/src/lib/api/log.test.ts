@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { hashApiKey } from './keys'
 import { apiLogEntry, logApiRequest, type ApiLogInput } from './log'
 
-const TOKEN = 'maqdar_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg27zRqD'
+const TOKEN = 'zeespare_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0QUuQI'
 const REQUEST_ID = '5c8e3a1b-7d2f-4e6a-9b0c-1d2e3f4a5b6c'
 
 async function input(overrides: Partial<ApiLogInput> = {}): Promise<ApiLogInput> {
@@ -31,7 +31,7 @@ describe('apiLogEntry', () => {
       operation: 'upsert:items',
       status: 200,
       code: null,
-      key: '57c5db9f',
+      key: '5ce42b3e',
       records: 3,
       db_ms: 41.3,
       total_ms: 47.8,

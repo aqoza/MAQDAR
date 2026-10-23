@@ -11,14 +11,14 @@ import psycopg
 from psycopg.conninfo import conninfo_to_dict
 from psycopg.types.json import Jsonb
 
-from maqdar_engine.classification import VERSION, classify
-from maqdar_engine.forecasting import VERSION as FORECAST_VERSION, forecast
+from zeespare_engine.classification import VERSION, classify
+from zeespare_engine.forecasting import VERSION as FORECAST_VERSION, forecast
 
 
 def validate_dsn(dsn: str) -> None:
     """No implicit libpq environment fallback; remote hosts require verified TLS."""
     if not dsn:
-        raise ValueError('MAQDAR_WORKER_DSN is required')
+        raise ValueError('ZEESPARE_WORKER_DSN is required')
     options = conninfo_to_dict(dsn)
     host = options.get('host', '')
     if not host or ',' in host or 'hostaddr' in options:
@@ -46,35 +46,35 @@ def process_one(connection: psycopg.Connection) -> bool:
             rows = forecast(task)
             connection.execute('select app.forecast_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
         elif task['kind'] == 'forecast' and task.get('method') in ('expanded-v1', 'regional-v1', 'driver-v1', 'multi-driver-v1'):
-            from maqdar_engine.forecast_process import compute
+            from zeespare_engine.forecast_process import compute
             rows = compute(task)
             connection.execute('select app.forecast_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
         elif task['kind'] == 'policy' and task.get('method') == 'policy-v1':
-            from maqdar_engine.forecast_process import compute
+            from zeespare_engine.forecast_process import compute
             rows = compute(task)
             connection.execute('select app.policy_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
         elif task['kind'] == 'simulation' and task.get('method') == 'periodic-replay-v1':
-            from maqdar_engine.policy_simulation import calculate
+            from zeespare_engine.policy_simulation import calculate
             result = calculate(task)
             connection.execute('select app.simulation_finish(%s,%s,%s)', (run_id, token, Jsonb(result))).fetchone()
         elif task['kind'] == 'simulation' and task.get('method') == 'periodic-sensitivity-v1':
-            from maqdar_engine.policy_sensitivity import calculate
+            from zeespare_engine.policy_sensitivity import calculate
             result = calculate(task)
             connection.execute('select app.simulation_finish(%s,%s,%s)', (run_id, token, Jsonb(result))).fetchone()
         elif task['kind'] == 'simulation' and task.get('method') == 'periodic-configurations-v1':
-            from maqdar_engine.policy_configurations import calculate
+            from zeespare_engine.policy_configurations import calculate
             result = calculate(task)
             connection.execute('select app.simulation_finish(%s,%s,%s)', (run_id, token, Jsonb(result))).fetchone()
         elif task['kind'] == 'simulation' and task.get('method') == 'periodic-constraints-v1':
-            from maqdar_engine.policy_constraints import calculate
+            from zeespare_engine.policy_constraints import calculate
             result = calculate(task)
             connection.execute('select app.simulation_finish(%s,%s,%s)', (run_id, token, Jsonb(result))).fetchone()
         elif task['kind'] == 'simulation' and task.get('method') == 'periodic-calendars-v1':
-            from maqdar_engine.policy_calendars import calculate
+            from zeespare_engine.policy_calendars import calculate
             result = calculate(task)
             connection.execute('select app.simulation_finish(%s,%s,%s)', (run_id, token, Jsonb(result))).fetchone()
         elif task['kind'] == 'preparation' and task.get('method') == 'preparation-v1':
-            from maqdar_engine.preparation import prepare
+            from zeespare_engine.preparation import prepare
             rows = prepare(task)
             connection.execute('select app.preparation_finish(%s,%s,%s)', (run_id, token, Jsonb(rows))).fetchone()
         else:
@@ -88,20 +88,20 @@ def process_one(connection: psycopg.Connection) -> bool:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='Process MAQDAR planning runs')
+    parser = argparse.ArgumentParser(description='Process ZeeSpare planning runs')
     parser.add_argument('--once', action='store_true', help='Process at most one run and exit')
     args = parser.parse_args()
     stopped = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, lambda *_: stopped.set())
-    dsn = os.environ.get('MAQDAR_WORKER_DSN', '')
+    dsn = os.environ.get('ZEESPARE_WORKER_DSN', '')
     try:
         validate_dsn(dsn)
         with psycopg.connect(dsn, autocommit=True, connect_timeout=10,
-                             application_name='maqdar-worker') as connection:
+                             application_name='zeespare-worker') as connection:
             # The login needs only membership in this capability role. Even a
             # local operator connection drops its ordinary privileges here.
-            connection.execute('set role maqdar_worker')
+            connection.execute('set role zeespare_worker')
             connection.execute("set statement_timeout = '90s'")
             connection.execute("set lock_timeout = '5s'")
             while not stopped.is_set():

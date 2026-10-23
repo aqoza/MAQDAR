@@ -15,14 +15,14 @@ pytestmark = pytest.mark.db
 
 
 def test_container_probe_consume_and_crash_recovery(scoped, tmp_path):
-    image = os.environ.get('MAQDAR_CONTAINER_IMAGE')
-    database_container = os.environ.get('MAQDAR_TEST_DB_CONTAINER')
+    image = os.environ.get('ZEESPARE_CONTAINER_IMAGE')
+    database_container = os.environ.get('ZEESPARE_TEST_DB_CONTAINER')
     if not image or not database_container:
-        pytest.skip('opt in with MAQDAR_CONTAINER_IMAGE and MAQDAR_TEST_DB_CONTAINER for local Docker smoke')
+        pytest.skip('opt in with ZEESPARE_CONTAINER_IMAGE and ZEESPARE_TEST_DB_CONTAINER for local Docker smoke')
     name = 'qa-scoped-simulation-' + uuid4().hex
     env_file = Path(tmp_path) / '.env.local'
-    env_file.write_text('MAQDAR_WORKER_DSN=' + make_conninfo(scoped['runtime'], host='127.0.0.1', port=5432)
-                        + '\nMAQDAR_EXPECTED_ORGANIZATION=' + str(scoped['org']) + '\n')
+    env_file.write_text('ZEESPARE_WORKER_DSN=' + make_conninfo(scoped['runtime'], host='127.0.0.1', port=5432)
+                        + '\nZEESPARE_EXPECTED_ORGANIZATION=' + str(scoped['org']) + '\n')
     env_file.chmod(0o600)
 
     def docker(*args, **kwargs):
@@ -30,8 +30,8 @@ def test_container_probe_consume_and_crash_recovery(scoped, tmp_path):
 
     def start(mode):
         docker('run', '-d', '--rm', '--name', name, '--network', 'container:' + database_container,
-               '--env-file', str(env_file), '-e', 'MAQDAR_DATABASE_CA', '-e', 'MAQDAR_WORKER_MODE=' + mode,
-               image, env={**os.environ, 'MAQDAR_DATABASE_CA': certificate})
+               '--env-file', str(env_file), '-e', 'ZEESPARE_DATABASE_CA', '-e', 'ZEESPARE_WORKER_MODE=' + mode,
+               image, env={**os.environ, 'ZEESPARE_DATABASE_CA': certificate})
 
     def wait_for_run(run):
         for _ in range(30):

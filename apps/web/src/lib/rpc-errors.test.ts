@@ -15,7 +15,7 @@ describe('rpcErrorKey', () => {
     }
   })
 
-  it('covers the custom MAQDAR codes and the PostgreSQL constraint and privilege codes', () => {
+  it('covers the custom ZeeSpare codes and the PostgreSQL constraint and privilege codes', () => {
     for (const code of ['MQ401', 'MQ403', 'MQ404', 'MQ409', 'MQ422', 'MQ429']) {
       expect(rpcErrorKey({ code })).toBe(code)
     }

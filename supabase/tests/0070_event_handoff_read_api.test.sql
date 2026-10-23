@@ -170,7 +170,7 @@ update batches set payload=b.payload from public.event_purchase_handoff_batches 
 -- Force timestamp ties to exercise the UUID tiebreak and inclusive lower bound.
 update public.event_purchase_handoffs set created_at='2026-10-01T00:00:00Z' where organization_id=pg_temp.id(1);
 create function pg_temp.hash(n integer) returns bytea language sql immutable as $$select decode(lpad(n::text,64,'0'),'hex')$$;
-create function pg_temp.key(n integer,scopes text[] default array['event_purchase_handoffs:read'],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Test key '||n,scopes,30,pg_temp.hash(n),'maqdar_sk_test','test')$$;
+create function pg_temp.key(n integer,scopes text[] default array['event_purchase_handoffs:read'],org integer default 1) returns uuid language sql as $$select public.create_api_key(pg_temp.id(org),'Test key '||n,scopes,30,pg_temp.hash(n),'zeespare_sk_test','test')$$;
 select pg_temp.login(10,1);
 set local role authenticated;
 select lives_ok($$select pg_temp.key(40)$$,'owner can issue explicit handoff permission');
@@ -281,7 +281,7 @@ select pg_temp.login(12,1);
 select is((select count(*) from public.event_purchase_handoff_batches),0::bigint,'unrelated-location browser member still cannot read batch');
 reset role;
 select ok(not has_function_privilege('anon','public.api_event_purchase_handoff_get(bytea,text,uuid)','execute'),'anon RPC denied');
-select ok(not has_function_privilege('maqdar_worker','public.api_event_purchase_handoff_get(bytea,text,uuid)','execute'),'worker RPC denied');
+select ok(not has_function_privilege('zeespare_worker','public.api_event_purchase_handoff_get(bytea,text,uuid)','execute'),'worker RPC denied');
 select is((select count(*) from public.stock_snapshots where organization_id=pg_temp.id(1)),4::bigint,'reads leave stock unchanged');
 select is((select count(*) from public.event_purchase_handoff_batches where organization_id=pg_temp.id(1)),1::bigint,'reads create no batches');
 set local role service_role;

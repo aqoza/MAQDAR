@@ -1,4 +1,4 @@
-// Bindings of the MAQDAR Worker that OpenNext's `CloudflareEnv` does not declare. Written by hand
+// Bindings of the ZeeSpare Worker that OpenNext's `CloudflareEnv` does not declare. Written by hand
 // because @cloudflare/workers-types is not installed; keep it in sync with wrangler.jsonc.
 // Global declarations (no import or export), merged into the interface from
 // @opennextjs/cloudflare. Read the bindings only through src/lib/api/bindings.ts.

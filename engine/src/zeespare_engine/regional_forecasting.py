@@ -3,20 +3,20 @@
 from datetime import date, timedelta
 from decimal import Decimal, localcontext
 
-from maqdar_engine.expanded_forecasting import (
+from zeespare_engine.expanded_forecasting import (
     MODELS as EXISTING_MODELS,
     bootstrap_bands,
     predict,
     rounded,
 )
-from maqdar_engine.forecasting import (
+from zeespare_engine.forecasting import (
     MIN_TRAIN,
     MODELS as BASELINES,
     accuracy,
     daily_series,
     decimal_text,
 )
-from maqdar_engine.preparation import calendar_day
+from zeespare_engine.preparation import calendar_day
 
 VERSION = "regional-v1"
 MODELS = (*EXISTING_MODELS, "calendar")

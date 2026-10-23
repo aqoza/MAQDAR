@@ -19,7 +19,7 @@
 --   new keys and the history window; scopes; the another_commit slot and the daily cap of recorded
 --   writes; a commit-time failure (planted trigger) without sqlstate, message or phase in the
 --   result; cross-tenant codes; a demoted creator; the function configuration and the
---   maqdar.import_analyze setting, restored after every call.
+--   zeespare.import_analyze setting, restored after every call.
 -- Fixtures are created as postgres; api_upsert runs as service_role. pg_temp.api_dry runs a call
 -- in a subtransaction that it rolls back, so dry cases stay independent. The fixture file is read
 -- by psql (pg_prove runs this file with psql in supabase/tests).
@@ -33,7 +33,7 @@ insert into fixture values (:'fixture');
 -- Planted triggers (as postgres), created before any write so that this transaction never
 -- upgrades a lock on items or brands (DROP TRIGGER would, and deadlocked with a concurrent
 -- session): while api23.trip = on, pg_temp.trip raises 23503 for the item API-TRIP; while
--- api23.record = on, pg_temp.record_setting records maqdar.import_analyze for every new brand.
+-- api23.record = on, pg_temp.record_setting records zeespare.import_analyze for every new brand.
 ------------------------------------------------------------------------------------------------
 create temp table analyze_settings (code text, setting text) on commit drop;
 create function pg_temp.trip()
@@ -54,7 +54,7 @@ language plpgsql
 as $$
 begin
   if coalesce(current_setting('api23.record', true), '') = 'on' then
-    insert into pg_temp.analyze_settings values (new.code, current_setting('maqdar.import_analyze', true));
+    insert into pg_temp.analyze_settings values (new.code, current_setting('zeespare.import_analyze', true));
   end if;
   return new;
 end;
@@ -118,19 +118,19 @@ values ('00000000-0000-4000-8000-a23000000000', '00000000-0000-4000-8000-a230200
 -- Helpers (as postgres; pg_temp functions run with the privileges of the calling role)
 ------------------------------------------------------------------------------------------------
 
--- A sample key named n (maqdar_sk_ + 43 + 6 characters) and its SHA-256, as the Worker sends it.
+-- A sample key named n (zeespare_sk_ + 43 + 6 characters) and its SHA-256, as the Worker sends it.
 create function pg_temp.h(n text)
 returns bytea
 language sql
 immutable
 as $$
-  select sha256(convert_to('maqdar_sk_' || rpad(n, 43, 'x') || 'Ab12Cd', 'UTF8'));
+  select sha256(convert_to('zeespare_sk_' || rpad(n, 43, 'x') || 'Ab12Cd', 'UTF8'));
 $$;
 
 -- Keys of A: full (every scope), read (both reads), master (master_data:write), tx
 -- (transactions:write); of B: b-full. Created by the owners.
 insert into public.api_keys (id, organization_id, name, display_prefix, last4, key_hash, scopes, created_by, expires_at)
-select v.id::uuid, v.org::uuid, v.name, 'maqdar_sk_Test', 'Ab12', pg_temp.h(v.name), v.scopes, v.creator::uuid, now() + interval '90 days'
+select v.id::uuid, v.org::uuid, v.name, 'zeespare_sk_Test', 'Ab12', pg_temp.h(v.name), v.scopes, v.creator::uuid, now() + interval '90 days'
 from (values
   ('00000000-0000-4000-8000-a23c00000001', '00000000-0000-4000-8000-a23000000000', 'full',
    array['master_data:read', 'master_data:write', 'transactions:read', 'transactions:write'], '00000000-0000-4000-8000-a23000000002'),
@@ -1229,7 +1229,7 @@ update public.memberships set role = 'owner'
 where organization_id = '00000000-0000-4000-8000-a23000000000' and user_id = '00000000-0000-4000-8000-a23000000002';
 
 ------------------------------------------------------------------------------------------------
--- Configuration: search_path only in the function, maqdar.import_analyze = skip_locked for the
+-- Configuration: search_path only in the function, zeespare.import_analyze = skip_locked for the
 -- call and restored after it; static SQL only
 ------------------------------------------------------------------------------------------------
 select is(
@@ -1246,23 +1246,23 @@ select is(
 select set_config('api23.record', 'on', true) as record;
 
 set local role service_role;
-select set_config('maqdar.import_analyze', 'before', true) as setting;
+select set_config('zeespare.import_analyze', 'before', true) as setting;
 insert into pg_temp.results values ('cfg write', public.api_upsert(pg_temp.h('full'), 'brands',
   '{"records": [{"brand_code": "API-CFG", "name_en": "Config"}]}', gen_random_uuid()));
-select is(current_setting('maqdar.import_analyze', true), 'before', 'after a recorded write the setting is restored');
+select is(current_setting('zeespare.import_analyze', true), 'before', 'after a recorded write the setting is restored');
 insert into pg_temp.results values ('cfg invalid', public.api_upsert(pg_temp.h('full'), 'brands',
   '{"records": [{"brand_code": "API CFG", "name_en": "Config"}]}', gen_random_uuid()));
-select is(current_setting('maqdar.import_analyze', true), 'before', 'and after an invalid write');
-select set_config('maqdar.import_analyze', '', true) as setting;
+select is(current_setting('zeespare.import_analyze', true), 'before', 'and after an invalid write');
+select set_config('zeespare.import_analyze', '', true) as setting;
 insert into pg_temp.results values ('cfg unchanged', public.api_upsert(pg_temp.h('full'), 'brands',
   '{"records": [{"brand_code": "API-CFG", "name_en": "Config"}]}', gen_random_uuid()));
-select is(current_setting('maqdar.import_analyze', true), '', 'and after a write that changed nothing');
+select is(current_setting('zeespare.import_analyze', true), '', 'and after a write that changed nothing');
 reset role;
 select set_config('api23.record', '', true) as record;
 select is(
   (select array_agg(format('%s %s', s.code, s.setting)) from pg_temp.analyze_settings s),
   array['API-CFG skip_locked'],
-  'during the write the 5a statistics helpers see maqdar.import_analyze = skip_locked'
+  'during the write the 5a statistics helpers see zeespare.import_analyze = skip_locked'
 );
 select is(
   (select array_agg(r.result ->> 'result' || ' ' || coalesce(r.result ->> 'recorded', '-') order by r.name)

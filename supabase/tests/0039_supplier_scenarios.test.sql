@@ -132,10 +132,10 @@ select is(pg_temp.preview()->>'status','terms_missing','missing supplier-item te
 select is((select (report->>'quantity')::numeric from public.supplier_scenarios where id=(select scenario_id from fixture)),12::numeric,'supplier term deletion retains saved evidence');
 reset role;
 select ok(not has_function_privilege('service_role','public.supplier_scenario_save(uuid,uuid,text,boolean,uuid,text)','EXECUTE'),'API cannot create scenarios');
-select ok(not has_function_privilege('maqdar_worker','public.supplier_scenario_save(uuid,uuid,text,boolean,uuid,text)','EXECUTE'),'worker capability unchanged');
+select ok(not has_function_privilege('zeespare_worker','public.supplier_scenario_save(uuid,uuid,text,boolean,uuid,text)','EXECUTE'),'worker capability unchanged');
 
 insert into public.api_keys(organization_id,name,display_prefix,last4,key_hash,scopes,created_by,expires_at)
-values(pg_temp.id(1),'Terms','maqdar_sk_abcd','abcd',decode(repeat('ad',32),'hex'),array['master_data:read','master_data:write'],pg_temp.id(10),now()+interval '1 day');
+values(pg_temp.id(1),'Terms','zeespare_sk_abcd','abcd',decode(repeat('ad',32),'hex'),array['master_data:read','master_data:write'],pg_temp.id(10),now()+interval '1 day');
 create function pg_temp.upsert(record jsonb) returns jsonb language sql as $$select public.api_upsert(decode(repeat('ad',32),'hex'),'supplier_items',jsonb_build_object('records',jsonb_build_array(record)),gen_random_uuid())$$;
 select set_config('request.jwt.claims','{}',true);
 set local role service_role;

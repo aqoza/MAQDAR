@@ -22,10 +22,10 @@ import {
 
 /**
  * Shared with supabase/tests/0022_api_keys.test.sql:
- * encode(sha256('maqdar_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg27zRqD'::bytea), 'hex').
+ * encode(sha256('zeespare_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0QUuQI'::bytea), 'hex').
  */
-const VECTOR_TOKEN = 'maqdar_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg27zRqD'
-const VECTOR_SHA256 = '57c5db9f1c461c47073a614bba4368a3902a3fa56525f94fa8fab6528f35efcb'
+const VECTOR_TOKEN = 'zeespare_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0QUuQI'
+const VECTOR_SHA256 = '5ce42b3eff9f75f4c38e409644e5813fce73de68bce8d108dfd5e117b42b1863'
 
 const bytes = (text: string) => new TextEncoder().encode(text)
 
@@ -56,8 +56,8 @@ describe('encodeBase62', () => {
 describe('key format', () => {
   it('accepts the shared vector and its checksum', () => {
     expect(VECTOR_TOKEN).toHaveLength(API_KEY_LENGTH)
-    expect(API_KEY_LENGTH).toBe(59)
-    expect(checksumFor(VECTOR_TOKEN.slice(0, -6))).toBe('27zRqD')
+    expect(API_KEY_LENGTH).toBe(61)
+    expect(checksumFor(VECTOR_TOKEN.slice(0, -6))).toBe('0QUuQI')
     expect(checkFormat(VECTOR_TOKEN)).toBe(true)
   })
 
@@ -70,7 +70,7 @@ describe('key format', () => {
     }
     expect(checkFormat(VECTOR_TOKEN.slice(0, -1))).toBe(false)
     expect(checkFormat(`${VECTOR_TOKEN}0`)).toBe(false)
-    expect(checkFormat(VECTOR_TOKEN.replace('maqdar_sk_', 'maqdar_pk_'))).toBe(false)
+    expect(checkFormat(VECTOR_TOKEN.replace('zeespare_sk_', 'zeespare_pk_'))).toBe(false)
     expect(checkFormat(VECTOR_TOKEN.replace('a', '-'))).toBe(false)
     expect(checkFormat('')).toBe(false)
   })
@@ -91,7 +91,7 @@ describe('generateApiKey', () => {
     const key = await generateApiKey()
     expect(checkFormat(key.token)).toBe(true)
     expect(key.token.startsWith(key.displayPrefix)).toBe(true)
-    expect(key.displayPrefix).toMatch(/^maqdar_sk_[0-9A-Za-z]{4}$/)
+    expect(key.displayPrefix).toMatch(/^zeespare_sk_[0-9A-Za-z]{4}$/)
     expect(key.last4).toMatch(/^[0-9A-Za-z]{4}$/)
     expect(key.token.endsWith(key.last4)).toBe(true)
     expect(key.hash).toBe(await hashApiKey(key.token))
@@ -119,7 +119,7 @@ describe('generateApiKey', () => {
     const random = (buffer: Uint8Array) => buffer.fill(1)
     const key = await generateApiKey(random)
     expect(key.token).toBe(
-      `maqdar_sk_${'1'.repeat(43)}${checksumFor(`maqdar_sk_${'1'.repeat(43)}`)}`,
+      `zeespare_sk_${'1'.repeat(43)}${checksumFor(`zeespare_sk_${'1'.repeat(43)}`)}`,
     )
   })
 })
@@ -132,8 +132,8 @@ describe('hashApiKey', () => {
     expect(isKeyHash(hash)).toBe(true)
     expect(isKeyHash(VECTOR_SHA256)).toBe(false)
     expect(keyHashHex(hash)).toBe(VECTOR_SHA256)
-    expect(keyHashPrefix(hash)).toBe('57c5db9f')
-    expect(keyHashPrefix(hash, 16)).toBe('57c5db9f1c461c47')
+    expect(keyHashPrefix(hash)).toBe('5ce42b3e')
+    expect(keyHashPrefix(hash, 16)).toBe('5ce42b3eff9f75f4')
     expect(() => keyHashPrefix(hash, 17)).toThrow(RangeError)
     expect(JSON.stringify({ p_key_hash: hash })).toBe(`{"p_key_hash":"\\\\x${VECTOR_SHA256}"}`)
   })

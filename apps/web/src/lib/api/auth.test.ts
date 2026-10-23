@@ -13,7 +13,7 @@ import {
 import { toProblem } from './problem'
 
 const REQUEST_ID = '3d6c3f3e-8f0a-4f43-9d55-1f0c2b7a9e10'
-const TOKEN = 'maqdar_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg27zRqD'
+const TOKEN = 'zeespare_sk_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0QUuQI'
 
 function headers(authorization?: string): Headers {
   const result = new Headers()
@@ -84,12 +84,12 @@ describe('readCredential', () => {
   it('builds the 401 problems', () => {
     expect(credentialProblem('unauthorized', REQUEST_ID)).toMatchObject({
       status: 401,
-      headers: { 'WWW-Authenticate': 'Bearer realm="maqdar-api"' },
+      headers: { 'WWW-Authenticate': 'Bearer realm="zeespare-api"' },
       body: { code: 'unauthorized' },
     })
     expect(credentialProblem('invalid_token', REQUEST_ID)).toMatchObject({
       status: 401,
-      headers: { 'WWW-Authenticate': 'Bearer realm="maqdar-api", error="invalid_token"' },
+      headers: { 'WWW-Authenticate': 'Bearer realm="zeespare-api", error="invalid_token"' },
       body: { code: 'invalid_token' },
     })
   })

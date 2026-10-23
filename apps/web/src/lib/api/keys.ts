@@ -1,8 +1,8 @@
 import { API_LIMITS } from './limits'
 
 /**
- * API keys: `maqdar_sk_` + 43 base62 characters (256 random bits) + a 6-character base62 CRC32 of
- * everything before it, 59 characters in all (`\bmaqdar_sk_[0-9A-Za-z]{49}\b` for secret
+ * API keys: `zeespare_sk_` + 43 base62 characters (256 random bits) + a 6-character base62 CRC32 of
+ * everything before it, 61 characters in all (`\bzeespare_sk_[0-9A-Za-z]{49}\b` for secret
  * scanners). The checksum lets the Worker refuse typos and truncated keys without a database
  * call. Postgres only ever sees the SHA-256 of a key (`api_keys.key_hash`, 32 bytes), computed
  * here with Web Crypto; the plaintext is shown once by Settings and never stored or logged.
@@ -10,13 +10,13 @@ import { API_LIMITS } from './limits'
  * Pure module (Web Crypto and TextEncoder only): Server Actions, route handlers and Vitest use it.
  */
 
-export const API_KEY_PREFIX = 'maqdar_sk_'
+export const API_KEY_PREFIX = 'zeespare_sk_'
 export const API_KEY_RANDOM_CHARS = 43
 export const API_KEY_CHECKSUM_CHARS = 6
 export const API_KEY_LENGTH = API_KEY_PREFIX.length + API_KEY_RANDOM_CHARS + API_KEY_CHECKSUM_CHARS
 /** The whole key; the checksum is checked separately by `checkFormat`. */
-export const API_KEY_PATTERN = /^maqdar_sk_[0-9A-Za-z]{49}$/
-/** Characters of the display prefix after `maqdar_sk_` (`api_keys.display_prefix`). */
+export const API_KEY_PATTERN = /^zeespare_sk_[0-9A-Za-z]{49}$/
+/** Characters of the display prefix after `zeespare_sk_` (`api_keys.display_prefix`). */
 export const DISPLAY_PREFIX_CHARS = 4
 
 /** Base62 digits in ascending value: 0-9, A-Z, a-z. */
@@ -70,13 +70,13 @@ export function encodeBase62(value: number, width: number): string {
 
 const encoder = new TextEncoder()
 
-/** The 6-character checksum of a key body (`maqdar_sk_` + the 43 random characters). */
+/** The 6-character checksum of a key body (`zeespare_sk_` + the 43 random characters). */
 export function checksumFor(body: string): string {
   return encodeBase62(crc32(encoder.encode(body)), API_KEY_CHECKSUM_CHARS)
 }
 
 /**
- * Whether a token is shaped like a MAQDAR key and its checksum matches. Offline only: a key that
+ * Whether a token is shaped like a ZeeSpare key and its checksum matches. Offline only: a key that
  * passes may still be unknown, revoked or expired.
  */
 export function checkFormat(token: string): boolean {
@@ -184,7 +184,7 @@ export type GeneratedApiKey = {
   hash: KeyHash
   /** The same hash as 64 hex digits. */
   hashHex: string
-  /** `maqdar_sk_` + the first 4 random characters (`api_keys.display_prefix`). */
+  /** `zeespare_sk_` + the first 4 random characters (`api_keys.display_prefix`). */
   displayPrefix: string
   /** The last 4 characters of the key (`api_keys.last4`). */
   last4: string
@@ -206,7 +206,7 @@ export async function generateApiKey(
   }
 }
 
-/** How Settings shows a key: `maqdar_sk_AbCd…wxyz`. */
+/** How Settings shows a key: `zeespare_sk_AbCd…wxyz`. */
 export function displayKey(displayPrefix: string, last4: string): string {
   return `${displayPrefix}…${last4}`
 }

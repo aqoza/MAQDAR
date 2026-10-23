@@ -1,6 +1,6 @@
 'use client'
 
-import type { Database } from '@maqdar/shared/database.types'
+import type { Database } from '@zeespare/shared/database.types'
 import { useFormatter, useTranslations } from 'next-intl'
 import { useActionState } from 'react'
 import { RoleBadge } from '@/components/role-badge'
