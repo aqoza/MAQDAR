@@ -128,14 +128,24 @@ export async function EditScreen({ entity, id, searchParams }: EditScreenProps) 
           )
         }
         actions={
-          row && canEdit ? (
-            <DeleteDialog
-              entity={definition.key}
-              id={String(row.id)}
-              title={tForm('deleteTitle', { name: code })}
-              description={optionalMessage(t, 'deleteWarning') ?? tForm('deleteWarning')}
-            />
-          ) : null
+          <>
+            {entity === 'suppliers' && id && ['owner', 'admin'].includes(context.role ?? '') ? (
+              <Link
+                className="underline"
+                href={`/suppliers/portal-access?supplier=${encodeURIComponent(code)}`}
+              >
+                {(await getTranslations('SupplierPortal'))('accessTitle')}
+              </Link>
+            ) : null}
+            {row && canEdit ? (
+              <DeleteDialog
+                entity={definition.key}
+                id={String(row.id)}
+                title={tForm('deleteTitle', { name: code })}
+                description={optionalMessage(t, 'deleteWarning') ?? tForm('deleteWarning')}
+              />
+            ) : null}
+          </>
         }
         back={
           <Link

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { setLocale } from '@/i18n/actions'
 import { appLocales, toAppLocale } from '@/i18n/config'
 
-export function LocaleSwitcher() {
+export function LocaleSwitcher({ portalGrantId }: { portalGrantId?: string } = {}) {
   const t = useTranslations('Settings.language')
   const current = toAppLocale(useLocale())
   const [pending, startTransition] = useTransition()
@@ -23,7 +23,7 @@ export function LocaleSwitcher() {
             aria-checked={selected}
             variant={selected ? 'default' : 'outline'}
             disabled={pending}
-            onClick={() => startTransition(() => setLocale(locale))}
+            onClick={() => startTransition(() => setLocale(locale, portalGrantId))}
           >
             {t(locale)}
           </Button>

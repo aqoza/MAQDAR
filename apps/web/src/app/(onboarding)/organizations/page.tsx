@@ -1,3 +1,4 @@
+import { getSupplierPortals } from '@/lib/supplier-portal-context'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -31,6 +32,9 @@ export default async function OrganizationsPage({
 }) {
   const context = await getActiveContext()
   if (!context) redirect('/login')
+  const portals = await getSupplierPortals()
+  if (context.organizations.length === 0 && portals.length > 0) redirect('/supplier-portal')
+  const portalTitle = (await getTranslations('SupplierPortal'))('title')
   const { error } = await searchParams
 
   const [t, tRoles, tRpc, format] = await Promise.all([
@@ -53,6 +57,11 @@ export default async function OrganizationsPage({
         ) : null}
       </div>
 
+      {portals.length > 0 && (
+        <Link className="inline-flex min-h-11 items-center underline" href="/supplier-portal">
+          {portalTitle}
+        </Link>
+      )}
       {error ? (
         <Alert variant="destructive">
           <AlertDescription>{tRpc(rpcErrorKey({ code: error }))}</AlertDescription>
