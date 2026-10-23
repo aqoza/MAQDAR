@@ -26,6 +26,7 @@ export const SCOPE_MESSAGE_KEYS = {
   'network_handoffs:read': 'networkHandoffsRead',
   'network_handoffs:acknowledge': 'networkHandoffsAcknowledge',
   'regional_handoffs:read': 'regionalHandoffsRead',
+  'regional_handoffs:acknowledge': 'regionalHandoffsAcknowledge',
 } as const satisfies Record<ApiScope, string>
 
 export type ScopeMessageKey = (typeof SCOPE_MESSAGE_KEYS)[ApiScope]

@@ -1095,6 +1095,11 @@
         "label": "Read regional handoffs",
         "description": "Read saved regional handoffs and batches across the whole organization, including every source and retained evidence after source deletion. Does not reserve stock or execute transfers.",
         "badge": "Regional handoffs: read"
+      },
+      "regionalHandoffsAcknowledge": {
+        "label": "Report regional package receipt or rejection",
+        "description": "Record external reports for complete regional handoffs and batches across this organization. Does not reserve stock or execute transfers.",
+        "badge": "Regional handoffs: acknowledge"
       }
     },
     "secret": {
@@ -1910,7 +1915,8 @@
       "event_purchase_cost_estimates": "Event purchase-cost comparisons",
       "event_purchase_proposals": "Event purchase proposals",
       "event_purchase_handoffs": "Event purchase handoffs",
-      "event_purchase_handoff_batches": "Event purchase handoff batches"
+      "event_purchase_handoff_batches": "Event purchase handoff batches",
+      "regional_handoff_acknowledgements": "Regional package acknowledgements"
     }
   },
   "Planning": {
@@ -3171,7 +3177,8 @@
     "transferMeaning": "External system reports, not independently verified transfer acceptance. Reports do not transmit packages, reserve stock, create transfer orders or update inbound. Recorded time is when ZeeSpare saved the report.",
     "eventMeaning": "Reports are supplied by an integration key holder. They do not verify external acceptance or create orders. Full adjusted selections, baseline comparisons and event evidence remain unchanged.",
     "dispositionMeaning": "Reports are supplied by an integration key holder. They do not verify supplier acceptance, create returns, authorize scrap, write off inventory or move stock. Saved quantities and reference inventory values remain unchanged. Reports on copied batches remain available after source handoffs are deleted.",
-    "networkMeaning": "These are external reports about the whole saved network package, not verified branch acceptance or transfer execution. They do not reserve stock, create transfers or change inbound. History remains separate for member handoffs and overlapping batches; retained copied batches keep their reports after source deletion."
+    "networkMeaning": "These are external reports about the whole saved network package, not verified branch acceptance or transfer execution. They do not reserve stock, create transfers or change inbound. History remains separate for member handoffs and overlapping batches; retained copied batches keep their reports after source deletion.",
+    "regionalMeaning": "These are external reports about the whole saved regional package, not verified acceptance by a source or transfer execution. They do not reserve stock, create transfers or change inbound. Member handoffs and overlapping batches keep separate histories; retained copied batches keep their reports after source deletion."
   },
   "TransferDates": {
     "title": "Transfer date scenarios",

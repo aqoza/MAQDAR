@@ -184,3 +184,7 @@ Disposition receipt/rejection reporting uses a separate explicit permission. See
 ## Regional planning packages
 
 The explicit organization-wide `regional_handoffs:read` permission exposes GET/HEAD `/api/v1/regional-handoffs` and `/api/v1/regional-handoff-batches`, and their `/{id}` detail routes. Owners/admins issue keys; existing permissions grant no regional access. Original complete evidence is separate from live current/historical/unavailable selection. Copied batches remain readable after source deletion. See [regional handoff read API](regional-handoff-read-api.md) for pagination, retention, access and examples. No regional acknowledgement or execution routes are enabled.
+
+## Regional package acknowledgements (Step 25j)
+
+`POST /api/v1/regional-handoffs/{id}/acknowledgements` and the equivalent `regional-handoff-batches` route require explicit organization-wide `regional_handoffs:acknowledge`. GET/HEAD history and event details require `regional_handoffs:read`. Whole-package caller reports use append-only organization/client-UUID retries and retain actual-parent deletion/audit behavior, including copied batches with missing source context. Reports do not transmit packages or change operations. See [the contract and lifecycle](regional-handoff-acknowledgements.md).

@@ -1,3 +1,4 @@
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -12,9 +13,12 @@ import { regionalFreightReportSchema } from '@/lib/regional-freight'
 
 export default async function RegionalHandoffDetail({
   params,
+  searchParams,
 }: {
+  searchParams: Promise<{ ack_page?: string | string[] }>
   params: Promise<{ handoffId: string }>
 }) {
+  const query = await searchParams
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const { handoffId } = await params
@@ -121,6 +125,12 @@ export default async function RegionalHandoffDetail({
         </section>
       </div>
       <RegionalFreightReport report={payload.estimate} locale={locale} />
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={handoffId}
+        kind="regional"
+        pageValue={query.ack_page}
+      />
     </div>
   )
 }

@@ -3,6 +3,8 @@ import {
   parseHandoffQuery,
   isNetworkHandoffResource,
   NETWORK_HANDOFF_RESOURCES,
+  isRegionalHandoffResource,
+  REGIONAL_HANDOFF_RESOURCES,
   isTransferHandoffResource,
   isEventHandoffResource,
   isDispositionHandoffResource,
@@ -19,6 +21,7 @@ export const ACKNOWLEDGEMENT_RESOURCES = [
   ...EVENT_HANDOFF_RESOURCES,
   ...DISPOSITION_HANDOFF_RESOURCES,
   ...NETWORK_HANDOFF_RESOURCES,
+  ...REGIONAL_HANDOFF_RESOURCES,
 ] as const
 export type AcknowledgementResource = (typeof ACKNOWLEDGEMENT_RESOURCES)[number]
 export function isAcknowledgementResource(value: string): value is AcknowledgementResource {
@@ -30,7 +33,9 @@ export const TRANSFER_ACKNOWLEDGE_SCOPE = 'transfer_handoffs:acknowledge' as con
 export const EVENT_ACKNOWLEDGE_SCOPE = 'event_purchase_handoffs:acknowledge' as const
 export const DISPOSITION_ACKNOWLEDGE_SCOPE = 'excess_disposition_handoffs:acknowledge' as const
 export const NETWORK_ACKNOWLEDGE_SCOPE = 'network_handoffs:acknowledge' as const
+export const REGIONAL_ACKNOWLEDGE_SCOPE = 'regional_handoffs:acknowledge' as const
 export function acknowledgementScope(resource: AcknowledgementResource) {
+  if (isRegionalHandoffResource(resource)) return REGIONAL_ACKNOWLEDGE_SCOPE
   if (isNetworkHandoffResource(resource)) return NETWORK_ACKNOWLEDGE_SCOPE
   if (isDispositionHandoffResource(resource)) return DISPOSITION_ACKNOWLEDGE_SCOPE
   if (isEventHandoffResource(resource)) return EVENT_ACKNOWLEDGE_SCOPE
@@ -78,6 +83,8 @@ export function acknowledgementOperationId(
   action: 'list' | 'get' | 'create',
 ) {
   const names = {
+    'regional-handoffs': 'RegionalHandoff',
+    'regional-handoff-batches': 'RegionalHandoffBatch',
     'network-handoffs': 'NetworkHandoff',
     'network-handoff-batches': 'NetworkHandoffBatch',
     'excess-disposition-handoffs': 'ExcessDispositionHandoff',

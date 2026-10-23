@@ -21,6 +21,21 @@ import type { AcknowledgementInput } from './acknowledgements'
 
 /** The `api_*` RPCs of the `rest_api` migration and the arguments the Worker sends them. */
 export type ApiRpcArgs = {
+  api_regional_handoff_acknowledge: {
+    p_key_hash: KeyHash
+    p_resource: RegionalHandoffResource
+    p_id: string
+    p_body: AcknowledgementInput
+  }
+  api_regional_handoff_acknowledgements: {
+    p_key_hash: KeyHash
+    p_resource: RegionalHandoffResource
+    p_id: string
+    p_event_id: string | null
+    p_after: string | null
+    p_limit: number
+  }
+
   api_network_handoff_acknowledge: {
     p_key_hash: KeyHash
     p_resource: NetworkHandoffResource
@@ -224,6 +239,8 @@ export type MissingApiRpcs = [GeneratedApiRpcName] extends [never]
 export const API_RPC_NAMES = [
   'api_excess_disposition_handoff_acknowledge',
   'api_excess_disposition_handoff_acknowledgements',
+  'api_regional_handoff_acknowledge',
+  'api_regional_handoff_acknowledgements',
   'api_network_handoff_acknowledge',
   'api_network_handoff_acknowledgements',
   'api_network_handoff_list',

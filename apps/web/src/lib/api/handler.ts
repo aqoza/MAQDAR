@@ -803,30 +803,35 @@ async function runAcknowledgement(
     if (!checked.ok)
       return finish(ctx, problemOutcome(await confirmKeyThen(ctx, keyHash, scope, checked.problem)))
     const args = { p_key_hash: keyHash, p_id: operation.id, p_body: checked.body }
-    const result = isNetworkHandoffResource(operation.resource)
-      ? await ctx.deps.rpc('api_network_handoff_acknowledge', {
+    const result = isRegionalHandoffResource(operation.resource)
+      ? await ctx.deps.rpc('api_regional_handoff_acknowledge', {
           ...args,
           p_resource: operation.resource,
         })
-      : isDispositionHandoffResource(operation.resource)
-        ? await ctx.deps.rpc('api_excess_disposition_handoff_acknowledge', {
+      : isNetworkHandoffResource(operation.resource)
+        ? await ctx.deps.rpc('api_network_handoff_acknowledge', {
             ...args,
             p_resource: operation.resource,
           })
-        : isEventHandoffResource(operation.resource)
-          ? await ctx.deps.rpc('api_event_purchase_handoff_acknowledge', {
+        : isDispositionHandoffResource(operation.resource)
+          ? await ctx.deps.rpc('api_excess_disposition_handoff_acknowledge', {
               ...args,
               p_resource: operation.resource,
             })
-          : isTransferHandoffResource(operation.resource)
-            ? await ctx.deps.rpc('api_transfer_handoff_acknowledge', {
+          : isEventHandoffResource(operation.resource)
+            ? await ctx.deps.rpc('api_event_purchase_handoff_acknowledge', {
                 ...args,
                 p_resource: operation.resource,
               })
-            : await ctx.deps.rpc('api_handoff_acknowledge', {
-                ...args,
-                p_resource: operation.resource,
-              })
+            : isTransferHandoffResource(operation.resource)
+              ? await ctx.deps.rpc('api_transfer_handoff_acknowledge', {
+                  ...args,
+                  p_resource: operation.resource,
+                })
+              : await ctx.deps.rpc('api_handoff_acknowledge', {
+                  ...args,
+                  p_resource: operation.resource,
+                })
     addDbTime(ctx, result.ms)
     if (!result.ok) return finish(ctx, problemOutcome(rpcProblem(ctx, result, scope)))
     const response: { data?: { id?: unknown }; replayed?: unknown } = JSON.parse(result.text)
@@ -852,30 +857,35 @@ async function runAcknowledgement(
     p_after: query.cursor,
     p_limit: query.limit,
   }
-  const result = isNetworkHandoffResource(operation.resource)
-    ? await ctx.deps.rpc('api_network_handoff_acknowledgements', {
+  const result = isRegionalHandoffResource(operation.resource)
+    ? await ctx.deps.rpc('api_regional_handoff_acknowledgements', {
         ...args,
         p_resource: operation.resource,
       })
-    : isDispositionHandoffResource(operation.resource)
-      ? await ctx.deps.rpc('api_excess_disposition_handoff_acknowledgements', {
+    : isNetworkHandoffResource(operation.resource)
+      ? await ctx.deps.rpc('api_network_handoff_acknowledgements', {
           ...args,
           p_resource: operation.resource,
         })
-      : isEventHandoffResource(operation.resource)
-        ? await ctx.deps.rpc('api_event_purchase_handoff_acknowledgements', {
+      : isDispositionHandoffResource(operation.resource)
+        ? await ctx.deps.rpc('api_excess_disposition_handoff_acknowledgements', {
             ...args,
             p_resource: operation.resource,
           })
-        : isTransferHandoffResource(operation.resource)
-          ? await ctx.deps.rpc('api_transfer_handoff_acknowledgements', {
+        : isEventHandoffResource(operation.resource)
+          ? await ctx.deps.rpc('api_event_purchase_handoff_acknowledgements', {
               ...args,
               p_resource: operation.resource,
             })
-          : await ctx.deps.rpc('api_handoff_acknowledgements', {
-              ...args,
-              p_resource: operation.resource,
-            })
+          : isTransferHandoffResource(operation.resource)
+            ? await ctx.deps.rpc('api_transfer_handoff_acknowledgements', {
+                ...args,
+                p_resource: operation.resource,
+              })
+            : await ctx.deps.rpc('api_handoff_acknowledgements', {
+                ...args,
+                p_resource: operation.resource,
+              })
   addDbTime(ctx, result.ms)
   return finish(
     ctx,

@@ -103,9 +103,9 @@ test('regional read API scopes complete evidence and retained batches at five wi
       expect((await request.get(path, { headers })).status()).toBe(403)
     }
     for (const path of [`${api}/${ids[0]}`, `${batches}/${batch}`]) {
-      expect((await request.get(`${path}/acknowledgements`, { headers })).status()).toBe(404)
+      expect((await request.get(`${path}/acknowledgements`, { headers })).status()).toBe(200)
       expect((await request.post(`${path}/acknowledgements`, { headers, data: {} })).status()).toBe(
-        404,
+        403,
       )
     }
     const orgResponse = await request.get('/api/v1/organization', { headers })
