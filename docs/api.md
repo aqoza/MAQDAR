@@ -180,3 +180,7 @@ The three Step 6 resources (`stock-snapshots`, `open-orders`, `receipts`) use tr
 Event purchase report history is documented in [event handoff acknowledgements](event-handoff-acknowledgements.md). Its explicit write scope is independent of event reads and ordinary purchase/transfer permissions. Reports never change saved planning evidence or create orders.
 
 Disposition receipt/rejection reporting uses a separate explicit permission. See [disposition handoff acknowledgements](disposition-handoff-acknowledgements.md) for append-only events, stable retries, location-scoped history and retained copied-batch behavior. Reports do not execute a disposition.
+
+## Regional planning packages
+
+The explicit organization-wide `regional_handoffs:read` permission exposes GET/HEAD `/api/v1/regional-handoffs` and `/api/v1/regional-handoff-batches`, and their `/{id}` detail routes. Owners/admins issue keys; existing permissions grant no regional access. Original complete evidence is separate from live current/historical/unavailable selection. Copied batches remain readable after source deletion. See [regional handoff read API](regional-handoff-read-api.md) for pagination, retention, access and examples. No regional acknowledgement or execution routes are enabled.

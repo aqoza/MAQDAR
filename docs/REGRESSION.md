@@ -203,3 +203,10 @@ Run the new pgTAP, database, web action/schema and browser tests listed in `regi
 ## Regional handoff batches — Step 25h
 
 Run `test_regional_batches_db.py`, `0109_regional_batches.test.sql`, serializer/download/action tests and `regional-batches.spec.ts`. Retain `regional-batches-*.png` for selection, preview, detail, history and missing-source context at 375/768/1024/1440/1920 in EN/AR. Verify keyboard selection/save/download, scoped hidden-record 404, anonymous 401, exact original downloads after deletion, visible overlap and historical/unavailable context. No operational records may change.
+
+## Regional handoff read API (Step 25i)
+
+- `test_regional_handoff_api_db.py`: real regional review/export chains, original JSON, separate freight currencies/zero sources, immutable summaries after archive/rename/deletion, paging, scope isolation and current creator authority.
+- `0110_regional_handoff_read_api.test.sql` and shared privilege snapshot: owner/admin issuance, private projection/service-only readers, tenant-bound cursors, copied-batch reads and unchanged browser access.
+- API handler/auth/OpenAPI tests: read-only routing, unchanged decimal text, malformed-request authorization, no acknowledgement route, schema-compatible original files.
+- `regional-handoff-read-api.spec.ts`: Settings issue/revoke, API/browser payload equivalence, historical/source-unavailable batches, tenant and unrelated-scope rejection, keyboard use, five widths and Arabic RTL; screenshots retained in `regional-stock-visuals`.

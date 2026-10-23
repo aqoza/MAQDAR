@@ -26,6 +26,7 @@ import {
 } from './resources'
 import { OPENAPI_DOCUMENT_VERSION, deprecationFor } from './versioning'
 import { handoffPaths, handoffSchemas } from './handoff-openapi'
+import { regionalHandoffPaths, regionalHandoffSchemas } from './regional-handoff-openapi'
 import { networkHandoffPaths, networkHandoffSchemas } from './network-handoff-openapi'
 import { dispositionHandoffPaths, dispositionHandoffSchemas } from './disposition-handoff-openapi'
 import { eventHandoffPaths, eventHandoffSchemas } from './event-handoff-openapi'
@@ -938,6 +939,7 @@ export function buildOpenApi(): OpenApiDocument {
     eventHandoffPaths(),
     dispositionHandoffPaths(),
     networkHandoffPaths(),
+    regionalHandoffPaths(),
   )
   Object.assign(paths, acknowledgementPaths())
   Object.assign(
@@ -948,6 +950,7 @@ export function buildOpenApi(): OpenApiDocument {
     eventHandoffSchemas(),
     dispositionHandoffSchemas(),
     networkHandoffSchemas(),
+    regionalHandoffSchemas(),
     acknowledgementSchemas(),
   )
 
@@ -962,6 +965,11 @@ export function buildOpenApi(): OpenApiDocument {
     servers: [{ url: API_BASE_PATH }],
     security: [{ bearerAuth: [] }],
     tags: [
+      {
+        name: 'Regional handoffs',
+        description:
+          'Complete regional planning approvals and copied batches with per-source dates, currency-separated freight and independent live selection.',
+      },
       {
         name: 'Network handoffs',
         description:
