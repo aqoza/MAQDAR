@@ -26,7 +26,9 @@ Additive owner-run migration `20261023220000_supplier_responses.sql` must preced
 
 ## Verification results
 
-- Targeted pgTAP: tenant/privilege inventories passed (617 assertions), and the response contract passed all 58 assertions.
+- Full local pgTAP: 117 files / 7,082 assertions passed. CI also passed pgTAP and verified generated types on implementation commit `0779d09`. The response contract contributes 58 assertions.
 - Independent-session supplier tests: 27 passed, including 14 new response retry/authority races.
 - Web unit suite: 205 files / 2,217 tests passed. Engine unit suite: 498 passed. Simulation supervisor: 13 passed.
-- Format, lint, workspace types, logical/RTL utilities and production build passed. Production browser checks passed for the existing single/batch publication flows and the new response flow. The new test captured 20 screenshots across supplier/internal screens, English/Arabic and all five widths; overflow and shared typography assertions passed. Browser verification corrected the selector's accessible name and a same-page redirect that left history stale after saving. The full pgTAP regression run is in progress.
+- Format, lint, workspace types, logical/RTL utilities and production build passed. Production browser checks passed for the existing single/batch publication flows and the new response flow. The new test captured 20 screenshots across supplier/internal screens, English/Arabic and all five widths; overflow and shared typography assertions passed. Browser verification corrected the selector's accessible name and a same-page redirect that left history stale after saving. The full database regression passed.
+
+- Local Cloudflare packaging reached a Windows symlink `EPERM` after a successful Next.js build. Linux CI performs the packaging check; no system permissions or production settings were changed.

@@ -230,7 +230,7 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 25k  | **Regional integration workbench:** read-only exact latest reports, retained saved region evidence and all-location history.                                                                                                | Merged — PR #151                                    |
 | 26   | **Supplier portal:** separate supplier grants, explicit allowlisted ordinary purchase publication and scoped read-only access.                                                                                              | Merged (PR #152)                                    |
 | 26b  | **Supplier batch publication:** explicit complete-batch sharing, immutable allowlisted summaries, scoped overlap and live grant/withdrawal checks.                                                                          | Merged — PR #154                                    |
-| 26c  | **Supplier responses:** whole-publication received/declined events, current supplier authority, immutable independent histories and staff location access.                                                                  | In progress                                         |
+| 26c  | **Supplier responses:** whole-publication received/declined events, current supplier authority, immutable independent histories and staff location access.                                                                  | Ready for review — PR #158                          |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
