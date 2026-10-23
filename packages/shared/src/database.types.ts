@@ -4399,6 +4399,9 @@ isOneToOne: false
 "regional_handoff_create":
 { Args: { "p_organization_id": string,"p_proposal_id": string }; Returns: string
                            },
+"regional_integration_workbench":
+{ Args: { "p_filters"?: Json,"p_organization_id": string,"p_page"?: number,"p_size"?: number }; Returns: Json
+                           },
 "regional_sourcing_preview":
 { Args: { "p_input": Json,"p_organization_id": string }; Returns: Json
                            },

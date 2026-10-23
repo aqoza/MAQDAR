@@ -2,7 +2,7 @@ import { IntegrationWorkbenchHeader } from '@/components/integration-workbench-h
 import Form from 'next/form'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { getFormatter, getTranslations } from 'next-intl/server'
+import { getFormatter, getTranslations, getLocale } from 'next-intl/server'
 import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
@@ -18,6 +18,7 @@ import {
   eventIntegrationResultSchema,
   dispositionIntegrationResultSchema,
   networkIntegrationResultSchema,
+  regionalIntegrationResultSchema,
   type IntegrationFamily,
 } from '@/lib/integration-workbench'
 
@@ -28,6 +29,7 @@ export async function IntegrationWorkbenchScreen({
   searchParams: Promise<RawSearchParams>
   family?: IntegrationFamily
 }) {
+  const regional = family === 'regional'
   const network = family === 'network'
   const transfer = family === 'transfer'
   const disposition = family === 'disposition'
@@ -35,10 +37,11 @@ export async function IntegrationWorkbenchScreen({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const params = integrationParams(await searchParams, family)
-  const [db, t, format] = await Promise.all([
+  const [db, t, format, locale] = await Promise.all([
     createClient(),
     getTranslations('IntegrationWorkbench'),
     getFormatter(),
+    getLocale(),
   ])
   const response = await db.rpc(configuration.rpc, {
     p_organization_id: context.active.id,
@@ -53,26 +56,55 @@ export async function IntegrationWorkbenchScreen({
     event: eventIntegrationResultSchema,
     disposition: dispositionIntegrationResultSchema,
     network: networkIntegrationResultSchema,
+    regional: regionalIntegrationResultSchema,
   }[family]
   const result = resultSchema.parse(response.data)
   if (result.page !== params.page) redirect(integrationHref(params, result.page, family))
   const pages = lastPage(result.total, result.size)
   const inputClass = 'w-full min-w-0 rounded-md border bg-background p-2'
+  const otherLinks = (Object.keys(integrationFamilies) as IntegrationFamily[])
+    .filter((other) => other !== family)
+    .map((other) => (
+      <Link
+        key={other}
+        className="inline-flex min-h-11 items-center underline md:min-h-0"
+        href={integrationPath(other)}
+      >
+        {t(integrationFamilies[other].link)}
+      </Link>
+    ))
   return (
     <div className="min-w-0 space-y-4">
       <IntegrationWorkbenchHeader family={family} />
       <div className="flex flex-wrap gap-4">
-        {(Object.keys(integrationFamilies) as IntegrationFamily[])
-          .filter((other) => other !== family)
-          .map((other) => (
+        {regional ? (
+          <details>
+            <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-0">
+              {t('otherIntegrations')}
+            </summary>
+            <nav aria-label={t('otherIntegrations')} className="flex flex-wrap gap-4 py-2">
+              {otherLinks}
+            </nav>
+          </details>
+        ) : (
+          otherLinks
+        )}
+        {regional && (
+          <>
             <Link
-              key={other}
               className="inline-flex min-h-11 items-center underline md:min-h-0"
-              href={integrationPath(other)}
+              href="/replenishment/regional-stock/sourcing/handoffs"
             >
-              {t(integrationFamilies[other].link)}
+              {t('regionalHandoffs')}
             </Link>
-          ))}
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/regional-stock/sourcing/batches"
+            >
+              {t('regionalBatches')}
+            </Link>
+          </>
+        )}
         {network && (
           <>
             <Link
@@ -139,36 +171,42 @@ export async function IntegrationWorkbenchScreen({
       >
         <label className="col-span-2 grid min-w-0 grid-rows-[1fr_auto] gap-1 sm:col-span-1">
           {t(
-            network
-              ? 'networkSearch'
-              : disposition
-                ? 'dispositionSearch'
-                : family === 'event'
-                  ? 'eventSearch'
-                  : 'search',
+            regional
+              ? 'regionalSearch'
+              : network
+                ? 'networkSearch'
+                : disposition
+                  ? 'dispositionSearch'
+                  : family === 'event'
+                    ? 'eventSearch'
+                    : 'search',
           )}
           <input name="q" maxLength={100} defaultValue={params.q} className={inputClass} />
         </label>
-        {(network
-          ? (['source', 'branch', 'system'] as const)
-          : disposition
-            ? (['location', 'system'] as const)
-            : ([transfer ? 'source' : 'supplier', 'location', 'system'] as const)
+        {(regional
+          ? (['region', 'location', 'source', 'system'] as const)
+          : network
+            ? (['source', 'branch', 'system'] as const)
+            : disposition
+              ? (['location', 'system'] as const)
+              : ([transfer ? 'source' : 'supplier', 'location', 'system'] as const)
         ).map((field) => (
           <label
-            className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'system' ? 'col-span-2 sm:col-span-1' : ''}`}
+            className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'system' || field === 'region' ? 'col-span-2 sm:col-span-1' : ''}`}
             key={field}
           >
             {t(
-              network && field === 'source'
-                ? 'warehouse'
-                : field === 'location'
-                  ? transfer
-                    ? 'destination'
-                    : family === 'event'
-                      ? 'receiver'
-                      : field
-                  : field,
+              regional && field === 'source'
+                ? 'includedSource'
+                : network && field === 'source'
+                  ? 'warehouse'
+                  : field === 'location'
+                    ? transfer
+                      ? 'destination'
+                      : family === 'event' || regional
+                        ? 'receiver'
+                        : field
+                    : field,
             )}
             <input
               name={field}
@@ -183,7 +221,7 @@ export async function IntegrationWorkbenchScreen({
             ['kind', ['handoff', 'batch']],
             [
               'selection',
-              disposition || network
+              disposition || network || regional
                 ? (['current', 'historical', 'unavailable'] as const)
                 : (['current', 'historical'] as const),
             ],
@@ -195,7 +233,9 @@ export async function IntegrationWorkbenchScreen({
             className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'status' ? 'col-span-2 sm:col-span-1' : ''}`}
             key={field}
           >
-            {t((disposition || network) && field === 'selection' ? 'liveContext' : field)}
+            {t(
+              (disposition || network || regional) && field === 'selection' ? 'liveContext' : field,
+            )}
             <select name={field} defaultValue={params.filters[field] ?? ''} className={inputClass}>
               <option value="">{t('all')}</option>
               {values.map((value) => (
@@ -239,14 +279,16 @@ export async function IntegrationWorkbenchScreen({
               {(
                 [
                   'package',
-                  network
-                    ? 'warehouseBranches'
-                    : disposition
-                      ? 'intentLocation'
-                      : transfer
-                        ? 'sourceDestination'
-                        : 'supplierLocation',
-                  disposition || network ? 'liveContext' : 'selection',
+                  regional
+                    ? 'regionLocations'
+                    : network
+                      ? 'warehouseBranches'
+                      : disposition
+                        ? 'intentLocation'
+                        : transfer
+                          ? 'sourceDestination'
+                          : 'supplierLocation',
+                  disposition || network || regional ? 'liveContext' : 'selection',
                   'reportedBy',
                   'latestReport',
                   'inspect',
@@ -286,25 +328,61 @@ export async function IntegrationWorkbenchScreen({
                     </time>
                   </details>
                 </th>
-                <td className="p-3">
+                <td className={regional ? 'min-w-48 p-3' : 'p-3'}>
                   <p className="max-w-48 break-words">
-                    {'disposition_kind' in row
-                      ? t(row.disposition_kind)
-                      : 'source_code' in row
-                        ? row.source_code
-                        : row.supplier_code}
+                    {'region_id' in row ? (
+                      <Link
+                        className="inline-flex min-h-11 items-center underline md:min-h-0"
+                        href={integrationHref(
+                          { ...params, filters: { ...params.filters, region: row.region_id } },
+                          1,
+                          family,
+                        )}
+                      >
+                        {locale.startsWith('ar') && row.region_name_ar
+                          ? row.region_name_ar
+                          : row.region_name}
+                      </Link>
+                    ) : 'disposition_kind' in row ? (
+                      t(row.disposition_kind)
+                    ) : 'source_code' in row ? (
+                      row.source_code
+                    ) : (
+                      row.supplier_code
+                    )}
                   </p>
-                  {'branch_codes' in row ? (
+                  {'region_id' in row && (
+                    <>
+                      <p className="max-w-48 break-words text-muted-foreground">
+                        {row.location_code}
+                      </p>
+                      <details className="max-w-56 text-xs text-muted-foreground">
+                        <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-1">
+                          {t('regionDetails')}
+                        </summary>
+                        <p className="break-all">{row.region_id}</p>
+                        <p>
+                          {t('requestedDate')}: {row.requested_date}
+                        </p>
+                      </details>
+                    </>
+                  )}
+                  {'branch_codes' in row || 'source_codes' in row ? (
                     <details className="max-w-56 text-muted-foreground">
                       <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-1">
-                        {t('includedBranches', { count: row.branch_codes.length })}
+                        {t('source_codes' in row ? 'includedSources' : 'includedBranches', {
+                          count: ('source_codes' in row ? row.source_codes : row.branch_codes)
+                            .length,
+                        })}
                       </summary>
                       <ul className="space-y-1 text-xs">
-                        {row.branch_codes.map((code) => (
-                          <li className="break-words [overflow-wrap:anywhere]" key={code}>
-                            {code}
-                          </li>
-                        ))}
+                        {('source_codes' in row ? row.source_codes : row.branch_codes).map(
+                          (code) => (
+                            <li className="break-words [overflow-wrap:anywhere]" key={code}>
+                              {code}
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </details>
                   ) : (

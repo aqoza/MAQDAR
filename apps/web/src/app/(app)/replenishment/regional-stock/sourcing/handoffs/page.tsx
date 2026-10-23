@@ -71,6 +71,10 @@ export default async function RegionalHandoffs({
         description={t('context')}
         actions={
           <>
+            <Link className="underline" href="/replenishment/regional-stock/sourcing/integrations">
+              {(await getTranslations('IntegrationWorkbench'))('regionalLink')}
+            </Link>
+
             <Link className="underline" href="/replenishment/regional-stock/sourcing/batches">
               {(await getTranslations('RegionalBatches'))('title')}
             </Link>

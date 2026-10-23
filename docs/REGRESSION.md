@@ -216,3 +216,7 @@ Run `test_regional_batches_db.py`, `0109_regional_batches.test.sql`, serializer/
 - Database: `0111_regional_acknowledgements.test.sql`, shared tenant/privilege invariants and `test_regional_acknowledgements_db.py` cover explicit scopes, tenant/all-location access, validation, parent-bound history, audit, concurrent identity/key rotation, post-lock authority and retained copied-batch lifecycle.
 - Web: shared API handler, authorization, RPC allowlist and OpenAPI tests exercise regional reports without enabling other package families.
 - Browser: `regional-acknowledgements.spec.ts` exercises real single/batch reports, key issuance/revocation, retries, independent histories, zero-source access, source/region deletion and original downloads. Settings and report history retain screenshots and layout checks at 375, 768, 1024, 1440 and 1920px in English and Arabic RTL.
+
+## Step 25k regional integration workbench
+
+Run `0112_regional_integration_workbench.test.sql`, the privilege inventory, regional integration URL/schema unit tests and `regional-integration-workbench.spec.ts`. Verify exact system labels, latest-before-filtering, missing reports, region/source filters, independent overlapping package histories, all-location access including zeros, retained batches after source deletion and unchanged copied files. Inspect all five widths in English and Arabic RTL; run existing network/shared integration coverage after shared screen changes.

@@ -13,6 +13,7 @@ export async function IntegrationWorkbenchHeader({
   const t = await getTranslations('IntegrationWorkbench')
   const configuration = integrationFamilies[family]
   const transfer = family === 'transfer'
+  const regional = family === 'regional'
   const network = family === 'network'
   return (
     <PageHeader
@@ -21,9 +22,12 @@ export async function IntegrationWorkbenchHeader({
       title={t(configuration.title)}
       description={t(configuration.context)}
       help={
-        transfer || network ? (
+        transfer || network || regional ? (
           <HelpDisclosure>
-            <p>{t(network ? 'networkMeaning' : 'transferMeaning')}</p>
+            <p>
+              {t(regional ? 'regionalMeaning' : network ? 'networkMeaning' : 'transferMeaning')}
+            </p>
+            {regional && <p>{t('regionalAccess')}</p>}
             {network && <p>{t('networkAccess')}</p>}
             <p>{t('independence')}</p>
           </HelpDisclosure>
