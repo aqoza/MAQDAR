@@ -86,6 +86,12 @@ with psycopg.connect(sys.argv[1]) as db:
   ).toBeVisible()
   const handoffUrl = page.url()
   const handoffId = handoffUrl.split('/').at(-1)!
+  await page.getByRole('link', { name: 'Supplier publication', exact: true }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Share event purchase summary')
+  await expect(page.getByRole('region', { name: 'Shared proposal summary' })).toContainText('4.5')
+  await expect(page.getByRole('region', { name: 'Shared proposal summary' })).toContainText('5.55')
+  await page.getByRole('link', { name: 'Purchase handoff', exact: true }).click()
+  await expect(page).toHaveURL(handoffUrl)
   const jsonPath = `/api/event-purchase-handoffs/${handoffId}/json`
   const csvPath = `/api/event-purchase-handoffs/${handoffId}/csv`
   const jsonResponse = await page.request.get(jsonPath)

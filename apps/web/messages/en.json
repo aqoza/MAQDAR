@@ -6427,7 +6427,14 @@
       "independent": "Each report retains its author and time. Reports apply only to this publication, never its members or overlapping packages. They do not accept an order or change quantities, dates, approvals or inbound."
     },
     "publicationTitle": "Supplier publication and responses",
-    "notPublished": "No supplier publication has been saved."
+    "notPublished": "No supplier publication has been saved.",
+    "eventPublishTitle": "Share event purchase summary",
+    "eventPublishLink": "Supplier publication",
+    "eventProposals": "Event purchase proposals",
+    "ordinaryProposals": "Ordinary purchase proposals",
+    "emptyEvents": "No event purchase proposals are currently shared.",
+    "eventSelection": "The supplier summary uses the full event-adjusted quantity and cost. Baseline comparisons and event assumptions remain internal.",
+    "eventPublicationHelp": "Only the displayed summary is shared. Event names, daily additions, baseline forecasts, stock and approval reasons stay private. First publication requires a selected approval, current price evidence and clear saved timing gates. Withdrawal removes future portal access; viewed information cannot be recalled."
   },
   "SupplierResponseWorkbench": {
     "title": "Supplier responses",

@@ -2338,6 +2338,50 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"supplier_event_publications": {
+                  Row: {
+                    "created_at": string,"created_by": string,"handoff_id": string,"id": string,"location_id": string,"organization_id": string,"summary": NonNullable<Json>,"supplier_id": string,"withdrawn_at": string | null,"withdrawn_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"handoff_id": string,"id"?: string,"location_id": string,"organization_id": string,"summary": NonNullable<Json>,"supplier_id": string,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"handoff_id"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"summary"?: NonNullable<Json>,"supplier_id"?: string,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "supplier_event_publications_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_handoff_batch_candidates"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_event_publications_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_handoff_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_event_publications_organization_id_handoff_id_fkey"
+      columns: ["organization_id","handoff_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_handoffs"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_event_publications_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_event_publications_organization_id_supplier_id_fkey"
+      columns: ["organization_id","supplier_id"]
+isOneToOne: false
+      referencedRelation: "suppliers"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"supplier_items": {
                   Row: {
                     "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"shipping_valid_from": string | null,"shipping_volume_m3": number | null,"shipping_weight_kg": number | null,"supplier_id": string,"supplier_part_number": string | null,"unit_of_measure": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
@@ -4614,8 +4658,20 @@ isOneToOne: false
 "supplier_batch_publication_withdraw":
 { Args: { "p_organization_id": string,"p_publication_id": string }; Returns: undefined
                            },
+"supplier_event_publication_preview":
+{ Args: { "p_handoff_id": string,"p_organization_id": string }; Returns: Json
+                           },
+"supplier_event_publication_publish":
+{ Args: { "p_confirmed": boolean,"p_fingerprint": string,"p_handoff_id": string,"p_organization_id": string }; Returns: string
+                           },
+"supplier_event_publication_withdraw":
+{ Args: { "p_organization_id": string,"p_publication_id": string }; Returns: undefined
+                           },
 "supplier_portal_accept":
 { Args: { "p_grant_id": string }; Returns: undefined
+                           },
+"supplier_portal_event_publications":
+{ Args: { "p_grant_id": string,"p_page"?: number,"p_publication_id"?: string,"p_size"?: number }; Returns: Json
                            },
 "supplier_portal_invite":
 { Args: { "p_email": string,"p_organization_id": string,"p_supplier_id": string }; Returns: Json
