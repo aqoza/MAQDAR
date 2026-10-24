@@ -641,6 +641,7 @@ select set_eq(
     ('public.stock_region_preview(uuid, jsonb)', 'authenticated'),
     ('public.stock_region_save(uuid, jsonb, uuid, text)', 'authenticated'),
     ('public.dealer_return_save(uuid, jsonb, uuid)', 'authenticated'),
+    ('public.dealer_return_review(uuid, uuid, text, text, boolean)', 'authenticated'),
     ('public.dealer_return_withdraw(uuid, uuid, text)', 'authenticated'),
     ('public.stock_region_archive(uuid, uuid)', 'authenticated'),
     ('app.regional_stock_input(jsonb)', ''),

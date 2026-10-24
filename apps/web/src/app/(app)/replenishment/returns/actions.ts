@@ -16,6 +16,8 @@ import {
   dealerReturnsPath,
   returnFields,
   returnReasonSchema,
+  returnReviewSchema,
+  hasReturnReviewRole,
 } from '@/lib/dealer-returns'
 
 export async function saveDealerReturn(_state: ActionState, form: FormData): Promise<ActionState> {
@@ -48,6 +50,42 @@ export async function saveDealerReturn(_state: ActionState, form: FormData): Pro
   if (error) return { ...(await rpcErrorState(error)), values }
   revalidatePath(dealerReturnsPath)
   redirect(`${dealerReturnsPath}/${data}`)
+}
+export async function reviewDealerReturn(
+  _state: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const guard = await requireActiveOrganization(form)
+  if (!guard.ok) return guard.state
+  // The database independently checks the actual author and both-location authority.
+  if (!hasReturnReviewRole(guard.context.role)) return rpcErrorState({ code: 'MQ403' })
+  const values = fieldValues(form, ['return_id', 'decision', 'reason'])
+  const parsed = returnReviewSchema.safeParse({
+    ...values,
+    eligibility_confirmed: checkboxValue(form, 'eligibility_confirmed'),
+  })
+  if (!parsed.success) {
+    const t = await getTranslations('DealerReturns')
+    return {
+      status: 'error',
+      values,
+      message: t('invalid'),
+      fieldErrors: Object.fromEntries(
+        parsed.error.issues.map((issue) => [String(issue.path[0]), t('invalidField')]),
+      ),
+    }
+  }
+  const db = await createClient()
+  const { error } = await db.rpc('dealer_return_review', {
+    p_organization_id: guard.organizationId,
+    p_return_id: parsed.data.return_id,
+    p_decision: parsed.data.decision,
+    p_reason: parsed.data.reason,
+    p_eligibility_confirmed: parsed.data.eligibility_confirmed,
+  })
+  if (error) return { ...(await rpcErrorState(error)), values }
+  revalidatePath(dealerReturnsPath)
+  redirect(`${dealerReturnsPath}/${parsed.data.return_id}`)
 }
 export async function withdrawDealerReturn(
   _state: ActionState,

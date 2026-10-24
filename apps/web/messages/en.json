@@ -6490,7 +6490,7 @@
     "detail": "Return request",
     "description": "Internal branch-to-warehouse requests with declared quantities and condition.",
     "limits": "A request does not establish return eligibility, available stock, a credit or physical receipt. No stock, inbound, reservation or financial records change. Separate requests may overlap.",
-    "corrections": "Saved details remain fixed. Corrections require a new request; the author may withdraw a request while retaining its history.",
+    "corrections": "Saved details remain unchanged. Corrections require a new request. Authors may withdraw only while a request is undecided.",
     "item_code": "Item code",
     "source_code": "Source branch code",
     "location_code": "Receiving hub / warehouse code",
@@ -6512,7 +6512,7 @@
     "withdrawalReason": "Withdrawal reason",
     "invalid": "Check the highlighted details and confirm the declaration.",
     "invalidField": "Check this value.",
-    "search": "Search item, location, reason or reference",
+    "search": "Search item, location, reason, reviewer or reference",
     "status": "Request status",
     "all": "All",
     "requested": "Requested",
@@ -6528,6 +6528,17 @@
     "created": "Saved",
     "history": "Request history",
     "identifier": "Request ID",
-    "notSupplied": "Not supplied"
+    "notSupplied": "Not supplied",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "review": "Review return request",
+    "decision": "Decision",
+    "approve": "Approve full return",
+    "reject": "Reject return",
+    "recordDecision": "Record decision",
+    "decisionReason": "Eligibility rationale",
+    "eligibilityConfirmation": "I have assessed return eligibility from the declared evidence and authorize the full declared quantity. This does not confirm stock availability, physical condition or receipt.",
+    "eligibilityRecorded": "The independent reviewer confirmed their eligibility assessment for the full declared quantity.",
+    "reviewLimits": "A decision records internal return authorization only. It creates no stock movement, inbound, reservation or credit. Decisions are final; corrections require a new request."
   }
 }

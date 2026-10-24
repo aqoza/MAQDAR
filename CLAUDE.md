@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 27b adds independent whole-request dealer-return decisions. Preserve one terminal decision or author withdrawal, post-wait authority, original identity/unit/endpoint approval gates, immutable retries and both-location history. Approval is internal authorization and has no operational or financial effects. See [dealer-return-review.md](docs/dealer-return-review.md).
+
 Step 27 adds internal dealer-return requests. Preserve declared evidence versus eligibility/stock, exact known units, active branch-to-hub/central endpoints, both-location access, editor saves, member-author withdrawal and immutable retry history. Requests create no operational or financial records. See [dealer-return-requests.md](docs/dealer-return-requests.md).
 
 Step 26h adds the internal event supplier response workbench. Preserve exact-event-publication latest revisions, receiving-location RLS for results and counts, independent withdrawal state and copied batch retention. Shared presentation must keep ordinary/event queries and evidence links separate; supplier authority is unchanged. See [supplier-event-response-workbench.md](docs/supplier-event-response-workbench.md).

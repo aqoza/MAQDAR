@@ -21,7 +21,7 @@ vi.mock('next/navigation', () => ({
     throw new Error(`REDIRECT ${path}`)
   },
 }))
-import { saveDealerReturn, withdrawDealerReturn } from './actions'
+import { saveDealerReturn, withdrawDealerReturn, reviewDealerReturn } from './actions'
 import { idleState } from '../../../../lib/forms'
 const id = '27000000-0000-4000-8000-000000000001'
 function form() {
@@ -46,8 +46,55 @@ function form() {
 beforeEach(() => {
   vi.clearAllMocks()
   mocks.editor.mockResolvedValue({ ok: true, organizationId: 'guarded' })
-  mocks.member.mockResolvedValue({ ok: true, organizationId: 'guarded' })
+  mocks.member.mockResolvedValue({
+    ok: true,
+    organizationId: 'guarded',
+    context: { role: 'approver', userId: 'reviewer' },
+  })
   mocks.rpc.mockResolvedValue({ data: id, error: null })
+})
+it('records a guarded full-quantity decision with explicit eligibility confirmation', async () => {
+  const data = form()
+  data.set('decision', 'approved')
+  data.set('eligibility_confirmed', 'on')
+  await expect(reviewDealerReturn(idleState, data)).rejects.toThrow(
+    `REDIRECT /replenishment/returns/${id}`,
+  )
+  expect(mocks.rpc).toHaveBeenCalledWith('dealer_return_review', {
+    p_organization_id: 'guarded',
+    p_return_id: id,
+    p_decision: 'approved',
+    p_reason: 'Return',
+    p_eligibility_confirmed: true,
+  })
+})
+it('rejects missing eligibility confirmation and unauthorized reviewers before the RPC', async () => {
+  const data = form()
+  data.set('decision', 'approved')
+  expect(await reviewDealerReturn(idleState, data)).toMatchObject({
+    status: 'error',
+    fieldErrors: { eligibility_confirmed: 'invalidField' },
+    values: { reason: 'Return' },
+  })
+  mocks.member.mockResolvedValue({
+    ok: true,
+    organizationId: 'guarded',
+    context: { role: 'planner', userId: 'reviewer' },
+  })
+  expect(await reviewDealerReturn(idleState, data)).toMatchObject({ code: 'MQ403' })
+  expect(mocks.rpc).not.toHaveBeenCalled()
+})
+it('retains failed review input without leaking database evidence or refreshing', async () => {
+  const data = form()
+  data.set('decision', 'rejected')
+  mocks.rpc.mockResolvedValue({ error: { code: 'MQ409', message: 'private catalog' } })
+  const result = await reviewDealerReturn(idleState, data)
+  expect(result).toMatchObject({
+    code: 'MQ409',
+    values: { decision: 'rejected', reason: 'Return' },
+  })
+  expect(JSON.stringify(result)).not.toContain('private catalog')
+  expect(mocks.revalidate).not.toHaveBeenCalled()
 })
 it('saves exact evidence under guarded organization and stable key', async () => {
   await expect(saveDealerReturn(idleState, form())).rejects.toThrow(

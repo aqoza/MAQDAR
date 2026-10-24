@@ -128,14 +128,14 @@ isOneToOne: false
                   ]
                 },"dealer_return_requests": {
                   Row: {
-                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"search_text": string,"source_location_id": string,"submitted_by": string,"withdrawal_reason": string | null,"withdrawn_at": string | null,"withdrawn_by": string | null
+                    "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision": string | null,"decision_reason": string | null,"eligibility_confirmed": boolean | null,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"reviewer_email": string | null,"search_text": string,"source_location_id": string,"submitted_by": string,"withdrawal_reason": string | null,"withdrawn_at": string | null,"withdrawn_by": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"search_text": string,"source_location_id": string,"submitted_by": string,"withdrawal_reason"?: string | null,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision"?: string | null,"decision_reason"?: string | null,"eligibility_confirmed"?: boolean | null,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"reviewer_email"?: string | null,"search_text": string,"source_location_id": string,"submitted_by": string,"withdrawal_reason"?: string | null,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"search_text"?: string,"source_location_id"?: string,"submitted_by"?: string,"withdrawal_reason"?: string | null,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision"?: string | null,"decision_reason"?: string | null,"eligibility_confirmed"?: boolean | null,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"reviewer_email"?: string | null,"search_text"?: string,"source_location_id"?: string,"submitted_by"?: string,"withdrawal_reason"?: string | null,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
                   }
                   Relationships: [
                     {
@@ -4359,6 +4359,9 @@ isOneToOne: false
                            },
 "dashboard_summary":
 { Args: { "p_day"?: string,"p_organization_id": string }; Returns: Json
+                           },
+"dealer_return_review":
+{ Args: { "p_decision": string,"p_eligibility_confirmed": boolean,"p_organization_id": string,"p_reason": string,"p_return_id": string }; Returns: string
                            },
 "dealer_return_save":
 { Args: { "p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string

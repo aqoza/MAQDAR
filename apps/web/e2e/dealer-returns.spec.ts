@@ -100,10 +100,10 @@ with psycopg.connect(sys.argv[1]) as db:
     await visual('detail', 'en')
     await page.goto(base)
     await page
-      .getByLabel('Search item, location, reason or reference', { exact: true })
+      .getByLabel('Search item, location, reason, reviewer or reference', { exact: true })
       .fill('INV-RETURN-1')
     await page
-      .getByLabel('Search item, location, reason or reference', { exact: true })
+      .getByLabel('Search item, location, reason, reviewer or reference', { exact: true })
       .press('Enter')
     await expect(page.getByRole('row')).toHaveCount(2)
     await visual('history', 'en')
