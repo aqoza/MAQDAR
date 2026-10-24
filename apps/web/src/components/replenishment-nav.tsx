@@ -22,6 +22,7 @@ export async function ReplenishmentNav({
     | 'regionalStock'
     | 'supplierResponses'
     | 'eventSupplierResponses'
+    | 'returns'
 }) {
   const t = await getTranslations('PurchasingNav')
   const links = [
@@ -41,6 +42,7 @@ export async function ReplenishmentNav({
     ['batches', '/replenishment/batches'],
     ['integrations', '/replenishment/integrations'],
     ['supplierResponses', '/replenishment/supplier-responses'],
+    ['returns', '/replenishment/returns'],
   ] as const
   return (
     <nav className="workspace-navigation" aria-label={t('label')}>

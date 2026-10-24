@@ -118,6 +118,13 @@ jobs:
           name: installed-base-visuals
           path: apps/web/test-results/**/installed-base-*.png
           retention-days: 7
+      - name: Retain dealer-return visual evidence
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: dealer-return-visuals
+          path: apps/web/test-results/**/dealer-returns-*.png
+          retention-days: 7
       - name: Retain regional-stock visual evidence
         uses: actions/upload-artifact@v7
         if: always()
