@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 26f adds explicit event batch supplier publications. Preserve atomic current-member checks, exact adjusted allowlists, all-member price locking, event-only visible overlap, copied batch retention and withdrawal-safe retries. No event/baseline evidence or supplier response authority is added. See [supplier-event-batch-publications.md](docs/supplier-event-batch-publications.md).
+
 Step 26d adds the internal supplier response workbench. Preserve exact-publication latest revisions, independent withdrawal state, copied batch retention and member receiving-location RLS. Supplier grants give no internal access. See [supplier-response-workbench.md](docs/supplier-response-workbench.md).
 
 Step 26c adds whole-publication supplier Received/Declined reports. Preserve current grants and nonwithdrawn publication checks on retries, immutable actor evidence, serial revisions, independent histories and member location scope. No acceptance or operational effects. See [supplier-responses.md](docs/supplier-responses.md).

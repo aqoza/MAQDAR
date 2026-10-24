@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   supplierSummarySchema,
   supplierEventPackagesSchema,
+  supplierEventPublicationsSchema,
   supplierBatchSummarySchema,
   supplierPublicationsSchema,
   portalGrantFromPath,
@@ -119,4 +120,58 @@ it('event packages preserve full selected decimal strings and reject internal ev
       .success,
   ).toBe(false)
   expect(portalGrantFromPath(`/supplier-portal/${id}/events/${id}`)).toBe(id)
+})
+
+it('event batch feed preserves exact totals and rejects private comparisons at every level', () => {
+  const batch = {
+    schema_version: 'supplier-batch-proposal-v1',
+    purpose: 'planning_only',
+    supplier_code: 'SUP',
+    location_code: 'L0',
+    order_date: summary.order_date,
+    currency: 'SAR',
+    subtotal: '9007199254740.123',
+    lines: [summary],
+  }
+  const row = {
+    id,
+    created_at: '2026-10-24',
+    kind: 'batch',
+    summary: batch,
+    overlap_count: 1,
+    overlaps: [{ id, kind: 'handoff' }],
+  }
+  const feed = { total: 1, page: 1, size: 25, rows: [row] }
+  expect(supplierEventPublicationsSchema.parse(feed)).toEqual(feed)
+  for (const field of [
+    'baseline_subtotal',
+    'cost_increase',
+    'event_name',
+    'approval_reason',
+    'handoff_ids',
+  ]) {
+    expect(
+      supplierEventPublicationsSchema.safeParse({
+        ...feed,
+        rows: [{ ...row, summary: { ...batch, [field]: 'private' } }],
+      }).success,
+    ).toBe(false)
+    expect(
+      supplierEventPublicationsSchema.safeParse({
+        ...feed,
+        rows: [{ ...row, summary: { ...batch, lines: [{ ...summary, [field]: 'private' }] } }],
+      }).success,
+    ).toBe(false)
+  }
+  expect(
+    supplierEventPublicationsSchema.safeParse({
+      ...feed,
+      rows: [{ ...row, overlaps: [{ id, kind: 'batch', members: [id] }] }],
+    }).success,
+  ).toBe(false)
+  expect(supplierEventPublicationsSchema.safeParse({ ...feed, size: 1000 }).success).toBe(false)
+  expect(supplierEventPublicationsSchema.safeParse({ ...feed, private: 'evidence' }).success).toBe(
+    false,
+  )
+  expect(supplierEventPackagesSchema.safeParse(feed).success).toBe(false)
 })

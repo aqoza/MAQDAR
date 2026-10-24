@@ -2338,6 +2338,38 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"supplier_event_batch_publications": {
+                  Row: {
+                    "batch_id": string,"created_at": string,"created_by": string,"handoff_ids": (string)[],"id": string,"location_id": string,"organization_id": string,"summary": NonNullable<Json>,"supplier_id": string,"withdrawn_at": string | null,"withdrawn_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "batch_id": string,"created_at"?: string,"created_by": string,"handoff_ids": (string)[],"id"?: string,"location_id": string,"organization_id": string,"summary": NonNullable<Json>,"supplier_id": string,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Update: {
+                    "batch_id"?: string,"created_at"?: string,"created_by"?: string,"handoff_ids"?: (string)[],"id"?: string,"location_id"?: string,"organization_id"?: string,"summary"?: NonNullable<Json>,"supplier_id"?: string,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "supplier_event_batch_publicati_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_event_batch_publications_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_handoff_batch_list"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_event_batch_publications_organization_id_batch_id_fkey"
+      columns: ["organization_id","batch_id"]
+isOneToOne: true
+      referencedRelation: "event_purchase_handoff_batches"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"supplier_event_publications": {
                   Row: {
                     "created_at": string,"created_by": string,"handoff_id": string,"id": string,"location_id": string,"organization_id": string,"summary": NonNullable<Json>,"supplier_id": string,"withdrawn_at": string | null,"withdrawn_by": string | null
@@ -4658,6 +4690,15 @@ isOneToOne: false
 "supplier_batch_publication_withdraw":
 { Args: { "p_organization_id": string,"p_publication_id": string }; Returns: undefined
                            },
+"supplier_event_batch_publication_preview":
+{ Args: { "p_batch_id": string,"p_organization_id": string }; Returns: Json
+                           },
+"supplier_event_batch_publication_publish":
+{ Args: { "p_batch_id": string,"p_confirmed": boolean,"p_fingerprint": string,"p_organization_id": string }; Returns: string
+                           },
+"supplier_event_batch_publication_withdraw":
+{ Args: { "p_organization_id": string,"p_publication_id": string }; Returns: undefined
+                           },
 "supplier_event_publication_preview":
 { Args: { "p_handoff_id": string,"p_organization_id": string }; Returns: Json
                            },
@@ -4669,6 +4710,9 @@ isOneToOne: false
                            },
 "supplier_portal_accept":
 { Args: { "p_grant_id": string }; Returns: undefined
+                           },
+"supplier_portal_event_packages":
+{ Args: { "p_grant_id": string,"p_page"?: number,"p_publication_id"?: string,"p_size"?: number }; Returns: Json
                            },
 "supplier_portal_event_publications":
 { Args: { "p_grant_id": string,"p_page"?: number,"p_publication_id"?: string,"p_size"?: number }; Returns: Json
