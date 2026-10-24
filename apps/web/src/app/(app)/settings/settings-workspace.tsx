@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input'
 import styles from './settings-workspace.module.css'
 
 const icons = {
+  'policy-explainer': SlidersHorizontal,
   organization: Building2,
   preferences: SlidersHorizontal,
   members: UsersRound,

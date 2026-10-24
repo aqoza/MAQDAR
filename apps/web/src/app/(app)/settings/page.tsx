@@ -39,6 +39,7 @@ import {
   type TimeZoneOption,
 } from './organization-settings-form'
 import { SetPasswordCard } from './set-password-card'
+import { PolicyExplainerSettings } from '@/components/policy-explainer-settings'
 import { SettingsWorkspace, type SettingsSection } from './settings-workspace'
 
 /** The REST API's description and documentation, linked from the API keys card. */
@@ -66,6 +67,7 @@ export default async function SettingsPage({
   if (!context.active) redirect('/organizations')
   const organization = context.active
   const admin = isAdminRole(context.role)
+  const explainer = await getTranslations('PolicyExplainer')
 
   const [t, tMembers, tInvitations, tApiKeys] = await Promise.all([
     getTranslations('Settings'),
@@ -234,6 +236,13 @@ export default async function SettingsPage({
     },
     ...(admin && context.role
       ? ([
+          {
+            key: 'policy-explainer',
+            group: 'access',
+            label: explainer('title'),
+            searchText: explainer('settingsDescription'),
+            panel: <PolicyExplainerSettings organizationId={organization.id} />,
+          },
           {
             key: 'members',
             group: 'access',

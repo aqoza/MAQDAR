@@ -23,6 +23,7 @@ export default async function PolicyReview({
   if (!context?.active) redirect('/organizations')
   const { policyId } = await params
   if (!z.guid().safeParse(policyId).success) notFound()
+  const explainer = await getTranslations('PolicyExplainer')
   const page = workbenchParams(await searchParams).page
   const [db, t, policy, locale, format, messages] = await Promise.all([
     createClient(),
@@ -80,6 +81,12 @@ export default async function PolicyReview({
         }
       />
 
+      <Link
+        href={`/forecasts/workbench/${policyId}/explain`}
+        className="inline-flex min-h-11 items-center underline"
+      >
+        {explainer('title')}
+      </Link>
       <Link
         href={`/forecasts/workbench/${policyId}/stock?basis=calculated&day=${row.to_date}`}
         className="inline-block underline"

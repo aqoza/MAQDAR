@@ -10,6 +10,7 @@ import { expectPageTitle } from './helpers/typography'
 const sections: SettingsSectionKey[] = [
   'organization',
   'preferences',
+  'policy-explainer',
   'members',
   'invitations',
   'api-keys',
@@ -98,7 +99,7 @@ test('settings preserve drafts, validation and URL history while searching and s
   await expect(page.getByLabel('Time zone', { exact: true })).toBeVisible()
   await page.screenshot({ path: testInfo.outputPath('settings-search-empty-1366.png') })
   await page.getByRole('button', { name: 'Clear settings search' }).click()
-  await expect(page.getByRole('tab')).toHaveCount(7)
+  await expect(page.getByRole('tab')).toHaveCount(8)
   const organization = page.getByRole('tab', { name: 'Organization', exact: true })
   await organization.focus()
   await page.keyboard.press('End')
@@ -212,7 +213,7 @@ test('viewers receive read-only organization panels and no administration tools,
     await viewer.goto('/settings?section=api-keys')
     await expect(viewer.getByRole('tabpanel', { name: 'Organization', exact: true })).toBeVisible()
     await expect(viewer.locator('[data-settings-section]')).toHaveCount(4)
-    for (const section of ['members', 'invitations', 'api-keys']) {
+    for (const section of ['policy-explainer', 'members', 'invitations', 'api-keys']) {
       await expect(viewer.locator(`[data-settings-section="${section}"]`)).toHaveCount(0)
     }
     await expect(viewer.getByLabel('Key name', { exact: true })).toHaveCount(0)

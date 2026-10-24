@@ -59,6 +59,7 @@ describe('secret-key clients', () => {
   it('scans the whole source tree and resolves aliased and relative imports', () => {
     expect(FILES.length).toBeGreaterThan(100)
     expect(importersOf('lib/env.server').sort()).toEqual([
+      'lib/policy-explainer.server.ts',
       'lib/supabase/admin.ts',
       'lib/supabase/api.ts',
       'lib/supabase/auth-forwarding.ts',
@@ -85,11 +86,25 @@ describe('secret-key clients', () => {
   it('reads the server env only in the reviewed secret-key clients and Auth transport', () => {
     const offenders = importersOf('lib/env.server').filter(
       (path) =>
+        path !== 'lib/policy-explainer.server.ts' &&
         path !== 'lib/supabase/admin.ts' &&
         path !== 'lib/supabase/api.ts' &&
         path !== 'lib/supabase/auth-forwarding.ts',
     )
     expect(offenders).toEqual([])
+  })
+
+  it('confines the reviewed policy service client to guarded dispatch and completion RPCs', () => {
+    expect(importersOf('lib/policy-explainer.server')).toEqual([
+      'app/(app)/forecasts/explanations/actions.ts',
+    ])
+    const text = code(readFileSync(join(SRC, 'lib/policy-explainer.server.ts'), 'utf8'))
+    expect(text.trimStart().startsWith("import 'server-only'")).toBe(true)
+    expect(text).not.toMatch(/\.from\s*\(|\.auth\s*\.|\.storage\s*\./)
+    expect([...text.matchAll(/\.rpc\('([^']+)'/g)].map((m) => m[1])).toEqual([
+      'policy_explainer_dispatch',
+      'policy_explainer_complete',
+    ])
   })
 
   it('reads SUPABASE_SECRET_KEY from process.env only in env.server.ts', () => {

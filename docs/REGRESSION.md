@@ -1,5 +1,10 @@
 # UI regression ledger
 
+## Policy explainer
+
+- `POLICY-AI-001`: run the separate `playwright.policy-explainer.config.ts` against a production build and isolated local stack. Verify opt-in, exact preview, confirmation, escaped generated text, bounded reference links, branch restrictions, retained answers and no implicit retry dispatch. The loopback-only provider fixture must never enter production commands.
+- `POLICY-AI-002`: inspect English/Arabic screenshots at 375, 768, 1024, 1440 and 1920px; preserve shared 16px titles, 14px evidence, mobile 16px inputs and 44px targets. Recheck policy-workbench and Settings workflows. See [policy-explainer.md](policy-explainer.md).
+
 ## Dealer-return authorization batches
 
 - `RETURN-BATCH-001`: `dealer-return-batches.spec.ts` covers search-preserved selection, keyboard checkbox/save, duplicate items and incompatible dates, catalog changes after preview, canonical retries, visible overlap and original CSV/JSON after source deletion. Keep member inspection scoped to both endpoints, including hidden list counts and actual HTTP 404s. Run the existing request/review/handoff browser flows against the production build after sequential database tests.

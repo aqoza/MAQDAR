@@ -1700,6 +1700,52 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"policy_explainer_settings": {
+                  Row: {
+                    "enabled": boolean,"organization_id": string,"updated_at": string,"updated_by": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "enabled"?: boolean,"organization_id": string,"updated_at"?: string,"updated_by": string
+                  }
+                  Update: {
+                    "enabled"?: boolean,"organization_id"?: string,"updated_at"?: string,"updated_by"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "policy_explainer_settings_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: true
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"policy_explanations": {
+                  Row: {
+                    "answer": Json | null,"api_version": string,"created_at": string,"dispatched_at": string | null,"error_code": string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at": string | null,"forecast_run_id": string,"id": string,"item_id": string,"locale": string,"location_id": string,"organization_id": string,"policy_id": string,"policy_run_id": string,"prompt_version": string,"question": string,"request_id": string,"requested_by": string,"requested_model": string | null,"response_model": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at"?: string | null,"forecast_run_id": string,"id"?: string,"item_id": string,"locale": string,"location_id": string,"organization_id": string,"policy_id": string,"policy_run_id": string,"prompt_version"?: string,"question": string,"request_id": string,"requested_by": string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string
+                  }
+                  Update: {
+                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence"?: NonNullable<Json>,"fingerprint"?: string,"finished_at"?: string | null,"forecast_run_id"?: string,"id"?: string,"item_id"?: string,"locale"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string,"policy_run_id"?: string,"prompt_version"?: string,"question"?: string,"request_id"?: string,"requested_by"?: string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "policy_explanations_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "policy_explanations_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"policy_overrides": {
                   Row: {
                     "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_reason": string | null,"decision_request_id": string | null,"id": string,"location_id": string,"order_up_to": number,"organization_id": string,"policy_id": string,"reason": string,"reorder_point": number,"request_id": string,"revision": number,"status": string,"submitted_by": string
@@ -4820,6 +4866,21 @@ isOneToOne: false
                            },
 "policy_enqueue":
 { Args: { "p_forecast_id": string,"p_lead_time": number,"p_organization_id": string,"p_request_id": string,"p_review_interval": number,"p_service_level": number }; Returns: string
+                           },
+"policy_explainer_complete":
+{ Args: { "p_actor": string,"p_answer": Json,"p_error": string,"p_id": string,"p_response_model": string }; Returns: undefined
+                           },
+"policy_explainer_configure":
+{ Args: { "p_enabled": boolean,"p_organization_id": string }; Returns: undefined
+                           },
+"policy_explainer_dispatch":
+{ Args: { "p_actor": string,"p_id": string,"p_model": string }; Returns: Json
+                           },
+"policy_explainer_preview":
+{ Args: { "p_organization_id": string,"p_policy_id": string }; Returns: Json
+                           },
+"policy_explainer_request":
+{ Args: { "p_confirmed": boolean,"p_fingerprint": string,"p_locale": string,"p_organization_id": string,"p_policy_id": string,"p_question": string,"p_request_id": string }; Returns: string
                            },
 "policy_override_decide":
 { Args: { "p_decision": string,"p_organization_id": string,"p_override_id": string,"p_reason": string,"p_request_id": string }; Returns: string
