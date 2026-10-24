@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 27d adds copied dealer-return authorization batches. Preserve canonical 1–50 handoff sets, distinct original item identities/codes, same endpoints/requested date, post-wait evidence/authority checks, visible-source retries and copied history after request deletion. Quantities remain separate and requested dates stay unscheduled. See [dealer-return-batches.md](docs/dealer-return-batches.md).
+
 Step 27c adds immutable dealer-return authorization handoffs. Preserve first-save approval/original-catalog gates, current editor and both-location authority, one handoff per request, fixed CSV/JSON encoding and actual-parent cascades. Requested dates are not receipt schedules; exports have no operational or financial effects. See [dealer-return-handoffs.md](docs/dealer-return-handoffs.md).
 
 Step 27b adds independent whole-request dealer-return decisions. Preserve one terminal decision or author withdrawal, post-wait authority, original identity/unit/endpoint approval gates, immutable retries and both-location history. Approval is internal authorization and has no operational or financial effects. See [dealer-return-review.md](docs/dealer-return-review.md).
