@@ -16,6 +16,7 @@ import {
   toRange,
   type RawSearchParams,
 } from '@/lib/master-data/list-params'
+import { returnBatchesPath } from '@/lib/dealer-return-batches'
 import { dealerReturnsPath } from '@/lib/dealer-returns'
 import {
   returnHandoffsPath,
@@ -31,6 +32,7 @@ export default async function ReturnHandoffs({
 }) {
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
+  const b = await getTranslations('DealerReturnBatches')
   const params = returnHandoffParams(await searchParams)
   const [db, t, r, format] = await Promise.all([
     createClient(),
@@ -72,6 +74,14 @@ export default async function ReturnHandoffs({
         back={
           <Link href={dealerReturnsPath} className="underline">
             {r('title')}
+          </Link>
+        }
+        actions={
+          <Link
+            href={returnBatchesPath}
+            className="inline-flex min-h-11 items-center rounded-md border px-3"
+          >
+            {b('title')}
           </Link>
         }
         help={

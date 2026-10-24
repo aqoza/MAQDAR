@@ -1,0 +1,152 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`freezes copied JSON/CSV, complete approvals, exact quantities and safe spreadsheet cells 1`] = `
+"{
+  "schema_version": "dealer-return-batch-v1",
+  "purpose": "internal_return_authorization",
+  "notice": "Requested dates are not scheduled receipts; no operational or financial changes.",
+  "batch_id": "cd270000-0000-4000-8000-000000000001",
+  "organization_id": "cc270000-0000-4000-8000-000000000002",
+  "created_by": "cc270000-0000-4000-8000-000000000003",
+  "created_by_email": null,
+  "created_at": "2026-10-24T12:00:00Z",
+  "summary": {
+    "source_location_id": "cc270000-0000-4000-8000-000000000006",
+    "source_code": "B",
+    "location_id": "cc270000-0000-4000-8000-000000000007",
+    "location_code": "H",
+    "requested_date": "2026-11-01",
+    "line_count": 1
+  },
+  "lines": [
+    {
+      "schema_version": "dealer-return-handoff-v1",
+      "purpose": "internal_return_authorization",
+      "notice": "Requested return date is not a scheduled receipt. No operational effects.",
+      "handoff_id": "cc270000-0000-4000-8000-000000000001",
+      "organization_id": "cc270000-0000-4000-8000-000000000002",
+      "created_at": "2026-10-24T12:00:00+00:00",
+      "created_by": "cc270000-0000-4000-8000-000000000003",
+      "created_by_email": "editor@example.com",
+      "request": {
+        "id": "cc270000-0000-4000-8000-000000000004",
+        "created_at": "2026-10-24T10:00:00+00:00",
+        "submitted_by": "cc270000-0000-4000-8000-000000000003",
+        "report": {
+          "method": "dealer-return-request-v1",
+          "input": {
+            "item_code": "P1",
+            "source_code": "B",
+            "location_code": "H",
+            "quantity": "999999999999999.999",
+            "unit": "EA",
+            "requested_date": "2026-11-01",
+            "condition": "unknown",
+            "reason": "=1+1",
+            "sale_reference": "INV-\\"1\\"",
+            "confirmed": true
+          },
+          "author": "editor@example.com",
+          "item": {
+            "id": "cc270000-0000-4000-8000-000000000005",
+            "code": "P1",
+            "name_en": "Part",
+            "name_ar": "قطعة",
+            "unit": "EA",
+            "status": "active"
+          },
+          "source": {
+            "id": "cc270000-0000-4000-8000-000000000006",
+            "code": "B",
+            "name_en": "Branch",
+            "name_ar": "الفرع",
+            "location_type": "branch"
+          },
+          "receiver": {
+            "id": "cc270000-0000-4000-8000-000000000007",
+            "code": "H",
+            "name_en": "Hub",
+            "name_ar": "المركز",
+            "location_type": "hub"
+          }
+        }
+      },
+      "approval": {
+        "decision": "approved",
+        "decided_at": "2026-10-24T11:00:00+00:00",
+        "decided_by": "cc270000-0000-4000-8000-000000000008",
+        "reviewer_email": "review@example.com",
+        "reason": "Eligibility checked",
+        "eligibility_confirmed": true
+      }
+    }
+  ]
+}
+"
+`;
+
+exports[`freezes copied JSON/CSV, complete approvals, exact quantities and safe spreadsheet cells 2`] = `
+"﻿"schema_version","purpose","notice","batch_id","organization_id","created_at","created_by","created_by_email","batch_line_count","line_number","handoff_id","request_id","item_id","item_code","source_location_id","source_code","receiving_location_id","receiving_code","declared_quantity","unit","declared_condition","requested_return_date","original_sale_reference","request_reason","approved_at","approved_by","eligibility_rationale","original_handoff_json"
+"dealer-return-batch-v1","internal_return_authorization","Requested dates are not scheduled receipts; no operational or financial changes.","cd270000-0000-4000-8000-000000000001","cc270000-0000-4000-8000-000000000002","2026-10-24T12:00:00Z","cc270000-0000-4000-8000-000000000003","","1","1","cc270000-0000-4000-8000-000000000001","cc270000-0000-4000-8000-000000000004","cc270000-0000-4000-8000-000000000005","P1","cc270000-0000-4000-8000-000000000006","B","cc270000-0000-4000-8000-000000000007","H","999999999999999.999","EA","unknown","2026-11-01","INV-""1""","'=1+1","2026-10-24T11:00:00+00:00","cc270000-0000-4000-8000-000000000008","Eligibility checked","{
+  ""schema_version"": ""dealer-return-handoff-v1"",
+  ""purpose"": ""internal_return_authorization"",
+  ""notice"": ""Requested return date is not a scheduled receipt. No operational effects."",
+  ""handoff_id"": ""cc270000-0000-4000-8000-000000000001"",
+  ""organization_id"": ""cc270000-0000-4000-8000-000000000002"",
+  ""created_at"": ""2026-10-24T12:00:00+00:00"",
+  ""created_by"": ""cc270000-0000-4000-8000-000000000003"",
+  ""created_by_email"": ""editor@example.com"",
+  ""request"": {
+    ""id"": ""cc270000-0000-4000-8000-000000000004"",
+    ""created_at"": ""2026-10-24T10:00:00+00:00"",
+    ""submitted_by"": ""cc270000-0000-4000-8000-000000000003"",
+    ""report"": {
+      ""method"": ""dealer-return-request-v1"",
+      ""input"": {
+        ""item_code"": ""P1"",
+        ""source_code"": ""B"",
+        ""location_code"": ""H"",
+        ""quantity"": ""999999999999999.999"",
+        ""unit"": ""EA"",
+        ""requested_date"": ""2026-11-01"",
+        ""condition"": ""unknown"",
+        ""reason"": ""=1+1"",
+        ""sale_reference"": ""INV-\\""1\\"""",
+        ""confirmed"": true
+      },
+      ""author"": ""editor@example.com"",
+      ""item"": {
+        ""id"": ""cc270000-0000-4000-8000-000000000005"",
+        ""code"": ""P1"",
+        ""name_en"": ""Part"",
+        ""name_ar"": ""قطعة"",
+        ""unit"": ""EA"",
+        ""status"": ""active""
+      },
+      ""source"": {
+        ""id"": ""cc270000-0000-4000-8000-000000000006"",
+        ""code"": ""B"",
+        ""name_en"": ""Branch"",
+        ""name_ar"": ""الفرع"",
+        ""location_type"": ""branch""
+      },
+      ""receiver"": {
+        ""id"": ""cc270000-0000-4000-8000-000000000007"",
+        ""code"": ""H"",
+        ""name_en"": ""Hub"",
+        ""name_ar"": ""المركز"",
+        ""location_type"": ""hub""
+      }
+    }
+  },
+  ""approval"": {
+    ""decision"": ""approved"",
+    ""decided_at"": ""2026-10-24T11:00:00+00:00"",
+    ""decided_by"": ""cc270000-0000-4000-8000-000000000008"",
+    ""reviewer_email"": ""review@example.com"",
+    ""reason"": ""Eligibility checked"",
+    ""eligibility_confirmed"": true
+  }
+}"
+"
+`;

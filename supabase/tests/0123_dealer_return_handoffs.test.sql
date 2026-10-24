@@ -111,8 +111,8 @@ select is((select count(*)::int from public.audit_log where table_name='dealer_r
 delete from auth.users where id in (pg_temp.id(14),pg_temp.id(15));
 select is((select payload from public.dealer_return_handoffs where id=(select handoff from fixture)),(select payload from fixture),'account deletion retains copied actor/approval evidence');
 delete from public.dealer_return_requests where id=(select saved from fixture);
-select is((select count(*)::int from public.dealer_return_handoffs),1,'actual parent deletion cascades only its handoff');
+select is((select count(*)::int from public.dealer_return_handoffs where organization_id=pg_temp.id(1)),1,'actual parent deletion cascades only its handoff');
 delete from public.locations where id=pg_temp.id(102);
-select is((select count(*)::int from public.dealer_return_handoffs),0,'endpoint deletion follows request/history cascades');
+select is((select count(*)::int from public.dealer_return_handoffs where organization_id=pg_temp.id(1)),0,'endpoint deletion follows request/history cascades');
 select * from finish();
 rollback;

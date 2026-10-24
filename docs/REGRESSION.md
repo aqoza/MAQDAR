@@ -1,5 +1,10 @@
 # UI regression ledger
 
+## Dealer-return authorization batches
+
+- `RETURN-BATCH-001`: `dealer-return-batches.spec.ts` covers search-preserved selection, keyboard checkbox/save, duplicate items and incompatible dates, catalog changes after preview, canonical retries, visible overlap and original CSV/JSON after source deletion. Keep member inspection scoped to both endpoints, including hidden list counts and actual HTTP 404s. Run the existing request/review/handoff browser flows against the production build after sequential database tests.
+- `RETURN-BATCH-002`: inspect selection, preview, detail and history in English/Arabic RTL at 375, 768, 1024, 1440 and 1920px. Retain 16px titles, 14px evidence, 44px controls, contained tables, focused save errors and explicit unscheduled-date context. See [dealer-return-batches.md](dealer-return-batches.md).
+
 ## Planner Action Centre
 
 - `PLANNER-ACTIONS-001`: `planner-actions.spec.ts` uses local purchase/transfer approval chains and saved forecast records to verify queue membership, source links, search/reset, location filters, exact record destinations, signed-out redirects, tenant isolation and both-endpoint transfer access. Preserve bounded counts and no fabricated risk/freight alerts. Source utility tests cover partial/malformed failures, ten-policy RPC bounds and already-packaged approvals.

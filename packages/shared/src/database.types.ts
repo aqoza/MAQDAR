@@ -126,6 +126,38 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"dealer_return_batches": {
+                  Row: {
+                    "created_at": string,"created_by": string,"handoff_ids": (string)[],"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"search_text": string,"source_location_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at": string,"created_by": string,"handoff_ids": (string)[],"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"search_text": string,"source_location_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"handoff_ids"?: (string)[],"id"?: string,"location_id"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"search_text"?: string,"source_location_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "dealer_return_batches_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "dealer_return_batches_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "dealer_return_batches_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"dealer_return_handoffs": {
                   Row: {
                     "created_at": string,"created_by": string,"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"return_id": string,"search_text": string,"source_location_id": string
@@ -3015,7 +3047,77 @@ isOneToOne: false
                 }
           }
           Views: {
-            "delivery_scenario_list": {
+            "dealer_return_batch_candidates": {
+                  Row: {
+                    "batch_count": number | null,"created_at": string | null,"created_by": string | null,"id": string | null,"location_id": string | null,"organization_id": string | null,"payload": Json | null,"return_id": string | null,"search_text": string | null,"source_location_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "batch_count"?: never,"created_at"?: string | null,"created_by"?: string | null,"id"?: string | null,"location_id"?: string | null,"organization_id"?: string | null,"payload"?: Json | null,"return_id"?: string | null,"search_text"?: string | null,"source_location_id"?: string | null
+                         }
+                        Update: {
+                           "batch_count"?: never,"created_at"?: string | null,"created_by"?: string | null,"id"?: string | null,"location_id"?: string | null,"organization_id"?: string | null,"payload"?: Json | null,"return_id"?: string | null,"search_text"?: string | null,"source_location_id"?: string | null
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "dealer_return_handoffs_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "dealer_return_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "dealer_return_handoffs_organization_id_return_id_fkey"
+      columns: ["organization_id","return_id"]
+isOneToOne: true
+      referencedRelation: "dealer_return_requests"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "dealer_return_handoffs_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"dealer_return_batch_list": {
+                  Row: {
+                    "created_at": string | null,"created_by": string | null,"handoff_ids": (string)[] | null,"id": string | null,"line_count": number | null,"location_code": string | null,"location_id": string | null,"organization_id": string | null,"overlap_count": number | null,"payload": Json | null,"requested_date": string | null,"search_text": string | null,"source_code": string | null,"source_location_id": string | null,"sources_available": boolean | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "created_at"?: string | null,"created_by"?: string | null,"handoff_ids"?: (string)[] | null,"id"?: string | null,"line_count"?: never,"location_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"overlap_count"?: never,"payload"?: Json | null,"requested_date"?: never,"search_text"?: string | null,"source_code"?: never,"source_location_id"?: string | null,"sources_available"?: never
+                         }
+                        Update: {
+                           "created_at"?: string | null,"created_by"?: string | null,"handoff_ids"?: (string)[] | null,"id"?: string | null,"line_count"?: never,"location_code"?: never,"location_id"?: string | null,"organization_id"?: string | null,"overlap_count"?: never,"payload"?: Json | null,"requested_date"?: never,"search_text"?: string | null,"source_code"?: never,"source_location_id"?: string | null,"sources_available"?: never
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "dealer_return_batches_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "dealer_return_batches_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "dealer_return_batches_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
+                },"delivery_scenario_list": {
                   Row: {
                     "created_at": string | null,"id": string | null,"location_id": string | null,"order_date": string | null,"organization_id": string | null,"policy_recalculation_required": boolean | null,"receipt_date": string | null,"requested_date": string | null,"status": string | null,"supplier_scenario_id": string | null
                   }
@@ -4397,6 +4499,12 @@ isOneToOne: false
                            },
 "dashboard_summary":
 { Args: { "p_day"?: string,"p_organization_id": string }; Returns: Json
+                           },
+"dealer_return_batch_create":
+{ Args: { "p_handoff_ids": (string)[],"p_organization_id": string }; Returns: string
+                           },
+"dealer_return_batch_preview":
+{ Args: { "p_handoff_ids": (string)[],"p_organization_id": string }; Returns: Json
                            },
 "dealer_return_handoff_create":
 { Args: { "p_organization_id": string,"p_return_id": string }; Returns: string
