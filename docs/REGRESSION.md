@@ -254,3 +254,8 @@ Add `0122_dealer_return_review.test.sql`, `test_dealer_return_review_db.py` and 
 ## Dealer-return handoffs (Step 27c)
 
 Add 0123_dealer_return_handoffs.test.sql, test_dealer_return_handoffs_db.py and dealer-return-handoffs.spec.ts to both original return flows. Check one immutable handoff per approved request, current first-save item/code/unit/endpoint gates, current editor authority on retries and after waits, both-location reads/downloads, exact quantity strings, spreadsheet-safe CSV and versioned JSON. Preserve account/item deletion evidence and actual-parent endpoint cascades. Inspect create/saved/history screenshots at all five approved widths in English and Arabic RTL; assert shared typography, local table scrolling, keyboard submission, focused safe error feedback and real hidden-record/download 404s.
+
+## Dealer-return read API (Step 27e)
+
+- Run `0125_dealer_return_handoff_read_api.test.sql` plus the full pgTAP privilege/tenant suite; run `test_dealer_return_handoff_api_db.py` for actual authorization chains, exact decimals, revoked/expired/demoted keys, legacy-scope isolation, cursor ties/bindings and retained copied batches. Do not overlap database/browser suites.
+- Run API handler/auth/RPC/OpenAPI tests and `dealer-return-read-api.spec.ts` against the production build. Verify Settings issue/revoke, both-location browser scope, organization-wide explicit keys, unchanged downloads, 405 writes/404 acknowledgement routes and source deletion. Inspect all five widths plus Arabic RTL; requested dates remain unscheduled.

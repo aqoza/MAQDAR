@@ -1,4 +1,5 @@
 import { handoffFixture as regionalFixture } from '../regional-handoffs.fixture'
+import { returnBatchFixture } from '../dealer-return-batches.fixture'
 import { batchFixture as regionalBatchFixture } from '../regional-batches.fixture'
 import { handoffFixture as networkFixture } from '../network-handoffs.fixture'
 import { batchFixture as networkBatchFixture } from '../network-batches.fixture'
@@ -246,27 +247,33 @@ describe('structure', () => {
       )
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
-        : path.startsWith('/regional-handoff')
-          ? [method === 'post' ? 'regional_handoffs:acknowledge' : 'regional_handoffs:read']
-          : path.startsWith('/network-handoff')
-            ? [method === 'post' ? 'network_handoffs:acknowledge' : 'network_handoffs:read']
-            : path.startsWith('/excess-disposition-handoff')
-              ? [
-                  method === 'post'
-                    ? 'excess_disposition_handoffs:acknowledge'
-                    : 'excess_disposition_handoffs:read',
-                ]
-              : path.startsWith('/event-purchase-handoff')
+        : path.startsWith('/dealer-return-handoff')
+          ? ['dealer_return_handoffs:read']
+          : path.startsWith('/regional-handoff')
+            ? [method === 'post' ? 'regional_handoffs:acknowledge' : 'regional_handoffs:read']
+            : path.startsWith('/network-handoff')
+              ? [method === 'post' ? 'network_handoffs:acknowledge' : 'network_handoffs:read']
+              : path.startsWith('/excess-disposition-handoff')
                 ? [
                     method === 'post'
-                      ? 'event_purchase_handoffs:acknowledge'
-                      : 'event_purchase_handoffs:read',
+                      ? 'excess_disposition_handoffs:acknowledge'
+                      : 'excess_disposition_handoffs:read',
                   ]
-                : path.startsWith('/transfer-handoff')
-                  ? [method === 'post' ? 'transfer_handoffs:acknowledge' : 'transfer_handoffs:read']
-                  : path.startsWith('/purchase-handoff')
-                    ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
-                    : []
+                : path.startsWith('/event-purchase-handoff')
+                  ? [
+                      method === 'post'
+                        ? 'event_purchase_handoffs:acknowledge'
+                        : 'event_purchase_handoffs:read',
+                    ]
+                  : path.startsWith('/transfer-handoff')
+                    ? [
+                        method === 'post'
+                          ? 'transfer_handoffs:acknowledge'
+                          : 'transfer_handoffs:read',
+                      ]
+                    : path.startsWith('/purchase-handoff')
+                      ? [method === 'post' ? 'purchase_handoffs:acknowledge' : HANDOFF_SCOPE]
+                      : []
       expect(operation['x-zeespare-scopes'], operation.operationId).toEqual(scopes)
       expect(operation.deprecated === true).toBe(deprecationFor(operation.operationId) !== null)
     }
@@ -540,4 +547,35 @@ it('documents complete regional evidence, separate currency totals and read-only
     ])
     expect(doc.paths[`/${resource}`].post).toBeUndefined()
   }
+})
+
+it('validates complete dealer-return authorization schemas without rounding or pooled quantities', () => {
+  const batch = returnBatchFixture,
+    single = batch.lines[0]
+  expect(valid(schema('DealerReturnHandoffPayload'), single)).toBe(true)
+  expect(valid(schema('DealerReturnHandoffBatchPayload'), batch)).toBe(true)
+  expect(
+    valid(schema('DealerReturnHandoffPayload'), {
+      ...single,
+      approval: { ...single.approval, eligibility_confirmed: false },
+    }),
+  ).toBe(false)
+  expect(
+    valid(schema('DealerReturnHandoffPayload'), {
+      ...single,
+      request: {
+        ...single.request,
+        report: {
+          ...single.request.report,
+          input: { ...single.request.report.input, quantity: 1 },
+        },
+      },
+    }),
+  ).toBe(false)
+  expect(
+    valid(schema('DealerReturnHandoffSourceContext'), {
+      sources_available: false,
+      checked_at: '2026-10-24T00:00:00Z',
+    }),
+  ).toBe(true)
 })

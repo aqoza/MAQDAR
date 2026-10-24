@@ -24,6 +24,7 @@ An organization owner or administrator opens **Settings → API keys**, gives th
 | `excess_disposition_handoffs:acknowledge` | Record receipt/rejection reports for saved disposition handoffs and copied batches across the organization      |
 | `network_handoffs:read`                   | List and retrieve complete network handoffs and copied batches across the whole organization                    |
 | `network_handoffs:acknowledge`            | Append whole-package receipt/rejection reports for network handoffs and copied batches across the organization  |
+| `dealer_return_handoffs:read`             | List and retrieve saved dealer-return authorizations and copied batches across the whole organization           |
 
 Write permission does not include read permission. Any valid key can call `GET /api/v1/organization` to inspect its organization, granted scopes, expiry, limits and available demand-date partitions.
 
@@ -32,6 +33,8 @@ Keys belong to one organization. The API never takes the organization from a coo
 Send the key only in the `Authorization` header over HTTPS. Browser session cookies and Supabase JWTs cannot authenticate this API. Authenticated endpoints do not enable cross-origin browser access; keep keys in your integration's backend.
 
 ## Quick start
+
+For saved return authorizations, see [the dealer-return handoff read API](dealer-return-handoff-read-api.md). Explicit `dealer_return_handoffs:read` provides organization-wide access to original declarations and approval evidence. Other scopes grant no return access. Copied batches survive source-request deletion with live source availability separate; browser users still need both locations. Requested dates remain unscheduled, and reads create no receiving, credit or stock records.
 
 For complete network approvals and copied batches, see [the network handoff read API](network-handoff-read-api.md). Explicit `network_handoffs:read` permits organization-wide access to every saved branch, including zero-transfer context and retained batches after source deletion. Existing keys and other scopes gain no network access. Live selection stays separate from immutable quantities, dates and currency-separated freight; browser users still require access to every participating location.
 

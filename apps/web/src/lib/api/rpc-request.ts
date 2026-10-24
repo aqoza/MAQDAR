@@ -9,6 +9,7 @@ import type {
   DispositionHandoffResource,
   NetworkHandoffResource,
   RegionalHandoffResource,
+  ReturnHandoffResource,
 } from './handoffs'
 import type { AcknowledgementInput } from './acknowledgements'
 
@@ -21,6 +22,18 @@ import type { AcknowledgementInput } from './acknowledgements'
 
 /** The `api_*` RPCs of the `rest_api` migration and the arguments the Worker sends them. */
 export type ApiRpcArgs = {
+  api_dealer_return_handoff_list: {
+    p_key_hash: KeyHash
+    p_resource: ReturnHandoffResource
+    p_after: string | null
+    p_limit: number
+    p_created_since: string | null
+  }
+  api_dealer_return_handoff_get: {
+    p_key_hash: KeyHash
+    p_resource: ReturnHandoffResource
+    p_id: string
+  }
   api_regional_handoff_acknowledge: {
     p_key_hash: KeyHash
     p_resource: RegionalHandoffResource
@@ -245,6 +258,8 @@ export const API_RPC_NAMES = [
   'api_network_handoff_acknowledgements',
   'api_network_handoff_list',
   'api_network_handoff_get',
+  'api_dealer_return_handoff_list',
+  'api_dealer_return_handoff_get',
   'api_regional_handoff_list',
   'api_regional_handoff_get',
   'api_excess_disposition_handoff_list',

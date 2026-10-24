@@ -27,6 +27,10 @@ import {
 import { OPENAPI_DOCUMENT_VERSION, deprecationFor } from './versioning'
 import { handoffPaths, handoffSchemas } from './handoff-openapi'
 import { regionalHandoffPaths, regionalHandoffSchemas } from './regional-handoff-openapi'
+import {
+  dealerReturnHandoffPaths,
+  dealerReturnHandoffSchemas,
+} from './dealer-return-handoff-openapi'
 import { networkHandoffPaths, networkHandoffSchemas } from './network-handoff-openapi'
 import { dispositionHandoffPaths, dispositionHandoffSchemas } from './disposition-handoff-openapi'
 import { eventHandoffPaths, eventHandoffSchemas } from './event-handoff-openapi'
@@ -940,6 +944,7 @@ export function buildOpenApi(): OpenApiDocument {
     dispositionHandoffPaths(),
     networkHandoffPaths(),
     regionalHandoffPaths(),
+    dealerReturnHandoffPaths(),
   )
   Object.assign(paths, acknowledgementPaths())
   Object.assign(
@@ -951,6 +956,7 @@ export function buildOpenApi(): OpenApiDocument {
     dispositionHandoffSchemas(),
     networkHandoffSchemas(),
     regionalHandoffSchemas(),
+    dealerReturnHandoffSchemas(),
     acknowledgementSchemas(),
   )
 
@@ -965,6 +971,11 @@ export function buildOpenApi(): OpenApiDocument {
     servers: [{ url: API_BASE_PATH }],
     security: [{ bearerAuth: [] }],
     tags: [
+      {
+        name: 'Dealer-return handoffs',
+        description:
+          'Saved internal return authorizations and copied batches, with independent live source availability.',
+      },
       {
         name: 'Regional handoffs',
         description:

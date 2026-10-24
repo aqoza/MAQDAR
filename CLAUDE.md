@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 27e exposes original return handoff/batch JSON through explicit organization-wide `dealer_return_handoffs:read`. Preserve current key/creator authority, guarded service-only readers, bound pagination, copied retention and independent live source availability. No inherited scopes or acknowledgement routes; browser both-location RLS stays unchanged. See [dealer-return-handoff-read-api.md](docs/dealer-return-handoff-read-api.md).
+
 Step 27d adds copied dealer-return authorization batches. Preserve canonical 1–50 handoff sets, distinct original item identities/codes, same endpoints/requested date, post-wait evidence/authority checks, visible-source retries and copied history after request deletion. Quantities remain separate and requested dates stay unscheduled. See [dealer-return-batches.md](docs/dealer-return-batches.md).
 
 Step 27c adds immutable dealer-return authorization handoffs. Preserve first-save approval/original-catalog gates, current editor and both-location authority, one handoff per request, fixed CSV/JSON encoding and actual-parent cascades. Requested dates are not receipt schedules; exports have no operational or financial effects. See [dealer-return-handoffs.md](docs/dealer-return-handoffs.md).
