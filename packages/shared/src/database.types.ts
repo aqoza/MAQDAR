@@ -126,6 +126,38 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"dealer_return_requests": {
+                  Row: {
+                    "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"search_text": string,"source_location_id": string,"submitted_by": string,"withdrawal_reason": string | null,"withdrawn_at": string | null,"withdrawn_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"search_text": string,"source_location_id": string,"submitted_by": string,"withdrawal_reason"?: string | null,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"report"?: NonNullable<Json>,"request_id"?: string,"search_text"?: string,"source_location_id"?: string,"submitted_by"?: string,"withdrawal_reason"?: string | null,"withdrawn_at"?: string | null,"withdrawn_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "dealer_return_requests_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "dealer_return_requests_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "dealer_return_requests_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"delivery_scenarios": {
                   Row: {
                     "created_at": string,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"submitted_by": string,"supplier_scenario_id": string
@@ -4327,6 +4359,12 @@ isOneToOne: false
                            },
 "dashboard_summary":
 { Args: { "p_day"?: string,"p_organization_id": string }; Returns: Json
+                           },
+"dealer_return_save":
+{ Args: { "p_input": Json,"p_organization_id": string,"p_request_id": string }; Returns: string
+                           },
+"dealer_return_withdraw":
+{ Args: { "p_organization_id": string,"p_reason": string,"p_return_id": string }; Returns: string
                            },
 "delivery_scenario_preview":
 { Args: { "p_calendars_confirmed": boolean,"p_organization_id": string,"p_requested_date": string,"p_supplier_scenario_id": string }; Returns: Json
