@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 28c adds captured individual replenishment explanations. Preserve exact saved aggregates, negative stock, separate inbound timing counts, private-field exclusion and no refresh of commitments. Share existing opt-in/quotas/current authority while keeping subject-specific references and immutable history. See [replenishment-explainer.md](docs/replenishment-explainer.md).
+
 Step 28b extends the opt-in explainer to saved individual forecasts. Preserve the explicit score/coverage projection, shared policy/forecast quotas and UUID identities, separate reference vocabularies, current authority and captured history. Never send raw demand or driver data; selection scores and held-out coverage remain distinct. See [forecast-explainer.md](docs/forecast-explainer.md).
 
 Step 28 adds an opt-in, server-only Claude policy explainer. Preserve the exact allowlisted preview, editor/location authority before dispatch and publication, database quotas, single dispatch per retry identity, validated evidence references and immutable captured answers. Credentials and organization enablement default off; no operational mutations. See [policy-explainer.md](docs/policy-explainer.md).

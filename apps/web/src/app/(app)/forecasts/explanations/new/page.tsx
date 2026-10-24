@@ -92,7 +92,7 @@ export default async function ExplainForecast({
               <NextIntlClientProvider messages={{ PolicyExplainer: messages.PolicyExplainer }}>
                 <PolicyExplainerForm
                   organizationId={context.active.id}
-                  policyId={forecastId!}
+                  sourceId={forecastId!}
                   kind="forecast"
                   fingerprint={evidence.fingerprint}
                   requestId={crypto.randomUUID()}

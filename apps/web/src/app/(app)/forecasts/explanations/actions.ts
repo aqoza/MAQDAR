@@ -10,6 +10,7 @@ import {
 } from '@/lib/organizations/guard'
 import { isAdminRole } from '@/lib/auth/roles'
 import { createClient } from '@/lib/supabase/server'
+import { replenishmentExplanationRequestSchema } from '@/lib/replenishment-explainer'
 import { forecastExplanationRequestSchema } from '@/lib/forecast-explainer'
 import { explanationRequestSchema, explanationPath } from '@/lib/policy-explainer'
 import { policyExplainerConfiguration } from '@/lib/claude-policy.server'
@@ -68,6 +69,46 @@ export async function explainForecast(_state: ActionState, form: FormData): Prom
   const { data, error } = await db.rpc('forecast_explainer_request', {
     p_organization_id: guard.organizationId,
     p_forecast_id: parsed.data.forecast_id,
+    p_request_id: parsed.data.request_id,
+    p_question: parsed.data.question,
+    p_fingerprint: parsed.data.fingerprint,
+    p_confirmed: true,
+    p_locale: (await getLocale()).startsWith('ar') ? 'ar' : 'en',
+  })
+  if (error)
+    return {
+      ...(error.code === 'MQ429'
+        ? { status: 'error' as const, message: t('quota') }
+        : await rpcErrorState(error)),
+      values,
+    }
+  try {
+    await generatePolicyExplanation(data, guard.context.userId, config)
+  } catch {
+    return { status: 'error', message: t('generationUnavailable'), values }
+  }
+  revalidatePath(explanationPath)
+  redirect(`${explanationPath}/${data}`)
+}
+export async function explainReplenishment(
+  _state: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const guard = await requireEditor(form)
+  if (!guard.ok) return guard.state
+  const t = await getTranslations('PolicyExplainer')
+  const values = fieldValues(form, ['draft_id', 'request_id', 'fingerprint', 'question'])
+  const parsed = replenishmentExplanationRequestSchema.safeParse({
+    ...values,
+    confirmed: checkboxValue(form, 'confirmed'),
+  })
+  if (!parsed.success) return { status: 'error', message: t('invalid'), values }
+  const config = policyExplainerConfiguration()
+  if (!config) return { status: 'error', message: t('unconfigured'), values }
+  const db = await createClient()
+  const { data, error } = await db.rpc('replenishment_explainer_request', {
+    p_organization_id: guard.organizationId,
+    p_draft_id: parsed.data.draft_id,
     p_request_id: parsed.data.request_id,
     p_question: parsed.data.question,
     p_fingerprint: parsed.data.fingerprint,

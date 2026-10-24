@@ -35,6 +35,7 @@ export default async function SavedDraft({
     .maybeSingle()
   if (error) throw new Error('Draft unavailable')
   if (!data) notFound()
+  const explain = await getTranslations('ReplenishmentExplainer')
   const report = replenishmentReportSchema.parse(data.report)
   const next = new URLSearchParams({ policy: report.policy.policy_id, basis: report.policy.basis })
   if (report.policy.override_id) next.set('override', report.policy.override_id)
@@ -48,6 +49,13 @@ export default async function SavedDraft({
           </Link>
         }
         title={t('saved')}
+        actions={
+          report.status === 'available' ? (
+            <Link className="underline" href={`/replenishment/explanations/new?draft=${draftId}`}>
+              {explain('action')}
+            </Link>
+          ) : undefined
+        }
       />
       <p>
         {t('savedBy', {

@@ -6667,8 +6667,8 @@
     "disabled": "An owner or admin must enable AI explanations in Settings before requesting an explanation.",
     "editorOnly": "Editors can request explanations. Members with location access can inspect saved results.",
     "settings": "AI explanation settings",
-    "settingsDescription": "Allow editors to send a confirmed question and a limited policy or forecast summary to Anthropic. Saved answers remain visible within the source location access. Policy and forecast requests share the same quotas.",
-    "optIn": "Enable Claude policy and forecast explanations for this organization.",
+    "settingsDescription": "Allow editors to send a confirmed question and a limited policy, forecast or replenishment summary to Anthropic. Saved answers remain visible within source-location access. All explanation types share the same quotas.",
+    "optIn": "Enable Claude policy, forecast and replenishment explanations for this organization.",
     "saveSetting": "Save setting",
     "enabledSaved": "AI explanations enabled.",
     "disabledSaved": "AI explanations disabled.",
@@ -6729,7 +6729,9 @@
     "settingsTitle": "AI explanations",
     "policyKind": "Policy",
     "forecastKind": "Forecast",
-    "chooseForecast": "Choose a forecast"
+    "chooseForecast": "Choose a forecast",
+    "replenishmentKind": "Replenishment",
+    "chooseReplenishment": "Choose a replenishment draft"
   },
   "ForecastExplainer": {
     "title": "Explain this forecast",
@@ -6785,6 +6787,40 @@
       "driver_missing": "Missing driver values",
       "driver_late": "Driver values declared available too late",
       "driver_constant": "Constant driver values"
+    }
+  },
+  "ReplenishmentExplainer": {
+    "title": "Explain saved replenishment",
+    "savedTitle": "Saved replenishment explanation",
+    "action": "Explain this draft",
+    "originalDraft": "Original replenishment draft",
+    "description": "Inspect the saved gap and timing evidence before asking a question.",
+    "unavailable": "Choose an available individual-item draft with known units and complete saved timing evidence.",
+    "confirmed": "The saved order book was confirmed complete and synchronized at the cutoff.",
+    "limits": "This is captured as-of evidence with planner-confirmed inbound completeness, not current stock or independently reconstructed history. All remaining inbound counts, including overdue and late lines; receipts are not subtracted again. Additional backorders exclude allocations. A zero gap does not guarantee timely supply. No supplier rounding, purchase recommendation or operational changes occur.",
+    "calculationNote": "Inventory position = stock after allocations + remaining inbound − additional backorders. Gap = max(selected maximum − inventory position, 0).",
+    "timingNote": "Overdue means before the cutoff; late means after the saved protection period. Both still count in inventory position. Counts do not calculate shortages.",
+    "approved": "Explicitly selected approved maximum",
+    "calculated": "Calculated maximum",
+    "references": {
+      "draft_context": "Saved draft context",
+      "gap_calculation": "Inventory position and gap",
+      "supply_timing": "Inbound timing evidence",
+      "draft_limits": "Evidence and limitations"
+    },
+    "fields": {
+      "cutoff": "Saved cutoff",
+      "protection_end": "Protection period ends",
+      "maximum_basis": "Selected maximum basis",
+      "maximum": "Selected periodic maximum",
+      "available_stock": "Stock after allocations",
+      "remaining_inbound": "Remaining open inbound",
+      "additional_backorders": "Additional unallocated backorders",
+      "inventory_position": "Inventory position",
+      "unrounded_gap": "Unrounded replenishment gap",
+      "open_line_count": "Included open lines",
+      "overdue_line_count": "Overdue lines",
+      "late_line_count": "Lines after protection period"
     }
   }
 }

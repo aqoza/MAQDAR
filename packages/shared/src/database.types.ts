@@ -1722,14 +1722,14 @@ isOneToOne: true
                   ]
                 },"policy_explanations": {
                   Row: {
-                    "answer": Json | null,"api_version": string,"created_at": string,"dispatched_at": string | null,"error_code": string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at": string | null,"forecast_id": string | null,"forecast_run_id": string,"id": string,"item_id": string,"locale": string,"location_id": string,"organization_id": string,"policy_id": string | null,"policy_run_id": string | null,"prompt_version": string,"question": string,"request_id": string,"requested_by": string,"requested_model": string | null,"response_model": string | null,"status": string,"subject_kind": string
+                    "answer": Json | null,"api_version": string,"created_at": string,"dispatched_at": string | null,"error_code": string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at": string | null,"forecast_id": string | null,"forecast_run_id": string | null,"id": string,"item_id": string | null,"locale": string,"location_id": string,"organization_id": string,"policy_id": string | null,"policy_run_id": string | null,"prompt_version": string,"question": string,"replenishment_draft_id": string | null,"request_id": string,"requested_by": string,"requested_model": string | null,"response_model": string | null,"status": string,"subject_kind": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id": string,"id"?: string,"item_id": string,"locale": string,"location_id": string,"organization_id": string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question": string,"request_id": string,"requested_by": string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string
+                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id"?: string | null,"id"?: string,"item_id"?: string | null,"locale": string,"location_id": string,"organization_id": string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question": string,"replenishment_draft_id"?: string | null,"request_id": string,"requested_by": string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string
                   }
                   Update: {
-                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence"?: NonNullable<Json>,"fingerprint"?: string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id"?: string,"id"?: string,"item_id"?: string,"locale"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question"?: string,"request_id"?: string,"requested_by"?: string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string
+                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence"?: NonNullable<Json>,"fingerprint"?: string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id"?: string | null,"id"?: string,"item_id"?: string | null,"locale"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question"?: string,"replenishment_draft_id"?: string | null,"request_id"?: string,"requested_by"?: string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string
                   }
                   Relationships: [
                     {
@@ -4971,6 +4971,12 @@ isOneToOne: false
                            },
 "remove_member":
 { Args: { "p_organization_id": string,"p_user_id": string }; Returns: undefined
+                           },
+"replenishment_explainer_preview":
+{ Args: { "p_draft_id": string,"p_organization_id": string }; Returns: Json
+                           },
+"replenishment_explainer_request":
+{ Args: { "p_confirmed": boolean,"p_draft_id": string,"p_fingerprint": string,"p_locale": string,"p_organization_id": string,"p_question": string,"p_request_id": string }; Returns: string
                            },
 "replenishment_preview":
 { Args: { "p_backorders"?: string,"p_basis": string,"p_orders_confirmed"?: boolean,"p_organization_id": string,"p_override_id"?: string,"p_policy_id": string }; Returns: Json

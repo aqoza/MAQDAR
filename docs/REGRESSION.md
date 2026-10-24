@@ -1,5 +1,10 @@
 # UI regression ledger
 
+## Replenishment explainer
+
+- `REPLENISHMENT-AI-001`: the isolated provider configuration runs policy, forecast and replenishment flows. Check the saved-draft entry, exact negative stock and unrounded gap, no private order/price/approval text, preview confirmation, subject-specific links, shared retries, branch restrictions and history after source deletion. Wrong-subject provider references must fail without publishing an answer.
+- `REPLENISHMENT-AI-002`: inspect English/Arabic RTL at 375, 768, 1024, 1440 and 1920px. Preserve shared 16px titles, 14px evidence, mobile 16px inputs/44px targets, keyboard confirmation and contained content. Run existing Settings, policy-workbench and replenishment workflows before the isolated provider suite, using separate artifact directories. See [replenishment-explainer.md](replenishment-explainer.md).
+
 ## Policy explainer
 
 - `POLICY-AI-001`: run the separate `playwright.policy-explainer.config.ts` against a production build and isolated local stack. Verify opt-in, exact preview, confirmation, escaped generated text, bounded reference links, branch restrictions, retained answers and no implicit retry dispatch. The loopback-only provider fixture must never enter production commands.
