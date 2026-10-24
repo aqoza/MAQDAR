@@ -6540,5 +6540,31 @@
     "eligibilityConfirmation": "I have assessed return eligibility from the declared evidence and authorize the full declared quantity. This does not confirm stock availability, physical condition or receipt.",
     "eligibilityRecorded": "The independent reviewer confirmed their eligibility assessment for the full declared quantity.",
     "reviewLimits": "A decision records internal return authorization only. It creates no stock movement, inbound, reservation or credit. Decisions are final; corrections require a new request."
+  },
+  "DealerReturnHandoffs": {
+    "title": "Return handoffs",
+    "detail": "Return authorization handoff",
+    "description": "Saved internal authorization evidence",
+    "create": "Create return handoff",
+    "createNote": "Save the approved declaration and review shown above as an immutable export.",
+    "save": "Save handoff",
+    "saving": "Saving…",
+    "open": "Open saved handoff",
+    "csv": "Download CSV",
+    "json": "Download JSON",
+    "approval": "Saved approval",
+    "request": "Original return request",
+    "requestCreated": "Request recorded",
+    "created": "Handoff saved",
+    "dateNote": "The requested return date is not a scheduled receipt.",
+    "limits": "This handoff records internal authorization for the full declared return. Exporting does not verify live stock or create inbound, reservations, stock movements, credits or financial records. Separate requests may overlap.",
+    "retention": "Saved files retain their original evidence after later catalog changes. Item or account deletion alone does not erase the handoff; deleting its request or either location follows existing history deletion rules.",
+    "search": "Search item, locations, reference or rationale",
+    "count": "{count, plural, one {# handoff} other {# handoffs}}",
+    "empty": "No return handoffs yet. Open an approved request to save its handoff.",
+    "noMatches": "No handoffs match this search.",
+    "identifier": "Handoff ID",
+    "history": "Handoff history",
+    "unavailable": "An approved request with matching current item and location evidence is required. If the catalog changed, create a new request and have it reviewed."
   }
 }

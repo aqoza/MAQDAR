@@ -8,6 +8,7 @@ import { HelpDisclosure } from '@/components/help-disclosure'
 import { TableScrollRegion } from '@/components/table-scroll-region'
 import { getActiveContext } from '@/lib/organizations/context'
 import { isEditorRole } from '@/lib/auth/roles'
+import { returnHandoffsPath } from '@/lib/dealer-return-handoffs'
 import { createClient } from '@/lib/supabase/server'
 import { searchPatterns } from '@/lib/master-data/search'
 import { listHref, lastPage, type RawSearchParams } from '@/lib/master-data/list-params'
@@ -27,6 +28,7 @@ export default async function DealerReturns({
   const context = await getActiveContext()
   if (!context?.active) redirect('/organizations')
   const params = dealerReturnParams(await searchParams)
+  const ht = await getTranslations('DealerReturnHandoffs')
   const [db, t, format] = await Promise.all([
     createClient(),
     getTranslations('DealerReturns'),
@@ -67,11 +69,16 @@ export default async function DealerReturns({
         description={t('description')}
         navigation={<ReplenishmentNav current="returns" />}
         actions={
-          isEditorRole(context.role) ? (
-            <Link href={`${dealerReturnsPath}/new`} className="underline">
-              {t('new')}
+          <>
+            <Link href={returnHandoffsPath} className="underline">
+              {ht('title')}
             </Link>
-          ) : undefined
+            {isEditorRole(context.role) ? (
+              <Link href={`${dealerReturnsPath}/new`} className="underline">
+                {t('new')}
+              </Link>
+            ) : null}
+          </>
         }
         help={
           <HelpDisclosure>
