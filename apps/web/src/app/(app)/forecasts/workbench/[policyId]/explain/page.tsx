@@ -79,7 +79,7 @@ export default async function ExplainPolicy({ params }: { params: Promise<{ poli
               <NextIntlClientProvider messages={{ PolicyExplainer: messages.PolicyExplainer }}>
                 <PolicyExplainerForm
                   organizationId={context.active.id}
-                  policyId={policyId}
+                  sourceId={policyId}
                   fingerprint={evidence.fingerprint}
                   requestId={crypto.randomUUID()}
                 />

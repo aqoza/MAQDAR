@@ -19,7 +19,11 @@ const isCI = Boolean(process.env.CI)
 export default defineConfig({
   testDir: './e2e',
   // Runs separately with a loopback-only mocked provider and no live Claude calls.
-  testIgnore: ['**/policy-explainer.spec.ts', '**/forecast-explainer.spec.ts'],
+  testIgnore: [
+    '**/policy-explainer.spec.ts',
+    '**/forecast-explainer.spec.ts',
+    '**/replenishment-explainer.spec.ts',
+  ],
   // The specs share one local stack and one Mailpit inbox; they run one at a time, in file order.
   fullyParallel: false,
   workers: 1,

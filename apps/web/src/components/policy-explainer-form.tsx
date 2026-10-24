@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import {
   explainPolicy,
   explainForecast,
+  explainReplenishment,
   configurePolicyExplainer,
 } from '@/app/(app)/forecasts/explanations/actions'
 import { idleState } from '@/lib/forms'
@@ -11,20 +12,20 @@ const button =
   'min-h-11 rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-50'
 export function PolicyExplainerForm({
   organizationId,
-  policyId,
+  sourceId,
   fingerprint,
   requestId,
   kind = 'policy',
 }: {
   organizationId: string
-  policyId: string
+  sourceId: string
   fingerprint: string
   requestId: string
-  kind?: 'policy' | 'forecast'
+  kind?: 'policy' | 'forecast' | 'replenishment'
 }) {
   const t = useTranslations('PolicyExplainer')
   const [state, action, pending] = useActionState(
-    kind === 'forecast' ? explainForecast : explainPolicy,
+    { policy: explainPolicy, forecast: explainForecast, replenishment: explainReplenishment }[kind],
     idleState,
   )
   const [question, setQuestion] = useState('')
@@ -33,8 +34,8 @@ export function PolicyExplainerForm({
       <input type="hidden" name="organization_id" value={organizationId} />
       <input
         type="hidden"
-        name={kind === 'forecast' ? 'forecast_id' : 'policy_id'}
-        value={policyId}
+        name={{ policy: 'policy_id', forecast: 'forecast_id', replenishment: 'draft_id' }[kind]}
+        value={sourceId}
       />
       <input type="hidden" name="request_id" value={requestId} />
       <input type="hidden" name="fingerprint" value={fingerprint} />

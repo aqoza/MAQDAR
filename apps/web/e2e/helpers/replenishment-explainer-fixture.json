@@ -1,0 +1,80 @@
+{
+  "method": "replenishment-gap-v1",
+  "status": "available",
+  "policy": {
+    "status": "available",
+    "policy_id": "cc280000-0000-4000-8000-000000000050",
+    "run_id": "cc280000-0000-4000-8000-000000000030",
+    "forecast_id": "cc280000-0000-4000-8000-000000000060",
+    "item_code": "AI-PART",
+    "location_code": "AI",
+    "day": "2026-10-01",
+    "cutoff": "2026-10-01",
+    "unit": "EA",
+    "unit_provenance": {
+      "method": "source-units-v1",
+      "status": "consistent",
+      "unit": "EA",
+      "rows": 1,
+      "unknown_rows": 0,
+      "units": ["EA"]
+    },
+    "basis": "approved",
+    "override_id": "cc280000-0000-4000-8000-000000000101",
+    "revision": 1,
+    "maximum": "100.001",
+    "quantity_above": "0",
+    "value_above": "0",
+    "snapshot": {
+      "id": "cc280000-0000-4000-8000-000000000100",
+      "date": "2026-10-01",
+      "updated_at": "2026-10-01T00:00:00Z",
+      "age": 0,
+      "unit": "EA",
+      "quantity": "4.998",
+      "allocated": "10.000",
+      "available": "-5.002",
+      "unit_cost": "99.000",
+      "currency": "AED"
+    },
+    "approval_reason": "DO-NOT-SEND"
+  },
+  "location_id": "cc280000-0000-4000-8000-000000000020",
+  "protection_end": "2026-10-08",
+  "backorders": "3.004",
+  "orders_confirmed": true,
+  "orders_truncated": false,
+  "inbound_quantity": "80.003",
+  "inventory_position": "71.997",
+  "gap": "28.004",
+  "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+  "orders": [
+    {
+      "id": "cc280000-0000-4000-8000-000000000110",
+      "order_code": "DO-NOT-SEND",
+      "line_code": "0",
+      "supplier_id": "cc280000-0000-4000-8000-000000000120",
+      "supplier_code": "DO-NOT-SEND",
+      "expected_date": "2026-09-30",
+      "quantity": "60.001",
+      "unit": "EA",
+      "updated_at": "2026-10-01T00:00:00Z",
+      "overdue": true,
+      "late": false
+    },
+    {
+      "id": "cc280000-0000-4000-8000-000000000111",
+      "order_code": "DO-NOT-SEND",
+      "line_code": "1",
+      "supplier_id": "cc280000-0000-4000-8000-000000000120",
+      "supplier_code": "DO-NOT-SEND",
+      "expected_date": "2026-10-10",
+      "quantity": "20.002",
+      "unit": "EA",
+      "updated_at": "2026-10-01T00:00:00Z",
+      "overdue": false,
+      "late": true
+    }
+  ],
+  "account": "DO-NOT-SEND"
+}

@@ -7,6 +7,7 @@ import { executePolicyExplanation } from './policy-explainer-execution'
 import {
   requestClaudePolicy,
   requestClaudeForecast,
+  requestClaudeReplenishment,
   type ClaudeConfiguration,
 } from './claude-policy.server'
 /** Privileged client is confined to two guarded RPCs; it never reads tenant tables directly. */
@@ -29,9 +30,11 @@ export async function generatePolicyExplanation(
       return data
     },
     provider: (input) =>
-      input.evidence.method === 'forecast-explainer-v1'
-        ? requestClaudeForecast({ ...input, evidence: input.evidence }, config)
-        : requestClaudePolicy({ ...input, evidence: input.evidence }, config),
+      input.evidence.method === 'replenishment-explainer-v1'
+        ? requestClaudeReplenishment({ ...input, evidence: input.evidence }, config)
+        : input.evidence.method === 'forecast-explainer-v1'
+          ? requestClaudeForecast({ ...input, evidence: input.evidence }, config)
+          : requestClaudePolicy({ ...input, evidence: input.evidence }, config),
     complete: async (result) => {
       const { error } = await db.rpc('policy_explainer_complete', {
         p_id: id,

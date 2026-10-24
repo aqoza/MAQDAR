@@ -36,9 +36,14 @@ export default async function ExplanationHistory({
         title={t('history')}
         description={t('description')}
         actions={
-          <Link href="/forecasts/quality" className="underline">
-            {t('chooseForecast')}
-          </Link>
+          <>
+            <Link href="/replenishment" className="underline">
+              {t('chooseReplenishment')}
+            </Link>
+            <Link href="/forecasts/quality" className="underline">
+              {t('chooseForecast')}
+            </Link>
+          </>
         }
         back={
           <Link href="/forecasts/workbench" className="underline">
@@ -56,8 +61,14 @@ export default async function ExplanationHistory({
             <bdi>{row.question}</bdi>
           </Link>
           <p className="text-xs text-muted-foreground">
-            {t(row.subject_kind === 'forecast' ? 'forecastKind' : 'policyKind')} ·{' '}
-            {t(`statuses.${explanationStatus(row.status, row.created_at)}`)} ·{' '}
+            {t(
+              row.subject_kind === 'replenishment'
+                ? 'replenishmentKind'
+                : row.subject_kind === 'forecast'
+                  ? 'forecastKind'
+                  : 'policyKind',
+            )}{' '}
+            · {t(`statuses.${explanationStatus(row.status, row.created_at)}`)} ·{' '}
             <time dateTime={row.created_at}>
               {format.dateTime(new Date(row.created_at), 'long')}
             </time>

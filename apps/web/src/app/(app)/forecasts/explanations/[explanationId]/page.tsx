@@ -1,3 +1,5 @@
+import { ReplenishmentExplainerEvidence } from '@/components/replenishment-explainer-evidence'
+import { replenishmentEvidenceReferences } from '@/lib/replenishment-explainer'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -32,11 +34,18 @@ export default async function ExplanationDetail({
   if (!data) notFound()
   const row = aiExplanationRecordSchema.parse(data)
   const f = await getTranslations('ForecastExplainer')
+  const r = await getTranslations('ReplenishmentExplainer')
   return (
     <div className="min-w-0 space-y-4">
       <PageHeader
-        pattern="forecasts"
-        title={row.subject_kind === 'forecast' ? f('savedTitle') : t('savedTitle')}
+        pattern={row.subject_kind === 'replenishment' ? 'replenishment' : 'forecasts'}
+        title={
+          row.subject_kind === 'replenishment'
+            ? r('savedTitle')
+            : row.subject_kind === 'forecast'
+              ? f('savedTitle')
+              : t('savedTitle')
+        }
         description={t('aiLabel')}
         back={
           <Link href={explanationPath} className="underline">
@@ -45,7 +54,13 @@ export default async function ExplanationDetail({
         }
         help={
           <HelpDisclosure>
-            <p>{row.subject_kind === 'forecast' ? f('limits') : t('limits')}</p>
+            <p>
+              {row.subject_kind === 'replenishment'
+                ? r('limits')
+                : row.subject_kind === 'forecast'
+                  ? f('limits')
+                  : t('limits')}
+            </p>
             <p>{t('retention')}</p>
           </HelpDisclosure>
         }
@@ -72,9 +87,15 @@ export default async function ExplanationDetail({
                     href={`#evidence-${reference}`}
                     className="min-h-11 py-3 text-xs underline md:min-h-0 md:py-0"
                   >
-                    {row.subject_kind === 'forecast'
-                      ? f(`references.${reference as (typeof forecastEvidenceReferences)[number]}`)
-                      : t(`references.${reference as EvidenceReference}`)}
+                    {row.subject_kind === 'replenishment'
+                      ? r(
+                          `references.${reference as (typeof replenishmentEvidenceReferences)[number]}`,
+                        )
+                      : row.subject_kind === 'forecast'
+                        ? f(
+                            `references.${reference as (typeof forecastEvidenceReferences)[number]}`,
+                          )
+                        : t(`references.${reference as EvidenceReference}`)}
                   </a>
                 ))}
               </nav>
@@ -94,15 +115,26 @@ export default async function ExplanationDetail({
                 {t('originalPolicy')}
               </Link>
             )}
-            <Link
-              href={`/forecasts/results/${row.forecast_run_id}?item=${row.item_id}`}
-              className="min-h-11 py-3 underline"
-            >
-              {t('originalForecast')}
-            </Link>
+            {row.subject_kind === 'replenishment' ? (
+              <Link
+                className="min-h-11 py-3 underline"
+                href={`/replenishment/${row.replenishment_draft_id}`}
+              >
+                {r('originalDraft')}
+              </Link>
+            ) : (
+              <Link
+                href={`/forecasts/results/${row.forecast_run_id}?item=${row.item_id}`}
+                className="min-h-11 py-3 underline"
+              >
+                {t('originalForecast')}
+              </Link>
+            )}
           </div>
         </article>
-        {row.subject_kind === 'forecast' ? (
+        {row.subject_kind === 'replenishment' ? (
+          <ReplenishmentExplainerEvidence evidence={row.evidence} />
+        ) : row.subject_kind === 'forecast' ? (
           <ForecastExplainerEvidence evidence={row.evidence} />
         ) : (
           <PolicyExplainerEvidence evidence={row.evidence} />
