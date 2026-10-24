@@ -4559,6 +4559,9 @@ isOneToOne: false
 "dealer_return_handoff_create":
 { Args: { "p_organization_id": string,"p_return_id": string }; Returns: string
                            },
+"dealer_return_integration_workbench":
+{ Args: { "p_filters"?: Json,"p_organization_id": string,"p_page"?: number,"p_size"?: number }; Returns: Json
+                           },
 "dealer_return_review":
 { Args: { "p_decision": string,"p_eligibility_confirmed": boolean,"p_organization_id": string,"p_reason": string,"p_return_id": string }; Returns: string
                            },

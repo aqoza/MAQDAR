@@ -77,11 +77,19 @@ export default async function ReturnBatches({
           </Link>
         }
         actions={
-          isEditorRole(context.role) ? (
-            <Link className="underline" href={returnBatchesPath + '/new'}>
-              {t('choose')}
+          <>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/returns/integrations"
+            >
+              {t('integrations')}
             </Link>
-          ) : undefined
+            {isEditorRole(context.role) ? (
+              <Link className="underline" href={returnBatchesPath + '/new'}>
+                {t('choose')}
+              </Link>
+            ) : undefined}
+          </>
         }
         help={
           <HelpDisclosure>

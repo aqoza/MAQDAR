@@ -77,12 +77,20 @@ export default async function ReturnHandoffs({
           </Link>
         }
         actions={
-          <Link
-            href={returnBatchesPath}
-            className="inline-flex min-h-11 items-center rounded-md border px-3"
-          >
-            {b('title')}
-          </Link>
+          <>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/returns/integrations"
+            >
+              {t('integrations')}
+            </Link>
+            <Link
+              href={returnBatchesPath}
+              className="inline-flex min-h-11 items-center rounded-md border px-3"
+            >
+              {b('title')}
+            </Link>
+          </>
         }
         help={
           <HelpDisclosure>
