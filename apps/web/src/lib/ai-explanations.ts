@@ -1,4 +1,8 @@
 import {
+  supplierExplanationEvidenceSchema,
+  supplierExplanationAnswerSchema,
+} from './supplier-explainer'
+import {
   replenishmentExplanationEvidenceSchema,
   replenishmentExplanationAnswerSchema,
 } from './replenishment-explainer'
@@ -10,11 +14,13 @@ import {
 } from './forecast-explainer'
 export const aiExplanationRecordSchema = z.discriminatedUnion('subject_kind', [
   explanationRecordSchema.extend({
+    supplier_scenario_id: z.null(),
     subject_kind: z.literal('policy'),
     forecast_id: z.null(),
     replenishment_draft_id: z.null(),
   }),
   explanationRecordSchema.extend({
+    supplier_scenario_id: z.null(),
     subject_kind: z.literal('forecast'),
     replenishment_draft_id: z.null(),
     forecast_id: z.guid(),
@@ -24,6 +30,7 @@ export const aiExplanationRecordSchema = z.discriminatedUnion('subject_kind', [
     answer: forecastExplanationAnswerSchema.nullable(),
   }),
   explanationRecordSchema.extend({
+    supplier_scenario_id: z.null(),
     subject_kind: z.literal('replenishment'),
     replenishment_draft_id: z.guid(),
     policy_id: z.null(),
@@ -33,5 +40,17 @@ export const aiExplanationRecordSchema = z.discriminatedUnion('subject_kind', [
     item_id: z.null(),
     evidence: replenishmentExplanationEvidenceSchema,
     answer: replenishmentExplanationAnswerSchema.nullable(),
+  }),
+  explanationRecordSchema.extend({
+    subject_kind: z.literal('supplier'),
+    supplier_scenario_id: z.guid(),
+    policy_id: z.null(),
+    policy_run_id: z.null(),
+    forecast_id: z.null(),
+    forecast_run_id: z.null(),
+    item_id: z.null(),
+    replenishment_draft_id: z.null(),
+    evidence: supplierExplanationEvidenceSchema,
+    answer: supplierExplanationAnswerSchema.nullable(),
   }),
 ])

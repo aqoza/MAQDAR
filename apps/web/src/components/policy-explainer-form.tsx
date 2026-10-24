@@ -5,6 +5,7 @@ import {
   explainPolicy,
   explainForecast,
   explainReplenishment,
+  explainSupplier,
   configurePolicyExplainer,
 } from '@/app/(app)/forecasts/explanations/actions'
 import { idleState } from '@/lib/forms'
@@ -21,11 +22,16 @@ export function PolicyExplainerForm({
   sourceId: string
   fingerprint: string
   requestId: string
-  kind?: 'policy' | 'forecast' | 'replenishment'
+  kind?: 'policy' | 'forecast' | 'replenishment' | 'supplier'
 }) {
   const t = useTranslations('PolicyExplainer')
   const [state, action, pending] = useActionState(
-    { policy: explainPolicy, forecast: explainForecast, replenishment: explainReplenishment }[kind],
+    {
+      policy: explainPolicy,
+      forecast: explainForecast,
+      replenishment: explainReplenishment,
+      supplier: explainSupplier,
+    }[kind],
     idleState,
   )
   const [question, setQuestion] = useState('')
@@ -34,7 +40,14 @@ export function PolicyExplainerForm({
       <input type="hidden" name="organization_id" value={organizationId} />
       <input
         type="hidden"
-        name={{ policy: 'policy_id', forecast: 'forecast_id', replenishment: 'draft_id' }[kind]}
+        name={
+          {
+            policy: 'policy_id',
+            forecast: 'forecast_id',
+            replenishment: 'draft_id',
+            supplier: 'scenario_id',
+          }[kind]
+        }
         value={sourceId}
       />
       <input type="hidden" name="request_id" value={requestId} />

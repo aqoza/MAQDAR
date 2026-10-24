@@ -6667,8 +6667,8 @@
     "disabled": "An owner or admin must enable AI explanations in Settings before requesting an explanation.",
     "editorOnly": "Editors can request explanations. Members with location access can inspect saved results.",
     "settings": "AI explanation settings",
-    "settingsDescription": "Allow editors to send a confirmed question and a limited policy, forecast or replenishment summary to Anthropic. Saved answers remain visible within source-location access. All explanation types share the same quotas.",
-    "optIn": "Enable Claude policy, forecast and replenishment explanations for this organization.",
+    "settingsDescription": "Enable read-only AI explanations of saved individual-item policies, forecasts, replenishment drafts and supplier MOQ/pack scenarios. Each request previews the limited evidence sent to Claude.",
+    "optIn": "Enable Claude policy, forecast, replenishment and supplier scenario explanations for this organization.",
     "saveSetting": "Save setting",
     "enabledSaved": "AI explanations enabled.",
     "disabledSaved": "AI explanations disabled.",
@@ -6731,7 +6731,8 @@
     "forecastKind": "Forecast",
     "chooseForecast": "Choose a forecast",
     "replenishmentKind": "Replenishment",
-    "chooseReplenishment": "Choose a replenishment draft"
+    "chooseReplenishment": "Choose a replenishment draft",
+    "supplierKind": "Supplier scenario"
   },
   "ForecastExplainer": {
     "title": "Explain this forecast",
@@ -6821,6 +6822,34 @@
       "open_line_count": "Included open lines",
       "overdue_line_count": "Overdue lines",
       "late_line_count": "Lines after protection period"
+    }
+  },
+  "SupplierExplainer": {
+    "title": "Explain supplier rounding",
+    "savedTitle": "Saved supplier scenario explanation",
+    "action": "Explain supplier rounding",
+    "description": "Ask about the captured MOQ/pack calculation and its limitations.",
+    "originalScenario": "Original supplier scenario",
+    "unavailable": "Choose an available individual-item scenario with confirmed, matching unit and lead-time evidence.",
+    "limits": "Saved terms are as-of evidence, not a current supplier commitment. Explanations do not refresh stock, schedule delivery, calculate prices or create orders.",
+    "confirmed": "The planner confirmed that the saved MOQ/pack terms apply at the draft cutoff.",
+    "calculationNote": "Zero gap stays zero. Otherwise, round the larger of gap and MOQ up to a pack multiple. Overage = rounded quantity − saved gap.",
+    "leadNote": "The saved supplier and policy lead times match in calendar days. This does not guarantee timely supply or schedule a receipt.",
+    "references": {
+      "scenario_context": "Saved scenario context",
+      "rounding_calculation": "MOQ/pack calculation",
+      "lead_time_evidence": "Lead-time evidence",
+      "scenario_limits": "Evidence and limitations"
+    },
+    "fields": {
+      "cutoff": "Saved cutoff",
+      "gap": "Saved replenishment gap",
+      "moq": "Minimum order quantity",
+      "pack": "Pack multiple",
+      "quantity": "Rounded quantity",
+      "overage": "Overage above gap",
+      "policy_days": "Saved policy lead time (calendar days)",
+      "supplier_days": "Saved supplier lead time (calendar days)"
     }
   }
 }

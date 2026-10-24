@@ -1,4 +1,5 @@
 'use server'
+import { supplierExplanationRequestSchema } from '@/lib/supplier-explainer'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { getLocale, getTranslations } from 'next-intl/server'
@@ -109,6 +110,43 @@ export async function explainReplenishment(
   const { data, error } = await db.rpc('replenishment_explainer_request', {
     p_organization_id: guard.organizationId,
     p_draft_id: parsed.data.draft_id,
+    p_request_id: parsed.data.request_id,
+    p_question: parsed.data.question,
+    p_fingerprint: parsed.data.fingerprint,
+    p_confirmed: true,
+    p_locale: (await getLocale()).startsWith('ar') ? 'ar' : 'en',
+  })
+  if (error)
+    return {
+      ...(error.code === 'MQ429'
+        ? { status: 'error' as const, message: t('quota') }
+        : await rpcErrorState(error)),
+      values,
+    }
+  try {
+    await generatePolicyExplanation(data, guard.context.userId, config)
+  } catch {
+    return { status: 'error', message: t('generationUnavailable'), values }
+  }
+  revalidatePath(explanationPath)
+  redirect(`${explanationPath}/${data}`)
+}
+export async function explainSupplier(_state: ActionState, form: FormData): Promise<ActionState> {
+  const guard = await requireEditor(form)
+  if (!guard.ok) return guard.state
+  const t = await getTranslations('PolicyExplainer')
+  const values = fieldValues(form, ['scenario_id', 'request_id', 'fingerprint', 'question'])
+  const parsed = supplierExplanationRequestSchema.safeParse({
+    ...values,
+    confirmed: checkboxValue(form, 'confirmed'),
+  })
+  if (!parsed.success) return { status: 'error', message: t('invalid'), values }
+  const config = policyExplainerConfiguration()
+  if (!config) return { status: 'error', message: t('unconfigured'), values }
+  const db = await createClient()
+  const { data, error } = await db.rpc('supplier_explainer_request', {
+    p_organization_id: guard.organizationId,
+    p_scenario_id: parsed.data.scenario_id,
     p_request_id: parsed.data.request_id,
     p_question: parsed.data.question,
     p_fingerprint: parsed.data.fingerprint,

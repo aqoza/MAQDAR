@@ -1,0 +1,40 @@
+{
+  "method": "supplier-rounding-v1",
+  "status": "available",
+  "location_id": "cc280000-0000-4000-8000-000000000020",
+  "requested_supplier_code": "DO-NOT-SEND",
+  "terms_confirmed": true,
+  "source": {
+    "draft_id": "cc280000-0000-4000-8000-000000000092",
+    "draft_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+    "policy_id": "cc280000-0000-4000-8000-000000000050",
+    "item_id": "cc280000-0000-4000-8000-000000000061",
+    "item_code": "DO-NOT-SEND",
+    "location_code": "DO-NOT-SEND",
+    "cutoff": "2026-10-01",
+    "unit": "EA",
+    "gap": "28.004",
+    "lead_time": 3
+  },
+  "supplier": {
+    "id": "cc280000-0000-4000-8000-000000000120",
+    "code": "DO-NOT-SEND",
+    "name": "DO-NOT-SEND",
+    "active": true,
+    "updated_at": "2026-10-01T00:00:00Z"
+  },
+  "terms": {
+    "id": "cc280000-0000-4000-8000-000000000121",
+    "unit": "EA",
+    "moq": "30.001",
+    "pack": "0.250",
+    "lead_time": 3,
+    "updated_at": "2026-10-01T00:00:00Z",
+    "unit_price": "DO-NOT-SEND"
+  },
+  "quantity": "30.250",
+  "overage": "2.246",
+  "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+  "account": "DO-NOT-SEND",
+  "orders": ["DO-NOT-SEND"]
+}

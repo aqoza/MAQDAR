@@ -62,11 +62,13 @@ export default async function ExplanationHistory({
           </Link>
           <p className="text-xs text-muted-foreground">
             {t(
-              row.subject_kind === 'replenishment'
-                ? 'replenishmentKind'
-                : row.subject_kind === 'forecast'
-                  ? 'forecastKind'
-                  : 'policyKind',
+              row.subject_kind === 'supplier'
+                ? 'supplierKind'
+                : row.subject_kind === 'replenishment'
+                  ? 'replenishmentKind'
+                  : row.subject_kind === 'forecast'
+                    ? 'forecastKind'
+                    : 'policyKind',
             )}{' '}
             · {t(`statuses.${explanationStatus(row.status, row.created_at)}`)} ·{' '}
             <time dateTime={row.created_at}>

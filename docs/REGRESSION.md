@@ -297,3 +297,7 @@ escaped long text. Preserve original downloads and verify no operational writes.
 ## Forecast explainer
 
 Step 28b shares opt-in and quotas with policy explanations. Run both provider browser flows and the policy/forecast unit and concurrency suites when changing dispatch, completion, evidence or settings. Keep exact scores separate from held-out coverage, cross-kind retries/references denied, source retention and branch access enforced. Inspect both locales at all five widths. See [forecast-explainer.md](forecast-explainer.md).
+
+## Step 28d — supplier scenario explanations
+
+Run all four explainer unit/pgTAP/concurrency suites, the isolated mocked-provider browser configuration, and existing supplier scenario/Settings workflows. Verify fractional MOQ/pack and zero gap, exact strings, private-field exclusion, separate references, shared quotas, current authority after waits and retained history after source deletion. Inspect English/Arabic screenshots at 375/768/1024/1440/1920px. No real provider call or hosted change is part of this suite.
