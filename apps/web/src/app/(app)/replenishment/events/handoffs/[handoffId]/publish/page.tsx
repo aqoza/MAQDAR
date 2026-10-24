@@ -1,3 +1,5 @@
+import { SupplierResponses } from '@/components/supplier-responses'
+import { supplierResponseHistorySchema, responsePage } from '@/lib/supplier-responses'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -13,7 +15,9 @@ import { supplierPreviewSchema, supplierSummarySchema } from '@/lib/supplier-por
 import { publishEventSupplier, withdrawEventSupplier } from './actions'
 export default async function EventPublication({
   params,
+  searchParams,
 }: {
+  searchParams: Promise<{ response_page?: string | string[] }>
   params: Promise<{ handoffId: string }>
 }) {
   const context = await getActiveContext()
@@ -45,6 +49,19 @@ export default async function EventPublication({
           p_handoff_id: handoffId,
         })
   const report = preview && !preview.error ? supplierPreviewSchema.parse(preview.data) : null
+  const reports = saved.data
+    ? await db.rpc('supplier_event_response_history_internal', {
+        p_organization_id: context.active.id,
+        p_kind: 'handoff',
+        p_publication_id: saved.data.id,
+        p_page: responsePage((await searchParams).response_page),
+      })
+    : null
+  if (reports?.error) {
+    if (reports.error.code === 'MQ404') notFound()
+    throw new Error('Supplier event responses unavailable')
+  }
+  const history = reports ? supplierResponseHistorySchema.parse(reports.data) : null
   return (
     <div className="min-w-0 space-y-4">
       <PageHeader
@@ -99,6 +116,12 @@ export default async function EventPublication({
         </>
       ) : (
         <p role="alert">{t(editor ? 'unavailable' : 'notPublished')}</p>
+      )}
+      {history && (
+        <SupplierResponses
+          history={history}
+          base={`/replenishment/events/handoffs/${handoffId}/publish`}
+        />
       )}
     </div>
   )
