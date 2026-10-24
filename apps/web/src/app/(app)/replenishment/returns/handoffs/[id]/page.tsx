@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -9,7 +10,13 @@ import { createClient } from '@/lib/supabase/server'
 import { dealerReturnsPath } from '@/lib/dealer-returns'
 import { returnHandoffsPath, returnHandoffPayloadSchema } from '@/lib/dealer-return-handoffs'
 
-export default async function ReturnHandoffDetail({ params }: { params: Promise<{ id: string }> }) {
+export default async function ReturnHandoffDetail({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
+}) {
   const { id } = await params
   if (!z.guid().safeParse(id).success) notFound()
   const context = await getActiveContext()
@@ -110,6 +117,12 @@ export default async function ReturnHandoffDetail({ params }: { params: Promise<
           {t('identifier')}: {p.handoff_id}
         </p>
       </section>
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={id}
+        kind="return"
+        pageValue={(await searchParams).ack_page}
+      />
     </div>
   )
 }

@@ -75,10 +75,8 @@ it.each(resources)(
     expect((await call(resource, 'OPTIONS')).headers.get('allow')).toBe('GET, HEAD, OPTIONS')
   },
 )
-it.each(resources)('keeps %s read-only without an acknowledgement subroute', async (resource) => {
+it.each(resources)('keeps %s package payloads read-only', async (resource) => {
   const { rpc, call } = fixture()
-  for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] as const)
-    expect((await call(resource, method, [id, 'acknowledgements'])).status).toBe(404)
   for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'] as const) {
     expect((await call(resource, method)).status).toBe(405)
     expect((await call(resource, method, [id])).status).toBe(405)
@@ -119,7 +117,9 @@ it('documents exact authorization payloads, source availability and only the exp
   for (const resource of resources) {
     expect(doc.paths[`/${resource}`].get['x-zeespare-scopes']).toEqual([scope])
     expect(doc.paths[`/${resource}/{id}`].get['x-zeespare-scopes']).toEqual([scope])
-    expect(doc.paths[`/${resource}/{id}/acknowledgements`]).toBeUndefined()
+    expect(doc.paths[`/${resource}/{id}/acknowledgements`].post['x-zeespare-scopes']).toEqual([
+      'dealer_return_handoffs:acknowledge',
+    ])
     expect(doc.paths[`/${resource}`].post).toBeUndefined()
   }
   const schemas = doc.components.schemas

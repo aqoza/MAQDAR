@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import {
   parseHandoffQuery,
+  isReturnHandoffResource,
+  RETURN_HANDOFF_RESOURCES,
   isNetworkHandoffResource,
   NETWORK_HANDOFF_RESOURCES,
   isRegionalHandoffResource,
@@ -22,6 +24,7 @@ export const ACKNOWLEDGEMENT_RESOURCES = [
   ...DISPOSITION_HANDOFF_RESOURCES,
   ...NETWORK_HANDOFF_RESOURCES,
   ...REGIONAL_HANDOFF_RESOURCES,
+  ...RETURN_HANDOFF_RESOURCES,
 ] as const
 export type AcknowledgementResource = (typeof ACKNOWLEDGEMENT_RESOURCES)[number]
 export function isAcknowledgementResource(value: string): value is AcknowledgementResource {
@@ -34,7 +37,9 @@ export const EVENT_ACKNOWLEDGE_SCOPE = 'event_purchase_handoffs:acknowledge' as 
 export const DISPOSITION_ACKNOWLEDGE_SCOPE = 'excess_disposition_handoffs:acknowledge' as const
 export const NETWORK_ACKNOWLEDGE_SCOPE = 'network_handoffs:acknowledge' as const
 export const REGIONAL_ACKNOWLEDGE_SCOPE = 'regional_handoffs:acknowledge' as const
+export const RETURN_ACKNOWLEDGE_SCOPE = 'dealer_return_handoffs:acknowledge' as const
 export function acknowledgementScope(resource: AcknowledgementResource) {
+  if (isReturnHandoffResource(resource)) return RETURN_ACKNOWLEDGE_SCOPE
   if (isRegionalHandoffResource(resource)) return REGIONAL_ACKNOWLEDGE_SCOPE
   if (isNetworkHandoffResource(resource)) return NETWORK_ACKNOWLEDGE_SCOPE
   if (isDispositionHandoffResource(resource)) return DISPOSITION_ACKNOWLEDGE_SCOPE
@@ -83,6 +88,8 @@ export function acknowledgementOperationId(
   action: 'list' | 'get' | 'create',
 ) {
   const names = {
+    'dealer-return-handoffs': 'DealerReturnHandoff',
+    'dealer-return-handoff-batches': 'DealerReturnHandoffBatch',
     'regional-handoffs': 'RegionalHandoff',
     'regional-handoff-batches': 'RegionalHandoffBatch',
     'network-handoffs': 'NetworkHandoff',

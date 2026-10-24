@@ -258,4 +258,16 @@ Add 0123_dealer_return_handoffs.test.sql, test_dealer_return_handoffs_db.py and 
 ## Dealer-return read API (Step 27e)
 
 - Run `0125_dealer_return_handoff_read_api.test.sql` plus the full pgTAP privilege/tenant suite; run `test_dealer_return_handoff_api_db.py` for actual authorization chains, exact decimals, revoked/expired/demoted keys, legacy-scope isolation, cursor ties/bindings and retained copied batches. Do not overlap database/browser suites.
-- Run API handler/auth/RPC/OpenAPI tests and `dealer-return-read-api.spec.ts` against the production build. Verify Settings issue/revoke, both-location browser scope, organization-wide explicit keys, unchanged downloads, 405 writes/404 acknowledgement routes and source deletion. Inspect all five widths plus Arabic RTL; requested dates remain unscheduled.
+- Run API handler/auth/RPC/OpenAPI tests and `dealer-return-read-api.spec.ts` against the production build. Verify Settings issue/revoke, both-location browser scope, organization-wide explicit keys, unchanged downloads, 405 package writes and separately scoped acknowledgement routes and source deletion. Inspect all five widths plus Arabic RTL; requested dates remain unscheduled.
+
+## Dealer-return acknowledgements (Step 27f)
+
+Run the full pgTAP suite including `0126_dealer_return_acknowledgements.test.sql`,
+`test_dealer_return_acknowledgements_db.py` and existing read API tests sequentially.
+Cover explicit scope isolation, both-location rows/counts, tenant boundaries, exact
+text, UUID conflicts/key rotation, current authority after event/parent lock waits,
+single versus copied-batch deletion and audit behavior. Verify unchanged operational
+state and original files. Run `dealer-return-acknowledgements.spec.ts` and the return
+read API/regional report browser regressions against production builds. Inspect
+`return-reporter-settings-*.png` and `return-reports-*.png` across all five widths and
+Arabic RTL, including keyboard evidence disclosures, pagination and long references.

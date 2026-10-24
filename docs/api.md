@@ -191,3 +191,12 @@ The explicit organization-wide `regional_handoffs:read` permission exposes GET/H
 ## Regional package acknowledgements (Step 25j)
 
 `POST /api/v1/regional-handoffs/{id}/acknowledgements` and the equivalent `regional-handoff-batches` route require explicit organization-wide `regional_handoffs:acknowledge`. GET/HEAD history and event details require `regional_handoffs:read`. Whole-package caller reports use append-only organization/client-UUID retries and retain actual-parent deletion/audit behavior, including copied batches with missing source context. Reports do not transmit packages or change operations. See [the contract and lifecycle](regional-handoff-acknowledgements.md).
+
+## Dealer-return package reports
+
+Step 27f adds `POST /api/v1/{dealer-return-handoffs|dealer-return-handoff-batches}/{id}/acknowledgements`
+with explicit `dealer_return_handoffs:acknowledge`. History GET/HEAD and event details
+require `dealer_return_handoffs:read`. These organization-wide permissions are independent
+and do not confirm physical receipt, issue credits or change stock. See
+[the report contract](dealer-return-acknowledgements.md) for bounded bodies, pagination,
+current-authority retries, retained batches and actual-parent lifecycle.

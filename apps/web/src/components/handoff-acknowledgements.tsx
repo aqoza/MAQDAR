@@ -5,6 +5,11 @@ import { HelpDisclosure } from '@/components/help-disclosure'
 
 const PAGE_SIZE = 20
 const FAMILIES = {
+  return: {
+    table: 'dealer_return_handoff_acknowledgements',
+    prefix: 'returns/',
+    meaning: 'returnMeaning',
+  },
   regional: {
     table: 'regional_handoff_acknowledgements',
     prefix: 'regional-stock/sourcing/',

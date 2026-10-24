@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HandoffAcknowledgements } from '@/components/handoff-acknowledgements'
 import { notFound, redirect } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -10,7 +11,13 @@ import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { returnBatchesPath, returnBatchPayloadSchema } from '@/lib/dealer-return-batches'
 
-export default async function ReturnBatchDetail({ params }: { params: Promise<{ id: string }> }) {
+export default async function ReturnBatchDetail({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ ack_page?: string | string[] }>
+}) {
   const { id } = await params
   if (!z.guid().safeParse(id).success) notFound()
   const context = await getActiveContext()
@@ -76,6 +83,13 @@ export default async function ReturnBatchDetail({ params }: { params: Promise<{ 
           {t('identifier')}: {p.batch_id}
         </p>
       </section>
+      <HandoffAcknowledgements
+        organizationId={context.active.id}
+        recordId={id}
+        kind="return"
+        batch
+        pageValue={(await searchParams).ack_page}
+      />
     </div>
   )
 }

@@ -34,6 +34,21 @@ export type ApiRpcArgs = {
     p_resource: ReturnHandoffResource
     p_id: string
   }
+  api_dealer_return_handoff_acknowledge: {
+    p_key_hash: KeyHash
+    p_resource: ReturnHandoffResource
+    p_id: string
+    p_body: AcknowledgementInput
+  }
+  api_dealer_return_handoff_acknowledgements: {
+    p_key_hash: KeyHash
+    p_resource: ReturnHandoffResource
+    p_id: string
+    p_event_id: string | null
+    p_after: string | null
+    p_limit: number
+  }
+
   api_regional_handoff_acknowledge: {
     p_key_hash: KeyHash
     p_resource: RegionalHandoffResource
@@ -252,6 +267,8 @@ export type MissingApiRpcs = [GeneratedApiRpcName] extends [never]
 export const API_RPC_NAMES = [
   'api_excess_disposition_handoff_acknowledge',
   'api_excess_disposition_handoff_acknowledgements',
+  'api_dealer_return_handoff_acknowledge',
+  'api_dealer_return_handoff_acknowledgements',
   'api_regional_handoff_acknowledge',
   'api_regional_handoff_acknowledgements',
   'api_network_handoff_acknowledge',

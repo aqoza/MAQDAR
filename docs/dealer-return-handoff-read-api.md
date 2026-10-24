@@ -20,7 +20,7 @@ Step 27e exposes saved internal return authorizations through the existing v1 in
 | GET / HEAD | `/api/v1/dealer-return-handoff-batches`      | Copied batch summaries         |
 | GET / HEAD | `/api/v1/dealer-return-handoff-batches/{id}` | Original complete copied batch |
 
-Send `Authorization: Bearer <key>`. HEAD performs the same authorization and queries without a response body; OPTIONS lists supported methods. Package writes return 405, and acknowledgement subroutes are absent. Existing rate limits, private/no-store responses, request IDs and RFC 9457 errors apply. See [API v1](api.md) and the [generated OpenAPI contract](../apps/web/src/lib/api/openapi.json).
+Send `Authorization: Bearer <key>`. HEAD performs the same authorization and queries without a response body; OPTIONS lists supported methods. Package writes return 405; acknowledgement subroutes use the separate Step 27f reporting permission. Existing rate limits, private/no-store responses, request IDs and RFC 9457 errors apply. See [API v1](api.md) and the [generated OpenAPI contract](../apps/web/src/lib/api/openapi.json).
 
 Lists return `data`, `next_cursor` and `as_of`; details return `data`. Records have `id`, `created_at`, `summary`, `current`, and (on details only) `payload`. Summaries contain saved `source_code`, `location_code`, `requested_return_date`, `item_code`, `handoff_count` and original `handoff_ids`. Batch `item_code` is null; inspect each copied line. Overlapping batches can contain the same handoff identities and do not prevent duplicate external processing.
 
@@ -32,7 +32,7 @@ The payload versions remain `dealer-return-handoff-v1` and `dealer-return-batch-
 
 Run pgTAP `0125_dealer_return_handoff_read_api.test.sql` and the full privilege/tenant suite. Run `test_dealer_return_handoff_api_db.py` for real request/review/export chains, exact evidence, old-scope isolation, current creator authority, pagination boundaries and copied retention. Run database suites and browser tests sequentially against the local stack.
 
-API unit tests cover routing, unchanged response bytes, authorization before invalid-parameter errors, methods and absent acknowledgement routes. OpenAPI validates real saved payload fixtures and rejects altered approval/decimal types. The production browser test issues/revokes an actual key in Settings, compares both API payloads with original downloads, checks other tenants/permissions and retained batch reads, and captures every required width in English and Arabic RTL.
+API unit tests cover routing, unchanged response bytes, authorization before invalid-parameter errors, package methods and independent acknowledgement permissions. OpenAPI validates real saved payload fixtures and rejects altered approval/decimal types. The production browser test issues/revokes an actual key in Settings, compares both API payloads with original downloads, checks other tenants/permissions and retained batch reads, and captures every required width in English and Arabic RTL.
 
 Apply `20261024190000_dealer_return_handoff_read_api.sql` after Step 27d and before the matching web deployment. It extends the explicit key allowlist to seventeen scopes without changing existing keys. A five-second lock timeout bounds the constraint update. After review, the owner runs `pnpm exec supabase db push` for the hosted project. Rollback disables the new callers and revokes return reader keys while retaining additive schema and saved files.
 
@@ -47,3 +47,5 @@ Acknowledgements, an external dealer portal, credits and physical receiving are 
 - A deliberate broad-scope substitution failed both resource authorization tests. The original implementation was restored and the full web unit suite then passed.
 
 The complete Python database and browser suites remain CI checks for this PR. Local Cloudflare packaging rebuilt Next.js successfully but Windows denied OpenNext's middleware symlink with `EPERM`; Linux CI remains the packaging gate. No hosted migration or deployment was performed.
+
+Step 27f adds separately scoped acknowledgement subresources; package GET/HEAD remain read-only. See [dealer-return acknowledgements](dealer-return-acknowledgements.md).

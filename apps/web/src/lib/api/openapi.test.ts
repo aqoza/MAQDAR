@@ -248,7 +248,11 @@ describe('structure', () => {
       const scopes = resource
         ? [scopeFor(resource.entity, method === 'get' ? 'read' : 'write')]
         : path.startsWith('/dealer-return-handoff')
-          ? ['dealer_return_handoffs:read']
+          ? [
+              method === 'post'
+                ? 'dealer_return_handoffs:acknowledge'
+                : 'dealer_return_handoffs:read',
+            ]
           : path.startsWith('/regional-handoff')
             ? [method === 'post' ? 'regional_handoffs:acknowledge' : 'regional_handoffs:read']
             : path.startsWith('/network-handoff')

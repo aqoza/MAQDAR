@@ -128,6 +128,8 @@ jobs:
             apps/web/test-results/**/return-handoff-*.png
             apps/web/test-results/**/return-batch-*.png
             apps/web/test-results/**/return-api-settings-*.png
+            apps/web/test-results/**/return-reporter-settings-*.png
+            apps/web/test-results/**/return-reports-*.png
           retention-days: 7
       - name: Retain regional-stock visual evidence
         uses: actions/upload-artifact@v7

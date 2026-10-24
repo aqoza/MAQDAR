@@ -29,6 +29,7 @@ export const API_SCOPES = [
   'regional_handoffs:read',
   'regional_handoffs:acknowledge',
   'dealer_return_handoffs:read',
+  'dealer_return_handoffs:acknowledge',
 ] as const
 
 export type ApiScope = (typeof API_SCOPES)[number]
@@ -65,6 +66,8 @@ export const SCOPE_DESCRIPTIONS: Readonly<Record<ApiScope, string>> = {
     'Append whole-package receipt or rejection reports for saved regional handoffs and batches across the organization; no reservations or transfer execution.',
   'dealer_return_handoffs:read':
     'Read saved dealer-return authorizations and copied batches across the organization, including retained evidence after source deletion; no receiving, credits or stock movements.',
+  'dealer_return_handoffs:acknowledge':
+    'Append whole-package receipt or rejection reports for saved dealer-return handoffs and batches; no physical receipt, credits or stock movements.',
 }
 
 export function isApiScope(value: unknown): value is ApiScope {
