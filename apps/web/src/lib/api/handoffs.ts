@@ -23,6 +23,12 @@ export const NETWORK_HANDOFF_SCOPE = 'network_handoffs:read' as const
 export const REGIONAL_HANDOFF_RESOURCES = ['regional-handoffs', 'regional-handoff-batches'] as const
 export type RegionalHandoffResource = (typeof REGIONAL_HANDOFF_RESOURCES)[number]
 export const REGIONAL_HANDOFF_SCOPE = 'regional_handoffs:read' as const
+export const RETURN_HANDOFF_RESOURCES = [
+  'dealer-return-handoffs',
+  'dealer-return-handoff-batches',
+] as const
+export type ReturnHandoffResource = (typeof RETURN_HANDOFF_RESOURCES)[number]
+export const RETURN_HANDOFF_SCOPE = 'dealer_return_handoffs:read' as const
 export const READ_HANDOFF_RESOURCES = [
   ...HANDOFF_RESOURCES,
   ...TRANSFER_HANDOFF_RESOURCES,
@@ -30,6 +36,7 @@ export const READ_HANDOFF_RESOURCES = [
   ...DISPOSITION_HANDOFF_RESOURCES,
   ...NETWORK_HANDOFF_RESOURCES,
   ...REGIONAL_HANDOFF_RESOURCES,
+  ...RETURN_HANDOFF_RESOURCES,
 ] as const
 export type ReadHandoffResource = (typeof READ_HANDOFF_RESOURCES)[number]
 export const TRANSFER_HANDOFF_SCOPE = 'transfer_handoffs:read' as const
@@ -57,6 +64,9 @@ export function isNetworkHandoffResource(value: string): value is NetworkHandoff
 export function isRegionalHandoffResource(value: string): value is RegionalHandoffResource {
   return (REGIONAL_HANDOFF_RESOURCES as readonly string[]).includes(value)
 }
+export function isReturnHandoffResource(value: string): value is ReturnHandoffResource {
+  return (RETURN_HANDOFF_RESOURCES as readonly string[]).includes(value)
+}
 export function isReadHandoffResource(value: string): value is ReadHandoffResource {
   return (
     isHandoffResource(value) ||
@@ -64,10 +74,12 @@ export function isReadHandoffResource(value: string): value is ReadHandoffResour
     isEventHandoffResource(value) ||
     isDispositionHandoffResource(value) ||
     isNetworkHandoffResource(value) ||
-    isRegionalHandoffResource(value)
+    isRegionalHandoffResource(value) ||
+    isReturnHandoffResource(value)
   )
 }
 export function handoffReadScope(resource: ReadHandoffResource) {
+  if (isReturnHandoffResource(resource)) return RETURN_HANDOFF_SCOPE
   if (isRegionalHandoffResource(resource)) return REGIONAL_HANDOFF_SCOPE
   if (isNetworkHandoffResource(resource)) return NETWORK_HANDOFF_SCOPE
   if (isDispositionHandoffResource(resource)) return DISPOSITION_HANDOFF_SCOPE
@@ -79,6 +91,8 @@ export function handoffReadScope(resource: ReadHandoffResource) {
 }
 export function handoffOperationId(resource: ReadHandoffResource, detail: boolean): string {
   const names = {
+    'dealer-return-handoffs': 'DealerReturnHandoffs',
+    'dealer-return-handoff-batches': 'DealerReturnHandoffBatches',
     'regional-handoffs': 'RegionalHandoffs',
     'regional-handoff-batches': 'RegionalHandoffBatches',
     'network-handoffs': 'NetworkHandoffs',

@@ -3,7 +3,7 @@
   "info": {
     "title": "ZeeSpare API",
     "version": "1.4.0",
-    "description": "Bulk upserts and lists of ZeeSpare master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer zeespare_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read, excess_disposition_handoffs:acknowledge, network_handoffs:read, network_handoffs:acknowledge, regional_handoffs:read, regional_handoffs:acknowledge), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-zeespare-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
+    "description": "Bulk upserts and lists of ZeeSpare master data and demand history, per organization.\nRead saved transfer handoffs and batches with explicit organization-wide transfer_handoffs:read permission. Stock commitments remain as-of; reads never reserve stock or execute transfers.\nRead saved purchase handoffs and batches with explicit organization-wide purchase_handoffs:read permission. These are planning evidence, not external orders.\n\nAuthenticate with `Authorization: Bearer zeespare_sk_…`; an owner or admin creates keys in Settings. Keys are scoped (master_data:read, master_data:write, transactions:read, transactions:write, purchase_handoffs:read, purchase_handoffs:acknowledge, transfer_handoffs:read, transfer_handoffs:acknowledge, event_purchase_handoffs:read, event_purchase_handoffs:acknowledge, excess_disposition_handoffs:read, excess_disposition_handoffs:acknowledge, network_handoffs:read, network_handoffs:acknowledge, regional_handoffs:read, regional_handoffs:acknowledge, dealer_return_handoffs:read), expire, and stop working when their creator is no longer an owner or admin.\n\nUpserts are `POST /{resource}:upsert` with `{\"records\": [...]}`: all or nothing, by natural key, with the same field rules as the import wizard. Every record carries the same fields; a field left out keeps its stored value; null or \"\" clears a nullable field. Decimals are accepted as JSON numbers or strings and always returned as canonical strings. Load parents before children (x-zeespare-load-order).\n\nErrors are RFC 9457 problems (`application/problem+json`) with a stable `code` and a `request_id`. Honour `Retry-After` on 409, 429 and 503.\n\nDocumentation: https://github.com/aqoza/MAQDAR/blob/main/docs/api.md",
     "x-zeespare-import-format": 1
   },
   "servers": [
@@ -17,6 +17,10 @@
     }
   ],
   "tags": [
+    {
+      "name": "Dealer-return handoffs",
+      "description": "Saved internal return authorizations and copied batches, with independent live source availability."
+    },
     {
       "name": "Regional handoffs",
       "description": "Complete regional planning approvals and copied batches with per-source dates, currency-separated freight and independent live selection."
@@ -87,7 +91,8 @@
     "network_handoffs:read": "Read saved whole-network handoffs and copied batches across the organization, including every branch and retained evidence after source deletion; no reservations or transfer execution.",
     "network_handoffs:acknowledge": "Append whole-package receipt or rejection reports for saved network handoffs and batches across the organization; no reservations or transfer execution.",
     "regional_handoffs:read": "Read complete regional handoffs and copied batches across the organization, including all sources and retained evidence after source deletion; no reservations or transfer execution.",
-    "regional_handoffs:acknowledge": "Append whole-package receipt or rejection reports for saved regional handoffs and batches across the organization; no reservations or transfer execution."
+    "regional_handoffs:acknowledge": "Append whole-package receipt or rejection reports for saved regional handoffs and batches across the organization; no reservations or transfer execution.",
+    "dealer_return_handoffs:read": "Read saved dealer-return authorizations and copied batches across the organization, including retained evidence after source deletion; no receiving, credits or stock movements."
   },
   "paths": {
     "/organization": {
@@ -3949,6 +3954,274 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RegionalHandoffBatchDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/dealer-return-handoffs": {
+      "get": {
+        "operationId": "listDealerReturnHandoffs",
+        "tags": [
+          "Dealer-return handoffs"
+        ],
+        "summary": "List saved return authorization packages",
+        "description": "Organization-wide access requires dealer_return_handoffs:read. Other scopes grant no return access. Original declarations and approval evidence remain fixed, with exact quantity strings and separate conditions. Requested return dates are not scheduled receipts. Copied batches survive source-request deletion; individual handoffs follow their actual request parent. GET and HEAD create no acknowledgements, physical receiving, credits, reservations, inbound or stock changes. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a source-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for source availability. Unknown, repeated or empty parameters return 400.",
+        "x-zeespare-scopes": [
+          "dealer_return_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "created_since",
+            "in": "query",
+            "description": "Inclusive RFC 3339 timestamp with offset. Keep unchanged while following a cursor.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of saved summaries and live source availability.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealerReturnHandoffPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/dealer-return-handoffs/{id}": {
+      "get": {
+        "operationId": "getDealerReturnHandoffs",
+        "tags": [
+          "Dealer-return handoffs"
+        ],
+        "summary": "Read saved return authorization",
+        "description": "Organization-wide access requires dealer_return_handoffs:read. Other scopes grant no return access. Original declarations and approval evidence remain fixed, with exact quantity strings and separate conditions. Requested return dates are not scheduled receipts. Copied batches survive source-request deletion; individual handoffs follow their actual request parent. GET and HEAD create no acknowledgements, physical receiving, credits, reservations, inbound or stock changes. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
+        "x-zeespare-scopes": [
+          "dealer_return_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved evidence and live source availability.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealerReturnHandoffDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/dealer-return-handoff-batches": {
+      "get": {
+        "operationId": "listDealerReturnHandoffBatches",
+        "tags": [
+          "Dealer-return handoffs"
+        ],
+        "summary": "List saved return authorization packages",
+        "description": "Organization-wide access requires dealer_return_handoffs:read. Other scopes grant no return access. Original declarations and approval evidence remain fixed, with exact quantity strings and separate conditions. Requested return dates are not scheduled receipts. Copied batches survive source-request deletion; individual handoffs follow their actual request parent. GET and HEAD create no acknowledgements, physical receiving, credits, reservations, inbound or stock changes. Responses are private and no-store.\n\nNewest created_at first, then UUID ascending. Pass next_cursor unchanged with the same created_since until null; limit may change. created_since is inclusive and creation-based, not a source-change feed. as_of excludes later creation times but does not provide transaction snapshot isolation: late commits or deletions can affect traversal. Reconcile with overlapping creation windows and deduplicate by ID; re-read known IDs for source availability. Unknown, repeated or empty parameters return 400.",
+        "x-zeespare-scopes": [
+          "dealer_return_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "created_since",
+            "in": "query",
+            "description": "Inclusive RFC 3339 timestamp with offset. Keep unchanged while following a cursor.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of saved summaries and live source availability.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealerReturnHandoffPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidParameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/dealer-return-handoff-batches/{id}": {
+      "get": {
+        "operationId": "getDealerReturnHandoffBatches",
+        "tags": [
+          "Dealer-return handoffs"
+        ],
+        "summary": "Read saved return authorization",
+        "description": "Organization-wide access requires dealer_return_handoffs:read. Other scopes grant no return access. Original declarations and approval evidence remain fixed, with exact quantity strings and separate conditions. Requested return dates are not scheduled receipts. Copied batches survive source-request deletion; individual handoffs follow their actual request parent. GET and HEAD create no acknowledgements, physical receiving, credits, reservations, inbound or stock changes. Responses are private and no-store.\n\ndata.payload contains the original saved JSON values (including exact decimal strings), equivalent to the application JSON download. The API envelope and JSON whitespace/key order differ. data.current is checked separately at request time. No query parameters are accepted. Missing and other-organization IDs both return 404.",
+        "x-zeespare-scopes": [
+          "dealer_return_handoffs:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved evidence and live source availability.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/X-Request-Id"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealerReturnHandoffBatchDetail"
                 }
               }
             }
@@ -11716,7 +11989,8 @@
                   "network_handoffs:read",
                   "network_handoffs:acknowledge",
                   "regional_handoffs:read",
-                  "regional_handoffs:acknowledge"
+                  "regional_handoffs:acknowledge",
+                  "dealer_return_handoffs:read"
                 ]
               }
             }
@@ -12187,7 +12461,8 @@
                     "network_handoffs:read",
                     "network_handoffs:acknowledge",
                     "regional_handoffs:read",
-                    "regional_handoffs:acknowledge"
+                    "regional_handoffs:acknowledge",
+                    "dealer_return_handoffs:read"
                   ]
                 }
               },
@@ -45019,6 +45294,926 @@
               },
               "payload": {
                 "$ref": "#/components/schemas/RegionalHandoffBatchPayload"
+              }
+            }
+          }
+        }
+      },
+      "DealerReturnHandoffSummary": {
+        "type": "object",
+        "required": [
+          "source_code",
+          "location_code",
+          "requested_return_date",
+          "item_code",
+          "handoff_count",
+          "handoff_ids"
+        ],
+        "properties": {
+          "source_code": {
+            "type": "string"
+          },
+          "location_code": {
+            "type": "string"
+          },
+          "requested_return_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Declared requested date, not a scheduled receipt."
+          },
+          "item_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Null for batches; quantities and conditions remain separate in each saved line."
+          },
+          "handoff_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "handoff_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Original member IDs. May overlap other batches; does not reserve quantity."
+          }
+        }
+      },
+      "DealerReturnHandoffSourceContext": {
+        "type": "object",
+        "required": [
+          "sources_available",
+          "checked_at"
+        ],
+        "properties": {
+          "sources_available": {
+            "type": "boolean"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Current existence of every original handoff/request, separate from saved authorization. Missing sources never invalidate copied batch files. This does not recheck catalog evidence, eligibility, live stock, or execution."
+      },
+      "DealerReturnHandoffRecord": {
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "summary",
+          "current"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/DealerReturnHandoffSummary"
+          },
+          "current": {
+            "$ref": "#/components/schemas/DealerReturnHandoffSourceContext"
+          }
+        }
+      },
+      "DealerReturnHandoffPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "next_cursor",
+          "as_of"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/DealerReturnHandoffRecord"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Opaque cursor, or null at the end."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation-time upper bound fixed by the first page; not a transaction snapshot or status watermark."
+          }
+        }
+      },
+      "DealerReturnHandoffPayload": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "dealer-return-handoff-v1"
+          },
+          "purpose": {
+            "type": "string",
+            "const": "internal_return_authorization"
+          },
+          "notice": {
+            "type": "string"
+          },
+          "handoff_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "created_by_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "request": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "submitted_by": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "report": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "const": "dealer-return-request-v1"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "item_code": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "source_code": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "location_code": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "quantity": {
+                        "type": "string"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "EA",
+                          "SET",
+                          "L",
+                          "KG"
+                        ]
+                      },
+                      "requested_date": {
+                        "type": "string",
+                        "format": "date",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                      },
+                      "condition": {
+                        "type": "string",
+                        "enum": [
+                          "unused",
+                          "used",
+                          "damaged",
+                          "unknown"
+                        ]
+                      },
+                      "reason": {
+                        "type": "string",
+                        "maxLength": 1000
+                      },
+                      "sale_reference": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 200
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "confirmed": {
+                        "type": "boolean",
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "item_code",
+                      "source_code",
+                      "location_code",
+                      "quantity",
+                      "unit",
+                      "requested_date",
+                      "condition",
+                      "reason",
+                      "confirmed"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "author": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "item": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "name_en": {
+                        "type": "string"
+                      },
+                      "name_ar": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "code",
+                      "name_en",
+                      "name_ar",
+                      "unit",
+                      "status"
+                    ]
+                  },
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "name_en": {
+                        "type": "string"
+                      },
+                      "name_ar": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "location_type": {
+                        "type": "string",
+                        "const": "branch"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "code",
+                      "name_en",
+                      "name_ar",
+                      "location_type"
+                    ]
+                  },
+                  "receiver": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "name_en": {
+                        "type": "string"
+                      },
+                      "name_ar": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "location_type": {
+                        "type": "string",
+                        "enum": [
+                          "central",
+                          "hub"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "code",
+                      "name_en",
+                      "name_ar",
+                      "location_type"
+                    ]
+                  }
+                },
+                "required": [
+                  "method",
+                  "input",
+                  "author",
+                  "item",
+                  "source",
+                  "receiver"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "created_at",
+              "submitted_by",
+              "report"
+            ]
+          },
+          "approval": {
+            "type": "object",
+            "properties": {
+              "decision": {
+                "type": "string",
+                "const": "approved"
+              },
+              "decided_at": {
+                "type": "string"
+              },
+              "decided_by": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "reviewer_email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reason": {
+                "type": "string"
+              },
+              "eligibility_confirmed": {
+                "type": "boolean",
+                "const": true
+              }
+            },
+            "required": [
+              "decision",
+              "decided_at",
+              "decided_by",
+              "reviewer_email",
+              "reason",
+              "eligibility_confirmed"
+            ]
+          }
+        },
+        "required": [
+          "schema_version",
+          "purpose",
+          "notice",
+          "handoff_id",
+          "organization_id",
+          "created_at",
+          "created_by",
+          "created_by_email",
+          "request",
+          "approval"
+        ]
+      },
+      "DealerReturnHandoffBatchPayload": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "dealer-return-batch-v1"
+          },
+          "purpose": {
+            "type": "string",
+            "const": "internal_return_authorization"
+          },
+          "notice": {
+            "type": "string"
+          },
+          "batch_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "created_by": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+          },
+          "created_by_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "source_location_id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "source_code": {
+                "type": "string"
+              },
+              "location_id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+              },
+              "location_code": {
+                "type": "string"
+              },
+              "requested_date": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "line_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50
+              }
+            },
+            "required": [
+              "source_location_id",
+              "source_code",
+              "location_id",
+              "location_code",
+              "requested_date",
+              "line_count"
+            ]
+          },
+          "lines": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "schema_version": {
+                  "type": "string",
+                  "const": "dealer-return-handoff-v1"
+                },
+                "purpose": {
+                  "type": "string",
+                  "const": "internal_return_authorization"
+                },
+                "notice": {
+                  "type": "string"
+                },
+                "handoff_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                },
+                "organization_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "created_by": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                },
+                "created_by_email": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "request": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "submitted_by": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "report": {
+                      "type": "object",
+                      "properties": {
+                        "method": {
+                          "type": "string",
+                          "const": "dealer-return-request-v1"
+                        },
+                        "input": {
+                          "type": "object",
+                          "properties": {
+                            "item_code": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "source_code": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "location_code": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "quantity": {
+                              "type": "string"
+                            },
+                            "unit": {
+                              "type": "string",
+                              "enum": [
+                                "EA",
+                                "SET",
+                                "L",
+                                "KG"
+                              ]
+                            },
+                            "requested_date": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            },
+                            "condition": {
+                              "type": "string",
+                              "enum": [
+                                "unused",
+                                "used",
+                                "damaged",
+                                "unknown"
+                              ]
+                            },
+                            "reason": {
+                              "type": "string",
+                              "maxLength": 1000
+                            },
+                            "sale_reference": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "maxLength": 200
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "confirmed": {
+                              "type": "boolean",
+                              "const": true
+                            }
+                          },
+                          "required": [
+                            "item_code",
+                            "source_code",
+                            "location_code",
+                            "quantity",
+                            "unit",
+                            "requested_date",
+                            "condition",
+                            "reason",
+                            "confirmed"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "author": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "item": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "name_en": {
+                              "type": "string"
+                            },
+                            "name_ar": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "unit": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "code",
+                            "name_en",
+                            "name_ar",
+                            "unit",
+                            "status"
+                          ]
+                        },
+                        "source": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "name_en": {
+                              "type": "string"
+                            },
+                            "name_ar": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "location_type": {
+                              "type": "string",
+                              "const": "branch"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "code",
+                            "name_en",
+                            "name_ar",
+                            "location_type"
+                          ]
+                        },
+                        "receiver": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "name_en": {
+                              "type": "string"
+                            },
+                            "name_ar": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "location_type": {
+                              "type": "string",
+                              "enum": [
+                                "central",
+                                "hub"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "code",
+                            "name_en",
+                            "name_ar",
+                            "location_type"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "method",
+                        "input",
+                        "author",
+                        "item",
+                        "source",
+                        "receiver"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "created_at",
+                    "submitted_by",
+                    "report"
+                  ]
+                },
+                "approval": {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "approved"
+                    },
+                    "decided_at": {
+                      "type": "string"
+                    },
+                    "decided_by": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                    },
+                    "reviewer_email": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "eligibility_confirmed": {
+                      "type": "boolean",
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "decided_at",
+                    "decided_by",
+                    "reviewer_email",
+                    "reason",
+                    "eligibility_confirmed"
+                  ]
+                }
+              },
+              "required": [
+                "schema_version",
+                "purpose",
+                "notice",
+                "handoff_id",
+                "organization_id",
+                "created_at",
+                "created_by",
+                "created_by_email",
+                "request",
+                "approval"
+              ]
+            }
+          }
+        },
+        "required": [
+          "schema_version",
+          "purpose",
+          "notice",
+          "batch_id",
+          "organization_id",
+          "created_by",
+          "created_by_email",
+          "created_at",
+          "summary",
+          "lines"
+        ]
+      },
+      "DealerReturnHandoffDetail": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "created_at",
+              "summary",
+              "current",
+              "payload"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "summary": {
+                "$ref": "#/components/schemas/DealerReturnHandoffSummary"
+              },
+              "current": {
+                "$ref": "#/components/schemas/DealerReturnHandoffSourceContext"
+              },
+              "payload": {
+                "$ref": "#/components/schemas/DealerReturnHandoffPayload"
+              }
+            }
+          }
+        }
+      },
+      "DealerReturnHandoffBatchDetail": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "created_at",
+              "summary",
+              "current",
+              "payload"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "summary": {
+                "$ref": "#/components/schemas/DealerReturnHandoffSummary"
+              },
+              "current": {
+                "$ref": "#/components/schemas/DealerReturnHandoffSourceContext"
+              },
+              "payload": {
+                "$ref": "#/components/schemas/DealerReturnHandoffBatchPayload"
               }
             }
           }

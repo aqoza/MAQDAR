@@ -1103,6 +1103,11 @@
         "label": "Report regional package receipt or rejection",
         "description": "Record external reports for complete regional handoffs and batches across this organization. Does not reserve stock or execute transfers.",
         "badge": "Regional handoffs: acknowledge"
+      },
+      "dealerReturnHandoffsRead": {
+        "label": "Read dealer-return handoffs",
+        "description": "Read saved dealer-return authorizations and batches across the whole organization, including retained evidence after source deletion. Does not receive returns, issue credits or move stock.",
+        "badge": "Return handoffs read"
       }
     },
     "secret": {
