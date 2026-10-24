@@ -68,6 +68,29 @@ describe('supplier response workbench', () => {
     status: 'no_response',
     response: null,
   }
+  it('keeps event paging and evidence links in the event workspace', () => {
+    const params = supplierWorkbenchParams({
+      kind: 'batch',
+      status: 'no_response',
+      state: 'withdrawn',
+      q: 'saved code',
+      supplier: 'SUP',
+      location: 'L0',
+      size: '50',
+    })
+    const url = new URL(supplierWorkbenchHref(params, 2, 'event'), 'https://example.com')
+    expect(url.pathname).toBe('/replenishment/events/supplier-responses')
+    expect(supplierWorkbenchParams(Object.fromEntries(url.searchParams))).toEqual({
+      ...params,
+      page: 2,
+    })
+    expect(supplierPublicationHref(row, 'event')).toBe(
+      `/replenishment/events/batches/${row.source_id}/publish`,
+    )
+    expect(supplierPublicationHref({ ...row, kind: 'handoff' }, 'event')).toBe(
+      `/replenishment/events/handoffs/${row.source_id}/publish`,
+    )
+  })
   it('does not accept inconsistent response/state evidence', () => {
     expect(supplierWorkbenchRowSchema.safeParse(row).success).toBe(true)
     for (const patch of [

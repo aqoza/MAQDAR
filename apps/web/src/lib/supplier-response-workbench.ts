@@ -8,7 +8,30 @@ import {
   type RawSearchParams,
 } from './master-data/list-params'
 
-export const supplierWorkbenchPath = '/replenishment/supplier-responses'
+export type SupplierWorkbenchFamily = 'ordinary' | 'event'
+export const supplierWorkbenches = {
+  ordinary: {
+    path: '/replenishment/supplier-responses',
+    sourcePath: '/replenishment',
+    rpc: 'supplier_response_workbench',
+    navigation: 'supplierResponses',
+    title: 'title',
+    context: 'context',
+    independence: 'independence',
+    results: 'results',
+  },
+  event: {
+    path: '/replenishment/events/supplier-responses',
+    sourcePath: '/replenishment/events',
+    rpc: 'supplier_event_response_workbench',
+    navigation: 'eventSupplierResponses',
+    title: 'eventTitle',
+    context: 'eventContext',
+    independence: 'eventIndependence',
+    results: 'eventResults',
+  },
+} as const
+export const supplierWorkbenchPath = supplierWorkbenches.ordinary.path
 export const supplierWorkbenchSpec = {
   sorts: ['created_at'],
   defaultSort: 'created_at',
@@ -41,8 +64,9 @@ export function supplierWorkbenchParams(raw: RawSearchParams) {
 export function supplierWorkbenchHref(
   params: ReturnType<typeof supplierWorkbenchParams>,
   page: number,
+  family: SupplierWorkbenchFamily = 'ordinary',
 ) {
-  return listHref(supplierWorkbenchPath, supplierWorkbenchSpec, params, { page })
+  return listHref(supplierWorkbenches[family].path, supplierWorkbenchSpec, params, { page })
 }
 export const supplierWorkbenchRowSchema = z
   .strictObject({
@@ -74,6 +98,7 @@ export const supplierWorkbenchResultSchema = z.strictObject({
 })
 export function supplierPublicationHref(
   row: Pick<z.infer<typeof supplierWorkbenchRowSchema>, 'source_id' | 'kind'>,
+  family: SupplierWorkbenchFamily = 'ordinary',
 ) {
-  return `/replenishment/${row.kind === 'batch' ? 'batches' : 'handoffs'}/${row.source_id}/publish`
+  return `${supplierWorkbenches[family].sourcePath}/${row.kind === 'batch' ? 'batches' : 'handoffs'}/${row.source_id}/publish`
 }

@@ -666,6 +666,7 @@ select set_eq(
     ('public.supplier_response_history(uuid, text, uuid, integer)', 'authenticated'),
     ('public.supplier_response_history_internal(uuid, text, uuid, integer)', 'authenticated'),
     ('public.supplier_response_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
+    ('public.supplier_event_response_workbench(uuid, jsonb, integer, integer)', 'authenticated'),
     ('app.supplier_event_summary(jsonb)', ''),
     ('public.supplier_event_publication_preview(uuid, uuid)', 'authenticated'),
     ('public.supplier_event_publication_publish(uuid, uuid, boolean, text)', 'authenticated'),

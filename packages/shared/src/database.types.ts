@@ -4749,6 +4749,9 @@ isOneToOne: false
 "supplier_event_response_submit":
 { Args: { "p_grant_id": string,"p_kind": string,"p_publication_id": string,"p_reason"?: string,"p_reference"?: string,"p_request_id": string,"p_status": string }; Returns: string
                            },
+"supplier_event_response_workbench":
+{ Args: { "p_filters"?: Json,"p_organization_id": string,"p_page"?: number,"p_size"?: number }; Returns: Json
+                           },
 "supplier_portal_accept":
 { Args: { "p_grant_id": string }; Returns: undefined
                            },

@@ -21,6 +21,7 @@ export async function ReplenishmentNav({
     | 'locator'
     | 'regionalStock'
     | 'supplierResponses'
+    | 'eventSupplierResponses'
 }) {
   const t = await getTranslations('PurchasingNav')
   const links = [
@@ -35,6 +36,7 @@ export async function ReplenishmentNav({
     ['eventHandoffs', '/replenishment/events/handoffs'],
     ['eventBatches', '/replenishment/events/batches'],
     ['eventIntegrations', '/replenishment/events/integrations'],
+    ['eventSupplierResponses', '/replenishment/events/supplier-responses'],
     ['handoffs', '/replenishment/handoffs'],
     ['batches', '/replenishment/batches'],
     ['integrations', '/replenishment/integrations'],
