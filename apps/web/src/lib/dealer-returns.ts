@@ -23,6 +23,28 @@ const text = (max: number) =>
     .max(max)
     .refine((s) => !/[\u0000-\u001f\u007f]/.test(s))
 export const returnReasonSchema = text(1000).refine((s) => s.length > 0)
+export const returnStatuses = ['requested', 'approved', 'rejected', 'withdrawn'] as const
+export const returnReviewSchema = z
+  .strictObject({
+    return_id: z.guid(),
+    decision: z.enum(['approved', 'rejected']),
+    reason: returnReasonSchema,
+    eligibility_confirmed: z.boolean(),
+  })
+  .refine((input) => input.eligibility_confirmed === (input.decision === 'approved'), {
+    path: ['eligibility_confirmed'],
+  })
+export function hasReturnReviewRole(role: string | null | undefined) {
+  return ['owner', 'admin', 'approver'].includes(role ?? '')
+}
+export function canReviewReturn(role: string | null | undefined, author: string, user: string) {
+  return author !== user && hasReturnReviewRole(role)
+}
+export function returnStatus(row: { decision: string | null; withdrawn_at: string | null }) {
+  return z
+    .enum(returnStatuses)
+    .parse(row.decision ?? (row.withdrawn_at ? 'withdrawn' : 'requested'))
+}
 export const returnQuantitySchema = z
   .string()
   .transform(normalizeDigits)
@@ -69,9 +91,7 @@ export const dealerReturnListSpec = {
   defaultDir: 'desc',
   tiebreak: 'id',
   search: true,
-  filters: [
-    { param: 'status', column: 'status', kind: 'enum', values: ['requested', 'withdrawn'] },
-  ],
+  filters: [{ param: 'status', column: 'status', kind: 'enum', values: returnStatuses }],
 } satisfies ListSpec
 export function dealerReturnParams(raw: RawSearchParams) {
   return parseListParams({ ...raw, dir: 'desc' }, dealerReturnListSpec)

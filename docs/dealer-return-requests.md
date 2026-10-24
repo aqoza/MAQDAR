@@ -12,7 +12,7 @@ The server copies item/location identities, codes and names, item unit/status, a
 
 ## Lifecycle and authority
 
-Saved details are immutable. Corrections create a new request. The original author, while still a member with both-location access, may withdraw with a reason even after losing editor privileges. Withdrawal preserves the original details and records a server timestamp; it is irreversible in this increment. Other editors and administrators cannot withdraw another author's request.
+Saved details are immutable. Corrections create a new request. The original author, while still a member with both-location access, may withdraw an undecided request with a reason even after losing editor privileges. Withdrawal preserves the original details and records a server timestamp; it is irreversible. Other editors and administrators cannot withdraw another author's request. Step 27b adds independent final approval/rejection and prevents subsequent withdrawal; see [dealer-return-review.md](dealer-return-review.md).
 
 An organization/request UUID serializes saves. Identical canonical input from the same author returns the original record, including after catalog changes or withdrawal. Conflicting reuse fails. Every save retry requires current editor authority and both-location access. Withdrawal retries require current membership, both locations and the same original reason; neither retry path reactivates a request. Supplier grants confer no internal access.
 

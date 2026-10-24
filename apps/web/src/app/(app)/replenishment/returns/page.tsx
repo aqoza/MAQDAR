@@ -16,6 +16,8 @@ import {
   dealerReturnListSpec,
   dealerReturnParams,
   dealerReturnReportSchema,
+  returnStatuses,
+  returnStatus,
 } from '@/lib/dealer-returns'
 export default async function DealerReturns({
   searchParams,
@@ -33,11 +35,17 @@ export default async function DealerReturns({
   const base = () => {
     let query = db
       .from('dealer_return_requests')
-      .select('id,report,created_at,withdrawn_at', { count: 'exact' })
+      .select(
+        'id,report,created_at,withdrawn_at,decision,decided_at,reviewer_email,decision_reason',
+        { count: 'exact' },
+      )
       .eq('organization_id', context.active!.id)
     for (const pattern of searchPatterns(params.q)) query = query.like('search_text', pattern)
-    if (params.filters.status === 'requested') query = query.is('withdrawn_at', null)
+    if (params.filters.status === 'requested')
+      query = query.is('withdrawn_at', null).is('decision', null)
     if (params.filters.status === 'withdrawn') query = query.not('withdrawn_at', 'is', null)
+    if (params.filters.status === 'approved' || params.filters.status === 'rejected')
+      query = query.eq('decision', params.filters.status)
     return query
   }
   const count = await base().limit(0)
@@ -69,6 +77,7 @@ export default async function DealerReturns({
           <HelpDisclosure>
             <p>{t('limits')}</p>
             <p>{t('corrections')}</p>
+            <p>{t('reviewLimits')}</p>
           </HelpDisclosure>
         }
       />
@@ -94,7 +103,7 @@ export default async function DealerReturns({
             className="rounded-md border bg-background p-2"
           >
             <option value="">{t('all')}</option>
-            {(['requested', 'withdrawn'] as const).map((s) => (
+            {returnStatuses.map((s) => (
               <option key={s} value={s}>
                 {t(s)}
               </option>
@@ -160,7 +169,23 @@ export default async function DealerReturns({
                     </td>
                     <td className="whitespace-nowrap p-2">{r.input.requested_date}</td>
                     <td className="p-2">{t(r.input.condition)}</td>
-                    <td className="p-2">{t(row.withdrawn_at ? 'withdrawn' : 'requested')}</td>
+                    <td className="p-2">
+                      {t(returnStatus(row))}
+                      {row.decided_at && (
+                        <p className="text-xs text-muted-foreground">
+                          {format.dateTime(new Date(row.decided_at), 'long')} ·{' '}
+                          <bdi>{row.reviewer_email ?? t('notSupplied')}</bdi>
+                        </p>
+                      )}
+                      {row.decision_reason && (
+                        <details className="max-w-72 whitespace-normal break-words text-xs">
+                          <summary className="min-h-11 cursor-pointer py-2">
+                            {t('decisionReason')}
+                          </summary>
+                          {row.decision_reason}
+                        </details>
+                      )}
+                    </td>
                     <td className="whitespace-nowrap p-2 text-xs">
                       {format.dateTime(new Date(row.created_at), 'long')}
                     </td>
