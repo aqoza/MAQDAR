@@ -1,3 +1,4 @@
+import { isEditorRole } from '@/lib/auth/roles'
 import { PageHeader } from '@/components/page-header'
 import { PurchaseCostHistory } from '@/components/purchase-cost-history'
 import type { RawSearchParams } from '@/lib/master-data/list-params'
@@ -36,10 +37,24 @@ export default async function SavedDeliveryScenario({
   if (error) throw new Error('Delivery scenario unavailable')
   if (!data) notFound()
   const report = deliveryScenarioReportSchema.parse(data.report)
+  const explain = await getTranslations('DeliveryExplainer')
   const costT = await getTranslations('PurchaseCosts')
   return (
     <div className="space-y-4">
-      <PageHeader pattern="replenishment" title={t('saved')} />
+      <PageHeader
+        pattern="replenishment"
+        title={t('saved')}
+        actions={
+          isEditorRole(context.role) && ['available', 'no_order_needed'].includes(report.status) ? (
+            <Link
+              className="min-h-11 rounded-md border px-4 py-2"
+              href={`/replenishment/deliveries/explanations/new?scenario=${scenarioId}`}
+            >
+              {explain('new')}
+            </Link>
+          ) : undefined
+        }
+      />
       <p>
         {t('savedBy', {
           actor: data.submitted_by === context.userId ? t('you') : data.submitted_by,

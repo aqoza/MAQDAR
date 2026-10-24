@@ -301,3 +301,7 @@ Step 28b shares opt-in and quotas with policy explanations. Run both provider br
 ## Step 28d — supplier scenario explanations
 
 Run all four explainer unit/pgTAP/concurrency suites, the isolated mocked-provider browser configuration, and existing supplier scenario/Settings workflows. Verify fractional MOQ/pack and zero gap, exact strings, private-field exclusion, separate references, shared quotas, current authority after waits and retained history after source deletion. Inspect English/Arabic screenshots at 375/768/1024/1440/1920px. No real provider call or hosted change is part of this suite.
+
+## Step 28e — delivery explanations
+
+Run all five explanation unit/pgTAP/concurrency suites and the isolated mock-provider browser configuration when changing shared AI paths. Verify captured dates and warning flags, complete bounded calendar searches, explicit zero/no-schedule outcomes, exact strings, excluded private fields, cross-subject citation rejection and source retention. Exercise editor/location gates, shared quotas and current authority after waits. Inspect five widths in English/Arabic RTL, keyboard use and existing delivery/Settings workflows. See [delivery-explainer.md](delivery-explainer.md); no external provider or hosted configuration changes belong to this regression suite.

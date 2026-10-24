@@ -6,6 +6,7 @@ import {
   explainForecast,
   explainReplenishment,
   explainSupplier,
+  explainDelivery,
   configurePolicyExplainer,
 } from '@/app/(app)/forecasts/explanations/actions'
 import { idleState } from '@/lib/forms'
@@ -22,7 +23,7 @@ export function PolicyExplainerForm({
   sourceId: string
   fingerprint: string
   requestId: string
-  kind?: 'policy' | 'forecast' | 'replenishment' | 'supplier'
+  kind?: 'policy' | 'forecast' | 'replenishment' | 'supplier' | 'delivery'
 }) {
   const t = useTranslations('PolicyExplainer')
   const [state, action, pending] = useActionState(
@@ -31,6 +32,7 @@ export function PolicyExplainerForm({
       forecast: explainForecast,
       replenishment: explainReplenishment,
       supplier: explainSupplier,
+      delivery: explainDelivery,
     }[kind],
     idleState,
   )
@@ -46,6 +48,7 @@ export function PolicyExplainerForm({
             forecast: 'forecast_id',
             replenishment: 'draft_id',
             supplier: 'scenario_id',
+            delivery: 'scenario_id',
           }[kind]
         }
         value={sourceId}

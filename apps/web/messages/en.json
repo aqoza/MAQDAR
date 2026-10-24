@@ -6667,8 +6667,8 @@
     "disabled": "An owner or admin must enable AI explanations in Settings before requesting an explanation.",
     "editorOnly": "Editors can request explanations. Members with location access can inspect saved results.",
     "settings": "AI explanation settings",
-    "settingsDescription": "Enable read-only AI explanations of saved individual-item policies, forecasts, replenishment drafts and supplier MOQ/pack scenarios. Each request previews the limited evidence sent to Claude.",
-    "optIn": "Enable Claude policy, forecast, replenishment and supplier scenario explanations for this organization.",
+    "settingsDescription": "Enable read-only AI explanations of saved individual-item policies, forecasts, replenishment drafts, supplier MOQ/pack scenarios and delivery-date scenarios. Each request previews the limited evidence sent to Claude.",
+    "optIn": "Enable Claude policy, forecast, replenishment, supplier and delivery scenario explanations for this organization.",
     "saveSetting": "Save setting",
     "enabledSaved": "AI explanations enabled.",
     "disabledSaved": "AI explanations disabled.",
@@ -6732,7 +6732,8 @@
     "chooseForecast": "Choose a forecast",
     "replenishmentKind": "Replenishment",
     "chooseReplenishment": "Choose a replenishment draft",
-    "supplierKind": "Supplier scenario"
+    "supplierKind": "Supplier scenario",
+    "deliveryKind": "Delivery scenario"
   },
   "ForecastExplainer": {
     "title": "Explain this forecast",
@@ -6850,6 +6851,54 @@
       "overage": "Overage above gap",
       "policy_days": "Saved policy lead time (calendar days)",
       "supplier_days": "Saved supplier lead time (calendar days)"
+    }
+  },
+  "DeliveryExplainer": {
+    "title": "Explain delivery dates",
+    "savedTitle": "Saved delivery explanation",
+    "new": "Explain delivery dates",
+    "description": "Understand the dates and timing warnings captured in one saved delivery scenario.",
+    "originalScenario": "Original delivery scenario",
+    "unavailable": "Choose a complete saved individual-item delivery schedule or an explicit zero-quantity outcome with a known unit.",
+    "limits": "Saved quantities and dates are as-of evidence. Dates are indicative, not supplier promises. Calendar applicability is a planner confirmation. No current calendars, stock commitments, prices or account details are sent. Explanations do not recalculate policies or place orders.",
+    "noOrder": "No order needed: the saved quantity is zero.",
+    "noSchedule": "No order or receipt is scheduled, and there is no timing verdict. The requested date is a planner input only.",
+    "noCalendars": "Calendar searches were not performed for this zero-quantity outcome. Calendar applicability is not inferred.",
+    "timingWarning": "Timing review required: the saved receipt is later than the policy reference date. This explanation does not recalculate the policy.",
+    "scheduleNote": "The policy reference is the cutoff plus the saved lead time. It is not a promised receipt date.",
+    "confirmed": "Calendar applicability was confirmed when this schedule was saved.",
+    "calendarNote": "Counts describe the saved closed dates in each search, not which specific date had each reason. A working override may resolve a day outside general holiday coverage.",
+    "supplier": "Ordering calendar search",
+    "receiver": "Receiving calendar search",
+    "selectedReason": "Selected working-day reason",
+    "yes": "Yes",
+    "no": "No",
+    "references": {
+      "delivery_context": "Delivery context",
+      "schedule": "Saved schedule",
+      "calendar_adjustments": "Calendar adjustments",
+      "delivery_limits": "Interpretation limits"
+    },
+    "fields": {
+      "cutoff": "Saved cutoff",
+      "quantity": "Saved quantity",
+      "lead_time_days": "Fixed lead time (calendar days)",
+      "requested_date": "Requested order date",
+      "order_date": "Adjusted order date",
+      "nominal_receipt": "Receipt before receiving-calendar adjustment",
+      "receipt_date": "Adjusted receipt date",
+      "policy_reference_date": "Policy timing reference",
+      "elapsed_days": "Calendar days from cutoff to receipt",
+      "policy_recalculation_required": "Policy recalculation required",
+      "evaluated_days": "Evaluated dates",
+      "closed_days": "Closed dates"
+    },
+    "reasons": {
+      "calendar_override": "Calendar overrides",
+      "country_override": "Country overrides",
+      "public_holiday": "Public holidays",
+      "weekend": "Weekend pattern",
+      "weekly_pattern": "Weekly working pattern"
     }
   }
 }

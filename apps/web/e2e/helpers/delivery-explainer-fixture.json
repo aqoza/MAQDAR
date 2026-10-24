@@ -1,0 +1,139 @@
+{
+  "method": "delivery-dates-v1",
+  "status": "available",
+  "location_id": "cc280000-0000-4000-8000-000000000020",
+  "requested_date": "2026-10-01",
+  "calendars_confirmed": true,
+  "blocked_stage": null,
+  "source": {
+    "scenario_id": "cc280000-0000-4000-8000-000000000094",
+    "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+    "draft_id": "cc280000-0000-4000-8000-000000000092",
+    "item_code": "DO-NOT-SEND",
+    "location_code": "DO-NOT-SEND",
+    "supplier_code": "DO-NOT-SEND",
+    "unit": "EA",
+    "quantity": "30.250",
+    "lead_time": 3,
+    "cutoff": "2026-10-01"
+  },
+  "supplier": {
+    "id": "cc280000-0000-4000-8000-000000000120",
+    "code": "DO-NOT-SEND",
+    "name": "DO-NOT-SEND",
+    "active": true,
+    "updated_at": "2026-10-01T00:00:00Z"
+  },
+  "receiver": {
+    "id": "cc280000-0000-4000-8000-000000000020",
+    "code": "DO-NOT-SEND",
+    "name": "DO-NOT-SEND",
+    "active": true,
+    "updated_at": "2026-10-01T00:00:00Z"
+  },
+  "supplier_calendar": {
+    "country": "SA",
+    "calendar_id": "cc280000-0000-4000-8000-000000000126",
+    "calendar_code": "DO-NOT-SEND",
+    "calendar_updated_at": "2026-10-01T00:00:00Z",
+    "active": true,
+    "weekend_days": [5, 6],
+    "observe_public_holidays": true,
+    "coverage_from": "2026-01-01",
+    "coverage_to": "2026-12-31",
+    "holidays": [
+      {
+        "date": "2026-10-01",
+        "sector": "all",
+        "name": "DO-NOT-SEND",
+        "source": "DO-NOT-SEND"
+      }
+    ],
+    "overrides": []
+  },
+  "receiver_calendar": {
+    "country": "SA",
+    "calendar_id": "cc280000-0000-4000-8000-000000000126",
+    "calendar_code": "DO-NOT-SEND",
+    "calendar_updated_at": "2026-10-01T00:00:00Z",
+    "active": true,
+    "weekend_days": [5, 6],
+    "observe_public_holidays": true,
+    "coverage_from": "2026-01-01",
+    "coverage_to": "2026-12-31",
+    "holidays": [
+      {
+        "date": "2026-10-01",
+        "sector": "all",
+        "name": "DO-NOT-SEND",
+        "source": "DO-NOT-SEND"
+      }
+    ],
+    "overrides": []
+  },
+  "order_search": {
+    "status": "resolved",
+    "date": "2026-10-03",
+    "days": [
+      {
+        "date": "2026-10-01",
+        "working": false,
+        "reason": "public_holiday",
+        "weekend": false,
+        "holiday": true,
+        "verified": true,
+        "override_id": null
+      },
+      {
+        "date": "2026-10-02",
+        "working": false,
+        "reason": "weekend",
+        "weekend": true,
+        "holiday": false,
+        "verified": true,
+        "override_id": null
+      },
+      {
+        "date": "2026-10-03",
+        "working": true,
+        "reason": "weekly_pattern",
+        "weekend": false,
+        "holiday": false,
+        "verified": true,
+        "override_id": null
+      }
+    ]
+  },
+  "receipt_search": {
+    "status": "resolved",
+    "date": "2026-10-07",
+    "days": [
+      {
+        "date": "2026-10-06",
+        "working": false,
+        "reason": "calendar_override",
+        "weekend": false,
+        "holiday": false,
+        "verified": true,
+        "override_id": "cc280000-0000-4000-8000-000000000125"
+      },
+      {
+        "date": "2026-10-07",
+        "working": true,
+        "reason": "calendar_override",
+        "weekend": false,
+        "holiday": false,
+        "verified": false,
+        "override_id": "cc280000-0000-4000-8000-000000000125"
+      }
+    ]
+  },
+  "order_date": "2026-10-03",
+  "nominal_receipt": "2026-10-06",
+  "receipt_date": "2026-10-07",
+  "expected_receipt": "2026-10-04",
+  "elapsed_days": 6,
+  "policy_recalculation_required": true,
+  "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+  "account": "DO-NOT-SEND"
+}

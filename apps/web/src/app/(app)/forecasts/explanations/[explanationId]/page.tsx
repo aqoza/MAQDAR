@@ -1,3 +1,5 @@
+import { DeliveryExplainerEvidence } from '@/components/delivery-explainer-evidence'
+import { deliveryEvidenceReferences } from '@/lib/delivery-explainer'
 import { SupplierExplainerEvidence } from '@/components/supplier-explainer-evidence'
 import { supplierEvidenceReferences } from '@/lib/supplier-explainer'
 import { ReplenishmentExplainerEvidence } from '@/components/replenishment-explainer-evidence'
@@ -37,21 +39,26 @@ export default async function ExplanationDetail({
   const row = aiExplanationRecordSchema.parse(data)
   const f = await getTranslations('ForecastExplainer')
   const r = await getTranslations('ReplenishmentExplainer')
+  const d = await getTranslations('DeliveryExplainer')
   const s = await getTranslations('SupplierExplainer')
   return (
     <div className="min-w-0 space-y-4">
       <PageHeader
         pattern={
-          ['supplier', 'replenishment'].includes(row.subject_kind) ? 'replenishment' : 'forecasts'
+          ['delivery', 'supplier', 'replenishment'].includes(row.subject_kind)
+            ? 'replenishment'
+            : 'forecasts'
         }
         title={
-          row.subject_kind === 'supplier'
-            ? s('savedTitle')
-            : row.subject_kind === 'replenishment'
-              ? r('savedTitle')
-              : row.subject_kind === 'forecast'
-                ? f('savedTitle')
-                : t('savedTitle')
+          row.subject_kind === 'delivery'
+            ? d('savedTitle')
+            : row.subject_kind === 'supplier'
+              ? s('savedTitle')
+              : row.subject_kind === 'replenishment'
+                ? r('savedTitle')
+                : row.subject_kind === 'forecast'
+                  ? f('savedTitle')
+                  : t('savedTitle')
         }
         description={t('aiLabel')}
         back={
@@ -62,13 +69,15 @@ export default async function ExplanationDetail({
         help={
           <HelpDisclosure>
             <p>
-              {row.subject_kind === 'supplier'
-                ? s('limits')
-                : row.subject_kind === 'replenishment'
-                  ? r('limits')
-                  : row.subject_kind === 'forecast'
-                    ? f('limits')
-                    : t('limits')}
+              {row.subject_kind === 'delivery'
+                ? d('limits')
+                : row.subject_kind === 'supplier'
+                  ? s('limits')
+                  : row.subject_kind === 'replenishment'
+                    ? r('limits')
+                    : row.subject_kind === 'forecast'
+                      ? f('limits')
+                      : t('limits')}
             </p>
             <p>{t('retention')}</p>
           </HelpDisclosure>
@@ -96,17 +105,21 @@ export default async function ExplanationDetail({
                     href={`#evidence-${reference}`}
                     className="min-h-11 py-3 text-xs underline md:min-h-0 md:py-0"
                   >
-                    {row.subject_kind === 'supplier'
-                      ? s(`references.${reference as (typeof supplierEvidenceReferences)[number]}`)
-                      : row.subject_kind === 'replenishment'
-                        ? r(
-                            `references.${reference as (typeof replenishmentEvidenceReferences)[number]}`,
+                    {row.subject_kind === 'delivery'
+                      ? d(`references.${reference as (typeof deliveryEvidenceReferences)[number]}`)
+                      : row.subject_kind === 'supplier'
+                        ? s(
+                            `references.${reference as (typeof supplierEvidenceReferences)[number]}`,
                           )
-                        : row.subject_kind === 'forecast'
-                          ? f(
-                              `references.${reference as (typeof forecastEvidenceReferences)[number]}`,
+                        : row.subject_kind === 'replenishment'
+                          ? r(
+                              `references.${reference as (typeof replenishmentEvidenceReferences)[number]}`,
                             )
-                          : t(`references.${reference as EvidenceReference}`)}
+                          : row.subject_kind === 'forecast'
+                            ? f(
+                                `references.${reference as (typeof forecastEvidenceReferences)[number]}`,
+                              )
+                            : t(`references.${reference as EvidenceReference}`)}
                   </a>
                 ))}
               </nav>
@@ -126,7 +139,14 @@ export default async function ExplanationDetail({
                 {t('originalPolicy')}
               </Link>
             )}
-            {row.subject_kind === 'supplier' ? (
+            {row.subject_kind === 'delivery' ? (
+              <Link
+                className="min-h-11 py-3 underline"
+                href={`/replenishment/deliveries/${row.delivery_scenario_id}`}
+              >
+                {d('originalScenario')}
+              </Link>
+            ) : row.subject_kind === 'supplier' ? (
               <Link
                 className="min-h-11 py-3 underline"
                 href={`/replenishment/suppliers/${row.supplier_scenario_id}`}
@@ -150,7 +170,9 @@ export default async function ExplanationDetail({
             )}
           </div>
         </article>
-        {row.subject_kind === 'supplier' ? (
+        {row.subject_kind === 'delivery' ? (
+          <DeliveryExplainerEvidence evidence={row.evidence} />
+        ) : row.subject_kind === 'supplier' ? (
           <SupplierExplainerEvidence evidence={row.evidence} />
         ) : row.subject_kind === 'replenishment' ? (
           <ReplenishmentExplainerEvidence evidence={row.evidence} />
