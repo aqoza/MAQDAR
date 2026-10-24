@@ -89,10 +89,25 @@ export const regionalIntegrationListSpec: ListSpec = {
   ],
 }
 
+export const returnIntegrationListSpec: ListSpec = {
+  ...transferIntegrationListSpec,
+  filters: transferIntegrationListSpec.filters!.map((filter) =>
+    filter.param === 'selection'
+      ? {
+          ...filter,
+          param: 'sources',
+          column: 'sources_available',
+          values: ['available', 'unavailable'],
+        }
+      : filter,
+  ),
+}
+
 export type IntegrationFamily =
-  'purchase' | 'transfer' | 'event' | 'disposition' | 'network' | 'regional'
+  'purchase' | 'transfer' | 'event' | 'disposition' | 'network' | 'regional' | 'return'
 
 function integrationSpec(family: IntegrationFamily) {
+  if (family === 'return') return returnIntegrationListSpec
   if (family === 'regional') return regionalIntegrationListSpec
   if (family === 'network') return networkIntegrationListSpec
   if (family === 'disposition') return dispositionIntegrationListSpec
@@ -101,6 +116,14 @@ function integrationSpec(family: IntegrationFamily) {
 }
 
 export const integrationFamilies = {
+  return: {
+    prefix: 'returns/',
+    rpc: 'dealer_return_integration_workbench',
+    title: 'returnTitle',
+    context: 'returnContext',
+    navigation: 'returns',
+    link: 'returnLink',
+  },
   regional: {
     prefix: 'regional-stock/sourcing/',
     rpc: 'regional_integration_workbench',
@@ -272,6 +295,20 @@ export const regionalIntegrationResultSchema = integrationResultSchema.extend({
           source_row_count: z.number().int().min(1).max(950),
           requested_date: z.iso.date(),
           selection: z.enum(['current', 'historical', 'unavailable']),
+        }),
+    )
+    .max(100),
+})
+
+export const returnIntegrationResultSchema = integrationResultSchema.extend({
+  rows: z
+    .array(
+      integrationResultSchema.shape.rows.element
+        .omit({ supplier_code: true, selected: true })
+        .extend({
+          source_code: z.string(),
+          sources_available: z.boolean(),
+          requested_date: z.iso.date(),
         }),
     )
     .max(100),

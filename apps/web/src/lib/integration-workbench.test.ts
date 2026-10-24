@@ -213,3 +213,54 @@ describe('disposition integration boundaries', () => {
     ).toBe(false)
   })
 })
+
+describe('dealer-return integration boundaries', () => {
+  it('keeps source availability independent from reports and unrelated selection filters', () => {
+    const params = integrationParams(
+      {
+        source: 'BR',
+        location: 'HUB',
+        sources: 'unavailable',
+        kind: 'batch',
+        status: 'no_report',
+        system: ' ERP /+?& العربية ',
+        selection: 'historical',
+        supplier: 'SUP',
+        intent: 'scrap',
+      },
+      'return',
+    )
+    expect(params.filters).toEqual({
+      source: 'BR',
+      location: 'HUB',
+      sources: 'unavailable',
+      kind: 'batch',
+      status: 'no_report',
+      system: ' ERP /+?& العربية ',
+    })
+    const url = new URL(integrationHref(params, 2, 'return'), 'https://example.com')
+    expect(url.pathname).toBe('/replenishment/returns/integrations')
+    expect(integrationParams(Object.fromEntries(url.searchParams), 'return')).toMatchObject({
+      page: 2,
+      filters: params.filters,
+    })
+    expect(integrationParams({ sources: 'historical' }, 'return').filters).toEqual({})
+    for (const family of [
+      'purchase',
+      'transfer',
+      'event',
+      'disposition',
+      'network',
+      'regional',
+    ] as const)
+      expect(integrationParams({ sources: 'available' }, family).filters).toEqual({})
+  })
+  it('opens only the actual return package history', () => {
+    expect(integrationEvidenceHref({ kind: 'handoff', id: 'one' }, 'return')).toBe(
+      '/replenishment/returns/handoffs/one#acknowledgements',
+    )
+    expect(integrationEvidenceHref({ kind: 'batch', id: 'two' }, 'return')).toBe(
+      '/replenishment/returns/batches/two#acknowledgements',
+    )
+  })
+})

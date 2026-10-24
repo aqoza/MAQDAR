@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 27g adds a read-only dealer-return integration workbench. Preserve both-location RLS for rows/counts, latest reports per exact system before filtering, independent package histories and copied-batch search after source deletion. Live source availability is separate from report status and never confirms stock or eligibility. See [dealer-return-integration-workbench.md](docs/dealer-return-integration-workbench.md).
+
 Step 27f adds whole-package dealer-return reports with explicit `dealer_return_handoffs:acknowledge`; history uses `dealer_return_handoffs:read`. Preserve current authority after waits/retries, organization-wide client UUID identity, independent parent histories, both-location browser RLS and copied-batch retention. Reports never confirm physical receipt or issue credits. See [dealer-return-acknowledgements.md](docs/dealer-return-acknowledgements.md).
 
 Step 27e exposes original return handoff/batch JSON through explicit organization-wide `dealer_return_handoffs:read`. Preserve current key/creator authority, guarded service-only readers, bound pagination, copied retention and independent live source availability. No inherited scopes; Step 27f adds separately authorized reports. Browser both-location RLS stays unchanged. See [dealer-return-handoff-read-api.md](docs/dealer-return-handoff-read-api.md).

@@ -271,3 +271,15 @@ state and original files. Run `dealer-return-acknowledgements.spec.ts` and the r
 read API/regional report browser regressions against production builds. Inspect
 `return-reporter-settings-*.png` and `return-reports-*.png` across all five widths and
 Arabic RTL, including keyboard evidence disclosures, pagination and long references.
+
+## Dealer-return integration workbench (Step 27g)
+
+Run `0127_dealer_return_integration_workbench.test.sql` and the full privilege/tenant
+suite; mutate latest-report ordering once and prove the tests fail before restoring.
+Cover exact system labels, missing selected systems, latest-before-filter behavior,
+both endpoints for rows/counts, copied-batch retention, tie ordering and bounded
+pagination. Run the shared integration unit suite and production
+`dealer-return-integration-workbench.spec.ts` plus existing return report/read and
+shared integration flows. Inspect `return-integrations-*.png` at all five widths in
+English and Arabic RTL, keyboard focus/disclosures, contained table scrolling and
+escaped long text. Preserve original downloads and verify no operational writes.

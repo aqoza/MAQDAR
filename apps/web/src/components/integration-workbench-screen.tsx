@@ -19,6 +19,7 @@ import {
   dispositionIntegrationResultSchema,
   networkIntegrationResultSchema,
   regionalIntegrationResultSchema,
+  returnIntegrationResultSchema,
   type IntegrationFamily,
 } from '@/lib/integration-workbench'
 
@@ -29,6 +30,7 @@ export async function IntegrationWorkbenchScreen({
   searchParams: Promise<RawSearchParams>
   family?: IntegrationFamily
 }) {
+  const returns = family === 'return'
   const regional = family === 'regional'
   const network = family === 'network'
   const transfer = family === 'transfer'
@@ -57,6 +59,7 @@ export async function IntegrationWorkbenchScreen({
     disposition: dispositionIntegrationResultSchema,
     network: networkIntegrationResultSchema,
     regional: regionalIntegrationResultSchema,
+    return: returnIntegrationResultSchema,
   }[family]
   const result = resultSchema.parse(response.data)
   if (result.page !== params.page) redirect(integrationHref(params, result.page, family))
@@ -77,7 +80,7 @@ export async function IntegrationWorkbenchScreen({
     <div className="min-w-0 space-y-4">
       <IntegrationWorkbenchHeader family={family} />
       <div className="flex flex-wrap gap-4">
-        {regional ? (
+        {regional || returns ? (
           <details>
             <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-0">
               {t('otherIntegrations')}
@@ -88,6 +91,22 @@ export async function IntegrationWorkbenchScreen({
           </details>
         ) : (
           otherLinks
+        )}
+        {returns && (
+          <>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/returns/handoffs"
+            >
+              {t('returnHandoffs')}
+            </Link>
+            <Link
+              className="inline-flex min-h-11 items-center underline md:min-h-0"
+              href="/replenishment/returns/batches"
+            >
+              {t('returnBatches')}
+            </Link>
+          </>
         )}
         {regional && (
           <>
@@ -171,15 +190,17 @@ export async function IntegrationWorkbenchScreen({
       >
         <label className="col-span-2 grid min-w-0 grid-rows-[1fr_auto] gap-1 sm:col-span-1">
           {t(
-            regional
-              ? 'regionalSearch'
-              : network
-                ? 'networkSearch'
-                : disposition
-                  ? 'dispositionSearch'
-                  : family === 'event'
-                    ? 'eventSearch'
-                    : 'search',
+            returns
+              ? 'returnSearch'
+              : regional
+                ? 'regionalSearch'
+                : network
+                  ? 'networkSearch'
+                  : disposition
+                    ? 'dispositionSearch'
+                    : family === 'event'
+                      ? 'eventSearch'
+                      : 'search',
           )}
           <input name="q" maxLength={100} defaultValue={params.q} className={inputClass} />
         </label>
@@ -189,24 +210,28 @@ export async function IntegrationWorkbenchScreen({
             ? (['source', 'branch', 'system'] as const)
             : disposition
               ? (['location', 'system'] as const)
-              : ([transfer ? 'source' : 'supplier', 'location', 'system'] as const)
+              : ([transfer || returns ? 'source' : 'supplier', 'location', 'system'] as const)
         ).map((field) => (
           <label
             className={`grid min-w-0 grid-rows-[1fr_auto] gap-1 ${field === 'system' || field === 'region' ? 'col-span-2 sm:col-span-1' : ''}`}
             key={field}
           >
             {t(
-              regional && field === 'source'
-                ? 'includedSource'
-                : network && field === 'source'
-                  ? 'warehouse'
-                  : field === 'location'
-                    ? transfer
-                      ? 'destination'
-                      : family === 'event' || regional
-                        ? 'receiver'
-                        : field
-                    : field,
+              returns && field === 'source'
+                ? 'returnSource'
+                : returns && field === 'location'
+                  ? 'returnReceiver'
+                  : regional && field === 'source'
+                    ? 'includedSource'
+                    : network && field === 'source'
+                      ? 'warehouse'
+                      : field === 'location'
+                        ? transfer
+                          ? 'destination'
+                          : family === 'event' || regional
+                            ? 'receiver'
+                            : field
+                        : field,
             )}
             <input
               name={field}
@@ -220,10 +245,12 @@ export async function IntegrationWorkbenchScreen({
           [
             ['kind', ['handoff', 'batch']],
             [
-              'selection',
-              disposition || network || regional
-                ? (['current', 'historical', 'unavailable'] as const)
-                : (['current', 'historical'] as const),
+              returns ? 'sources' : 'selection',
+              returns
+                ? (['available', 'unavailable'] as const)
+                : disposition || network || regional
+                  ? (['current', 'historical', 'unavailable'] as const)
+                  : (['current', 'historical'] as const),
             ],
             ...(disposition ? [['intent', ['supplier_return', 'scrap']] as const] : []),
             ['status', ['received', 'rejected', 'no_report']],
@@ -279,16 +306,22 @@ export async function IntegrationWorkbenchScreen({
               {(
                 [
                   'package',
-                  regional
-                    ? 'regionLocations'
-                    : network
-                      ? 'warehouseBranches'
-                      : disposition
-                        ? 'intentLocation'
-                        : transfer
-                          ? 'sourceDestination'
-                          : 'supplierLocation',
-                  disposition || network || regional ? 'liveContext' : 'selection',
+                  returns
+                    ? 'returnLocations'
+                    : regional
+                      ? 'regionLocations'
+                      : network
+                        ? 'warehouseBranches'
+                        : disposition
+                          ? 'intentLocation'
+                          : transfer
+                            ? 'sourceDestination'
+                            : 'supplierLocation',
+                  returns
+                    ? 'sources'
+                    : disposition || network || regional
+                      ? 'liveContext'
+                      : 'selection',
                   'reportedBy',
                   'latestReport',
                   'inspect',
@@ -318,6 +351,11 @@ export async function IntegrationWorkbenchScreen({
                     </p>
                   )}
                   <p className="text-xs text-muted-foreground">{t(row.kind)}</p>
+                  {returns && 'requested_date' in row && (
+                    <p className="text-xs text-muted-foreground">
+                      {t('returnRequestedDate')}: {row.requested_date}
+                    </p>
+                  )}
                   <details className="text-xs text-muted-foreground">
                     <summary className="min-h-11 cursor-pointer py-3 md:min-h-0 md:py-1">
                       {t('packageDetails')}
@@ -392,7 +430,17 @@ export async function IntegrationWorkbenchScreen({
                   )}
                 </td>
                 <td className="p-3">
-                  {t('selection' in row ? row.selection : row.selected ? 'current' : 'historical')}
+                  {t(
+                    'sources_available' in row
+                      ? row.sources_available
+                        ? 'available'
+                        : 'unavailable'
+                      : 'selection' in row
+                        ? row.selection
+                        : row.selected
+                          ? 'current'
+                          : 'historical',
+                  )}
                 </td>
                 <td className="min-w-40 p-3">
                   <p className="max-w-56 whitespace-pre-wrap break-words [overflow-wrap:anywhere]">

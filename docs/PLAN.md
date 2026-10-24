@@ -926,3 +926,20 @@ after source-request deletion, with actual-parent cascades/audits. Members requi
 locations. Verify OpenAPI/integration tests and all five widths plus Arabic RTL using
 the compact green standard. Reports do not confirm physical receipt, issue credits,
 reserve stock or change inbound. See [dealer-return-acknowledgements.md](dealer-return-acknowledgements.md).
+
+### Step 27g — approved 2026-10-24
+
+PR #169 was reviewed without blocking findings and merged as `2509dfe` after all
+four CI jobs passed. A wrong-family scope mutation was caught by three API/OpenAPI
+tests, and all 220 focused tests passed after restoration.
+
+The owner approved a read-only dealer-return integration workbench for handoffs and
+copied batches, with source/receiver, kind, live source availability and report-status
+filters, saved-context search and original evidence/history links. Require both-location
+access for rows/counts. Select the latest server report per exact external-system label
+before filters; No report means absent evidence, including for a selected system.
+Keep batch/member/overlap histories independent and copied batches searchable after
+source-request deletion. Live source availability stays separate from reports and
+never confirms current stock or eligibility. Preserve the compact green design at all
+five widths plus Arabic RTL. No transmission, physical receiving, credits or stock
+changes. See [dealer-return-integration-workbench.md](dealer-return-integration-workbench.md).
