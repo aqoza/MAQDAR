@@ -1,4 +1,10 @@
 import {
+  supplierExplanationEvidenceSchema,
+  supplierExplanationAnswerSchema,
+  type SupplierExplanationEvidence,
+  type SupplierExplanationAnswer,
+} from './supplier-explainer'
+import {
   replenishmentExplanationEvidenceSchema,
   replenishmentExplanationAnswerSchema,
   type ReplenishmentExplanationEvidence,
@@ -27,11 +33,13 @@ const dispatchSchema = z.discriminatedUnion('dispatch', [
       explanationEvidenceSchema,
       forecastExplanationEvidenceSchema,
       replenishmentExplanationEvidenceSchema,
+      supplierExplanationEvidenceSchema,
     ]),
     prompt_version: z.enum([
       'policy-explainer-v1',
       'forecast-explainer-v1',
       'replenishment-explainer-v1',
+      'supplier-explainer-v1',
     ]),
   }),
 ])
@@ -40,13 +48,26 @@ export type ExplanationPorts = {
   provider: (input: {
     question: string
     locale: 'en' | 'ar'
-    evidence: ExplanationEvidence | ForecastExplanationEvidence | ReplenishmentExplanationEvidence
+    evidence:
+      | ExplanationEvidence
+      | ForecastExplanationEvidence
+      | ReplenishmentExplanationEvidence
+      | SupplierExplanationEvidence
   }) => Promise<{
-    answer: ExplanationAnswer | ForecastExplanationAnswer | ReplenishmentExplanationAnswer
+    answer:
+      | ExplanationAnswer
+      | ForecastExplanationAnswer
+      | ReplenishmentExplanationAnswer
+      | SupplierExplanationAnswer
     model: string
   }>
   complete: (result: {
-    answer: ExplanationAnswer | ForecastExplanationAnswer | ReplenishmentExplanationAnswer | null
+    answer:
+      | ExplanationAnswer
+      | ForecastExplanationAnswer
+      | ReplenishmentExplanationAnswer
+      | SupplierExplanationAnswer
+      | null
     model: string | null
     error: 'provider_error' | 'provider_timeout' | 'invalid_response' | null
   }) => Promise<void>
@@ -65,11 +86,13 @@ export async function executePolicyExplanation(ports: ExplanationPorts): Promise
       evidence: dispatch.evidence,
     })
     result = {
-      answer: (dispatch.evidence.method === 'replenishment-explainer-v1'
-        ? replenishmentExplanationAnswerSchema
-        : dispatch.evidence.method === 'forecast-explainer-v1'
-          ? forecastExplanationAnswerSchema
-          : explanationAnswerSchema
+      answer: (dispatch.evidence.method === 'supplier-explainer-v1'
+        ? supplierExplanationAnswerSchema
+        : dispatch.evidence.method === 'replenishment-explainer-v1'
+          ? replenishmentExplanationAnswerSchema
+          : dispatch.evidence.method === 'forecast-explainer-v1'
+            ? forecastExplanationAnswerSchema
+            : explanationAnswerSchema
       ).parse(output.answer),
       model: z
         .string()

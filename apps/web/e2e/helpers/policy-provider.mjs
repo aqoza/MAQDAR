@@ -22,19 +22,24 @@ globalThis.fetch = async (resource, init) => {
   const input = JSON.parse(request.messages[0].content)
   if (request.tools || JSON.stringify(input.evidence).includes('DO-NOT-SEND'))
     throw new Error('Unsafe provider projection')
+  const supplier = input.evidence.method === 'supplier-explainer-v1'
   const replenishment = input.evidence.method === 'replenishment-explainer-v1'
   const forecast = input.evidence.method === 'forecast-explainer-v1'
-  const text = replenishment
+  const text = supplier
     ? input.language === 'ar'
-      ? 'الفجوة المحفوظة لا تضمن التوريد في الوقت المطلوب.'
-      : 'The saved gap does not guarantee timely supply.'
-    : forecast
+      ? 'يعتمد التقريب المحفوظ على شروط مسجلة وليس التزاماً حالياً من المورد.'
+      : 'The saved rounding uses captured terms, not a current supplier commitment.'
+    : replenishment
       ? input.language === 'ar'
-        ? 'درجات اختيار النموذج تاريخية، والتغطية من اختبار منفصل.'
-        : 'Model-selection scores are historical; coverage uses a separate held-out check.'
-      : input.language === 'ar'
-        ? 'المهلة المحفوظة ثلاثة أيام تقويمية.'
-        : 'The recorded lead time is three calendar days.'
+        ? 'الفجوة المحفوظة لا تضمن التوريد في الوقت المطلوب.'
+        : 'The saved gap does not guarantee timely supply.'
+      : forecast
+        ? input.language === 'ar'
+          ? 'درجات اختيار النموذج تاريخية، والتغطية من اختبار منفصل.'
+          : 'Model-selection scores are historical; coverage uses a separate held-out check.'
+        : input.language === 'ar'
+          ? 'المهلة المحفوظة ثلاثة أيام تقويمية.'
+          : 'The recorded lead time is three calendar days.'
   const answer = {
     paragraphs: [
       {
@@ -43,11 +48,13 @@ globalThis.fetch = async (resource, init) => {
           ? ['unknown']
           : input.question.includes('force-policy-reference')
             ? ['policy_inputs']
-            : replenishment
-              ? ['gap_calculation', 'supply_timing']
-              : forecast
-                ? ['model_comparison', 'held_out_coverage']
-                : ['policy_inputs'],
+            : supplier
+              ? ['rounding_calculation', 'lead_time_evidence']
+              : replenishment
+                ? ['gap_calculation', 'supply_timing']
+                : forecast
+                  ? ['model_comparison', 'held_out_coverage']
+                  : ['policy_inputs'],
       },
     ],
   }

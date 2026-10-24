@@ -1722,14 +1722,14 @@ isOneToOne: true
                   ]
                 },"policy_explanations": {
                   Row: {
-                    "answer": Json | null,"api_version": string,"created_at": string,"dispatched_at": string | null,"error_code": string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at": string | null,"forecast_id": string | null,"forecast_run_id": string | null,"id": string,"item_id": string | null,"locale": string,"location_id": string,"organization_id": string,"policy_id": string | null,"policy_run_id": string | null,"prompt_version": string,"question": string,"replenishment_draft_id": string | null,"request_id": string,"requested_by": string,"requested_model": string | null,"response_model": string | null,"status": string,"subject_kind": string
+                    "answer": Json | null,"api_version": string,"created_at": string,"dispatched_at": string | null,"error_code": string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at": string | null,"forecast_id": string | null,"forecast_run_id": string | null,"id": string,"item_id": string | null,"locale": string,"location_id": string,"organization_id": string,"policy_id": string | null,"policy_run_id": string | null,"prompt_version": string,"question": string,"replenishment_draft_id": string | null,"request_id": string,"requested_by": string,"requested_model": string | null,"response_model": string | null,"status": string,"subject_kind": string,"supplier_scenario_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id"?: string | null,"id"?: string,"item_id"?: string | null,"locale": string,"location_id": string,"organization_id": string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question": string,"replenishment_draft_id"?: string | null,"request_id": string,"requested_by": string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string
+                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id"?: string | null,"id"?: string,"item_id"?: string | null,"locale": string,"location_id": string,"organization_id": string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question": string,"replenishment_draft_id"?: string | null,"request_id": string,"requested_by": string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string,"supplier_scenario_id"?: string | null
                   }
                   Update: {
-                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence"?: NonNullable<Json>,"fingerprint"?: string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id"?: string | null,"id"?: string,"item_id"?: string | null,"locale"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question"?: string,"replenishment_draft_id"?: string | null,"request_id"?: string,"requested_by"?: string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string
+                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence"?: NonNullable<Json>,"fingerprint"?: string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id"?: string | null,"id"?: string,"item_id"?: string | null,"locale"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question"?: string,"replenishment_draft_id"?: string | null,"request_id"?: string,"requested_by"?: string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string,"supplier_scenario_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -5067,6 +5067,12 @@ isOneToOne: false
                            },
 "supplier_event_response_workbench":
 { Args: { "p_filters"?: Json,"p_organization_id": string,"p_page"?: number,"p_size"?: number }; Returns: Json
+                           },
+"supplier_explainer_preview":
+{ Args: { "p_organization_id": string,"p_scenario_id": string }; Returns: Json
+                           },
+"supplier_explainer_request":
+{ Args: { "p_confirmed": boolean,"p_fingerprint": string,"p_locale": string,"p_organization_id": string,"p_question": string,"p_request_id": string,"p_scenario_id": string }; Returns: string
                            },
 "supplier_portal_accept":
 { Args: { "p_grant_id": string }; Returns: undefined

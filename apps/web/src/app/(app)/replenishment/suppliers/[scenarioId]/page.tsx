@@ -36,9 +36,23 @@ export default async function SavedSupplierScenario({
   if (error) throw new Error('Supplier scenario unavailable')
   if (!data) notFound()
   const report = supplierScenarioReportSchema.parse(data.report)
+  const explain = await getTranslations('SupplierExplainer')
   return (
     <div className="space-y-4">
-      <PageHeader pattern="replenishment" title={t('saved')} />
+      <PageHeader
+        pattern="replenishment"
+        title={t('saved')}
+        actions={
+          report.status === 'available' ? (
+            <Link
+              className="underline"
+              href={`/replenishment/suppliers/explanations/new?scenario=${scenarioId}`}
+            >
+              {explain('action')}
+            </Link>
+          ) : undefined
+        }
+      />
       <p>
         {t('savedBy', {
           actor: data.submitted_by === context.userId ? t('you') : data.submitted_by,

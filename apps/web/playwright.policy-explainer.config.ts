@@ -11,6 +11,7 @@ export default defineConfig({
     'policy-explainer.spec.ts',
     'forecast-explainer.spec.ts',
     'replenishment-explainer.spec.ts',
+    'supplier-explainer.spec.ts',
   ],
   outputDir: 'test-results/policy-explainer',
   testIgnore: [],

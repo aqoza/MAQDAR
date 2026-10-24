@@ -129,6 +129,7 @@ jobs:
             apps/web/test-results/**/policy-explainer-*.png
             apps/web/test-results/**/forecast-explainer-*.png
             apps/web/test-results/**/replenishment-explainer-*.png
+            apps/web/test-results/**/supplier-explainer-*.png
           retention-days: 7
       - name: Retain dealer-return visual evidence
         uses: actions/upload-artifact@v7
