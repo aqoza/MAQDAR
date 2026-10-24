@@ -7,6 +7,9 @@ import { PageHeader } from '@/components/page-header'
 import { HelpDisclosure } from '@/components/help-disclosure'
 import { DealerReturnWithdrawal } from '@/components/dealer-return-form'
 import { DealerReturnReview } from '@/components/dealer-return-review'
+import { DealerReturnHandoffForm } from '@/components/dealer-return-handoff-form'
+import { returnHandoffsPath } from '@/lib/dealer-return-handoffs'
+import { isEditorRole } from '@/lib/auth/roles'
 import { getActiveContext } from '@/lib/organizations/context'
 import { createClient } from '@/lib/supabase/server'
 import { displayName } from '@/lib/format'
@@ -38,6 +41,14 @@ export default async function DealerReturnDetail({ params }: { params: Promise<{
     .maybeSingle()
   if (error) throw new Error('Return request unavailable')
   if (!data) notFound()
+  const ht = await getTranslations('DealerReturnHandoffs')
+  const handoff = await db
+    .from('dealer_return_handoffs')
+    .select('id')
+    .eq('organization_id', context.active.id)
+    .eq('return_id', data.id)
+    .maybeSingle()
+  if (handoff.error) throw new Error('Return handoff unavailable')
   const report = dealerReturnReportSchema.parse(data.report)
   const details = [
     ['item_code', `${report.item.code} · ${displayName(report.item, locale).primary}`],
@@ -110,6 +121,18 @@ export default async function DealerReturnDetail({ params }: { params: Promise<{
           {t('identifier')}: {data.id}
         </p>
       </section>
+      {handoff.data ? (
+        <Link
+          className="inline-flex min-h-11 items-center underline"
+          href={returnHandoffsPath + '/' + handoff.data.id}
+        >
+          {ht('open')}
+        </Link>
+      ) : data.decision === 'approved' && !data.withdrawn_at && isEditorRole(context.role) ? (
+        <NextIntlClientProvider messages={{ DealerReturnHandoffs: messages.DealerReturnHandoffs }}>
+          <DealerReturnHandoffForm organizationId={context.active.id} returnId={data.id} />
+        </NextIntlClientProvider>
+      ) : null}
       {data.submitted_by === context.userId && !data.withdrawn_at && !data.decision && (
         <NextIntlClientProvider messages={{ DealerReturns: messages.DealerReturns }}>
           <DealerReturnWithdrawal organizationId={context.active.id} returnId={data.id} />

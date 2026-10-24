@@ -1,0 +1,57 @@
+import type { ReturnHandoffPayload } from './dealer-return-handoffs'
+const id = (n: number) => 'cc270000-0000-4000-8000-' + String(n).padStart(12, '0')
+export const returnHandoffFixture: ReturnHandoffPayload = {
+  schema_version: 'dealer-return-handoff-v1',
+  purpose: 'internal_return_authorization',
+  notice: 'Requested return date is not a scheduled receipt. No operational effects.',
+  handoff_id: id(1),
+  organization_id: id(2),
+  created_at: '2026-10-24T12:00:00+00:00',
+  created_by: id(3),
+  created_by_email: 'editor@example.com',
+  request: {
+    id: id(4),
+    created_at: '2026-10-24T10:00:00+00:00',
+    submitted_by: id(3),
+    report: {
+      method: 'dealer-return-request-v1',
+      author: 'editor@example.com',
+      input: {
+        item_code: 'P1',
+        source_code: 'B',
+        location_code: 'H',
+        quantity: '999999999999999.999',
+        unit: 'EA',
+        requested_date: '2026-11-01',
+        condition: 'unknown',
+        reason: '=1+1',
+        sale_reference: 'INV-"1"',
+        confirmed: true,
+      },
+      item: {
+        id: id(5),
+        code: 'P1',
+        name_en: 'Part',
+        name_ar: 'قطعة',
+        unit: 'EA',
+        status: 'active',
+      },
+      source: {
+        id: id(6),
+        code: 'B',
+        name_en: 'Branch',
+        name_ar: 'الفرع',
+        location_type: 'branch',
+      },
+      receiver: { id: id(7), code: 'H', name_en: 'Hub', name_ar: 'المركز', location_type: 'hub' },
+    },
+  },
+  approval: {
+    decision: 'approved',
+    decided_at: '2026-10-24T11:00:00+00:00',
+    decided_by: id(8),
+    reviewer_email: 'review@example.com',
+    reason: 'Eligibility checked',
+    eligibility_confirmed: true,
+  },
+}

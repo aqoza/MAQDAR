@@ -126,6 +126,44 @@ isOneToOne: false
                   Relationships: [
 
                   ]
+                },"dealer_return_handoffs": {
+                  Row: {
+                    "created_at": string,"created_by": string,"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"return_id": string,"search_text": string,"source_location_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at": string,"created_by": string,"id": string,"location_id": string,"organization_id": string,"payload": NonNullable<Json>,"return_id": string,"search_text": string,"source_location_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"return_id"?: string,"search_text"?: string,"source_location_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "dealer_return_handoffs_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "dealer_return_handoffs_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "dealer_return_handoffs_organization_id_return_id_fkey"
+      columns: ["organization_id","return_id"]
+isOneToOne: true
+      referencedRelation: "dealer_return_requests"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "dealer_return_handoffs_organization_id_source_location_id_fkey"
+      columns: ["organization_id","source_location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"dealer_return_requests": {
                   Row: {
                     "created_at": string,"decided_at": string | null,"decided_by": string | null,"decision": string | null,"decision_reason": string | null,"eligibility_confirmed": boolean | null,"id": string,"location_id": string,"organization_id": string,"report": NonNullable<Json>,"request_id": string,"reviewer_email": string | null,"search_text": string,"source_location_id": string,"submitted_by": string,"withdrawal_reason": string | null,"withdrawn_at": string | null,"withdrawn_by": string | null
@@ -4359,6 +4397,9 @@ isOneToOne: false
                            },
 "dashboard_summary":
 { Args: { "p_day"?: string,"p_organization_id": string }; Returns: Json
+                           },
+"dealer_return_handoff_create":
+{ Args: { "p_organization_id": string,"p_return_id": string }; Returns: string
                            },
 "dealer_return_review":
 { Args: { "p_decision": string,"p_eligibility_confirmed": boolean,"p_organization_id": string,"p_reason": string,"p_return_id": string }; Returns: string

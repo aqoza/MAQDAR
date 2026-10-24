@@ -1,0 +1,72 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pins versioned JSON/CSV bytes, exact quantities and copied approval evidence 1`] = `
+"{
+  "schema_version": "dealer-return-handoff-v1",
+  "purpose": "internal_return_authorization",
+  "notice": "Requested return date is not a scheduled receipt. No operational effects.",
+  "handoff_id": "cc270000-0000-4000-8000-000000000001",
+  "organization_id": "cc270000-0000-4000-8000-000000000002",
+  "created_at": "2026-10-24T12:00:00+00:00",
+  "created_by": "cc270000-0000-4000-8000-000000000003",
+  "created_by_email": "editor@example.com",
+  "request": {
+    "id": "cc270000-0000-4000-8000-000000000004",
+    "created_at": "2026-10-24T10:00:00+00:00",
+    "submitted_by": "cc270000-0000-4000-8000-000000000003",
+    "report": {
+      "method": "dealer-return-request-v1",
+      "input": {
+        "item_code": "P1",
+        "source_code": "B",
+        "location_code": "H",
+        "quantity": "999999999999999.999",
+        "unit": "EA",
+        "requested_date": "2026-11-01",
+        "condition": "unknown",
+        "reason": "=1+1",
+        "sale_reference": "INV-\\"1\\"",
+        "confirmed": true
+      },
+      "author": "editor@example.com",
+      "item": {
+        "id": "cc270000-0000-4000-8000-000000000005",
+        "code": "P1",
+        "name_en": "Part",
+        "name_ar": "قطعة",
+        "unit": "EA",
+        "status": "active"
+      },
+      "source": {
+        "id": "cc270000-0000-4000-8000-000000000006",
+        "code": "B",
+        "name_en": "Branch",
+        "name_ar": "الفرع",
+        "location_type": "branch"
+      },
+      "receiver": {
+        "id": "cc270000-0000-4000-8000-000000000007",
+        "code": "H",
+        "name_en": "Hub",
+        "name_ar": "المركز",
+        "location_type": "hub"
+      }
+    }
+  },
+  "approval": {
+    "decision": "approved",
+    "decided_at": "2026-10-24T11:00:00+00:00",
+    "decided_by": "cc270000-0000-4000-8000-000000000008",
+    "reviewer_email": "review@example.com",
+    "reason": "Eligibility checked",
+    "eligibility_confirmed": true
+  }
+}
+"
+`;
+
+exports[`pins versioned JSON/CSV bytes, exact quantities and copied approval evidence 2`] = `
+"﻿"schema_version","purpose","notice","handoff_id","organization_id","created_at","created_by","created_by_email","return_request_id","requested_by","requested_by_email","request_created_at","item_id","item_code","item_name_en","item_name_ar","recorded_item_status","source_location_id","source_location_code","source_name_en","source_name_ar","source_location_type","receiving_location_id","receiving_location_code","receiving_name_en","receiving_name_ar","receiving_location_type","declared_quantity","unit","requested_return_date","declared_condition","request_reason","original_sale_reference","declaration_confirmed","decision","approved_at","approved_by","reviewer_email","eligibility_rationale","eligibility_confirmed"
+"dealer-return-handoff-v1","internal_return_authorization","Requested return date is not a scheduled receipt. No operational effects.","cc270000-0000-4000-8000-000000000001","cc270000-0000-4000-8000-000000000002","2026-10-24T12:00:00+00:00","cc270000-0000-4000-8000-000000000003","editor@example.com","cc270000-0000-4000-8000-000000000004","cc270000-0000-4000-8000-000000000003","editor@example.com","2026-10-24T10:00:00+00:00","cc270000-0000-4000-8000-000000000005","P1","Part","قطعة","active","cc270000-0000-4000-8000-000000000006","B","Branch","الفرع","branch","cc270000-0000-4000-8000-000000000007","H","Hub","المركز","hub","999999999999999.999","EA","2026-11-01","unknown","'=1+1","INV-""1""","true","approved","2026-10-24T11:00:00+00:00","cc270000-0000-4000-8000-000000000008","review@example.com","Eligibility checked","true"
+"
+`;

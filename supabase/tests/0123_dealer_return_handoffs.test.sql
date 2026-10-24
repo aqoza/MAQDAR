@@ -1,0 +1,118 @@
+begin;
+select no_plan();
+create function pg_temp.id(n integer) returns uuid language sql immutable as $$select ('cc270000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid$$;
+create function pg_temp.login(n integer) returns void language sql as $$select set_config('request.jwt.claims',jsonb_build_object('sub',pg_temp.id(n),'role','authenticated','org_id',pg_temp.id(1))::text,true)::void$$;
+insert into auth.users(id,email) select pg_temp.id(n),'returns-'||n||'@test.local' from generate_series(10,16) n;
+insert into public.organizations(id,slug,name) values(pg_temp.id(1),'returns-a','Returns A'),(pg_temp.id(2),'returns-b','Returns B');
+insert into public.memberships(organization_id,user_id,role) values
+ (pg_temp.id(1),pg_temp.id(10),'owner'),(pg_temp.id(1),pg_temp.id(11),'viewer'),(pg_temp.id(1),pg_temp.id(12),'branch_user'),
+ (pg_temp.id(2),pg_temp.id(13),'owner'),(pg_temp.id(1),pg_temp.id(14),'planner'),(pg_temp.id(1),pg_temp.id(15),'approver'),(pg_temp.id(1),pg_temp.id(16),'admin');
+insert into public.locations(id,organization_id,code,name_en,location_type,country_code,timezone) values
+ (pg_temp.id(101),pg_temp.id(1),'B','Branch','branch','SA','Asia/Riyadh'),
+ (pg_temp.id(102),pg_temp.id(1),'H','Hub','hub','SA','Asia/Riyadh'),
+ (pg_temp.id(103),pg_temp.id(1),'C','Central','central','SA','Asia/Riyadh'),
+ (pg_temp.id(104),pg_temp.id(2),'OTHER','Other','branch','SA','Asia/Riyadh');
+insert into public.items(id,organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency)
+ values(pg_temp.id(30),pg_temp.id(1),'P1','Part','Test','EA',1,'SAR');
+insert into public.membership_locations values(pg_temp.id(1),pg_temp.id(12),pg_temp.id(101));
+create temporary table fixture(input jsonb,saved uuid,report jsonb);
+insert into fixture(input) values('{"item_code":"P1","source_code":"B","location_code":"H","quantity":"2.125","unit":"EA","requested_date":"2026-10-24","condition":"unknown","reason":"Declared excess","sale_reference":"INV-4","confirmed":true}');
+grant all on fixture to authenticated;
+create function pg_temp.save(n integer default 50,overrides jsonb default '{}') returns uuid language sql as $$select public.dealer_return_save(pg_temp.id(1),input||overrides,pg_temp.id(n)) from fixture$$;
+create function pg_temp.review(n integer default 50,d text default 'approved',r text default 'Eligibility checked',c boolean default true) returns uuid language sql as $$
+ select public.dealer_return_review(pg_temp.id(1),(select id from public.dealer_return_requests where request_id=pg_temp.id(n)),d,r,c)$$;
+alter table fixture add column handoff uuid,add column payload jsonb;
+create function pg_temp.export(n integer default 50) returns uuid language sql as $$
+ select public.dealer_return_handoff_create(pg_temp.id(1),(select id from public.dealer_return_requests where request_id=pg_temp.id(n)))$$;
+select pg_temp.login(10); set local role authenticated;
+update fixture set saved=pg_temp.save();
+select throws_ok($$select pg_temp.export()$$,'MQ409',null,'undecided requests cannot export');
+select pg_temp.save(n) from generate_series(51,57) n;
+select public.dealer_return_withdraw(pg_temp.id(1),pg_temp.save(57),'Correction');
+select pg_temp.login(15);
+select pg_temp.review(n) from generate_series(50,55) n;
+select pg_temp.review(56,'rejected','Not eligible',false);
+select throws_ok($$select pg_temp.export()$$,'MQ403',null,'approver alone cannot create exports');
+select pg_temp.login(10);
+select throws_ok($$select pg_temp.export(56)$$,'MQ409',null,'rejected request cannot export');
+select throws_ok($$select pg_temp.export(57)$$,'MQ409',null,'withdrawn request cannot export');
+update fixture set handoff=pg_temp.export();
+update fixture set payload=(select payload from public.dealer_return_handoffs where id=handoff);
+select is(pg_temp.export(),(select handoff from fixture),'one stable handoff per request');
+select is((select payload#>>'{request,report,input,quantity}' from fixture),'2.125','exact full quantity copied');
+select is((select payload#>>'{request,report,input,condition}' from fixture),'unknown','unknown condition preserved');
+select is((select payload#>>'{request,report,input,requested_date}' from fixture),'2026-10-24','requested date preserved without scheduling');
+select is((select payload#>>'{request,report,input,sale_reference}' from fixture),'INV-4','original reference copied');
+select is((select payload#>>'{approval,reason}' from fixture),'Eligibility checked','approval rationale copied');
+select is((select payload#>>'{approval,reviewer_email}' from fixture),'returns-15@test.local','reviewer evidence copied');
+select is((select payload#>>'{approval,eligibility_confirmed}' from fixture),'true','recorded eligibility copied');
+select is((select payload->'request'->'report' from fixture),(select report from public.dealer_return_requests where id=(select saved from fixture)),'complete declaration retained');
+select ok((select payload->>'notice' like '%not a scheduled receipt%' from fixture),'date limitation carried into exports');
+select pg_temp.login(14);
+select is(pg_temp.export(),(select handoff from fixture),'another current editor receives original handoff');
+select pg_temp.login(11);
+select is((select count(*)::int from public.dealer_return_handoffs),1,'viewer reads history');
+select throws_ok($$select pg_temp.export()$$,'MQ403',null,'viewer cannot retry create');
+select pg_temp.login(12);
+select is((select count(*)::int from public.dealer_return_handoffs),0,'source-only membership cannot read');
+reset role;
+insert into public.membership_locations values(pg_temp.id(1),pg_temp.id(12),pg_temp.id(102));
+set local role authenticated;
+select is((select count(*)::int from public.dealer_return_handoffs),1,'both endpoints allow scoped history');
+reset role;
+delete from public.membership_locations where location_id=pg_temp.id(101);
+set local role authenticated;
+select is((select count(*)::int from public.dealer_return_handoffs),0,'receiver-only membership cannot read');
+select pg_temp.login(13);
+select is((select count(*)::int from public.dealer_return_handoffs),0,'other tenant cannot inspect');
+select set_config('request.jwt.claims',jsonb_build_object('sub',pg_temp.id(13),'role','authenticated','org_id',pg_temp.id(2))::text,true);
+select throws_ok($$select public.dealer_return_handoff_create(pg_temp.id(2),(select saved from fixture))$$,'MQ404',null,'cross-tenant request unavailable');
+select pg_temp.login(10);
+select throws_ok($$update public.dealer_return_handoffs set payload='{}'$$,'42501',null,'raw updates denied');
+select throws_ok($$delete from public.dealer_return_handoffs$$,'42501',null,'raw deletes denied');
+select throws_ok($$insert into public.dealer_return_handoffs select * from public.dealer_return_handoffs$$,'42501',null,'raw inserts denied');
+reset role;
+update public.items set unit_of_measure='SET' where id=pg_temp.id(30);
+set local role authenticated;
+select throws_ok($$select pg_temp.export(51)$$,'MQ409',null,'changed unit blocks first save');
+select is(pg_temp.export(),(select handoff from fixture),'retry retains prior handoff despite changed unit');
+reset role;
+update public.items set unit_of_measure='EA',code='RENAMED' where id=pg_temp.id(30);
+set local role authenticated;
+select throws_ok($$select pg_temp.export(51)$$,'MQ409',null,'changed item code blocks first save');
+reset role;
+update public.items set code='P1' where id=pg_temp.id(30);
+update public.locations set is_active=false where id=pg_temp.id(102);
+set local role authenticated;
+select throws_ok($$select pg_temp.export(51)$$,'MQ409',null,'inactive receiver blocks first save');
+reset role;
+update public.locations set is_active=true,location_type='central' where id=pg_temp.id(102);
+set local role authenticated;
+select throws_ok($$select pg_temp.export(51)$$,'MQ409',null,'changed endpoint kind blocks first save');
+reset role;
+update public.locations set location_type='hub',code='RENAMED' where id=pg_temp.id(102);
+set local role authenticated;
+select throws_ok($$select pg_temp.export(51)$$,'MQ409',null,'changed endpoint code blocks first save');
+reset role;
+update public.locations set code='H' where id=pg_temp.id(102);
+set local role authenticated;
+select isnt(pg_temp.export(51),(select handoff from fixture),'separate approved requests stay independent');
+reset role;
+delete from public.items where id=pg_temp.id(30);
+insert into public.items(organization_id,code,name_en,product_group,unit_of_measure,unit_cost,currency)
+ values(pg_temp.id(1),'P1','Replacement','Test','EA',1,'SAR');
+set local role authenticated;
+select throws_ok($$select pg_temp.export(52)$$,'MQ409',null,'reused catalog code cannot replace original identity');
+select is((select payload from public.dealer_return_handoffs where id=(select handoff from fixture)),(select payload from fixture),'catalog changes and item deletion leave original evidence intact');
+select is((select count(*)::int from public.stock_snapshots where organization_id=pg_temp.id(1)),0,'no stock effects');
+select is((select count(*)::int from public.open_orders where organization_id=pg_temp.id(1)),0,'no inbound effects');
+reset role;
+select is((select count(*)::int from public.audit_log where table_name='dealer_return_handoffs' and organization_id=pg_temp.id(1) and operation='INSERT'),2,'retries add no duplicate audits');
+delete from auth.users where id in (pg_temp.id(14),pg_temp.id(15));
+select is((select payload from public.dealer_return_handoffs where id=(select handoff from fixture)),(select payload from fixture),'account deletion retains copied actor/approval evidence');
+delete from public.dealer_return_requests where id=(select saved from fixture);
+select is((select count(*)::int from public.dealer_return_handoffs),1,'actual parent deletion cascades only its handoff');
+delete from public.locations where id=pg_temp.id(102);
+select is((select count(*)::int from public.dealer_return_handoffs),0,'endpoint deletion follows request/history cascades');
+select * from finish();
+rollback;
