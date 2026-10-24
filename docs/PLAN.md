@@ -241,7 +241,9 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 27c  | **Dealer-return handoffs:** immutable approved-request CSV/JSON, searchable history and both-location access.                                                                                                               | Merged — PR #166                                    |
 | 27d  | **Dealer-return batches:** immutable multi-item authorization packages, copied history and both-location access.                                                                                                            | Merged — PR #167                                    |
 | 27e  | **Dealer-return read API:** explicit organization-wide permission, original authorization JSON, bounded pagination and separate live source availability.                                                                   | Merged — PR #168                                    |
-| 27f  | **Dealer-return acknowledgements:** explicit whole-package reports, current authority, independent retained history and both-location access.                                                                               | Ready for review                                    |
+| 27f  | **Dealer-return acknowledgements:** explicit whole-package reports, current authority, independent retained history and both-location access.                                                                               | Merged - PR #169                                    |
+| 27g  | **Dealer-return integration workbench:** scoped exact latest reports, retained copied batches and independent source availability.                                                                                          | Merged - PR #170                                    |
+| 28   | **Read-only AI policy explainer:** explicit Claude opt-in, limited preview, scoped immutable answers and validated evidence links.                                                                                          | Ready for review                                    |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -943,3 +945,7 @@ source-request deletion. Live source availability stays separate from reports an
 never confirms current stock or eligibility. Preserve the compact green design at all
 five widths plus Arabic RTL. No transmission, physical receiving, credits or stock
 changes. See [dealer-return-integration-workbench.md](dealer-return-integration-workbench.md).
+
+### Step 28 - approved 2026-10-24
+
+Begin Phase 5 with one available saved individual-item policy and one confirmed question. Use a server-only Claude adapter, disabled until credentials/model and organization owner/admin opt-in are present. Send a previewable limited summary excluding account details, prices, raw transactions and credentials; apply database quotas and provider bounds. Editors request, location-authorized members inspect. Recheck authority before sending and publishing, validate evidence references, retain question/summary/model/version/answer and label AI interpretation. Keep all planning and operational data unchanged. Compact green screens at five widths and Arabic RTL; no hosted changes in this PR. See [policy-explainer.md](policy-explainer.md).

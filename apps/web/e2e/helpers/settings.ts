@@ -1,7 +1,14 @@
 import { expect, type Page } from '@playwright/test'
 
 export type SettingsSectionKey =
-  'organization' | 'preferences' | 'members' | 'invitations' | 'api-keys' | 'password' | 'language'
+  | 'policy-explainer'
+  | 'organization'
+  | 'preferences'
+  | 'members'
+  | 'invitations'
+  | 'api-keys'
+  | 'password'
+  | 'language'
 
 /** Follow the real local Settings navigation, including the collapsed laptop/mobile menu. */
 export async function selectSettingsSection(page: Page, section: SettingsSectionKey) {

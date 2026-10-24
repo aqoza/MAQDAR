@@ -77,6 +77,8 @@ jobs:
         run: pnpm --filter web exec playwright install --with-deps chromium
       - name: Playwright smoke
         run: pnpm --filter web test:e2e
+      - name: Policy explainer browser acceptance (mocked provider)
+        run: pnpm --filter web exec playwright test --config playwright.policy-explainer.config.ts
       - name: Package Cloudflare Worker (no deployment)
         run: pnpm --filter web cf:build
       - uses: actions/upload-artifact@v7
@@ -117,6 +119,13 @@ jobs:
         with:
           name: installed-base-visuals
           path: apps/web/test-results/**/installed-base-*.png
+          retention-days: 7
+      - name: Retain policy explainer visual evidence
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: policy-explainer-visuals
+          path: apps/web/test-results/**/policy-explainer-*.png
           retention-days: 7
       - name: Retain dealer-return visual evidence
         uses: actions/upload-artifact@v7
