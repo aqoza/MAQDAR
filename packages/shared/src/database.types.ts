@@ -2414,6 +2414,38 @@ isOneToOne: false
       referencedColumns: ["organization_id","id"]
     }
                   ]
+                },"supplier_event_responses": {
+                  Row: {
+                    "actor_email": string,"actor_id": string,"batch_publication_id": string | null,"created_at": string,"id": string,"location_id": string,"organization_id": string,"publication_id": string | null,"reason": string,"reference": string,"request_id": string,"revision": number,"status": string,"supplier_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "actor_email": string,"actor_id": string,"batch_publication_id"?: string | null,"created_at"?: string,"id"?: string,"location_id": string,"organization_id": string,"publication_id"?: string | null,"reason"?: string,"reference"?: string,"request_id": string,"revision": number,"status": string,"supplier_id": string
+                  }
+                  Update: {
+                    "actor_email"?: string,"actor_id"?: string,"batch_publication_id"?: string | null,"created_at"?: string,"id"?: string,"location_id"?: string,"organization_id"?: string,"publication_id"?: string | null,"reason"?: string,"reference"?: string,"request_id"?: string,"revision"?: number,"status"?: string,"supplier_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "supplier_event_responses_organization_id_batch_publication_fkey"
+      columns: ["organization_id","batch_publication_id"]
+isOneToOne: false
+      referencedRelation: "supplier_event_batch_publications"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_event_responses_organization_id_location_id_fkey"
+      columns: ["organization_id","location_id"]
+isOneToOne: false
+      referencedRelation: "locations"
+      referencedColumns: ["organization_id","id"]
+    },{
+      foreignKeyName: "supplier_event_responses_organization_id_publication_id_fkey"
+      columns: ["organization_id","publication_id"]
+isOneToOne: false
+      referencedRelation: "supplier_event_publications"
+      referencedColumns: ["organization_id","id"]
+    }
+                  ]
                 },"supplier_items": {
                   Row: {
                     "created_at": string,"currency": string,"id": string,"is_preferred": boolean,"item_id": string,"lead_time_days": number,"lead_time_days_p90": number | null,"min_order_quantity": number,"organization_id": string,"pack_size": number,"shipping_valid_from": string | null,"shipping_volume_m3": number | null,"shipping_weight_kg": number | null,"supplier_id": string,"supplier_part_number": string | null,"unit_of_measure": string | null,"unit_price": number,"updated_at": string,"valid_from": string | null
@@ -4707,6 +4739,15 @@ isOneToOne: false
                            },
 "supplier_event_publication_withdraw":
 { Args: { "p_organization_id": string,"p_publication_id": string }; Returns: undefined
+                           },
+"supplier_event_response_history":
+{ Args: { "p_grant_id": string,"p_kind": string,"p_page"?: number,"p_publication_id": string }; Returns: Json
+                           },
+"supplier_event_response_history_internal":
+{ Args: { "p_kind": string,"p_organization_id": string,"p_page"?: number,"p_publication_id": string }; Returns: Json
+                           },
+"supplier_event_response_submit":
+{ Args: { "p_grant_id": string,"p_kind": string,"p_publication_id": string,"p_reason"?: string,"p_reference"?: string,"p_request_id": string,"p_status": string }; Returns: string
                            },
 "supplier_portal_accept":
 { Args: { "p_grant_id": string }; Returns: undefined

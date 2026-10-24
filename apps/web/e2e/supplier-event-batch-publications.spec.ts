@@ -169,7 +169,7 @@ with psycopg.connect(sys.argv[1]) as db:
     )
     await expect(
       supplierPage.getByRole('button', { name: 'Record response', exact: true }),
-    ).toHaveCount(0)
+    ).toBeVisible()
     await expect(supplierPage.getByRole('region', { name: 'Overlapping packages' })).toBeVisible()
     await expect(
       supplierPage.getByRole('link', { name: new RegExp(overlapSaved.data) }),
