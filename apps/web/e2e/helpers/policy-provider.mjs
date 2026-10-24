@@ -22,8 +22,12 @@ globalThis.fetch = async (resource, init) => {
   const input = JSON.parse(request.messages[0].content)
   if (request.tools || JSON.stringify(input.evidence).includes('DO-NOT-SEND'))
     throw new Error('Unsafe provider projection')
-  const text =
-    input.language === 'ar'
+  const forecast = input.evidence.method === 'forecast-explainer-v1'
+  const text = forecast
+    ? input.language === 'ar'
+      ? 'درجات اختيار النموذج تاريخية، والتغطية من اختبار منفصل.'
+      : 'Model-selection scores are historical; coverage uses a separate held-out check.'
+    : input.language === 'ar'
       ? 'المهلة المحفوظة ثلاثة أيام تقويمية.'
       : 'The recorded lead time is three calendar days.'
   const answer = {
@@ -32,7 +36,11 @@ globalThis.fetch = async (resource, init) => {
         text: text + ' <script>window.injected=true</script>',
         references: input.question.includes('force-invalid-reference')
           ? ['unknown']
-          : ['policy_inputs'],
+          : input.question.includes('force-policy-reference')
+            ? ['policy_inputs']
+            : forecast
+              ? ['model_comparison', 'held_out_coverage']
+              : ['policy_inputs'],
       },
     ],
   }

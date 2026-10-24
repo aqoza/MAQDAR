@@ -21,7 +21,7 @@ export default async function ExplanationHistory({
   ])
   const { data, error, count } = await db
     .from('policy_explanations')
-    .select('id,question,status,created_at,policy_id', { count: 'exact' })
+    .select('id,question,status,created_at,subject_kind', { count: 'exact' })
     .eq('organization_id', context.active.id)
     .order('created_at', { ascending: false })
     .order('id')
@@ -35,6 +35,11 @@ export default async function ExplanationHistory({
         pattern="forecasts"
         title={t('history')}
         description={t('description')}
+        actions={
+          <Link href="/forecasts/quality" className="underline">
+            {t('chooseForecast')}
+          </Link>
+        }
         back={
           <Link href="/forecasts/workbench" className="underline">
             {t('choosePolicy')}
@@ -48,9 +53,10 @@ export default async function ExplanationHistory({
             href={`${explanationPath}/${row.id}`}
             className="break-words font-medium underline [overflow-wrap:anywhere]"
           >
-            {row.question}
+            <bdi>{row.question}</bdi>
           </Link>
           <p className="text-xs text-muted-foreground">
+            {t(row.subject_kind === 'forecast' ? 'forecastKind' : 'policyKind')} ·{' '}
             {t(`statuses.${explanationStatus(row.status, row.created_at)}`)} ·{' '}
             <time dateTime={row.created_at}>
               {format.dateTime(new Date(row.created_at), 'long')}

@@ -52,6 +52,7 @@ export default async function ForecastResults({
   const driver =
     multi || z.object({ method: z.literal('driver-v1') }).safeParse(run.options).success
   const driverText = await getTranslations(multi ? 'MultiDriverForecast' : 'DriverForecast')
+  const explainText = await getTranslations('ForecastExplainer')
   const events = await getTranslations('PlannedEvents')
   const prepared = await getTranslations('PreparedForecast')
   const { data: rows, error } = await db
@@ -173,6 +174,14 @@ export default async function ForecastResults({
           <h2 className="text-section-title">
             {t('details')} · {rows?.find((r) => r.item_id === item)?.item_code}
           </h2>
+          {selected?.status === 'selected' && !regional && (
+            <Link
+              className="inline-flex min-h-11 items-center underline"
+              href={`/forecasts/explanations/new?forecast=${selected.id}`}
+            >
+              {explainText('title')}
+            </Link>
+          )}
           {!driver && selected?.status === 'selected' && isEditorRole(context.role) && (
             <NextIntlClientProvider messages={{ InventoryPolicy: messages.InventoryPolicy }}>
               <InventoryPolicyForm

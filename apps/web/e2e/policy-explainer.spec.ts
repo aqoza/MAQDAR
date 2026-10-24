@@ -59,10 +59,12 @@ with psycopg.connect(sys.argv[1]) as db:
     await expect(page.getByText('DO-NOT-SEND', { exact: false })).toHaveCount(0)
     await page.goto('/settings?section=policy-explainer')
     await page
-      .getByRole('checkbox', { name: 'Enable the Claude policy explainer for this organization.' })
+      .getByRole('checkbox', {
+        name: 'Enable Claude policy and forecast explanations for this organization.',
+      })
       .check()
     await page.getByRole('button', { name: 'Save setting', exact: true }).click()
-    await expect(page.getByRole('status')).toContainText('Policy explainer enabled.')
+    await expect(page.getByRole('status')).toContainText('AI explanations enabled.')
     await page.goto(explain)
     await page.getByLabel('Your question', { exact: true }).fill('Why this maximum?')
     await page.getByRole('checkbox').check()
@@ -181,10 +183,12 @@ with psycopg.connect(sys.argv[1]) as db:
       .addCookies([{ name: 'locale', value: 'en', url: new URL(savedUrl).origin }])
     await page.goto('/settings?section=policy-explainer')
     await page
-      .getByRole('checkbox', { name: 'Enable the Claude policy explainer for this organization.' })
+      .getByRole('checkbox', {
+        name: 'Enable Claude policy and forecast explanations for this organization.',
+      })
       .uncheck()
     await page.getByRole('button', { name: 'Save setting', exact: true }).click()
-    await expect(page.getByRole('status')).toContainText('Policy explainer disabled.')
+    await expect(page.getByRole('status')).toContainText('AI explanations disabled.')
     await page.goto(savedUrl)
     await expect(page.getByRole('status')).toHaveText('Explanation saved')
     await python(

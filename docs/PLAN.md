@@ -243,7 +243,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 27e  | **Dealer-return read API:** explicit organization-wide permission, original authorization JSON, bounded pagination and separate live source availability.                                                                   | Merged — PR #168                                    |
 | 27f  | **Dealer-return acknowledgements:** explicit whole-package reports, current authority, independent retained history and both-location access.                                                                               | Merged - PR #169                                    |
 | 27g  | **Dealer-return integration workbench:** scoped exact latest reports, retained copied batches and independent source availability.                                                                                          | Merged - PR #170                                    |
-| 28   | **Read-only AI policy explainer:** explicit Claude opt-in, limited preview, scoped immutable answers and validated evidence links.                                                                                          | Ready for review                                    |
+| 28   | **Read-only AI policy explainer:** explicit Claude opt-in, limited preview, scoped immutable answers and validated evidence links.                                                                                          | Merged (PR #171)                                    |
+| 28b  | **Read-only AI forecast explainer:** limited score/coverage preview, shared opt-in/quotas and immutable scoped answers.                                                                                                     | Ready for review                                    |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -949,3 +950,9 @@ changes. See [dealer-return-integration-workbench.md](dealer-return-integration-
 ### Step 28 - approved 2026-10-24
 
 Begin Phase 5 with one available saved individual-item policy and one confirmed question. Use a server-only Claude adapter, disabled until credentials/model and organization owner/admin opt-in are present. Send a previewable limited summary excluding account details, prices, raw transactions and credentials; apply database quotas and provider bounds. Editors request, location-authorized members inspect. Recheck authority before sending and publishing, validate evidence references, retain question/summary/model/version/answer and label AI interpretation. Keep all planning and operational data unchanged. Compact green screens at five widths and Arabic RTL; no hosted changes in this PR. See [policy-explainer.md](policy-explainer.md).
+
+### Step 28b — approved 2026-10-24
+
+PR #171 was reviewed without blocking findings and merged as `0d4120d` after all four CI jobs passed. Removing the retry guard made its regression fail; restoring it passed all 38 focused review tests.
+
+The owner approved forecast explanations for one saved individual-item result: explain model selection, historical backtest scores and uncertainty limitations using previewable captured evidence and validated links. Keep model-selection scores separate from held-out coverage, exclude raw demand, prices and account details, and make no causal or guaranteed-accuracy claims. Reuse owner/admin opt-in, editor-only requests, location-scoped immutable history, shared quotas, current authority before sending/publishing and stable retries. Preserve original forecasts and all operational state. Compact green screens at 375/768/1024/1440/1920px plus Arabic RTL; no hosted configuration changes. See [forecast-explainer.md](forecast-explainer.md).

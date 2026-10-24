@@ -655,6 +655,8 @@ select set_eq(
     ('app.stock_region_input(jsonb)', ''),
     ('app.policy_explainer_authorize(uuid, uuid, uuid)', ''),
     ('public.policy_explainer_configure(uuid, boolean)', 'authenticated'),
+    ('public.forecast_explainer_preview(uuid, uuid)', 'authenticated'),
+    ('public.forecast_explainer_request(uuid, uuid, uuid, text, text, text, boolean)', 'authenticated'),
     ('public.policy_explainer_preview(uuid, uuid)', 'authenticated'),
     ('public.policy_explainer_request(uuid, uuid, uuid, text, text, text, boolean)', 'authenticated'),
     ('public.policy_explainer_dispatch(uuid, uuid, text)', 'service_role'),

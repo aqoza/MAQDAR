@@ -1722,14 +1722,14 @@ isOneToOne: true
                   ]
                 },"policy_explanations": {
                   Row: {
-                    "answer": Json | null,"api_version": string,"created_at": string,"dispatched_at": string | null,"error_code": string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at": string | null,"forecast_run_id": string,"id": string,"item_id": string,"locale": string,"location_id": string,"organization_id": string,"policy_id": string,"policy_run_id": string,"prompt_version": string,"question": string,"request_id": string,"requested_by": string,"requested_model": string | null,"response_model": string | null,"status": string
+                    "answer": Json | null,"api_version": string,"created_at": string,"dispatched_at": string | null,"error_code": string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at": string | null,"forecast_id": string | null,"forecast_run_id": string,"id": string,"item_id": string,"locale": string,"location_id": string,"organization_id": string,"policy_id": string | null,"policy_run_id": string | null,"prompt_version": string,"question": string,"request_id": string,"requested_by": string,"requested_model": string | null,"response_model": string | null,"status": string,"subject_kind": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at"?: string | null,"forecast_run_id": string,"id"?: string,"item_id": string,"locale": string,"location_id": string,"organization_id": string,"policy_id": string,"policy_run_id": string,"prompt_version"?: string,"question": string,"request_id": string,"requested_by": string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string
+                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence": NonNullable<Json>,"fingerprint": string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id": string,"id"?: string,"item_id": string,"locale": string,"location_id": string,"organization_id": string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question": string,"request_id": string,"requested_by": string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string
                   }
                   Update: {
-                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence"?: NonNullable<Json>,"fingerprint"?: string,"finished_at"?: string | null,"forecast_run_id"?: string,"id"?: string,"item_id"?: string,"locale"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string,"policy_run_id"?: string,"prompt_version"?: string,"question"?: string,"request_id"?: string,"requested_by"?: string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string
+                    "answer"?: Json | null,"api_version"?: string,"created_at"?: string,"dispatched_at"?: string | null,"error_code"?: string | null,"evidence"?: NonNullable<Json>,"fingerprint"?: string,"finished_at"?: string | null,"forecast_id"?: string | null,"forecast_run_id"?: string,"id"?: string,"item_id"?: string,"locale"?: string,"location_id"?: string,"organization_id"?: string,"policy_id"?: string | null,"policy_run_id"?: string | null,"prompt_version"?: string,"question"?: string,"request_id"?: string,"requested_by"?: string,"requested_model"?: string | null,"response_model"?: string | null,"status"?: string,"subject_kind"?: string
                   }
                   Relationships: [
                     {
@@ -4712,6 +4712,12 @@ isOneToOne: false
                            },
 "forecast_expanded_enqueue":
 { Args: { "p_from": string,"p_history_complete": boolean,"p_horizon": number,"p_item_codes": (string)[],"p_location_code": string,"p_organization_id": string,"p_request_id": string,"p_to": string }; Returns: string
+                           },
+"forecast_explainer_preview":
+{ Args: { "p_forecast_id": string,"p_organization_id": string }; Returns: Json
+                           },
+"forecast_explainer_request":
+{ Args: { "p_confirmed": boolean,"p_fingerprint": string,"p_forecast_id": string,"p_locale": string,"p_organization_id": string,"p_question": string,"p_request_id": string }; Returns: string
                            },
 "forecast_multi_driver_enqueue":
 { Args: { "p_confirmed": boolean,"p_dataset_ids": (string)[],"p_forecast_id": string,"p_organization_id": string,"p_request_id": string }; Returns: string
