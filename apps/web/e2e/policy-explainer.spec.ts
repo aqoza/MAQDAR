@@ -60,7 +60,7 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.goto('/settings?section=policy-explainer')
     await page
       .getByRole('checkbox', {
-        name: 'Enable Claude policy, forecast, replenishment and supplier scenario explanations for this organization.',
+        name: 'Enable Claude policy, forecast, replenishment, supplier and delivery scenario explanations for this organization.',
       })
       .check()
     await page.getByRole('button', { name: 'Save setting', exact: true }).click()
@@ -184,7 +184,7 @@ with psycopg.connect(sys.argv[1]) as db:
     await page.goto('/settings?section=policy-explainer')
     await page
       .getByRole('checkbox', {
-        name: 'Enable Claude policy, forecast, replenishment and supplier scenario explanations for this organization.',
+        name: 'Enable Claude policy, forecast, replenishment, supplier and delivery scenario explanations for this organization.',
       })
       .uncheck()
     await page.getByRole('button', { name: 'Save setting', exact: true }).click()

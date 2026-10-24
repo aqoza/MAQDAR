@@ -24,6 +24,7 @@ export default defineConfig({
     '**/forecast-explainer.spec.ts',
     '**/replenishment-explainer.spec.ts',
     '**/supplier-explainer.spec.ts',
+    '**/delivery-explainer.spec.ts',
   ],
   // The specs share one local stack and one Mailpit inbox; they run one at a time, in file order.
   fullyParallel: false,
