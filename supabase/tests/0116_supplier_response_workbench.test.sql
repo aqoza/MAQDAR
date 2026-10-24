@@ -113,6 +113,7 @@ create function pg_temp.workbench(filters jsonb default '{}',page integer defaul
 select pg_temp.login(11,1);
 set local role authenticated;
 select is(pg_temp.workbench()->>'total','2','members see explicit single and batch publications');
+select is(public.supplier_event_response_workbench(pg_temp.id(1))->>'total','0','event workbench excludes ordinary publications');
 select is(pg_temp.workbench('{"status":"no_response"}')->>'total','2','silence is no response');
 select is(pg_temp.workbench('{"kind":"batch"}')#>>'{rows,0,source_id}',(select batch_id::text from fixture),'links use original batch id');
 select is(pg_temp.workbench('{"kind":"handoff"}')#>>'{rows,0,id}',(select publication_id::text from fixture),'publication identity stays distinct');

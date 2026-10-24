@@ -807,7 +807,8 @@
     "excess": "Excess stock",
     "network": "Network allocations",
     "regionalStock": "Regional stock assessments",
-    "supplierResponses": "Supplier responses"
+    "supplierResponses": "Supplier responses",
+    "eventSupplierResponses": "Event supplier responses"
   },
   "Replenishment": {
     "help": {
@@ -6476,6 +6477,10 @@
     "pagination": "Publication pages",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {page} of {pages}"
+    "page": "Page {page} of {pages}",
+    "eventTitle": "Event supplier responses",
+    "eventContext": "Published event purchase proposals and their latest supplier response.",
+    "eventIndependence": "Event and ordinary publications have separate histories. Each event handoff, batch and overlapping publication keeps its own responses. Copied batch summaries and history remain available after source-handoff deletion. This workbench changes no approvals, orders or inbound.",
+    "eventResults": "Event supplier publication responses"
   }
 }

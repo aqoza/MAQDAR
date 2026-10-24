@@ -1,3 +1,4 @@
+import { supplierWorkbenches } from '@/lib/supplier-response-workbench'
 import { SupplierResponses } from '@/components/supplier-responses'
 import { supplierResponseHistorySchema, responsePage } from '@/lib/supplier-responses'
 import Link from 'next/link'
@@ -25,7 +26,11 @@ export default async function EventPublication({
   const { handoffId } = await params
   if (!z.guid().safeParse(handoffId).success) notFound()
   const editor = isEditorRole(context.role)
-  const [db, t] = await Promise.all([createClient(), getTranslations('SupplierPortal')])
+  const [db, t, workbenchT] = await Promise.all([
+    createClient(),
+    getTranslations('SupplierPortal'),
+    getTranslations('SupplierResponseWorkbench'),
+  ])
   const source = await db
     .from('event_purchase_handoffs')
     .select('id')
@@ -78,6 +83,13 @@ export default async function EventPublication({
           </HelpDisclosure>
         }
       />
+      <Link
+        prefetch={false}
+        className="inline-flex min-h-11 items-center underline md:min-h-0"
+        href={supplierWorkbenches.event.path}
+      >
+        {workbenchT('eventTitle')}
+      </Link>
       <p>{t('eventSelection')}</p>
       {saved.data ? (
         <>

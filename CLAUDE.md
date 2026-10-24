@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 26h adds the internal event supplier response workbench. Preserve exact-event-publication latest revisions, receiving-location RLS for results and counts, independent withdrawal state and copied batch retention. Shared presentation must keep ordinary/event queries and evidence links separate; supplier authority is unchanged. See [supplier-event-response-workbench.md](docs/supplier-event-response-workbench.md).
+
 Step 26g adds independent event supplier Received/Declined responses. Preserve current accepted grants and nonwithdrawn actual-parent checks on reads/writes/retries, serialized append-only history, captured actor evidence, receiving-location scope and copied-batch retention. Ordinary responses remain separate. See [supplier-event-responses.md](docs/supplier-event-responses.md).
 
 Step 26f adds explicit event batch supplier publications. Preserve atomic current-member checks, exact adjusted allowlists, all-member price locking, event-only visible overlap, copied batch retention and withdrawal-safe retries. No event/baseline evidence or supplier response authority is added. See [supplier-event-batch-publications.md](docs/supplier-event-batch-publications.md).

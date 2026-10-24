@@ -79,11 +79,15 @@ describe('authenticated header contract', () => {
   })
 
   it('HEADER-005: page render branches retain a header, including invalid selections', () => {
+    expect(
+      readFileSync(join(source, 'components/supplier-response-workbench.tsx'), 'utf8'),
+    ).toMatch(/<PageHeader\b/)
     const wrappers = new Set([
       'PageHeader',
       'ListScreen',
       'EditScreen',
       'IntegrationWorkbenchScreen',
+      'SupplierResponseWorkbench',
       'StockLocatorHeader',
       'ExcessStockHeader',
       'PolicyWorkbench',
