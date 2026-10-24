@@ -176,10 +176,8 @@ with psycopg.connect(sys.argv[1]) as db:
       expect(await head.text()).toBe('')
       for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'])
         expect((await request.fetch(path, { method, headers })).status()).toBe(405)
-      for (const method of ['GET', 'POST'])
-        expect(
-          (await request.fetch(path + '/acknowledgements', { method, headers })).status(),
-        ).toBe(404)
+      expect((await request.get(path + '/acknowledgements', { headers })).status()).toBe(200)
+      expect((await request.post(path + '/acknowledgements', { headers })).status()).toBe(403)
     }
     for (const query of [
       '?limit=101',

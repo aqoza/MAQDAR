@@ -240,7 +240,8 @@ Step 21 begins the simulation center. Deferred Phase 3 work, including automatic
 | 27b  | **Dealer-return review:** independent full-quantity eligibility decisions, immutable terminal history and serialized withdrawal.                                                                                            | Merged — PR #165                                    |
 | 27c  | **Dealer-return handoffs:** immutable approved-request CSV/JSON, searchable history and both-location access.                                                                                                               | Merged — PR #166                                    |
 | 27d  | **Dealer-return batches:** immutable multi-item authorization packages, copied history and both-location access.                                                                                                            | Merged — PR #167                                    |
-| 27e  | **Dealer-return read API:** explicit organization-wide permission, original authorization JSON, bounded pagination and separate live source availability.                                                                   | Ready for review                                    |
+| 27e  | **Dealer-return read API:** explicit organization-wide permission, original authorization JSON, bounded pagination and separate live source availability.                                                                   | Merged — PR #168                                    |
+| 27f  | **Dealer-return acknowledgements:** explicit whole-package reports, current authority, independent retained history and both-location access.                                                                               | Ready for review                                    |
 
 See [policy-simulation.md](policy-simulation.md) for the approved evidence, numerical sequence, limits, metrics and rollout.
 
@@ -908,3 +909,20 @@ The owner approved batches of 1–50 dealer-return handoffs sharing one original
 PR #167 was reviewed without blocking findings and merged as `a171156` after all four CI jobs passed, including the complete database/browser suite and Cloudflare packaging. An invalid-ID route mutation was caught by four tests; the restored batch suite passed all 15 focused tests.
 
 The owner approved a read-only integration API for saved dealer-return handoffs and batches, with original JSON, bounded pagination, OpenAPI and integration coverage. Preserve separate declared quantities/conditions, unscheduled requested dates, references and full approval evidence. Copied batches remain readable after source-request deletion; live source availability stays separate. Add an explicit organization-wide `dealer_return_handoffs:read` scope issued only by owners/admins. Existing keys and other family scopes gain no return access; expiry, revocation and current creator-role checks apply on every read. Browser users retain both-location restrictions. Verify compact green Settings at 375/768/1024/1440/1920px plus Arabic RTL. No acknowledgements, external dealer access, credits or physical receiving in this step. See [dealer-return-handoff-read-api.md](dealer-return-handoff-read-api.md).
+
+### Step 27f — approved 2026-10-24
+
+PR #168 was reviewed without blocking findings and merged as `ed7594a` after all four CI jobs passed, including the complete database/browser suite and Cloudflare packaging. A scope mutation was caught by the tests; all 26 focused API/OpenAPI tests passed after restoration.
+
+The owner approved whole-package received/rejected API reports on saved dealer-return
+handoffs and batches. Add explicit organization-wide `dealer_return_handoffs:acknowledge`,
+issued only by owners/admins, without granting existing keys or other scopes access.
+History uses `dealer_return_handoffs:read`; current expiry, revocation and creator-role
+checks apply even on retries. Append-only events retain exact system/reference, authoring
+key and server timestamp, with required rejection reasons and organization/client UUID
+retry identity across key rotation. Identical retries preserve events; conflicts fail.
+Keep single/batch/overlap histories independent and retained copied batches reportable
+after source-request deletion, with actual-parent cascades/audits. Members require both
+locations. Verify OpenAPI/integration tests and all five widths plus Arabic RTL using
+the compact green standard. Reports do not confirm physical receipt, issue credits,
+reserve stock or change inbound. See [dealer-return-acknowledgements.md](dealer-return-acknowledgements.md).

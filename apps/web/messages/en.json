@@ -1108,6 +1108,11 @@
         "label": "Read dealer-return handoffs",
         "description": "Read saved dealer-return authorizations and batches across the whole organization, including retained evidence after source deletion. Does not receive returns, issue credits or move stock.",
         "badge": "Return handoffs read"
+      },
+      "dealerReturnHandoffsAcknowledge": {
+        "label": "Report dealer-return package receipt or rejection",
+        "description": "Record whole-package external reports across this organization. Does not confirm physical receipt, issue credits or change stock.",
+        "badge": "Return handoffs: acknowledge"
       }
     },
     "secret": {
@@ -3201,7 +3206,8 @@
     "eventMeaning": "Reports are supplied by an integration key holder. They do not verify external acceptance or create orders. Full adjusted selections, baseline comparisons and event evidence remain unchanged.",
     "dispositionMeaning": "Reports are supplied by an integration key holder. They do not verify supplier acceptance, create returns, authorize scrap, write off inventory or move stock. Saved quantities and reference inventory values remain unchanged. Reports on copied batches remain available after source handoffs are deleted.",
     "networkMeaning": "These are external reports about the whole saved network package, not verified branch acceptance or transfer execution. They do not reserve stock, create transfers or change inbound. History remains separate for member handoffs and overlapping batches; retained copied batches keep their reports after source deletion.",
-    "regionalMeaning": "These are external reports about the whole saved regional package, not verified acceptance by a source or transfer execution. They do not reserve stock, create transfers or change inbound. Member handoffs and overlapping batches keep separate histories; retained copied batches keep their reports after source deletion."
+    "regionalMeaning": "These are external reports about the whole saved regional package, not verified acceptance by a source or transfer execution. They do not reserve stock, create transfers or change inbound. Member handoffs and overlapping batches keep separate histories; retained copied batches keep their reports after source deletion.",
+    "returnMeaning": "External reports concern this whole return authorization package. Received does not confirm physical receipt or eligibility. Reports create no credits, reservations, inbound or stock movements."
   },
   "TransferDates": {
     "title": "Transfer date scenarios",
