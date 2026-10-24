@@ -4,7 +4,11 @@ import type { Database } from '@zeespare/shared/database.types'
 import { env } from './env'
 import { serverEnv } from './env.server'
 import { executePolicyExplanation } from './policy-explainer-execution'
-import { requestClaudePolicy, type ClaudeConfiguration } from './claude-policy.server'
+import {
+  requestClaudePolicy,
+  requestClaudeForecast,
+  type ClaudeConfiguration,
+} from './claude-policy.server'
 /** Privileged client is confined to two guarded RPCs; it never reads tenant tables directly. */
 export async function generatePolicyExplanation(
   id: string,
@@ -24,7 +28,10 @@ export async function generatePolicyExplanation(
       if (error) throw new Error('Explanation dispatch unavailable')
       return data
     },
-    provider: (input) => requestClaudePolicy(input, config),
+    provider: (input) =>
+      input.evidence.method === 'forecast-explainer-v1'
+        ? requestClaudeForecast({ ...input, evidence: input.evidence }, config)
+        : requestClaudePolicy({ ...input, evidence: input.evidence }, config),
     complete: async (result) => {
       const { error } = await db.rpc('policy_explainer_complete', {
         p_id: id,

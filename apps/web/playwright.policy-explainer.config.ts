@@ -7,7 +7,7 @@ const port = Number(new URL(baseURL).port) || 3000
 const server = Array.isArray(base.webServer) ? base.webServer[0] : base.webServer
 export default defineConfig({
   ...base,
-  testMatch: 'policy-explainer.spec.ts',
+  testMatch: ['policy-explainer.spec.ts', 'forecast-explainer.spec.ts'],
   outputDir: 'test-results/policy-explainer',
   testIgnore: [],
   expect: { timeout: 15_000 },

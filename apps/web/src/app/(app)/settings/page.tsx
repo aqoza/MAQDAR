@@ -239,7 +239,7 @@ export default async function SettingsPage({
           {
             key: 'policy-explainer',
             group: 'access',
-            label: explainer('title'),
+            label: explainer('settingsTitle'),
             searchText: explainer('settingsDescription'),
             panel: <PolicyExplainerSettings organizationId={organization.id} />,
           },

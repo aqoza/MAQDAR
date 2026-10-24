@@ -1,0 +1,96 @@
+{
+  "source": {
+    "start_day": "2026-07-01",
+    "end_day": "2026-10-01",
+    "introduced_on": null,
+    "discontinued_on": null,
+    "demand": [["2026-07-01", "99", "1"]],
+    "unit_provenance": {
+      "method": "source-units-v1",
+      "status": "consistent",
+      "unit": "EA",
+      "rows": 1,
+      "unknown_rows": 0,
+      "units": ["EA"]
+    },
+    "account": "DO-NOT-SEND"
+  },
+  "output": {
+    "status": "selected",
+    "model": "naive",
+    "total": "28",
+    "scores": [
+      {
+        "model": "naive",
+        "rmse": "1.123456789012345678",
+        "mae": "1",
+        "bias": "-0.25",
+        "folds": [
+          {
+            "rmse": "1",
+            "mae": "1",
+            "bias": "0"
+          },
+          {
+            "rmse": "1",
+            "mae": "1",
+            "bias": "0"
+          },
+          {
+            "rmse": "1",
+            "mae": "1",
+            "bias": "0"
+          }
+        ]
+      }
+    ],
+    "folds": [
+      {
+        "train_from": "2026-07-01",
+        "train_to": "2026-07-09",
+        "test_from": "2026-07-10",
+        "test_to": "2026-08-06"
+      },
+      {
+        "train_from": "2026-07-01",
+        "train_to": "2026-07-09",
+        "test_from": "2026-07-10",
+        "test_to": "2026-08-06"
+      },
+      {
+        "train_from": "2026-07-01",
+        "train_to": "2026-07-09",
+        "test_from": "2026-07-10",
+        "test_to": "2026-08-06"
+      }
+    ],
+    "forecast": [
+      {
+        "date": "2026-10-02",
+        "quantity": "1"
+      }
+    ],
+    "uncertainty": {
+      "status": "available",
+      "residual_count": 84,
+      "bands": []
+    },
+    "evaluation": {
+      "status": "available",
+      "model": "mean",
+      "train_to": "2026-09-03",
+      "test_from": "2026-09-04",
+      "test_to": "2026-10-01",
+      "count": 28,
+      "calibration": 84,
+      "coverage80": "0.8",
+      "coverage95": "0.95",
+      "forecast": ["1"],
+      "bands": []
+    }
+  },
+  "price": "DO-NOT-SEND",
+  "private_driver": {
+    "private": "DO-NOT-SEND"
+  }
+}

@@ -288,3 +288,7 @@ pagination. Run the shared integration unit suite and production
 shared integration flows. Inspect `return-integrations-*.png` at all five widths in
 English and Arabic RTL, keyboard focus/disclosures, contained table scrolling and
 escaped long text. Preserve original downloads and verify no operational writes.
+
+## Forecast explainer
+
+Step 28b shares opt-in and quotas with policy explanations. Run both provider browser flows and the policy/forecast unit and concurrency suites when changing dispatch, completion, evidence or settings. Keep exact scores separate from held-out coverage, cross-kind retries/references denied, source retention and branch access enforced. Inspect both locales at all five widths. See [forecast-explainer.md](forecast-explainer.md).

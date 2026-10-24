@@ -19,7 +19,7 @@ export async function PolicyExplainerSettings({ organizationId }: { organization
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('title')}</CardTitle>
+        <CardTitle>{t('settingsTitle')}</CardTitle>
       </CardHeader>
       <CardContent>
         <NextIntlClientProvider messages={{ PolicyExplainer: messages.PolicyExplainer }}>

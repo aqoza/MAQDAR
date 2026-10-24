@@ -20,6 +20,8 @@ Read this file and `docs/PLAN.md`, pull the latest `main`, and check which steps
 
 ## Repository map
 
+Step 28b extends the opt-in explainer to saved individual forecasts. Preserve the explicit score/coverage projection, shared policy/forecast quotas and UUID identities, separate reference vocabularies, current authority and captured history. Never send raw demand or driver data; selection scores and held-out coverage remain distinct. See [forecast-explainer.md](docs/forecast-explainer.md).
+
 Step 28 adds an opt-in, server-only Claude policy explainer. Preserve the exact allowlisted preview, editor/location authority before dispatch and publication, database quotas, single dispatch per retry identity, validated evidence references and immutable captured answers. Credentials and organization enablement default off; no operational mutations. See [policy-explainer.md](docs/policy-explainer.md).
 
 Step 27g adds a read-only dealer-return integration workbench. Preserve both-location RLS for rows/counts, latest reports per exact system before filtering, independent package histories and copied-batch search after source deletion. Live source availability is separate from report status and never confirms stock or eligibility. See [dealer-return-integration-workbench.md](docs/dealer-return-integration-workbench.md).

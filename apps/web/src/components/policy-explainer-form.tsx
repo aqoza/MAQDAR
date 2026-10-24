@@ -1,7 +1,11 @@
 'use client'
 import { useActionState, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { explainPolicy, configurePolicyExplainer } from '@/app/(app)/forecasts/explanations/actions'
+import {
+  explainPolicy,
+  explainForecast,
+  configurePolicyExplainer,
+} from '@/app/(app)/forecasts/explanations/actions'
 import { idleState } from '@/lib/forms'
 const button =
   'min-h-11 rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-50'
@@ -10,19 +14,28 @@ export function PolicyExplainerForm({
   policyId,
   fingerprint,
   requestId,
+  kind = 'policy',
 }: {
   organizationId: string
   policyId: string
   fingerprint: string
   requestId: string
+  kind?: 'policy' | 'forecast'
 }) {
   const t = useTranslations('PolicyExplainer')
-  const [state, action, pending] = useActionState(explainPolicy, idleState)
+  const [state, action, pending] = useActionState(
+    kind === 'forecast' ? explainForecast : explainPolicy,
+    idleState,
+  )
   const [question, setQuestion] = useState('')
   return (
-    <form action={action} className="space-y-4 workspace-panel">
+    <form action={action} aria-busy={pending} className="space-y-4 workspace-panel">
       <input type="hidden" name="organization_id" value={organizationId} />
-      <input type="hidden" name="policy_id" value={policyId} />
+      <input
+        type="hidden"
+        name={kind === 'forecast' ? 'forecast_id' : 'policy_id'}
+        value={policyId}
+      />
       <input type="hidden" name="request_id" value={requestId} />
       <input type="hidden" name="fingerprint" value={fingerprint} />
       <label className="grid gap-2">
